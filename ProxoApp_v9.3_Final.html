@@ -8158,25 +8158,31 @@ async function sendMsg(){
   const msg=inp.value.trim();if(!msg)return;
   inp.value='';
   await withSession(async()=>{
+    // پشکنین — ئایا ئەمە یەکەم پەیامی کڕیارە؟
+    const{data:prevMsgs}=await sb.from('pa_support').select('id').eq('user_id',cu.id).eq('is_admin',false).limit(1);
+    const isFirstMsg=!prevMsgs||prevMsgs.length===0;
     await sb.from('pa_support').insert({user_id:cu.id,message:msg,is_admin:false});
     await loadChat();
-    // ── Telegram notification بۆ ئادمین — تیکێتی پشتیوانی ──
-    try{
-      const uName=cu?.user_metadata?.full_name||cu?.email||'بەکارهێنەر';
-      const tgText='🎧 *تیکێتی پشتیوانی نوێ*\n'
-        +'━━━━━━━━━━━━━━━━\n'
-        +'👤 *ناو:* '+uName+'\n'
-        +'✉️ *ئیمەیل:* '+(cu?.email||'—')+'\n'
-        +'🆔 *ئایدی:* '+(cu?.id?.substring(0,14)||'—')+'...\n'
-        +'━━━━━━━━━━━━━━━━\n'
-        +'💬 *پەیام:*\n'+msg.substring(0,300)+'\n'
-        +'━━━━━━━━━━━━━━━━\n'
-        +'⏰ *کات:* '+new Date().toLocaleString('ar');
-      await fetch('https://api.telegram.org/bot'+FBW_TG_BOT+'/sendMessage',{
-        method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({chat_id:FBW_TG_CID,text:tgText,parse_mode:'Markdown'})
-      });
-    }catch(_){}
+    // ── Telegram notification بۆ ئادمین — تەنها لە یەکەم پەیام (کاتی کردنی تکتی نوێ) ──
+    if(isFirstMsg){
+      try{
+        const uName=cu?.user_metadata?.full_name||cu?.email||'بەکارهێنەر';
+        const tgText='🎧 *تکتی پشتگیری نوێ دروستکرا*\n'
+          +'━━━━━━━━━━━━━━━━\n'
+          +'👤 *ناو:* '+uName+'\n'
+          +'✉️ *ئیمەیل:* '+(cu?.email||'—')+'\n'
+          +'🆔 *ئایدی بەکارهێنەر:* '+(cu?.id?.substring(0,14)||'—')+'...\n'
+          +'━━━━━━━━━━━━━━━━\n'
+          +'💬 *کێشە / داواکاری:*\n'+msg.substring(0,500)+'\n'
+          +'━━━━━━━━━━━━━━━━\n'
+          +'⏰ *کاتی ناردن:* '+new Date().toLocaleString('ar')+'\n'
+          +'📌 *باری تکت:* چاوەڕوانی وەڵام ⏳';
+        await fetch('https://api.telegram.org/bot'+FBW_TG_BOT+'/sendMessage',{
+          method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({chat_id:FBW_TG_CID,text:tgText,parse_mode:'Markdown'})
+        });
+      }catch(_){}
+    }
   });
 }
 
