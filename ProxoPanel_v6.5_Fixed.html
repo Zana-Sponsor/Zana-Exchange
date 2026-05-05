@@ -2393,7 +2393,7 @@ function renderAdsTable(q=''){
       <div class="ad-card-top">
         <div class="mini-av" style="background:var(--bl);font-size:10px;font-weight:900">#${a.ad_number||'?'}</div>
         <div class="ad-card-info">
-          <div class="ad-card-name">${a.title||'بێ ناونیشان'}</div>
+          <div class="ad-card-name">${a.title||(a.ad_number?'ڕیکلامی #'+a.ad_number:'بێ ناونیشان')}</div>
           <div class="ad-card-sub">${a.profiles?.full_name||'—'} • ${a.profiles?.email||'—'}</div>
         </div>
         <span class="badge ${a.status}">${statusKu(a.status)}</span>
@@ -2464,7 +2464,7 @@ async function showAdDetail(id){
     </div>`;
 
   document.getElementById('adDetailContent').innerHTML=`
-    <div class="detail-row"><span class="lbl">ناونیشان</span><span class="val">${a.title||'—'}</span></div>
+    <div class="detail-row"><span class="lbl">ناونیشان</span><span class="val">${a.title||(a.ad_number?'ڕیکلامی #'+a.ad_number:'—')}</span></div>
     <div class="detail-row"><span class="lbl">بەکارهێنەر</span><span class="val">${a.profiles?.full_name||a.profiles?.email||'—'}</span></div>
     <div class="detail-row"><span class="lbl">ئیمەیل</span><span class="val" style="direction:ltr;text-align:left;font-size:12px">${a.profiles?.email||'—'}</span></div>
     <div class="detail-row"><span class="lbl">ژمارەی ڕیکلام</span><span class="val" style="font-family:monospace">#${a.ad_number||'—'}</span></div>
@@ -2474,7 +2474,7 @@ async function showAdDetail(id){
     <div class="detail-row"><span class="lbl">ڕەگەز</span><span class="val">${genKu[a.gender]||a.gender||'هەموو'}</span></div>
     <div class="detail-row"><span class="lbl">تەمەن</span><span class="val">${ageGroups}</span></div>
     <div class="detail-row"><span class="lbl">شوێن</span><span class="val">${locKu[a.location]||a.location||'—'}</span></div>
-    ${a.video_link?`<div class="detail-row"><span class="lbl">لینکی ڤیدیۆ</span><span class="val" style="direction:ltr;font-size:11px"><a href="${a.video_link}" target="_blank" style="color:var(--bl)">${a.video_link}</a></span></div>`:''}
+    ${a.video_code?`<div class="detail-row"><span class="lbl">کۆدی ڤیدیۆ</span><span class="val" style="direction:ltr;font-family:'Inter';font-weight:700">${a.video_code}</span></div>`:''}    ${a.video_link?`<div class="detail-row"><span class="lbl">لینکی ڤیدیۆ</span><span class="val" style="direction:ltr;font-size:11px"><a href="${a.video_link}" target="_blank" style="color:var(--bl)">${a.video_link}</a></span></div>`:''}
     ${a.reject_reason?`<div class="reject-reason-box"><i class="fas fa-info-circle" style="margin-left:6px"></i>${a.reject_reason}</div>`:''}
     ${priceBreakdownHTML}
     <div class="sep"></div>
@@ -2554,7 +2554,7 @@ async function loadApprovalWorkflow(){
       <div class="ad-card-top">
         <div class="mini-av" style="background:var(--bl);font-size:10px;font-weight:900">#${a.ad_number||'?'}</div>
         <div class="ad-card-info">
-          <div class="ad-card-name">${a.title||'بێ ناونیشان'}</div>
+          <div class="ad-card-name">${a.title||(a.ad_number?'ڕیکلامی #'+a.ad_number:'بێ ناونیشان')}</div>
           <div class="ad-card-sub">${a.profiles?.full_name||'—'} • ${a.profiles?.email||'—'}</div>
         </div>
         <span class="badge pending">چاوەڕوان</span>
@@ -2582,7 +2582,7 @@ function openApproveModal(adId){
   _approveUserId = ad.user_id;
   _approveAdBudget = parseFloat(ad.budget||0);
   // Populate info
-  document.getElementById('approveAdTitle').textContent = ad.title || '—';
+  document.getElementById('approveAdTitle').textContent = ad.title || (ad.ad_number ? 'ڕیکلامی #'+ad.ad_number : '—');
   document.getElementById('approveAdUser').textContent = (ad.profiles?.full_name||'—') + ' · ' + (ad.profiles?.email||'—');
   document.getElementById('approveAdBudget').textContent = Math.round(_approveAdBudget * 1800).toLocaleString() + ' IQD';
   document.getElementById('approveTikTokId').value = ad.tiktok_ad_id || '';
