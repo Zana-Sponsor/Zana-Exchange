@@ -297,10 +297,10 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .coins-need-more{width:100%;padding:13px;background:var(--bg);border:1.5px dashed var(--b2);border-radius:14px;color:var(--mt);font-family:'R',sans-serif;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;cursor:default;}
 
 /* ══ NOTIFICATION BELL ══ */
-.notif-btn{position:relative;width:34px;height:34px;border-radius:50%;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--dark);}
+.notif-btn{position:relative;width:34px;height:34px;border-radius:50%;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--dark);overflow:visible;}
 .notif-dot{position:absolute;top:6px;left:6px;width:9px;height:9px;border-radius:50%;background:var(--rd);border:2px solid var(--w);display:none;animation:pulse 1.5s infinite;}
 .notif-dot.show{display:block;}
-.notif-count{position:absolute;top:-5px;left:-5px;min-width:18px;height:18px;border-radius:9px;background:#dc2626;border:2px solid var(--w);display:none;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;padding:0 4px;font-family:'Inter',sans-serif;box-shadow:0 2px 6px rgba(220,38,38,.4);}
+.notif-count{position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;border-radius:9px;background:#dc2626;border:2px solid var(--w);display:none;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;padding:0 4px;font-family:'Inter',sans-serif;box-shadow:0 2px 6px rgba(220,38,38,.4);z-index:210;}
 .notif-count.show{display:flex;animation:pulse .6s ease;}
 .card,.ad-card,.notif-item,.pg,.wallet-card{contain:layout style;}
 .pg.active{will-change:transform;}.side-menu{will-change:transform;}
@@ -9082,7 +9082,12 @@ async function lcSaveToHistory(sessionId,name,problem,adminName,status){
     status=status||'closed';
     const hist=JSON.parse(localStorage.getItem(LC_HIST_KEY)||'[]');
     const idx=hist.findIndex(h=>h.id===sessionId);
-    const entry={id:sessionId,name:name||'—',problem:problem||'—',adminName:adminName||'ئەدمین',status,updatedAt:Date.now()};
+    const existingEntry=hist.find(h=>h.id===sessionId)||{};
+    const entry={id:sessionId,
+      name:(name&&name!=='—'?name:(existingEntry.name||'—')),
+      problem:(problem&&problem!=='—'?problem:(existingEntry.problem||'—')),
+      adminName:(adminName&&adminName!=='ئەدمین'?adminName:(existingEntry.adminName||'ئەدمین')),
+      status,updatedAt:Date.now()};
     if(status==='closed')entry.closedAt=Date.now();
     if(idx>=0){hist[idx]={...hist[idx],...entry};}
     else{hist.unshift(entry);}
@@ -9181,10 +9186,32 @@ window.lcResumeFromHistory=function(id){
   lcDb.ref('sessions/'+id).once('value').then(snap=>{
     const d=snap.val();
     if(!d){
-      lcSaveToHistory(id,'—','—','ئەدمین','closed');
+      // سێشن لە Firebase نییە — دانەی پاشەکەوتی ڕاستەقینە بپارێزە، '—' مەنووسە
       localStorage.removeItem(LC_KEY);
       lcSessionId=null;
-      lcRenderHistory();
+      // هەوڵ بدە پەیامەکان بار بکەیت تەنانەت ئەگەر سێشنەکە سڕایەوە
+      lcDb.ref('messages/'+id).once('value').then(function(mSnap){
+        var mData=mSnap.val();
+        if(mData){
+          var msgs=Object.entries(mData).map(function(e){return Object.assign({id:e[0]},e[1]);}).sort(function(a,b){return a.timestamp-b.timestamp;});
+          lcShowStage('lcStageChat');
+          document.getElementById('lcClosedBanner').style.display='block';
+          document.getElementById('lcInpWrap').style.display='none';
+          var bar=document.getElementById('lcInfoBar');
+          if(bar){bar.style.display='flex';document.getElementById('lcInfoText').innerHTML='ئەدمین — چاتی داخراو <i class="fas fa-lock" style="font-size:10px"></i>';}
+          lcRenderMessages(msgs);
+          if(!document.getElementById('lcNewChatAfterClose')){
+            var bw=document.createElement('div');bw.id='lcNewChatAfterClose';
+            bw.style.cssText='display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap';
+            bw.innerHTML='<button onclick="lcGoToHistory()" style="padding:8px 16px;background:#f1f5f9;color:#1c2333;border:none;border-radius:10px;font-family:'R',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-history" style="margin-left:5px"></i>گەڕانەوە</button>'+
+              '<button onclick="lcStartNewChat()" style="padding:8px 16px;background:#1c2333;color:#fff;border:none;border-radius:10px;font-family:'R',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-plus" style="margin-left:5px"></i>چاتی نوێ</button>';
+            var cb=document.getElementById('lcClosedBanner');
+            cb.parentNode.insertBefore(bw,cb.nextSibling);
+          }
+        }else{
+          lcRenderHistory();
+        }
+      }).catch(function(){lcRenderHistory();});
       return;
     }
     if(d.status==='closed'){
