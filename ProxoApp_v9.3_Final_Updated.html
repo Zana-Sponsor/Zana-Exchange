@@ -1453,6 +1453,15 @@ textarea.lc-inp{resize:none;}
         <div class="sidebar-item-ico" style="background:rgba(168,85,247,.08);border-color:rgba(168,85,247,.2)"><i class="fas fa-gift" style="color:#a855f7"></i></div>
         <div class="sidebar-item-txt">خەڵاتی هەفتانە</div>
       </div>
+      <!-- ══ PA_SUPPORT SIDEBAR ITEM with badge ══ -->
+      <div class="sidebar-item" id="suppSidebarItem" onclick="goPage('support');closeSidebar();markSupportRead()">
+        <div class="sidebar-item-ico" style="background:rgba(14,120,255,.08);border-color:rgba(14,120,255,.2);position:relative">
+          <i class="fas fa-headset" style="color:#0E78FF"></i>
+          <span id="suppSideBadge" style="display:none;position:absolute;top:-5px;right:-5px;min-width:16px;height:16px;border-radius:8px;background:#dc2626;border:2px solid #fff;font-size:9px;font-weight:900;color:#fff;align-items:center;justify-content:center;padding:0 3px;font-family:'Inter',sans-serif;z-index:5"></span>
+        </div>
+        <div class="sidebar-item-txt">پشتگیری</div>
+        <span id="suppSideCount" style="display:none;background:#dc2626;color:#fff;border-radius:20px;padding:2px 8px;font-size:10px;font-weight:900;font-family:'Inter',sans-serif;margin-right:auto"></span>
+      </div>
       <!-- ══ LIVE CHAT SIDEBAR ITEM ══ -->
       <div class="sidebar-item" id="lcSidebarItem" onclick="lcOpenChatDirect();closeSidebar();" style="display:none">
         <div class="sidebar-item-ico" style="background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.2);position:relative">
@@ -4977,7 +4986,11 @@ async function boot(){
     .subscribe();
 
   // ── بازاردانی زیادکراو بۆ ئاگاداری — هەر ٣٠ چرکەیەک (backup) ──
-  if(!window._notifPoll){window._notifPoll=setInterval(function(){if(typeof checkNotifBell==='function'&&cu)checkNotifBell();},30000);}
+  if(!window._notifPoll){window._notifPoll=setInterval(function(){
+    if(typeof checkNotifBell==='function'&&cu)checkNotifBell();
+    if(typeof checkSupportBadge==='function'&&cu)checkSupportBadge();
+  },30000);}
+  checkSupportBadge();
 
   // ══ چێکی بانکردنی خۆکار — هەر ٣ خولەک جارێک ══
   setInterval(async()=>{
@@ -5003,6 +5016,23 @@ async function boot(){
   sb.channel('banner_rt')
     .on('postgres_changes',{event:'*',schema:'public',table:'pa_banners'},()=>{
       loadHomeBanner();
+    })
+    .subscribe();
+
+  // ڕەوتی: ئەدمین وەڵامی نوێ نێرد بۆ pa_support
+  sb.channel('supp_admin_rt_'+cu.id)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'pa_support',
+      filter:'user_id=eq.'+cu.id},function(payload){
+      if(payload.new&&payload.new.is_admin===true){
+        checkSupportBadge();
+        const pgSupp=document.getElementById('pgSupport');
+        if(pgSupp&&pgSupp.classList.contains('on')){
+          loadChat();
+          markSupportRead();
+        }else{
+          _showNotifToast('💬 پێگەی سەپۆرت','ئەدمین کێشەکەت وەڵامداوەت');
+        }
+      }
     })
     .subscribe();
 
@@ -5367,7 +5397,7 @@ function goPage(p){
   if(p==='myads')loadMyAds();
   if(p==='proxolink'){loadProxoCards();hidePLForm();}
   if(p==='notifications'){loadNotifications();markAllRead();}
-  if(p==='support')loadChat();
+  if(p==='support'){loadChat();markSupportRead();}
   if(p==='profile'){loadBal();loadReferralSection();}
   if(p==='home'){loadCoins();}
   if(p==='create'){selectedAssetId=null;cardId=null;goal='messages';days=1;dailyUSD=10;dailyCost=18500;budget=18500;budgetTier=0;tierIndex=0;document.querySelectorAll('.bud-daily-btn').forEach((b,i)=>{b.classList.toggle('sel',i===0);});clearAssetSel&&clearAssetSel();document.querySelectorAll('.card-pick').forEach(x=>x.classList.remove('sel'));document.querySelectorAll('.goal-tab,.goal-tab-v2').forEach(x=>x.classList.toggle('on',x.dataset.g==='messages'));const _al=document.getElementById('adLink');if(_al)_al.value='';const _ac=document.getElementById('adCode');if(_ac)_ac.value='';const _pi=document.getElementById('promoCodeInp');if(_pi)_pi.value='';if(typeof clearPromoResult==='function')clearPromoResult();updateBudgetDisplay();loadAssetsForDropdown();}
@@ -8004,6 +8034,42 @@ async function deleteCard(id){
 }
 
 // ═══ ٥. NOTIFICATIONS ═══
+// ══ SUPPORT UNREAD BADGE ══
+const SUPP_SEEN_KEY='proxo_supp_last_seen';
+
+function markSupportRead(){
+  localStorage.setItem(SUPP_SEEN_KEY,new Date().toISOString());
+  const badge=document.getElementById('suppSideBadge');
+  const count=document.getElementById('suppSideCount');
+  if(badge){badge.style.display='none';badge.textContent='';}
+  if(count){count.style.display='none';count.textContent='';}
+}
+
+async function checkSupportBadge(){
+  if(!cu)return;
+  try{
+    const lastSeen=localStorage.getItem(SUPP_SEEN_KEY)||'1970-01-01T00:00:00Z';
+    const{data,error}=await sb.from('pa_support')
+      .select('id,created_at')
+      .eq('user_id',cu.id)
+      .eq('is_admin',true)
+      .gt('created_at',lastSeen)
+      .order('created_at',{ascending:false});
+    if(error)return;
+    const cnt=(data&&data.length)||0;
+    const badge=document.getElementById('suppSideBadge');
+    const count=document.getElementById('suppSideCount');
+    if(cnt>0){
+      const lbl=cnt>99?'99+':String(cnt);
+      if(badge){badge.textContent=lbl;badge.style.display='flex';}
+      if(count){count.textContent=lbl+' نوێ';count.style.display='inline-block';}
+    }else{
+      if(badge){badge.style.display='none';badge.textContent='';}
+      if(count){count.style.display='none';count.textContent='';}
+    }
+  }catch(_){}
+}
+
 async function checkNotifBell(){
   if(!cu)return;
   const{count,error}=await sb.from('pa_notifications').select('*',{count:'exact',head:true}).eq('user_id',cu.id).eq('is_read',false);
@@ -9743,15 +9809,18 @@ window.lcSubmitFeedback=async function(){
     if(!wrap||!track||!dots)return;
     if(!banners||!banners.length){
       wrap.style.display='none';
-      // homeHero بەرپرسە بۆ نمایشکردن لەلایەن loadHomeBanner
+      clearInterval(_timer);
+      // homeHero دووبارە نیشان بدە
+      if(typeof loadHomeBanner==='function')loadHomeBanner();
       return;
     }
     // Firebase وێنەی هەیە — homeHero بشارەوە
     if(hero)hero.style.display='none';
-    track.innerHTML=banners.map((b,i)=>
-      '<div class="fb-slide"><a href="#" onclick="return _fbClick('+i+')">'+
-      '<img src="'+b.imageB64+'" alt="بانەر '+(i+1)+'" loading="lazy"></a></div>'
-    ).join('');
+    track.innerHTML=banners.map((b,i)=>{
+      var src=b.imageB64||(b.imageUrl||'');
+      return '<div class="fb-slide"><a href="#" onclick="return _fbClick('+i+')">'+
+      '<img src="'+src+'" alt="بانەر '+(i+1)+'" loading="lazy"></a></div>';
+    }).join('');
     dots.innerHTML=banners.map((_,i)=>
       '<button class="fb-dot'+(i===0?' on':'')+'" onclick="_fbGoto('+i+')"></button>'
     ).join('');
@@ -9781,11 +9850,13 @@ window.lcSubmitFeedback=async function(){
   lcDb.ref('appContent/banners').on('value',snap=>{
     const val=snap.val();
     if(val&&typeof val==='object'){
-      _banners=Object.values(val).filter(b=>b&&b.imageB64&&b.imageB64.length>10);
+      // imageB64 یان imageUrl یان هەر مێدیایەک قبوڵ بکە
+      _banners=Object.values(val).filter(b=>b&&((b.imageB64&&b.imageB64.length>10)||(b.imageUrl&&b.imageUrl.length>5)));
     }else{
       _banners=[];
     }
-    if(_banners.length)_build(_banners);
+    // هەموو کات _build بانگ بکە — تەنانەت ئەگەر بانەر نەبوو
+    _build(_banners);
   });
   // پشتگیری نسخەی کۆن — activeBanner
   lcDb.ref('appContent/activeBanner').on('value',snap=>{
