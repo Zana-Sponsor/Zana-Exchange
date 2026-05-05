@@ -2681,24 +2681,40 @@ async function confirmReject(){
     }
     loadDeposits();
   } else {
-    // status و reject_reason یەک کاتژمێر نوێ بکەرەوە (تریگەر پێویستیە هەر دووکیان هەبێت)
-    const {error:statusErr}=await sb.from('pa_ads').update({status:'rejected',reject_reason:reason}).eq('id',id);
-    if(statusErr){
-      // ئەگەر reject_reason ستوون نەبوو، تەنها status بکەرەوە
-      const {error:statusOnly}=await sb.from('pa_ads').update({status:'rejected'}).eq('id',id);
-      if(statusOnly){showToast('هەڵە: '+statusOnly.message,'rd');return;}
-    }
-    // 3. ئاگادارکردنەوەی بەکارهێنەر
+    // دۆزینەوەی ئۆبجێکتی ڕیکلام — بۆ گەیشتن بە ad_number بە integer
     const adObj=allAds.find(a=>a.id===id)||_approvalPendingAds.find(a=>a.id===id);
+    // ad_number بەوردی بە integer — بۆ ئەوەی trigger type mismatch نەبێت
+    const adNumInt = adObj?.ad_number != null ? parseInt(adObj.ad_number) : undefined;
+    // payload دروستکردن — ad_number بە integer زیاد دەکرێت
+    const rejectPayload = {status:'rejected', reject_reason:reason};
+    if(adNumInt != null && !isNaN(adNumInt)) rejectPayload.ad_number = adNumInt;
+    // هەوڵی یەکەم: بە reject_reason و ad_number
+    let rejected = false;
+    try{
+      const {error:e1}=await sb.from('pa_ads').update(rejectPayload).eq('id',id);
+      if(!e1) rejected=true;
+      else{
+        // هەوڵی دووەم: تەنها status — بەبێ reject_reason
+        const fallback={status:'rejected'};
+        if(adNumInt != null && !isNaN(adNumInt)) fallback.ad_number=adNumInt;
+        const {error:e2}=await sb.from('pa_ads').update(fallback).eq('id',id);
+        if(!e2) rejected=true;
+        else{showToast('هەڵە: '+e2.message,'rd');return;}
+      }
+    }catch(ex){showToast('هەڵە: '+ex.message,'rd');return;}
+    if(!rejected) return;
+    // ئاگادارکردنەوەی بەکارهێنەر
     if(adObj?.user_id){
-      const adLabel=adObj.ad_number?`ڕیکلامی #${adObj.ad_number}`:'ڕیکلامەکەت';
-      await sb.from('pa_notifications').insert({
-        user_id:adObj.user_id,
-        type:'general',
-        title:`${adLabel} ڕەتکرا ❌`,
-        body:'هۆکاری ڕەتکردنەوە: '+reason,
-        is_read:false
-      });
+      try{
+        const adLabel=adObj.ad_number?`ڕیکلامی #${adObj.ad_number}`:'ڕیکلامەکەت';
+        await sb.from('pa_notifications').insert({
+          user_id:adObj.user_id,
+          type:'general',
+          title:`${adLabel} ڕەتکرا ❌`,
+          body:'هۆکاری ڕەتکردنەوە: '+reason,
+          is_read:false
+        });
+      }catch(_){}
     }
     loadAds();
     loadApprovalWorkflow();
