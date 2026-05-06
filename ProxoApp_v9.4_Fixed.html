@@ -9417,7 +9417,13 @@ window.lcSubmitForm=async function(){
 
 window.lcCancelWaiting=async function(){
   if(!lcSessionId)return;
-  await lcDb.ref('sessions/'+lcSessionId).remove();
+  const _cancelId=lcSessionId;
+  await lcDb.ref('sessions/'+_cancelId).remove();
+  // ── سڕینەوەی سێشنەکە لە مێژووی چاتەکان ──
+  try{
+    const _h=JSON.parse(localStorage.getItem(LC_HIST_KEY)||'[]');
+    localStorage.setItem(LC_HIST_KEY,JSON.stringify(_h.filter(x=>x.id!==_cancelId)));
+  }catch(_){}
   localStorage.removeItem(LC_KEY);
   lcSessionId=null;
   lcDetachListeners();
