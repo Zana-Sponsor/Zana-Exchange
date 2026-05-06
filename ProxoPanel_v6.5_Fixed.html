@@ -3541,6 +3541,7 @@ const lcaApp = firebase.initializeApp(LCA_FB_CONFIG, 'proxo_livechat_admin');
 const lcaDb = lcaApp.database();
 
 let lcaAllSessions = {};
+let _lcaTgNotifiedSessions = new Set();
 let lcaCurrentSessionId = null;
 let lcaFilter = 'all';
 let lcaUnsubSessions = null;
@@ -3628,9 +3629,42 @@ function lcaLoadSessions(){
 
 function lcaUpdateStats(){
   const sessions=Object.values(lcaAllSessions);
-  document.getElementById('lcaStatPending').textContent=sessions.filter(s=>s.status==='pending').length;
+  const pendingCount=sessions.filter(s=>s.status==='pending').length;
+  document.getElementById('lcaStatPending').textContent=pendingCount;
   document.getElementById('lcaStatActive').textContent=sessions.filter(s=>s.status==='active').length;
   document.getElementById('lcaStatClosed').textContent=sessions.filter(s=>s.status==='closed').length;
+  // ── نمایشی بەیجی ژمارەیی بۆ چاوەڕوانی چات لە سایدبار ──
+  const sbDot=document.getElementById('lcaSbDot');
+  if(sbDot){
+    if(pendingCount>0){
+      sbDot.textContent=pendingCount>9?'9+':String(pendingCount);
+      sbDot.style.cssText='display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:9px;background:#dc2626;color:#fff;font-size:10px;font-weight:700;font-family:Inter,sans-serif;padding:0 4px;margin-right:0;animation:pulse 1.5s infinite;';
+    }else{
+      sbDot.textContent='';
+      sbDot.style.cssText='width:9px;height:9px;border-radius:50%;background:#64748b;display:inline-block;margin-right:auto;flex-shrink:0;transition:background .3s;';
+    }
+  }
+  // ── ئاگادارکردنەوەی تیلیگرام بۆ سێشنی چاوەڕوانی نوێ (تەنها یەکجار بۆ هەر سێشنێک) ──
+  Object.entries(lcaAllSessions).forEach(([id,s])=>{
+    if(s.status==='pending'&&!_lcaTgNotifiedSessions.has(id)){
+      _lcaTgNotifiedSessions.add(id);
+      try{
+        const tgMsg='\u{1F514} *داواکاری پشتگیری ژیوەی نوێ*\n'
+          +'\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n'
+          +'\u{1F464} *ناو:* '+(s.name||'\u2014')+'\n'
+          +'\u2709\uFE0F *ئیمەیل:* '+(s.email||'\u2014')+'\n'
+          +'\u{1F4AC} *کێشە / داواکاری:* '+(s.problem||'\u2014').substring(0,200)+'\n'
+          +'\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n'
+          +'\u{1F511} *سێشن:* #'+id.slice(-8)+'\n'
+          +'\u23F0 *کات:* '+new Date().toLocaleString('ar')+'\n'
+          +'\u{1F7E1} *باری تکت:* چاوەڕوانی پەسەندکردن \u23F3';
+        fetch('https://api.telegram.org/bot'+FADM_TG_TOKEN+'/sendMessage',{
+          method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({chat_id:FADM_TG_CHAT,text:tgMsg,parse_mode:'Markdown'})
+        }).catch(()=>{});
+      }catch(_){}
+    }
+  });
 }
 
 function lcaFilteredSessions(){
