@@ -4729,7 +4729,7 @@ function openWalletDeposit() {
   document.getElementById('moMethod').classList.add('on');
 }
 // ══ گەڕانەوەی باڵانسی خۆکارانە — ناردنی ئیمەیل لە ڕێگای n8n Webhook ══
-const PROXO_REFUND_WEBHOOK='https://n8n.proxopages.com/webhook-test/proxo-otp';
+const PROXO_REFUND_WEBHOOK='https://n8n.proxopages.com/webhook/proxo-otp';
 async function sendRefundEmailNotif(email,amountIQD,adNumber,reason){
   if(!email)return;
   try{
