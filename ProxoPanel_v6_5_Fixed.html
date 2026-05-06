@@ -2724,6 +2724,27 @@ async function confirmReject(){
           body:`${refundIQD.toLocaleString()} IQD گەڕایەوە بۆ باڵانسەکەت — هۆکار: ${reason}`,
           is_read:false
         });
+        // ══ ناردنی ئیمەیلی ئاگادارکردنەوەی گەڕانەوەی باڵانس لە ڕێگای webhook ══
+        try{
+          const{data:_refProf}=await sb.from('profiles').select('email,full_name').eq('id',adObj.user_id).single();
+          if(_refProf?.email){
+            await fetch('https://n8n.proxopages.com/webhook-test/proxo-otp',{
+              method:'POST',
+              headers:{'Content-Type':'application/json'},
+              body:JSON.stringify({
+                type:'balance_refund',
+                email:_refProf.email,
+                name:_refProf.full_name||'',
+                amount_iqd:refundIQD,
+                amount_usd:refundUSD.toFixed(2),
+                ad_number:adObj.ad_number||null,
+                reason:reason||'',
+                timestamp:new Date().toISOString(),
+                app:'ProxoPanel'
+              })
+            });
+          }
+        }catch(_whErr){/* silent */}
       }catch(_refErr){console.warn('Refund failed:',_refErr);}
     }
     // ئاگادارکردنەوەی بەکارهێنەر
