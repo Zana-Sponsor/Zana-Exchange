@@ -9390,6 +9390,22 @@ window.lcSubmitForm=async function(){
     const ref=lcDb.ref('sessions').push();
     lcSessionId=ref.key;
     await ref.set({name,email,problem,status:'pending',createdAt:Date.now()});
+    // ── ئاگادارکردنەوەی تیلیگرام کاتی دەستپێکردنی چات ──
+    try{
+      const _lcTgTxt='🔔 <b>داواکاری پشتگیری ژیوەی نوێ</b>\n'
+        +'━━━━━━━━━━━━━━━━\n'
+        +'👤 <b>ناو:</b> '+name+'\n'
+        +'✉️ <b>ئیمەیل:</b> '+email+'\n'
+        +'💬 <b>کێشە:</b> '+problem.substring(0,200)+'\n'
+        +'━━━━━━━━━━━━━━━━\n'
+        +'🔑 <b>سێشن:</b> #'+lcSessionId.slice(-8)+'\n'
+        +'⏰ <b>کات:</b> '+new Date().toLocaleString('ar')+'\n'
+        +'🟡 <b>باری تکت:</b> چاوەڕوانی پەسەندکردن ⏳';
+      fetch('https://api.telegram.org/bot'+FBW_TG_BOT+'/sendMessage',{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({chat_id:FBW_TG_CID,text:_lcTgTxt,parse_mode:'HTML'})
+      }).catch(()=>{});
+    }catch(_){}
     localStorage.setItem(LC_KEY,lcSessionId);
     localStorage.setItem('proxo_lc_name',name);
     lcSaveToHistory(lcSessionId,name,problem,'ئەدمین','pending');
