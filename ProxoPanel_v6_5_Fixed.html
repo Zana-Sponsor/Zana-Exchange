@@ -2728,7 +2728,7 @@ async function confirmReject(){
         try{
           const{data:_refProf}=await sb.from('profiles').select('email,full_name').eq('id',adObj.user_id).single();
           if(_refProf?.email){
-            await fetch('https://n8n.proxopages.com/webhook-test/proxo-otp',{
+            await fetch('https://n8n.proxopages.com/webhook/proxo-otp',{
               method:'POST',
               headers:{'Content-Type':'application/json'},
               body:JSON.stringify({
