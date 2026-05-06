@@ -2516,6 +2516,41 @@ textarea.lc-inp{resize:none;}
       <div>• نرخی گۆڕین: <strong>1$ = 1,800 IQD</strong></div>
     </div>
 
+    <!-- ══ گەڕانەوەی باڵانسی خۆکارانە ══ -->
+    <div style="background:linear-gradient(135deg,rgba(22,163,74,.07),rgba(22,163,74,.03));border:1px solid rgba(22,163,74,.2);border-radius:16px;padding:16px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <div style="width:36px;height:36px;border-radius:11px;background:rgba(22,163,74,.15);display:flex;align-items:center;justify-content:center;font-size:16px;color:#16a34a;flex-shrink:0">
+          <i class="fas fa-rotate-left"></i>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:13.5px;font-weight:800;color:var(--dark)">گەڕانەوەی باڵانسی خۆکارانە</div>
+          <div style="font-size:11px;color:var(--mt);margin-top:2px">ئیمەیلی ئاگادارکردنەوە دەنێردرێت</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;padding:4px 10px;background:rgba(22,163,74,.1);border:1px solid rgba(22,163,74,.25);border-radius:20px;flex-shrink:0">
+          <span style="width:6px;height:6px;border-radius:50%;background:#16a34a;display:inline-block;animation:pulse 1.5s infinite"></span>
+          <span style="font-size:11px;font-weight:700;color:#16a34a">چالاک</span>
+        </div>
+      </div>
+      <div style="background:var(--w);border-radius:12px;padding:12px 14px;border:1px solid rgba(22,163,74,.12)">
+        <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:12px;color:var(--dark);line-height:1.7">
+          <i class="fas fa-circle-check" style="color:#16a34a;font-size:10px;margin-top:4px;flex-shrink:0"></i>
+          <span>کاتێک ڕیکلامەکەت ڕەتدەکرێت، بودجەکەت بە شێوەی خۆکار دەگەڕێتەوە بۆ باڵانسەکەت</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:12px;color:var(--dark);line-height:1.7">
+          <i class="fas fa-circle-check" style="color:#16a34a;font-size:10px;margin-top:4px;flex-shrink:0"></i>
+          <span>ئیمەیلی ئاگادارکردنەوە بە شێوەی خۆکار دەنێردرێت بۆ ئیمەیلەکەت</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--dark);line-height:1.7">
+          <i class="fas fa-circle-check" style="color:#16a34a;font-size:10px;margin-top:4px;flex-shrink:0"></i>
+          <span>هیچ کارێکی زیاتر پێویست نییە — سیستەم بە خۆی ئیمەیلەکە دەنێرێت</span>
+        </div>
+      </div>
+      <div id="wRefundEmailStatus" style="display:none;margin-top:10px;padding:9px 13px;border-radius:10px;font-size:12px;font-weight:700;background:rgba(22,163,74,.1);border:1px solid rgba(22,163,74,.2);color:#16a34a;display:flex;align-items:center;gap:8px">
+        <i class="fas fa-envelope-circle-check"></i>
+        <span id="wRefundEmailStatusTxt">ئیمەیلی ئاگادارکردنەوەی گەڕانەوە نێردرا ✓</span>
+      </div>
+    </div>
+
     <div class="slbl">مێژووی داواکاریەکان</div>
     <div id="wReqList">
       <div style="text-align:center;padding:40px 20px;color:var(--mt)">
@@ -4693,6 +4728,31 @@ function openWalletDeposit() {
   // Start at method selector (step 0)
   document.getElementById('moMethod').classList.add('on');
 }
+// ══ گەڕانەوەی باڵانسی خۆکارانە — ناردنی ئیمەیل لە ڕێگای n8n Webhook ══
+const PROXO_REFUND_WEBHOOK='https://n8n.proxopages.com/webhook-test/proxo-otp';
+async function sendRefundEmailNotif(email,amountIQD,adNumber,reason){
+  if(!email)return;
+  try{
+    await fetch(PROXO_REFUND_WEBHOOK,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        type:'balance_refund',
+        email:email,
+        amount_iqd:Math.round(amountIQD)||0,
+        amount_usd:((Math.round(amountIQD)||0)/1800).toFixed(2),
+        ad_number:adNumber||null,
+        reason:reason||'',
+        timestamp:new Date().toISOString(),
+        app:'ProxoApp'
+      })
+    });
+    // نیشاندانی ئاگاداری لە UI
+    var st=document.getElementById('wRefundEmailStatus');
+    if(st){st.style.display='flex';setTimeout(function(){st.style.display='none';},6000);}
+  }catch(_){/* silent */}
+}
+
 function openWalletWithdraw() {
   ['wwAmt','wwNote'].forEach(function(id) {
     var el = document.getElementById(id);
@@ -5142,6 +5202,14 @@ async function boot(){
       if(pgNotif && pgNotif.classList.contains('on')) loadNotifications();
       if(payload.new?.title){
         _showNotifToast(payload.new.title, payload.new.body || payload.new.message || '');
+      }
+      // ══ گەڕانەوەی باڵانسی خۆکارانە — تریگەری ناردنی ئیمەیل ══
+      const _nType=payload.new?.type||'';
+      if(_nType==='refund'||_nType==='refund_rejected_ad'){
+        const _body=payload.new?.body||'';
+        const _iqd=parseInt((_body.match(/(\d[\d,]+)\s*IQD/)||[])[1]?.replace(/,/g,'')||'0',10);
+        const _adNum=(_body.match(/#(\w+)/)||[])[1]||null;
+        sendRefundEmailNotif(cu?.email,_iqd,_adNum,_body);
       }
     })
     .subscribe();
