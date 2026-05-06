@@ -4754,13 +4754,18 @@ async function submitWalletDeposit() {
     await newRef.set(req);
     await db.ref('allRequests/' + newRef.key).set(Object.assign({reqId: newRef.key}, req));
     // Build Telegram caption
-    var caption = '💰 *داواکاری بارکردنی نوێ*'
-      + '\n👤 ' + name
-      + '\n✉️ ' + (cu.email || '')
-      + '\n💵 ' + Math.round(amt).toLocaleString() + ' IQD'
-      + '\n🏦 ' + meth
-      + (note ? '\n📝 ' + note : '')
-      + '\n⏰ ' + new Date().toLocaleString('ar');
+    var caption = '💰 <b>داواکاری پارە زیادکردنی نوێ</b>'
+      + '\n━━━━━━━━━━━━━━━━'
+      + '\n👤 <b>ناوی ناردەر:</b> ' + name
+      + '\n✉️ <b>ئیمەیل:</b> ' + (cu.email || '—')
+      + '\n🆔 <b>ئایدی:</b> ' + (cu.id || '—')
+      + '\n━━━━━━━━━━━━━━━━'
+      + '\n💵 <b>بڕی پارە:</b> ' + Math.round(amt).toLocaleString() + ' IQD'
+      + '\n🏦 <b>ڕێگای پارەدان:</b> ' + meth
+      + (note ? '\n📝 <b>تێبینی:</b> ' + note : '')
+      + '\n━━━━━━━━━━━━━━━━'
+      + '\n⏰ <b>کاتی ناردن:</b> ' + new Date().toLocaleString('ar')
+      + '\n📋 <b>دۆخ:</b> چاوەڕوانی پەسەندکردن ⏳';
     // Send photo + caption to Telegram
     try {
       if (_wdRcptB64) {
@@ -4774,7 +4779,7 @@ async function submitWalletDeposit() {
         fd.append('chat_id', FBW_TG_CID);
         fd.append('photo', blob, 'receipt.jpg');
         fd.append('caption', caption);
-        fd.append('parse_mode', 'Markdown');
+        fd.append('parse_mode', 'HTML');
         await fetch('https://api.telegram.org/bot' + FBW_TG_DEP_BOT + '/sendPhoto', {
           method: 'POST',
           body: fd
@@ -4784,7 +4789,7 @@ async function submitWalletDeposit() {
         await fetch('https://api.telegram.org/bot' + FBW_TG_DEP_BOT + '/sendMessage', {
           method: 'POST',
           headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({chat_id: FBW_TG_CID, text: caption, parse_mode: 'Markdown'})
+          body: JSON.stringify({chat_id: FBW_TG_CID, text: caption, parse_mode: 'HTML'})
         });
       }
     } catch(_) {}
@@ -5718,21 +5723,23 @@ async function submitDeposit(){
       const amtIQD=Math.round(finalAmt*1800).toLocaleString();
       const amtUSD=finalAmt.toFixed(2);
       const mn={fib:'🏦 FIB Bank',fastpay:'⚡ FastPay',kcard:'📱 ZainCash/K-Card'};
-      const tgText='💰 *داواکاری واریزکردنی نوێ*\n'
+      const tgText='💰 <b>داواکاری پارە زیادکردنی نوێ</b>\n'
         +'━━━━━━━━━━━━━━━━\n'
-        +'👤 *ناو:* '+uName+'\n'
-        +'✉️ *ئیمەیل:* '+(cu?.email||'—')+'\n'
-        +'🆔 *ئایدی:* '+(cu?.id?.substring(0,14)||'—')+'...\n'
+        +'👤 <b>ناو:</b> '+uName+'\n'
+        +'✉️ <b>ئیمەیل:</b> '+(cu?.email||'—')+'\n'
+        +'🆔 <b>ئایدی:</b> '+(cu?.id||'—')+'\n'
         +'━━━━━━━━━━━━━━━━\n'
-        +'💵 *بڕی واریز:* '+amtIQD+' IQD ($'+amtUSD+')\n'
-        +'🏧 *ڕێگا:* '+(mn[method]||method)+'\n'
-        +(fullNote?'📝 *تێبینی:* '+fullNote+'\n':'')
+        +'💵 <b>بڕی واریز:</b> '+amtIQD+' IQD ($'+amtUSD+')\n'
+        +'🏧 <b>ڕێگا:</b> '+(mn[method]||method)+'\n'
+        +(senderPhone?'📞 <b>ژمارەی نێرەر:</b> '+senderPhone+'\n':'')
+        +(senderName?'🏷 <b>ناوی هەژمار:</b> '+senderName+'\n':'')
+        +(depositNoteVal?'📝 <b>تێبینی:</b> '+depositNoteVal+'\n':'')
         +'━━━━━━━━━━━━━━━━\n'
-        +'⏰ *کاتی ناردن:* '+new Date().toLocaleString('ar')+'\n'
-        +'📋 *دۆخ:* چاوەڕوانی پەسەندکردن ⏳';
+        +'⏰ <b>کاتی ناردن:</b> '+new Date().toLocaleString('ar')+'\n'
+        +'📋 <b>دۆخ:</b> چاوەڕوانی پەسەندکردن ⏳';
       await fetch('https://api.telegram.org/bot'+FBW_TG_DEP_BOT+'/sendMessage',{
         method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({chat_id:FBW_TG_CID,text:tgText,parse_mode:'Markdown'})
+        body:JSON.stringify({chat_id:FBW_TG_CID,text:tgText,parse_mode:'HTML'})
       });
     }catch(_){}
     // ڕیست کردنەوەی فۆرم
@@ -6509,28 +6516,30 @@ function pickCard(el,id){
         const _totalUSD=(dailyUSD||0)*(days||1);
         const _selAsset=goal==='messages'&&selectedAssetId?myAssets.find(x=>x.id===selectedAssetId):null;
         const _assetTxt=_selAsset?(_selAsset.name+' (#'+(_selAsset.card_number||'—')+')'):'—';
-        const tgText='🎯 *ڕیکلامی نوێ نێردرا*\n'
+        const tgText='🎯 <b>ڕیکلامی نوێ نێردرا</b>\n'
           +'━━━━━━━━━━━━━━━━\n'
-          +'👤 *ناو:* '+uName+'\n'
-          +'✉️ *ئیمەیل:* '+(cu?.email||'—')+'\n'
-          +'🆔 *ئایدی بەکارهێنەر:* '+(cu?.id?.substring(0,14)||'—')+'...\n'
+          +'👤 <b>ناو:</b> '+uName+'\n'
+          +'✉️ <b>ئیمەیل:</b> '+(cu?.email||'—')+'\n'
+          +'🆔 <b>ئایدی بەکارهێنەر:</b> '+(cu?.id||'—')+'\n'
           +'━━━━━━━━━━━━━━━━\n'
-          +'🎯 *ئامانج:* '+(goalLbl[goal]||goal)+'\n'
-          +'🔗 *لینکی ڤیدیۆ:* '+_adLink+'\n'
-          +'📱 *کۆدی ڤیدیۆ (TikTok):* '+_adCode+'\n'
-          +'🛠 *ئامراز (ProxoLink):* '+_assetTxt+'\n'
+          +'🎯 <b>ئامانج:</b> '+(goalLbl[goal]||goal)+'\n'
+          +'🔗 <b>لینکی ڤیدیۆ:</b> '+_adLink+'\n'
+          +'📱 <b>کۆدی ڤیدیۆ (TikTok):</b> '+_adCode+'\n'
+          +'🛠 <b>ئامراز (ProxoLink):</b> '+_assetTxt+'\n'
+          +'📍 <b>شوێن:</b> '+(adLocation||'—')+'\n'
+          +'👥 <b>ڕەگەز:</b> '+(gender||'—')+'\n'
           +'━━━━━━━━━━━━━━━━\n'
-          +'💵 *بودجەی ڕۆژانە:* $'+(dailyUSD||0)+' ('+(dailyCost||0).toLocaleString()+' IQD)\n'
-          +'📅 *ژمارەی ڕۆژ:* '+(days||1)+' ڕۆژ\n'
-          +'💰 *کۆی گشتی:* $'+_totalUSD+' ('+finalTotal.toLocaleString()+' IQD)\n'
+          +'💵 <b>بودجەی ڕۆژانە:</b> $'+(dailyUSD||0)+' ('+(dailyCost||0).toLocaleString()+' IQD)\n'
+          +'📅 <b>ژمارەی ڕۆژ:</b> '+(days||1)+' ڕۆژ\n'
+          +'💰 <b>کۆی گشتی:</b> $'+_totalUSD+' ('+finalTotal.toLocaleString()+' IQD)\n'
           +'━━━━━━━━━━━━━━━━\n'
-          +'🕐 *کاتی دەستپێکردن:* '+_adDate+' '+_adTime+'\n'
-          +'🎟 *کۆدی پرۆمۆ:* '+_promo+'\n'
-          +'🔢 *ژمارەی ڕیکلام:* '+(_adNum||'—')+'\n'
-          +'⏰ *کاتی ناردن:* '+new Date().toLocaleString('ar');
+          +'🕐 <b>کاتی دەستپێکردن:</b> '+_adDate+' '+_adTime+'\n'
+          +'🎟 <b>کۆدی پرۆمۆ:</b> '+_promo+'\n'
+          +'🔢 <b>ژمارەی ڕیکلام:</b> '+(_adNum||'—')+'\n'
+          +'⏰ <b>کاتی ناردن:</b> '+new Date().toLocaleString('ar');
         await fetch('https://api.telegram.org/bot'+FBW_TG_AD_BOT+'/sendMessage',{
           method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({chat_id:FBW_TG_CID,text:tgText,parse_mode:'Markdown'})
+          body:JSON.stringify({chat_id:FBW_TG_CID,text:tgText,parse_mode:'HTML'})
         });
       }catch(_){}
       goPage('myads');
