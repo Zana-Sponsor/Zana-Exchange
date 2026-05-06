@@ -8056,7 +8056,8 @@ async function checkNotifBell(){
   const cnt=count||0;
   const dot=document.getElementById('notifDot');
   if(!dot)return;
-  if(cnt>0){dot.textContent=cnt>99?'99+':String(cnt);dot.classList.add('show');}
+  const total=cnt+_lcUnreadCount;
+  if(total>0){dot.textContent=total>99?'99+':String(total);dot.classList.add('show');}
   else{dot.textContent='';dot.classList.remove('show');}
 }
 
@@ -9296,6 +9297,7 @@ window.lcGoToHistory=function(){
 
 window.lcOpenChatDirect=function(){
   document.getElementById('lcOverlay').classList.add('show');
+  _lcUnreadCount=0;checkNotifBell();
   const saved=localStorage.getItem(LC_KEY);
   if(saved){
     lcSessionId=saved;
@@ -9324,6 +9326,7 @@ window.lcOpenChatDirect=function(){
 
 window.lcOpenChat=function(){
   document.getElementById('lcOverlay').classList.add('show');
+  _lcUnreadCount=0;checkNotifBell();
   const saved=localStorage.getItem(LC_KEY);
   if(saved){
     lcSessionId=saved;
@@ -9456,7 +9459,7 @@ function lcAttachListeners(){
   lcUnsubMessages=lcDb.ref('messages/'+lcSessionId).on('value',snap=>{
     const d=snap.val();
     lcRenderMessages(d?Object.entries(d).map(([id,v])=>({id,...v})).sort((a,b)=>a.timestamp-b.timestamp):[]);
-    if(!firstMsg&&d){const msgs=Object.values(d);const last=msgs.sort((a,b)=>a.timestamp-b.timestamp).pop();if(last&&last.sender==='admin')lcPlayNotif();}
+    if(!firstMsg&&d){const msgs=Object.values(d);const last=msgs.sort((a,b)=>a.timestamp-b.timestamp).pop();if(last&&last.sender==='admin'){lcPlayNotif();const _lcOv=document.getElementById('lcOverlay');if(!_lcOv||!_lcOv.classList.contains('show')){_lcUnreadCount++;checkNotifBell();}}}
     firstMsg=false;
   });
   if(lcUnsubTyping)lcDb.ref('typing/'+lcSessionId+'/admin').off('value',lcUnsubTyping);
@@ -9532,6 +9535,7 @@ function lcRenderTyping(show){
 
 // ئاگاداری تیلیگرام — تەنها یەکجار بۆ هەر سێشنێک
 let _lcTgNotified=new Set();
+let _lcUnreadCount=0;
 
 window.lcSendMsg=async function(){
   const inp=document.getElementById('lcChatInput');
