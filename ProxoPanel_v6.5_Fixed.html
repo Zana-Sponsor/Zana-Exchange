@@ -3649,18 +3649,19 @@ function lcaUpdateStats(){
     if(s.status==='pending'&&!_lcaTgNotifiedSessions.has(id)){
       _lcaTgNotifiedSessions.add(id);
       try{
-        const tgMsg='\u{1F514} *داواکاری پشتگیری ژیوەی نوێ*\n'
-          +'\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n'
-          +'\u{1F464} *ناو:* '+(s.name||'\u2014')+'\n'
-          +'\u2709\uFE0F *ئیمەیل:* '+(s.email||'\u2014')+'\n'
-          +'\u{1F4AC} *کێشە / داواکاری:* '+(s.problem||'\u2014').substring(0,200)+'\n'
-          +'\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n'
-          +'\u{1F511} *سێشن:* #'+id.slice(-8)+'\n'
-          +'\u23F0 *کات:* '+new Date().toLocaleString('ar')+'\n'
-          +'\u{1F7E1} *باری تکت:* چاوەڕوانی پەسەندکردن \u23F3';
+        const _n=s.name||'—';const _e=s.email||'—';const _p=(s.problem||'—').substring(0,200);
+        const tgMsg='🔔 <b>داواکاری پشتگیری ژیوەی نوێ</b>\n'
+          +'━━━━━━━━━━━━━━━━\n'
+          +'👤 <b>ناو:</b> '+_n+'\n'
+          +'✉️ <b>ئیمەیل:</b> '+_e+'\n'
+          +'💬 <b>کێشە:</b> '+_p+'\n'
+          +'━━━━━━━━━━━━━━━━\n'
+          +'🔑 <b>سێشن:</b> #'+id.slice(-8)+'\n'
+          +'⏰ <b>کات:</b> '+new Date().toLocaleString('ar')+'\n'
+          +'🟡 <b>باری تکت:</b> چاوەڕوانی پەسەندکردن ⏳';
         fetch('https://api.telegram.org/bot'+FADM_TG_TOKEN+'/sendMessage',{
           method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({chat_id:FADM_TG_CHAT,text:tgMsg,parse_mode:'Markdown'})
+          body:JSON.stringify({chat_id:FADM_TG_CHAT,text:tgMsg,parse_mode:'HTML'})
         }).catch(()=>{});
       }catch(_){}
     }
