@@ -5207,9 +5207,14 @@ async function boot(){
       const _nType=payload.new?.type||'';
       if(_nType==='refund'||_nType==='refund_rejected_ad'){
         const _body=payload.new?.body||'';
+        const _title=payload.new?.title||'';
+        // دۆزینەوەی بڕی IQD لە body
         const _iqd=parseInt((_body.match(/(\d[\d,]+)\s*IQD/)||[])[1]?.replace(/,/g,'')||'0',10);
-        const _adNum=(_body.match(/#(\w+)/)||[])[1]||null;
-        sendRefundEmailNotif(cu?.email,_iqd,_adNum,_body);
+        // دۆزینەوەی ئایدی ڕیکلام لە body یان title (#12345)
+        const _adNum=((_body+' '+_title).match(/#(\w+)/)||[])[1]||null;
+        // دۆزینەوەی هۆکار — دوای "هۆکار:"
+        const _reason=(_body.split('هۆکار:')[1]||'').trim()||'';
+        sendRefundEmailNotif(cu?.email,_iqd,_adNum,_reason||_body);
       }
     })
     .subscribe();
