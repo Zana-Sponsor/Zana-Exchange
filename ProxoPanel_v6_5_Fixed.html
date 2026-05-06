@@ -2721,7 +2721,7 @@ async function confirmReject(){
           user_id:adObj.user_id,
           type:'refund_rejected_ad',
           title:`پارەی ڕیکلامی ڕەتکراو گەڕایەوە 💸`,
-          body:`${refundIQD.toLocaleString()} IQD گەڕایەوە بۆ باڵانسەکەت — هۆکار: ${reason}`,
+          body:`${adObj.ad_number?'#'+adObj.ad_number+' — ':''}${refundIQD.toLocaleString()} IQD گەڕایەوە بۆ باڵانسەکەت — هۆکار: ${reason}`,
           is_read:false
         });
         // ══ ناردنی ئیمەیلی ئاگادارکردنەوەی گەڕانەوەی باڵانس لە ڕێگای webhook ══
