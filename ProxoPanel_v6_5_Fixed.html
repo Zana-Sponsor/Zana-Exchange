@@ -2732,16 +2732,17 @@ async function confirmReject(){
               method:'POST',
               headers:{'Content-Type':'application/json'},
               body:JSON.stringify({
-                type:'balance_refund',
-                email:_refProf.email,
-                name:_refProf.full_name||'',
-                amount_iqd:refundIQD,
-                amount_usd:refundUSD.toFixed(2),
-                ad_number:adObj.ad_number||null,
-                reason:reason||'',
-                timestamp:new Date().toISOString(),
-                app:'ProxoPanel'
-              })
+  type:'balance_refund',
+  email:_refProf.email,
+  name:_refProf.full_name||'',
+  amount_iqd:refundIQD,
+  amount_usd:refundUSD.toFixed(2),
+  ad_number:adObj.ad_number||null,
+  reason:reason||'',
+  newBalance: Math.round(newRefBal * 1800).toLocaleString('en'), // ✅ زیادکرا
+  timestamp:new Date().toISOString(),
+  app:'ProxoPanel'
+})
             });
           }
         }catch(_whErr){/* silent */}
