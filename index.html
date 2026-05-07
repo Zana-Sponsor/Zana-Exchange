@@ -3547,11 +3547,11 @@ let _otpPurpose = 'login'; // 'login'|'signup'|'reset_password'|'change_password
 const _clientOtpStore = {};
 
 // ════════════════════════════════════════════════════════════
-// ═══ OTP RATE LIMITER (کەمترین ٢ هەوڵ، دواتر ١٠ خولەک) ═══
+// ═══ OTP RATE LIMITER (کەمترین ٥ هەوڵ، دواتر ١٠ خولەک) ═══
 // ════════════════════════════════════════════════════════════
-const OTP_MAX_ATTEMPTS = 2;
+const OTP_MAX_ATTEMPTS = 5;
 const OTP_BAN_MS = 10 * 60 * 1000; // 10 minutes
-const OTP_SEND_MAX = 2; // زیاتر لە ٢ جار ناردن بۆ هەمان ئیمەیل ناکرێت
+const OTP_SEND_MAX = 3; // زیاتر لە ٣ جار ناردن بۆ هەمان ئیمەیل ناکرێت
 
 function _rlKey(email) { return 'otp_rl_' + btoa(email.toLowerCase().trim()); }
 function _sendKey(email) { return 'otp_send_' + btoa(email.toLowerCase().trim()); }
@@ -3804,19 +3804,35 @@ function otpBack(e, el, prevId) {
 }
 
 // ── دڵنیاکردنەوەی کۆد ────────────────────────────────────
+let _otpVerifying = false;
 async function verifyOtp() {
+  if(_otpVerifying) return;
   const code = ['otp1','otp2','otp3','otp4','otp5','otp6'].map(id => document.getElementById(id)?.value || '').join('');
   if(code.length < 6) { showOtpMsg('کۆدەکە تەواو بنووسە', 'err'); return; }
 
+  const rlChk = otpRateCheck(_otpEmail);
+  if(!rlChk.ok) {
+    showOtpMsg('قفڵکراوە — تکایە ' + rlChk.remaining + ' خولەکی تر هەوڵ بدەرەوە', 'err');
+    startBanCountdown(_otpEmail, 'otpMsg', 'otpResendBtn');
+    return;
+  }
+
+  _otpVerifying = true;
   const btn = document.getElementById('otpVerifyBtn');
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> پشکنین...';
 
   const result = await verifyOtpCode(_otpEmail, code);
+  _otpVerifying = false;
 
   if(!result.success) {
-    otpRateRecord(_otpEmail);
-    showOtpMsg(result.message || 'کۆدی هەڵە', 'err');
+    const rl = otpRateRecord(_otpEmail);
+    if(rl && !rl.ok) {
+      showOtpMsg('زۆر جار هەوڵت دا — تکایە ' + rl.remaining + ' خولەکی تر هەوڵ بدەرەوە', 'err');
+      startBanCountdown(_otpEmail, 'otpMsg', 'otpResendBtn');
+    } else {
+      showOtpMsg(result.message || 'کۆدی هەڵە', 'err');
+    }
     btn.disabled = false;
     btn.innerHTML = '<i class="fas fa-check"></i> دڵنیاکردنەوە';
     return;
@@ -4074,15 +4090,32 @@ async function doForgotSendOtp(){
   fpStartTimer(600);
   document.getElementById('fp1')?.focus();
 }
+let _fpVerifying = false;
 async function doForgotVerifyOtp(){
+  if(_fpVerifying) return;
   const code=['fp1','fp2','fp3','fp4','fp5','fp6'].map(id=>document.getElementById(id)?.value||'').join('');
   if(code.length<6){fpShowMsg('B','کۆدەکە تەواو بنووسە','err');return;}
+
+  const rlChk = otpRateCheck(_fpEmail);
+  if(!rlChk.ok){
+    fpShowMsg('B','قفڵکراوە — تکایە ' + rlChk.remaining + ' خولەکی تر هەوڵ بدەرەوە','err');
+    startBanCountdown(_fpEmail, 'fpMsgB', 'fpResendBtn');
+    return;
+  }
+
+  _fpVerifying = true;
   const btn=document.getElementById('fpVerifyBtn');
   btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> پشکنین...';
   const result=await verifyOtpCode(_fpEmail,code);
+  _fpVerifying = false;
   if(!result.success){
-    otpRateRecord(_fpEmail);
-    fpShowMsg('B',result.message||'کۆدی هەڵە','err');
+    const rl = otpRateRecord(_fpEmail);
+    if(rl && !rl.ok){
+      fpShowMsg('B','زۆر جار هەوڵت دا — تکایە ' + rl.remaining + ' خولەکی تر هەوڵ بدەرەوە','err');
+      startBanCountdown(_fpEmail, 'fpMsgB', 'fpResendBtn');
+    } else {
+      fpShowMsg('B',result.message||'کۆدی هەڵە','err');
+    }
     btn.disabled=false;btn.innerHTML='<i class="fas fa-check"></i> دڵنیاکردنەوە';return;
   }
   clearInterval(_fpTimer);
@@ -4160,7 +4193,7 @@ async function cpResendOtp(){
   const chk = otpRateCheck(cu.email);
   if (!chk.ok) {
     cpShowMsg('تکایە ' + chk.remaining + ' خولەکی تر هەوڵ بدەرەوە','err');
-    startBanCountdown(cu.email, 'cpMsg', 'cpResendBtn');
+    startBanCountdown(cu.email, 'cpOtpMsg', 'cpResendBtn');
     return;
   }
   document.getElementById('cpResendBtn').style.display='none';
@@ -4204,16 +4237,33 @@ async function openChangePass(){
     cpShowMsg(result.message||'هەڵەی ناردنی کۆد','err');
   }
 }
+let _cpVerifying = false;
 async function doVerifyCpOtp(){
+  if(_cpVerifying) return;
   const code=['cp1','cp2','cp3','cp4','cp5','cp6'].map(id=>document.getElementById(id)?.value||'').join('');
   if(code.length<6){cpShowMsg('کۆدەکە تەواو بنووسە','err');return;}
+
+  const rlChk = otpRateCheck(cu.email);
+  if(!rlChk.ok){
+    cpShowMsg('قفڵکراوە — تکایە ' + rlChk.remaining + ' خولەکی تر هەوڵ بدەرەوە','err');
+    startBanCountdown(cu.email, 'cpOtpMsg', 'cpResendBtn');
+    return;
+  }
+
+  _cpVerifying = true;
   const btn=document.getElementById('cpOtpBtn');
   btn.disabled=true;
   btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> پشکنین...';
   const result=await verifyOtpCode(cu.email,code);
+  _cpVerifying = false;
   if(!result.success){
-    otpRateRecord(cu.email);
-    cpShowMsg(result.message||'کۆدی هەڵە','err');
+    const rl = otpRateRecord(cu.email);
+    if(rl && !rl.ok){
+      cpShowMsg('زۆر جار هەوڵت دا — تکایە ' + rl.remaining + ' خولەکی تر هەوڵ بدەرەوە','err');
+      startBanCountdown(cu.email, 'cpOtpMsg', 'cpResendBtn');
+    } else {
+      cpShowMsg(result.message||'کۆدی هەڵە','err');
+    }
     btn.disabled=false;
     btn.innerHTML='<i class="fas fa-check"></i> دڵنیاکردنەوە';
     return;
