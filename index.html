@@ -3668,12 +3668,12 @@ async function verifyOtpCode(email, code) {
     const res = await fetch(N8N_WEBHOOK, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'verify_otp', email, code })
+      body: JSON.stringify({ action: 'verify_otp', email, code: parseInt(code, 10) || code.trim() })
     });
     let data = {};
     try { const txt = await res.text(); if(txt.trim()) data = JSON.parse(txt); } catch(_) {}
     // تەنها success === true قبوڵ دەکرێت — هیچ وەڵامی دیکەیەک نا
-    if(res.ok && data.success === true) {
+    if(res.ok && (data.success === true || data.success === 1 || data.success === 'true' || data.success === '1' || !!data.success)) {
       otpRateClear(email);
       otpSendClear(email);
       return { success: true, message: data.message || 'دڵنیاکراوە' };
