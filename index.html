@@ -3662,40 +3662,23 @@ async function requestOtp(email, purpose='login') {
   }
 }
 
-// ── دڵنیاکردنەوەی OTP — ڕاستەوخۆ لە Supabase otp_codes تەیبڵ ──
+// ── دڵنیاکردنەوەی OTP — n8n verify_otp (service key بەکاردێت، RLS تێناگرێت) ──
 async function verifyOtpCode(email, code) {
   try {
-    // کۆی نووستراو بۆ ئەم ئیمەیلە بەرپرسیاری دەگرین
-    const { data: rows, error } = await sb
-      .from('otp_codes')
-      .select('id, code, expires_at')
-      .eq('email', email)
-      .order('created_at', { ascending: false })
-      .limit(1);
-
-    if (error) return { success: false, message: 'هەڵەی پشکنین، دووبارە هەوڵ بدەرەوە' };
-
-    const row = rows && rows[0];
-
-    // ئەگەر تۆمار نەبوو
-    if (!row) return { success: false, message: 'کۆدی تازە داواکە' };
-
-    // ئەگەر کاتی تێپەڕیوە
-    if (new Date(row.expires_at) < new Date()) {
-      await sb.from('otp_codes').delete().eq('id', row.id).catch(() => {});
-      return { success: false, message: 'کاتی کۆدەکە تێپەڕیوە — کۆدی نوێ داواکە' };
+    const res = await fetch(N8N_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'verify_otp', email, code })
+    });
+    let data = {};
+    try { const txt = await res.text(); if(txt.trim()) data = JSON.parse(txt); } catch(_) {}
+    // تەنها success === true قبوڵ دەکرێت — هیچ وەڵامی دیکەیەک نا
+    if(res.ok && data.success === true) {
+      otpRateClear(email);
+      otpSendClear(email);
+      return { success: true, message: data.message || 'دڵنیاکراوە' };
     }
-
-    // ئەگەر کۆد هەڵەیە
-    if (String(row.code).trim() !== String(code).trim()) {
-      return { success: false, message: 'کۆدی هەڵە — دووبارە هەوڵ بدەرەوە' };
-    }
-
-    // کۆدی دروستە — لە تەیبڵ بیسڕەوە (یەک جار تەنها بەکاردێت)
-    await sb.from('otp_codes').delete().eq('id', row.id).catch(() => {});
-    otpRateClear(email);
-    otpSendClear(email);
-    return { success: true, message: 'دڵنیاکراوە' };
+    return { success: false, message: data.message || 'کۆدی هەڵە' };
   } catch(e) {
     return { success: false, message: 'هەڵەی تۆڕ: ' + e.message };
   }
