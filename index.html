@@ -1054,7 +1054,11 @@ textarea.lc-inp{resize:none;}
 .fb-slide img{width:100%;height:100%;object-fit:cover;display:block;}
 .fb-dots{position:absolute;bottom:9px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:4;}
 .fb-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.45);border:none;padding:0;cursor:pointer;transition:background .2s,transform .2s;}
+
 .fb-dot.on{background:#fff;transform:scale(1.25);}
+/* ── Banner skeleton shimmer ── */
+.fb-skeleton{width:100%;height:100%;border-radius:22px;background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:fb-shimmer 1.4s infinite;}
+@keyframes fb-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
 /* ══ LIVE CHAT FULLSCREEN ══ */
 .lc-widget.lc-fs{
@@ -5704,6 +5708,15 @@ function _applyHeroBanner(data){
   hero.style.display='block';
 }
 async function loadHomeBanner(){
+  // ── فوری: skeleton بنیشان بکە تاوەکو بانەر لۆد ببێت
+  (function(){
+    const wrap=document.getElementById('fbImgBanner');
+    const track=document.getElementById('fbSliderTrack');
+    if(wrap&&track&&!track.innerHTML){
+      track.innerHTML='<div class="fb-skeleton"></div>';
+      wrap.style.display='block';
+    }
+  })();
   // ① کاچ — فوری بۆ بەکارهێنەر نیشان بدە
   try{
     const cached=localStorage.getItem('proxo_hero_cache');
@@ -9234,6 +9247,7 @@ async function loadGiveawayPage(){
     <div class="lc-body">
       <!-- فۆرم -->
       <div class="lc-stage lc-form-stage on" id="lcStageForm">
+        <button onclick="lcCloseChat()" style="position:absolute;top:10px;left:10px;background:none;border:none;cursor:pointer;padding:6px 10px;border-radius:8px;font-size:13px;color:#64748b;display:flex;align-items:center;gap:5px;font-family:'R',sans-serif;z-index:5" title="داخستن"><i class="fas fa-times" style="font-size:14px"></i></button>
         <div class="lc-form-hero">
           <div class="lc-form-hero-ico"><i class="fas fa-comments" style="font-size:24px;color:#fff"></i></div>
           <h2>دەستپێبکە</h2>
@@ -9395,11 +9409,16 @@ function lcShowStage(id){
 
 // مێژووی چات — پاشەکەوت و خوێندنەوە
 async function lcSaveToHistory(sessionId,name,problem,adminName,status){
+  // بەکارهێنانی گۆڕاوی دەرەوە بۆ هەر دوو try block
+  let _name='—',_problem='—';
   try{
     status=status||'closed';
     const hist=JSON.parse(localStorage.getItem(LC_HIST_KEY)||'[]');
     const idx=hist.findIndex(h=>h.id===sessionId);
-    const existing=idx>=0?hist[idx]:{};const _name=(name&&name!=='—')?name:(existing.name&&existing.name!=='—'?existing.name:'—');const _problem=(problem&&problem!=='—')?problem:(existing.problem&&existing.problem!=='—'?existing.problem:'—');const entry={id:sessionId,name:_name,problem:_problem,adminName:(adminName&&adminName!=='ئەدمین')?adminName:(existing.adminName||'ئەدمین'),status,updatedAt:Date.now()};
+    const existing=idx>=0?hist[idx]:{};
+    _name=(name&&name!=='—')?name:(existing.name&&existing.name!=='—'?existing.name:'—');
+    _problem=(problem&&problem!=='—')?problem:(existing.problem&&existing.problem!=='—'?existing.problem:'—');
+    const entry={id:sessionId,name:_name,problem:_problem,adminName:(adminName&&adminName!=='ئەدمین')?adminName:(existing.adminName||'ئەدمین'),status,updatedAt:Date.now()};
     if(status==='closed')entry.closedAt=Date.now();
     if(idx>=0){hist[idx]={...hist[idx],...entry};}
     else{hist.unshift(entry);}
@@ -9498,11 +9517,41 @@ window.lcResumeFromHistory=function(id){
   lcDb.ref('sessions/'+id).once('value').then(snap=>{
     const d=snap.val();
     if(!d){
-      const _exH=JSON.parse(localStorage.getItem(LC_HIST_KEY)||'[]');const _exE=_exH.find(h=>h.id===id)||{};
-      lcSaveToHistory(id,_exE.name||'—',_exE.problem||'—',_exE.adminName,'closed');
-      localStorage.removeItem(LC_KEY);
-      lcSessionId=null;
-      lcRenderHistory();
+      // سێشن له Firebase نییە — هەوڵ بدە پەیامەکان بخوێنیتەوە و بنیشان بدە
+      const _exH=JSON.parse(localStorage.getItem(LC_HIST_KEY)||'[]');
+      const _exE=_exH.find(h=>h.id===id)||{};
+      lcDb.ref('messages/'+id).once('value').then(mSnap=>{
+        const mData=mSnap.val();
+        if(mData){
+          // پەیامەکان هەن — بنیشانیان بدە بە read-only
+          const msgs=Object.entries(mData).map(([k,v])=>({id:k,...v})).sort((a,b)=>a.timestamp-b.timestamp);
+          lcShowStage('lcStageChat');
+          document.getElementById('lcClosedBanner').style.display='block';
+          document.getElementById('lcInpWrap').style.display='none';
+          const bar=document.getElementById('lcInfoBar');
+          if(bar){bar.style.display='flex';document.getElementById('lcInfoText').innerHTML=(_exE.adminName||'ئەدمین')+' — چاتی داخراو <i class="fas fa-lock" style="font-size:10px"></i>';}
+          lcRenderMessages(msgs);
+          if(!document.getElementById('lcNewChatAfterClose')){
+            const bw=document.createElement('div');bw.id='lcNewChatAfterClose';
+            bw.style.cssText='display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap';
+            bw.innerHTML='<button onclick="lcGoToHistory()" style="padding:8px 16px;background:#f1f5f9;color:#1c2333;border:none;border-radius:10px;font-family:'R',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-history" style="margin-left:5px"></i>گەڕانەوە</button>'+
+              '<button onclick="lcStartNewChat()" style="padding:8px 16px;background:#1c2333;color:#fff;border:none;border-radius:10px;font-family:'R',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-plus" style="margin-left:5px"></i>چاتی نوێ</button>';
+            const cb=document.getElementById('lcClosedBanner');
+            cb.parentNode.insertBefore(bw,cb.nextSibling);
+          }
+        }else{
+          // هیچ پەیامێک نییە
+          localStorage.removeItem(LC_KEY);
+          lcSessionId=null;
+          lcRenderHistory();
+        }
+      }).catch(()=>{
+        // نەتوانی لە Firebase بخوێنێتەوە
+        localStorage.removeItem(LC_KEY);
+        lcSessionId=null;
+        lcRenderHistory();
+      });
+      lcSaveToHistory(id,_exE.name||'—',_exE.problem||'—',_exE.adminName||'ئەدمین','closed');
       return;
     }
     if(d.status==='closed'){
@@ -10049,10 +10098,13 @@ window.lcSubmitFeedback=async function(){
     }catch(e){}
     // Firebase وێنەی هەیە — homeHero بشارەوە
     if(hero)hero.style.display='none';
-    track.innerHTML=banners.map((b,i)=>
-      '<div class="fb-slide"><a href="#" onclick="return _fbClick('+i+')">'+
-      '<img src="'+b.imageB64+'" alt="بانەر '+(i+1)+'" loading="lazy"></a></div>'
-    ).join('');
+    // سڕینەوەی skeleton بەپێش زیادکردنی وێنەکان
+    track.innerHTML=banners.map((b,i)=>{
+      // lazy decode: وێنە دواتر بار بکە ئەگەر ئێستا لا نییە
+      const isFirst=(i===0);
+      return '<div class="fb-slide"><a href="#" onclick="return _fbClick('+i+')">'+
+        '<img src="'+b.imageB64+'" alt="بانەر '+(i+1)+'" '+(isFirst?'':'loading="lazy"')+'></a></div>';
+    }).join('');
     dots.innerHTML=banners.map((_,i)=>
       '<button class="fb-dot'+(i===0?' on':'')+'" onclick="_fbGoto('+i+')"></button>'
     ).join('');
