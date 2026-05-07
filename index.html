@@ -3672,8 +3672,9 @@ async function verifyOtpCode(email, code) {
     });
     let data = {};
     try { const txt = await res.text(); if(txt.trim()) data = JSON.parse(txt); } catch(_) {}
-    // n8n وەڵامەکە بەشێوەی Array دەگەڕێنێتەوە — ئەمەش چاکی دەکات
-    const payload = Array.isArray(data) ? data[0] : data;
+    // n8n: [{"json":{...}}] — دەبێت data[0].json بخوێندرێتەوە
+    const _raw = Array.isArray(data) ? data[0] : data;
+    const payload = (_raw && _raw.json) ? _raw.json : _raw;
     if(res.ok && payload.success === true) {
       otpRateClear(email);
       otpSendClear(email);
