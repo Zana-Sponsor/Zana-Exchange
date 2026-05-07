@@ -2050,7 +2050,7 @@ try {
   const userName  = prof?.full_name || prof?.email || 'بەکارهێنەر';
 
   if (userEmail) {
-    await fetch('https://n8n.proxopages.com/webhook/proxo-otp', {
+    await fetch('https://n8n.proxopages.com/webhook/send_otp1', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -2107,7 +2107,7 @@ async function confirmDeductBalance(){
     const dateStr   = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
 
     if (userEmail) {
-      await fetch('https://n8n.proxopages.com/webhook/proxo-otp', {
+      await fetch('https://n8n.proxopages.com/webhook/send_otp1', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
