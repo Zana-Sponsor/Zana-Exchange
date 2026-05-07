@@ -3536,7 +3536,7 @@ async function withSession(fn){
 //  OTP SYSTEM
 // ════════════════════════════════════════════════════════════
 const N8N_WEBHOOK = 'https://n8n.proxopages.com/webhook/proxo-ot';
-const N8N_WEBHOOK_TEST = 'https://n8n.proxopages.com/webhook/proxo-ot';
+const N8N_WEBHOOK_TEST = 'https://n8n.proxopages.com/webhook-test/send_otp';
 
 let _otpEmail = '';
 let _otpPendingLogin = false;
@@ -3672,13 +3672,14 @@ async function verifyOtpCode(email, code) {
     });
     let data = {};
     try { const txt = await res.text(); if(txt.trim()) data = JSON.parse(txt); } catch(_) {}
-    // تەنها success === true قبوڵ دەکرێت — هیچ وەڵامی دیکەیەک نا
-    if(res.ok && data.success === true) {
+    // n8n وەڵامەکە بەشێوەی Array دەگەڕێنێتەوە — ئەمەش چاکی دەکات
+    const payload = Array.isArray(data) ? data[0] : data;
+    if(res.ok && payload.success === true) {
       otpRateClear(email);
       otpSendClear(email);
-      return { success: true, message: data.message || 'دڵنیاکراوە' };
+      return { success: true, message: payload.message || 'دڵنیاکراوە' };
     }
-    return { success: false, message: data.message || 'کۆدی هەڵە' };
+    return { success: false, message: payload.message || 'کۆدی هەڵە' };
   } catch(e) {
     return { success: false, message: 'هەڵەی تۆڕ: ' + e.message };
   }
