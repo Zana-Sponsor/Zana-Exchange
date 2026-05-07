@@ -3543,6 +3543,8 @@ let _otpPendingLogin = false;
 let _otpPendingData = null;
 let _otpTimer = null;
 let _otpPurpose = 'login'; // 'login'|'signup'|'reset_password'|'change_password'
+// کلاینت-ساید OTP ستۆر: { [email]: { code, expires } }
+const _clientOtpStore = {};
 
 // ════════════════════════════════════════════════════════════
 // ═══ OTP RATE LIMITER (کەمترین ٢ هەوڵ، دواتر ١٠ خولەک) ═══
@@ -3642,11 +3644,14 @@ async function requestOtp(email, purpose='login') {
   if (!sendChk.ok) {
     return { success: false, message: 'ناردنی کۆد بۆ ئەم ئیمەیلە قفڵکراوە — تکایە ' + sendChk.remaining + ' خولەکی تر هەوڵ بدەرەوە' };
   }
+  // ── کلاینت-ساید: کۆدی ٦ ژمارە دروست بکە و بیستۆرە ──
+  const otpCode = String(Math.floor(100000 + Math.random() * 900000));
+  _clientOtpStore[email] = { code: otpCode, expires: Date.now() + 5 * 60 * 1000 }; // ٥ خولەک
   try {
     const res = await fetch(N8N_WEBHOOK, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'request_otp', email, purpose })
+      body: JSON.stringify({ action: 'request_otp', email, purpose, otp_code: otpCode })
     });
     let data = {};
     try { const txt = await res.text(); if(txt.trim()) data = JSON.parse(txt); } catch(_) {}
@@ -3654,34 +3659,36 @@ async function requestOtp(email, purpose='login') {
       otpSendRecord(email);
       return { success: true, message: data.message || 'کۆدەکە نێردرا' };
     }
+    // ئەگەر ناردن سەرنەکەوت، ستۆرەکە پاک بکەرەوە
+    delete _clientOtpStore[email];
     return { success: false, message: data.message || 'هەڵەی ناردنی کۆد' };
   } catch(e) {
+    delete _clientOtpStore[email];
     return { success: false, message: 'هەڵەی تۆڕ: ' + e.message };
   }
 }
 
-// ── دڵنیاکردنەوەی OTP ─────────────────────────────────────
-async function verifyOtpCode(email, code) {
-  try {
-    const res = await fetch(N8N_WEBHOOK, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'verify_otp', email, code })
-    });
-    let data = {};
-    try { const txt = await res.text(); if(txt.trim()) data = JSON.parse(txt); } catch(_) {}
-    // HTTP 200 + success نە false = کۆدی دروست
-    // (ئەگەر n8n ئاشکرا success:false بگەڕێنێتەوە = هەڵە)
-    if(res.ok && data.success !== false) {
-      // کۆدی دروست — rate limit پاک دەکرێتەوە
-      otpRateClear(email);
-      otpSendClear(email);
-      return { success: true, message: data.message || 'دڵنیاکراوە' };
-    }
-    return { success: false, message: data.message || 'کۆدی هەڵە' };
-  } catch(e) {
-    return { success: false, message: 'هەڵەی تۆڕ: ' + e.message };
+// ── دڵنیاکردنەوەی OTP (کلاینت-ساید — بەبێ پشتبەستن بە n8n) ──
+function verifyOtpCode(email, code) {
+  const entry = _clientOtpStore[email];
+  // ئەگەر کۆدی ناردنەکە نەبوو
+  if (!entry) {
+    return Promise.resolve({ success: false, message: 'کۆدی تازە داواکە — کۆدەکە بەسەرچووە' });
   }
+  // ئەگەر کاتی کۆد تێپەڕیوە (٥ خولەک)
+  if (Date.now() > entry.expires) {
+    delete _clientOtpStore[email];
+    return Promise.resolve({ success: false, message: 'کاتی کۆدەکە تێپەڕیوە — کۆدی نوێ داواکە' });
+  }
+  // پشکنینی کۆد
+  if (String(code).trim() !== String(entry.code).trim()) {
+    return Promise.resolve({ success: false, message: 'کۆدی هەڵە — دووبارە هەوڵ بدەرەوە' });
+  }
+  // کۆدی دروستە — پاک بکەرەوە
+  delete _clientOtpStore[email];
+  otpRateClear(email);
+  otpSendClear(email);
+  return Promise.resolve({ success: true, message: 'دڵنیاکراوە' });
 }
 
 // ════════════════════════════════════════════════════════════
