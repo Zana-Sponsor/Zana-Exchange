@@ -3811,11 +3811,9 @@ async function verifyOtp() {
   if(code.length < 6) { showOtpMsg('کۆدەکە تەواو بنووسە', 'err'); return; }
 
   const rlChk = otpRateCheck(_otpEmail);
-  if(!rlChk.ok) {
-    showOtpMsg('قفڵکراوە — تکایە ' + rlChk.remaining + ' خولەکی تر هەوڵ بدەرەوە', 'err');
-    startBanCountdown(_otpEmail, 'otpMsg', 'otpResendBtn');
-    return;
-  }
+if(!rlChk.ok) {
+  // rate limit تەنها بۆ request کردن — verify بەردەوام دەبێت
+}
 
   _otpVerifying = true;
   const btn = document.getElementById('otpVerifyBtn');
