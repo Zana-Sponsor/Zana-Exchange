@@ -3668,7 +3668,7 @@ async function verifyOtpCode(email, code) {
     const res = await fetch(N8N_WEBHOOK, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'verify_otp', email, code: parseInt(code, 10) || code.trim() })
+      body: JSON.stringify({ action: 'verify_otp', email, code: String(code).trim() }:
     });
     let data = {};
     try { const txt = await res.text(); if(txt.trim()) data = JSON.parse(txt); } catch(_) {}
