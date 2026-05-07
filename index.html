@@ -3670,8 +3670,9 @@ async function verifyOtpCode(email, code) {
     });
     let data = {};
     try { const txt = await res.text(); if(txt.trim()) data = JSON.parse(txt); } catch(_) {}
-    // تەنها ئەگەر success: true ی ڕوونی هەبوو = کۆدی دروست
-    if(res.ok && data.success === true) {
+    // HTTP 200 + success نە false = کۆدی دروست
+    // (ئەگەر n8n ئاشکرا success:false بگەڕێنێتەوە = هەڵە)
+    if(res.ok && data.success !== false) {
       // کۆدی دروست — rate limit پاک دەکرێتەوە
       otpRateClear(email);
       otpSendClear(email);
@@ -4106,7 +4107,7 @@ async function doForgotSavePass(){
       body:JSON.stringify({action:'reset_password',email:_fpEmail,code:_fpVerifiedCode,new_password:np})});
     let data={};
     try{const txt=await res.text();if(txt.trim())data=JSON.parse(txt);}catch(_){}
-    if(res.ok&&data.success===true){
+    if(res.ok&&data.success!==false){
       fpShowMsg('C','پاسۆردەکە بە سەرکەوتوویی گۆڕدرا، ئێستا بچۆ ژوورەوە','ok');
       setTimeout(()=>cancelForgotStep(),2500);
     } else {
@@ -5137,6 +5138,7 @@ async function boot(){
       if(row?.value && row.value!==APP_VERSION){
         _newVersionAvailable=true;
         _remoteVersion=row.value;
+        setVersionLabels(row.value);
         checkNotifBell();
         // force_update check
         sb.from('pa_settings').select('value').eq('key','force_update').single().then(({data:fd})=>{
