@@ -3276,6 +3276,7 @@ const SB_KEY=atob('ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnBjM01pT
 const APP_VERSION='2.33';
 let _newVersionAvailable=false;
 let _remoteVersion='';
+let _forceUpdate=false;
   
 // ══ UPDATE PROFILE ══
 let updAvB64New = null;
@@ -3669,8 +3670,8 @@ async function verifyOtpCode(email, code) {
     });
     let data = {};
     try { const txt = await res.text(); if(txt.trim()) data = JSON.parse(txt); } catch(_) {}
-    // ئەگەر HTTP 200 بوو و هیچ success:false ی تێدا نەبوو = سەرکەوتوو
-    if(res.ok && data.success !== false) {
+    // تەنها ئەگەر success: true ی ڕوونی هەبوو = کۆدی دروست
+    if(res.ok && data.success === true) {
       // کۆدی دروست — rate limit پاک دەکرێتەوە
       otpRateClear(email);
       otpSendClear(email);
@@ -3813,6 +3814,7 @@ async function verifyOtp() {
   const result = await verifyOtpCode(_otpEmail, code);
 
   if(!result.success) {
+    otpRateRecord(_otpEmail);
     showOtpMsg(result.message || 'کۆدی هەڵە', 'err');
     btn.disabled = false;
     btn.innerHTML = '<i class="fas fa-check"></i> دڵنیاکردنەوە';
@@ -3833,26 +3835,9 @@ async function verifyOtp() {
           cancelOtp();
           await boot();
         } else {
-          // ئیمەیل دڵنیاکراوە بووە — ئەگەر هەژمار نەبوو خۆکارانە دروستی بکە
-          const { data: sd, error: se } = await sb.auth.signUp({
-            email: _otpEmail,
-            password: _otpPendingData.pass
-          });
-          if(!se && sd?.user) {
-            let newUser = sd.user;
-            if(!sd.session) {
-              const { data: ld, error: le } = await sb.auth.signInWithPassword({ email: _otpEmail, password: _otpPendingData.pass });
-              if(!le && ld?.session) { newUser = ld.user; }
-              else { cancelOtp(); showAmsg('هەژماری دروستکرا — ئێستا بچۆ ژوورەوە', 'ok'); return; }
-            }
-            cu = newUser;
-            cancelOtp();
-            await boot();
-          } else {
-            // هەژمار هەیە بەڵام پاسۆرد هەڵەیە
-            cancelOtp();
-            showAmsg('پاسۆردی دانانراوت هەڵەیە — پاسۆردەکەت لەسەر بکەرەوە', 'err');
-          }
+          // چوونەژوورەوە سەرنەکەوت — هەڵە نیشان بدە
+          cancelOtp();
+          showAmsg(kuErr(error?.message) || 'هەڵەیەک ڕووی دا، دووبارە هەوڵ بدەرەوە', 'err');
         }
       } else {
         // SIGNUP
@@ -4095,6 +4080,7 @@ async function doForgotVerifyOtp(){
   btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> پشکنین...';
   const result=await verifyOtpCode(_fpEmail,code);
   if(!result.success){
+    otpRateRecord(_fpEmail);
     fpShowMsg('B',result.message||'کۆدی هەڵە','err');
     btn.disabled=false;btn.innerHTML='<i class="fas fa-check"></i> دڵنیاکردنەوە';return;
   }
@@ -4120,7 +4106,7 @@ async function doForgotSavePass(){
       body:JSON.stringify({action:'reset_password',email:_fpEmail,code:_fpVerifiedCode,new_password:np})});
     let data={};
     try{const txt=await res.text();if(txt.trim())data=JSON.parse(txt);}catch(_){}
-    if(res.ok&&data.success!==false){
+    if(res.ok&&data.success===true){
       fpShowMsg('C','پاسۆردەکە بە سەرکەوتوویی گۆڕدرا، ئێستا بچۆ ژوورەوە','ok');
       setTimeout(()=>cancelForgotStep(),2500);
     } else {
@@ -4225,6 +4211,7 @@ async function doVerifyCpOtp(){
   btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> پشکنین...';
   const result=await verifyOtpCode(cu.email,code);
   if(!result.success){
+    otpRateRecord(cu.email);
     cpShowMsg(result.message||'کۆدی هەڵە','err');
     btn.disabled=false;
     btn.innerHTML='<i class="fas fa-check"></i> دڵنیاکردنەوە';
@@ -4293,6 +4280,7 @@ async function doAuth(){
     const nameVal=(document.getElementById('authName')?.value||'').trim();
     if(!nameVal){showAmsg('ناوی تەواو بنووسە','err');return;}
     if(!email){showAmsg('ئیمەیل بنووسە','err');return;}
+    if(!email.toLowerCase().endsWith('@gmail.com')){showAmsg('تەنها ئیمەیلی Gmail (@gmail.com) پاشگیری دەکرێت','err');return;}
     if(!pass){showAmsg('پاسۆرد بنووسە','err');return;}
   } else {
     if(!email){showAmsg('ئیمەیل بنووسە','err');return;}
@@ -4370,6 +4358,35 @@ async function fetchVersionFromBackend(){
     const {version}=await res.json();
     if(version)setVersionLabels(version);
   }catch(e){}
+}
+
+// ══ FORCE UPDATE OVERLAY ══
+function showForceUpdateOverlay(ver,msg){
+  let ov=document.getElementById('forceUpdateOverlay');
+  if(!ov){
+    ov=document.createElement('div');
+    ov.id='forceUpdateOverlay';
+    ov.style.cssText='position:fixed;inset:0;z-index:99998;background:#0f172a;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;';
+    ov.innerHTML=`
+      <div style="width:90px;height:90px;border-radius:28px;background:rgba(37,99,235,.15);border:2px solid rgba(37,99,235,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;animation:maintPulse 2s infinite">
+        <i class="fas fa-rocket" style="font-size:36px;color:#60a5fa"></i>
+      </div>
+      <div style="font-size:22px;font-weight:900;color:#fff;margin-bottom:10px">ڤێرژنی نوێ بەردەستە 🚀</div>
+      <div id="forceUpdateVer" style="display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;background:rgba(37,99,235,.15);border:1px solid rgba(37,99,235,.3);color:#93c5fd;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;margin-bottom:14px">v${ver}</div>
+      <div id="forceUpdateMsg" style="font-size:14px;color:rgba(255,255,255,.6);line-height:1.8;margin-bottom:28px;max-width:320px">${msg||'تکایە ئەپەکە نوێ بکەرەوە بۆ بەردەوامبوون'}</div>
+      <button onclick="location.reload()" style="padding:16px 36px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:16px;font-family:'R',sans-serif;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(37,99,235,.4);display:inline-flex;align-items:center;gap:10px">
+        <i class="fas fa-rotate-right"></i> نوێکردنەوە
+      </button>
+      <div style="margin-top:16px;font-size:11px;color:rgba(255,255,255,.25)">پێویستە نوێ بکرێتەوە بۆ بەردەوامبوون</div>
+    `;
+    document.body.appendChild(ov);
+  } else {
+    const vEl=ov.querySelector('#forceUpdateVer');
+    const mEl=ov.querySelector('#forceUpdateMsg');
+    if(vEl)vEl.textContent='v'+ver;
+    if(mEl)mEl.textContent=msg||'تکایە ئەپەکە نوێ بکەرەوە بۆ بەردەوامبوون';
+    ov.style.display='flex';
+  }
 }
 
 // ═══ DEVICE FINGERPRINTING ═══
@@ -5057,15 +5074,20 @@ async function boot(){
   // ═══ VERSION CHECK (Supabase Remote) ═══
   (function checkVersion(){
     setVersionLabels(APP_VERSION);
-    // چێکی ڤێرژنی ڕیموت لە Supabase
-    sb.from('pa_settings').select('value').eq('key','app_version').single().then(({data})=>{
+    // چێکی ڤێرژنی ڕیموت لە Supabase — app_version + force_update هەردووک
+    sb.from('pa_settings').select('key,value').in('key',['app_version','force_update','version_message']).then(({data})=>{
       if(!data)return;
-      const remoteVer=data.value||'';
+      const map={};(data||[]).forEach(r=>{map[r.key]=r.value;});
+      const remoteVer=map['app_version']||'';
+      const forceUpd=map['force_update']==='true';
+      const verMsg=map['version_message']||'';
       if(remoteVer){setVersionLabels(remoteVer);}
       if(remoteVer && remoteVer!==APP_VERSION){
         _newVersionAvailable=true;
         _remoteVersion=remoteVer;
+        _forceUpdate=forceUpd;
         checkNotifBell();
+        if(forceUpd){showForceUpdateOverlay(remoteVer,verMsg);}
       }
     });
     // هەروەها چێکی لۆکەل
@@ -5109,16 +5131,41 @@ async function boot(){
     })
     .subscribe();
 
-  // Realtime: Version changes → check if new version
+  // Realtime: Version changes → check if new version + force_update
   sb.channel('version_rt')
     .on('postgres_changes',{event:'*',schema:'public',table:'pa_settings',filter:"key=eq.app_version"},({new:row})=>{
       if(row?.value && row.value!==APP_VERSION){
         _newVersionAvailable=true;
         _remoteVersion=row.value;
         checkNotifBell();
-        // Show mini toast
-        const t=document.getElementById('toast');
-        if(t){t.textContent='ڤێرژنی نوێ v'+row.value+' بەردەستە!';t.style.cssText='position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--bl);color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:700;z-index:9999;white-space:nowrap';setTimeout(()=>{t.style.cssText='';},4000);}
+        // force_update check
+        sb.from('pa_settings').select('value').eq('key','force_update').single().then(({data:fd})=>{
+          const isForce=fd?.value==='true';
+          _forceUpdate=isForce;
+          if(isForce){
+            sb.from('pa_settings').select('value').eq('key','version_message').single().then(({data:md})=>{
+              showForceUpdateOverlay(row.value,md?.value||'');
+            });
+          } else {
+            const t=document.getElementById('toast');
+            if(t){t.textContent='ڤێرژنی نوێ v'+row.value+' بەردەستە!';t.style.cssText='position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--bl);color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:700;z-index:9999;white-space:nowrap';setTimeout(()=>{t.style.cssText='';},4000);}
+          }
+        });
+      }
+    })
+    .subscribe();
+
+  // Realtime: force_update key changes
+  sb.channel('force_update_rt')
+    .on('postgres_changes',{event:'*',schema:'public',table:'pa_settings',filter:"key=eq.force_update"},({new:row})=>{
+      if(row?.value==='true'){
+        _forceUpdate=true;
+        sb.from('pa_settings').select('key,value').in('key',['app_version','version_message']).then(({data})=>{
+          const map={};(data||[]).forEach(r=>{map[r.key]=r.value;});
+          showForceUpdateOverlay(map['app_version']||_remoteVersion||APP_VERSION,map['version_message']||'');
+        });
+      } else {
+        _forceUpdate=false;
       }
     })
     .subscribe();
