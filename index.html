@@ -3594,6 +3594,7 @@ function otpSendClear(email) {
 }
 
 function otpRateCheck(email) {
+  return { ok: true };
   try {
     const raw = localStorage.getItem(_rlKey(email));
     if (!raw) return { ok: true };
