@@ -9336,27 +9336,31 @@ const LC_FB_CONFIG = {
 const lcApp = firebase.initializeApp(LC_FB_CONFIG, 'proxo_livechat_user');
 const lcDb = lcApp.database();
 
-const LC_KEY = 'proxo_lc_session_id';
-const LC_HIST_KEY = 'proxo_lc_history';
-let lcSessionId = null;
-let lcRating = 0;
-let lcAdminOnline = false;
-let lcTypingTimer = null;
-let lcIsTyping = false;
-let lcUnsubSession = null;
-let lcUnsubMessages = null;
-let lcUnsubTyping = null;
-let lcTypingShown = false;
-let lcAudioCtx = null;
+const LC_KEY='proxo_lc_session_id';
+const LC_HIST_KEY='proxo_lc_history';
+let lcSessionId=null;
+let lcRating=0;
+let lcAdminOnline=false;
+let lcTypingTimer=null;
+let lcIsTyping=false;
+let _lcSubSession=null;
+let _lcSubMessages=null;
+let _lcSubAdmin=null;
+let _lcTypingCh=null;
+let lcTypingShown=false;
+let lcAudioCtx=null;
+let _lcMsgs=[];
 
 function lcGetAudioCtx(){if(!lcAudioCtx)lcAudioCtx=new(window.AudioContext||window.webkitAudioContext)();return lcAudioCtx;}
 function lcPlayNotif(){try{const c=lcGetAudioCtx(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.setValueAtTime(880,c.currentTime);o.frequency.exponentialRampToValueAtTime(440,c.currentTime+.2);g.gain.setValueAtTime(.3,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.4);o.start(c.currentTime);o.stop(c.currentTime+.4);}catch(e){}}
 function lcPlayAccepted(){try{const c=lcGetAudioCtx();[523,659,784].forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.2,c.currentTime+i*.12);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+i*.12+.2);o.start(c.currentTime+i*.12);o.stop(c.currentTime+i*.12+.2);});}catch(e){}}
 function lcPlaySent(){try{const c=lcGetAudioCtx(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.setValueAtTime(660,c.currentTime);o.frequency.exponentialRampToValueAtTime(880,c.currentTime+.1);g.gain.setValueAtTime(.15,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.2);o.start(c.currentTime);o.stop(c.currentTime+.2);}catch(e){}}
 
-// ئۆنلاین بودنی ئەدمین
-lcDb.ref('adminStatus/online').on('value',snap=>{
-  lcAdminOnline=!!snap.val();
+// ════════════════════════════
+// دۆخی ئادمین — Supabase
+// ════════════════════════════
+function lcUpdateAdminUI(online){
+  lcAdminOnline=!!online;
   const dot=document.getElementById('lcNavDot');
   const avDot=document.getElementById('lcAvDot');
   const status=document.getElementById('lcHeadStatus');
@@ -9369,12 +9373,23 @@ lcDb.ref('adminStatus/online').on('value',snap=>{
     avDot&&(avDot.className='lc-av-dot off');
     status&&(status.className='lc-head-status off',status.textContent='● ئۆفلاین — وەڵام دواتر دەدەین');
   }
-  // بەشی سایدبار دەرئیدەخات دوای لۆدکردن
   const sideItem=document.getElementById('lcSidebarItem');
   if(sideItem)sideItem.style.display='flex';
   const sideNavDot=document.getElementById('lcSideNavDot');
   if(sideNavDot)sideNavDot.style.display=lcAdminOnline?'block':'none';
-});
+}
+async function lcInitAdminStatus(){
+  try{
+    const{data}=await sb.from('lc_admin_status').select('online').eq('id',1).single();
+    lcUpdateAdminUI(data?.online);
+  }catch(e){lcUpdateAdminUI(false);}
+  if(_lcSubAdmin){try{sb.removeChannel(_lcSubAdmin);}catch(e){}}
+  _lcSubAdmin=sb.channel('lc_admin_status_watch')
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'lc_admin_status',filter:'id=eq.1'},
+      p=>lcUpdateAdminUI(p.new?.online))
+    .subscribe();
+}
+lcInitAdminStatus();
 
 function lcShowStage(id){
   ['lcStageForm','lcStageWaiting','lcStageChat','lcStageFeedback','lcStageDone','lcStageHistory'].forEach(s=>{
@@ -9382,10 +9397,8 @@ function lcShowStage(id){
     if(s===id){el.classList.add('on');el.style.display='flex';}
     else{el.classList.remove('on');el.style.display='none';}
   });
-  // نیشاندانی دووگمەی مێژوو تەنها کاتی چاتی چالاک
   const backBtn=document.getElementById('lcBackHistBtn');
   if(backBtn)backBtn.style.display=(id==='lcStageChat')?'flex':'none';
-  // کاتی چاتی چالاک — خانەی نووسین ئامادە بکە
   if(id==='lcStageChat'){
     const wrap=document.getElementById('lcInpWrap');
     const closed=document.getElementById('lcClosedBanner');
@@ -9396,31 +9409,26 @@ function lcShowStage(id){
   }
 }
 
-// مێژووی چات — پاشەکەوت و خوێندنەوە
 async function lcSaveToHistory(sessionId,name,problem,adminName,status){
   try{
     status=status||'closed';
     const hist=JSON.parse(localStorage.getItem(LC_HIST_KEY)||'[]');
     const idx=hist.findIndex(h=>h.id===sessionId);
-    const existing=idx>=0?hist[idx]:{};const _name=(name&&name!=='—')?name:(existing.name&&existing.name!=='—'?existing.name:'—');const _problem=(problem&&problem!=='—')?problem:(existing.problem&&existing.problem!=='—'?existing.problem:'—');const entry={id:sessionId,name:_name,problem:_problem,adminName:(adminName&&adminName!=='ئەدمین')?adminName:(existing.adminName||'ئەدمین'),status,updatedAt:Date.now()};
+    const existing=idx>=0?hist[idx]:{};
+    const _name=(name&&name!=='—')?name:(existing.name&&existing.name!=='—'?existing.name:'—');
+    const _problem=(problem&&problem!=='—')?problem:(existing.problem&&existing.problem!=='—'?existing.problem:'—');
+    const entry={id:sessionId,name:_name,problem:_problem,adminName:(adminName&&adminName!=='ئەدمین')?adminName:(existing.adminName||'ئەدمین'),status,updatedAt:Date.now()};
     if(status==='closed')entry.closedAt=Date.now();
     if(idx>=0){hist[idx]={...hist[idx],...entry};}
     else{hist.unshift(entry);}
     if(hist.length>20)hist.length=20;
     localStorage.setItem(LC_HIST_KEY,JSON.stringify(hist));
   }catch(e){}
-  // پاشەکەوتکردن لە Supabase — ئەگەر بەکارهێنەر چوونەژوورەوە بوو
   try{
     if(typeof sb!=='undefined'&&typeof cu!=='undefined'&&cu&&cu.id){
-      const row={
-        user_id:cu.id,
-        session_id:sessionId,
-        name:_name,
-        problem:_problem,
-        admin_name:adminName||'ئەدمین',
-        status:status||'closed',
-        updated_at:new Date().toISOString()
-      };
+      const _hist=JSON.parse(localStorage.getItem(LC_HIST_KEY)||'[]');
+      const _e=_hist.find(h=>h.id===sessionId)||{};
+      const row={user_id:cu.id,session_id:sessionId,name:_e.name||name||'—',problem:_e.problem||problem||'—',admin_name:adminName||'ئەدمین',status:status||'closed',updated_at:new Date().toISOString()};
       if((status||'closed')==='closed')row.closed_at=new Date().toISOString();
       await sb.from('live_chat_history').upsert(row,{onConflict:'user_id,session_id'});
     }
@@ -9430,25 +9438,15 @@ async function lcSaveToHistory(sessionId,name,problem,adminName,status){
 async function lcRenderHistory(){
   const list=document.getElementById('lcHistoryList');
   if(!list)return;
-  // نیشاندانی لۆدکردن
   list.innerHTML='<div style="text-align:center;padding:20px;color:#94a3b8"><i class="fas fa-circle-notch fa-spin"></i></div>';
   let hist=[];
   try{hist=JSON.parse(localStorage.getItem(LC_HIST_KEY)||'[]');}catch(e){}
-  // وەرگرتن لە Supabase و یەکخستن — پاشەکەوتی ئامێرەکراس
   try{
     if(typeof sb!=='undefined'&&typeof cu!=='undefined'&&cu&&cu.id){
       const{data,error}=await sb.from('live_chat_history').select('*').eq('user_id',cu.id).order('updated_at',{ascending:false}).limit(50);
       if(!error&&data&&data.length){
         data.forEach(row=>{
-          const sbEntry={
-            id:row.session_id,
-            name:row.name||'—',
-            problem:row.problem||'—',
-            adminName:row.admin_name||'ئەدمین',
-            status:row.status||'closed',
-            updatedAt:row.updated_at?new Date(row.updated_at).getTime():Date.now(),
-            closedAt:row.closed_at?new Date(row.closed_at).getTime():null
-          };
+          const sbEntry={id:row.session_id,name:row.name||'—',problem:row.problem||'—',adminName:row.admin_name||'ئەدمین',status:row.status||'closed',updatedAt:row.updated_at?new Date(row.updated_at).getTime():Date.now(),closedAt:row.closed_at?new Date(row.closed_at).getTime():null};
           const idx=hist.findIndex(h=>h.id===sbEntry.id);
           if(idx>=0){hist[idx]={...hist[idx],...sbEntry};}
           else{hist.push(sbEntry);}
@@ -9463,114 +9461,70 @@ async function lcRenderHistory(){
     list.innerHTML='<div class="lc-hist-empty"><i class="fas fa-comments"></i><p>هیچ چاتێکی پێشووت نییە</p></div>';
     return;
   }
-  // چاتە بەردەوامەکان سەرەوە بێن
-  hist.sort((a,b)=>{
-    const order={active:0,pending:1,closed:2};
-    return (order[a.status]??2)-(order[b.status]??2)||(b.updatedAt||0)-(a.updatedAt||0);
-  });
-  const statusCfg={
-    active:{lbl:'چالاک',bg:'rgba(22,163,74,.12)',color:'#15803d',clickable:true},
-    pending:{lbl:'چاوەڕوان',bg:'rgba(245,158,11,.12)',color:'#b45309',clickable:true},
-    closed:{lbl:'داخراو ✓',bg:'#f1f5f9',color:'#475569',clickable:true}
-  };
+  hist.sort((a,b)=>{const order={active:0,pending:1,closed:2};return(order[a.status]??2)-(order[b.status]??2)||(b.updatedAt||0)-(a.updatedAt||0);});
+  const statusCfg={active:{lbl:'چالاک',bg:'rgba(22,163,74,.12)',color:'#15803d',clickable:true},pending:{lbl:'چاوەڕوان',bg:'rgba(245,158,11,.12)',color:'#b45309',clickable:true},closed:{lbl:'داخراو ✓',bg:'#f1f5f9',color:'#475569',clickable:true}};
   list.innerHTML=hist.map(h=>{
     const initials=(h.name||'?').charAt(0).toUpperCase();
     const date=(h.closedAt||h.updatedAt)?new Date(h.closedAt||h.updatedAt).toLocaleDateString('ku-IQ',{month:'short',day:'numeric'}):'';
     const idShort=(h.id||'').slice(-8);
     const st=statusCfg[h.status]||statusCfg.closed;
-    const clickAttr=st.clickable?`onclick="lcResumeFromHistory('${h.id}')" style="cursor:pointer"`:'';;
-    return `<div class="lc-hist-item" ${clickAttr}>
-      <div class="lc-hist-av">${initials}</div>
-      <div class="lc-hist-info">
-        <div class="lc-hist-name">${lcEsc(h.name||'—')}</div>
-        <div class="lc-hist-sub">${lcEsc(h.problem||'—')}</div>
-        <div style="font-size:9.5px;color:#94a3b8;margin-top:2px;direction:ltr;text-align:right">#${idShort}</div>
-      </div>
-      <div class="lc-hist-date">
-        <div>${date}</div>
-        <div style="margin-top:3px;font-size:9px;background:${st.bg};padding:2px 6px;border-radius:6px;color:${st.color};font-weight:700">${st.lbl}</div>
-      </div>
-    </div>`;
+    const clickAttr=st.clickable?'onclick="lcResumeFromHistory(''+h.id+'')" style="cursor:pointer"':'';
+    return '<div class="lc-hist-item" '+clickAttr+'><div class="lc-hist-av">'+initials+'</div><div class="lc-hist-info"><div class="lc-hist-name">'+lcEsc(h.name||'—')+'</div><div class="lc-hist-sub">'+lcEsc(h.problem||'—')+'</div><div style="font-size:9.5px;color:#94a3b8;margin-top:2px;direction:ltr;text-align:right">#'+idShort+'</div></div><div class="lc-hist-date"><div>'+date+'</div><div style="margin-top:3px;font-size:9px;background:'+st.bg+';padding:2px 6px;border-radius:6px;color:'+st.color+';font-weight:700">'+st.lbl+'</div></div></div>';
   }).join('');
 }
 
-window.lcResumeFromHistory=function(id){
-  lcDetachListeners();
+window.lcResumeFromHistory=async function(id){
+  await lcDetachListeners();
   lcSessionId=id;
   localStorage.setItem(LC_KEY,id);
-  lcDb.ref('sessions/'+id).once('value').then(snap=>{
-    const d=snap.val();
-    if(!d){
-      // سێشن لە Firebase سڕاوەتەوە — پەیامەکانی جێبەجێ بکە بکۆشە
-      lcDb.ref('messages/'+id).once('value').then(mSnap=>{
-        const mData=mSnap.val();
-        const _exH2=JSON.parse(localStorage.getItem(LC_HIST_KEY)||'[]');
-        const _exE2=_exH2.find(h=>h.id===id)||{};
-        if(mData){
-          const msgs=Object.entries(mData).map(([k,v])=>({id:k,...v})).sort((a,b)=>a.timestamp-b.timestamp);
-          lcShowStage('lcStageChat');
-          document.getElementById('lcClosedBanner').style.display='block';
-          document.getElementById('lcInpWrap').style.display='none';
-          const bar=document.getElementById('lcInfoBar');
-          if(bar){bar.style.display='flex';document.getElementById('lcInfoText').innerHTML=(_exE2.adminName||'ئەدمین')+' — چاتی داخراو <i class="fas fa-lock" style="font-size:10px"></i>';}
-          lcRenderMessages(msgs);
-          if(!document.getElementById('lcNewChatAfterClose')){
-            const bw=document.createElement('div');bw.id='lcNewChatAfterClose';
-            bw.style.cssText='display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap';
-            bw.innerHTML='<button onclick="lcGoToHistory()" style="padding:8px 16px;background:#f1f5f9;color:#1c2333;border:none;border-radius:10px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-history" style="margin-left:5px"></i>گەڕانەوە</button>'+'<button onclick="lcStartNewChat()" style="padding:8px 16px;background:#1c2333;color:#fff;border:none;border-radius:10px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-plus" style="margin-left:5px"></i>چاتی نوێ</button>';
-            const cb=document.getElementById('lcClosedBanner');
-            cb.parentNode.insertBefore(bw,cb.nextSibling);
-          }
-        }else{
-          lcSaveToHistory(id,_exE2.name||'—',_exE2.problem||'—',_exE2.adminName,'closed');
-          localStorage.removeItem(LC_KEY);
-          lcSessionId=null;
-          lcRenderHistory();
-        }
-      });
-      return;
-    }
-    if(d.status==='closed'){
-      lcSaveToHistory(id,d.name,d.problem,d.adminName,'closed');
-      // نیشاندانی پەیامەکان بەشێوەی read-only
-      lcDb.ref('messages/'+id).once('value').then(mSnap=>{
-        const mData=mSnap.val();
-        const msgs=mData?Object.entries(mData).map(([k,v])=>({id:k,...v})).sort((a,b)=>a.timestamp-b.timestamp):[];
-        lcShowStage('lcStageChat');
-        document.getElementById('lcClosedBanner').style.display='block';
-        document.getElementById('lcInpWrap').style.display='none';
-        const bar=document.getElementById('lcInfoBar');
-        if(bar){bar.style.display='flex';document.getElementById('lcInfoText').innerHTML=(d.adminName||'ئەدمین')+' — چاتی داخراو <i class="fas fa-lock" style="font-size:10px"></i>';}
-        lcRenderMessages(msgs);
-        // دووگمەکان
-        if(!document.getElementById('lcNewChatAfterClose')){
-          const bw=document.createElement('div');bw.id='lcNewChatAfterClose';
-          bw.style.cssText='display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap';
-          bw.innerHTML='<button onclick="lcGoToHistory()" style="padding:8px 16px;background:#f1f5f9;color:#1c2333;border:none;border-radius:10px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-history" style="margin-left:5px"></i>گەڕانەوە</button>'+
-            '<button onclick="lcStartNewChat()" style="padding:8px 16px;background:#1c2333;color:#fff;border:none;border-radius:10px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-plus" style="margin-left:5px"></i>چاتی نوێ</button>';
-          const cb=document.getElementById('lcClosedBanner');
-          cb.parentNode.insertBefore(bw,cb.nextSibling);
-        }
-      });
-      return;
-    }
-    // بەردەوامکردنی چات
-    lcAttachListeners();
-    if(d.status==='pending'){
-      lcShowStage('lcStageWaiting');
-    }else{
+  const{data:d}=await sb.from('lc_sessions').select('*').eq('id',id).single();
+  const _exH2=JSON.parse(localStorage.getItem(LC_HIST_KEY)||'[]');
+  const _exE2=_exH2.find(h=>h.id===id)||{};
+  if(!d){
+    const{data:mData}=await sb.from('lc_messages').select('*').eq('session_id',id).order('timestamp',{ascending:true});
+    if(mData&&mData.length){
       lcShowStage('lcStageChat');
+      document.getElementById('lcClosedBanner').style.display='block';
+      document.getElementById('lcInpWrap').style.display='none';
+      const bar=document.getElementById('lcInfoBar');
+      if(bar){bar.style.display='flex';document.getElementById('lcInfoText').innerHTML=(_exE2.adminName||'ئەدمین')+' — چاتی داخراو <i class="fas fa-lock" style="font-size:10px"></i>';}
+      lcRenderMessages(mData);
+      if(!document.getElementById('lcNewChatAfterClose')){
+        const bw=document.createElement('div');bw.id='lcNewChatAfterClose';
+        bw.style.cssText='display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap';
+        bw.innerHTML='<button onclick="lcGoToHistory()" style="padding:8px 16px;background:#f1f5f9;color:#1c2333;border:none;border-radius:10px;font-family:'R',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-history" style="margin-left:5px"></i>گەڕانەوە</button>'+'<button onclick="lcStartNewChat()" style="padding:8px 16px;background:#1c2333;color:#fff;border:none;border-radius:10px;font-family:'R',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-plus" style="margin-left:5px"></i>چاتی نوێ</button>';
+        const cb=document.getElementById('lcClosedBanner');cb.parentNode.insertBefore(bw,cb.nextSibling);
+      }
+    }else{
+      await lcSaveToHistory(id,_exE2.name||'—',_exE2.problem||'—',_exE2.adminName,'closed');
+      localStorage.removeItem(LC_KEY);lcSessionId=null;lcRenderHistory();
     }
-  }).catch(()=>{
-    lcAttachListeners();
+    return;
+  }
+  if(d.status==='closed'){
+    await lcSaveToHistory(id,d.name,d.problem,d.admin_name,'closed');
+    const{data:mData}=await sb.from('lc_messages').select('*').eq('session_id',id).order('timestamp',{ascending:true});
     lcShowStage('lcStageChat');
-  });
+    document.getElementById('lcClosedBanner').style.display='block';
+    document.getElementById('lcInpWrap').style.display='none';
+    const bar=document.getElementById('lcInfoBar');
+    if(bar){bar.style.display='flex';document.getElementById('lcInfoText').innerHTML=(d.admin_name||'ئەدمین')+' — چاتی داخراو <i class="fas fa-lock" style="font-size:10px"></i>';}
+    lcRenderMessages(mData||[]);
+    if(!document.getElementById('lcNewChatAfterClose')){
+      const bw=document.createElement('div');bw.id='lcNewChatAfterClose';
+      bw.style.cssText='display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap';
+      bw.innerHTML='<button onclick="lcGoToHistory()" style="padding:8px 16px;background:#f1f5f9;color:#1c2333;border:none;border-radius:10px;font-family:'R',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-history" style="margin-left:5px"></i>گەڕانەوە</button>'+'<button onclick="lcStartNewChat()" style="padding:8px 16px;background:#1c2333;color:#fff;border:none;border-radius:10px;font-family:'R',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-plus" style="margin-left:5px"></i>چاتی نوێ</button>';
+      const cb=document.getElementById('lcClosedBanner');cb.parentNode.insertBefore(bw,cb.nextSibling);
+    }
+    return;
+  }
+  await lcAttachListeners();
+  if(d.status==='pending')lcShowStage('lcStageWaiting');
+  else lcShowStage('lcStageChat');
 };
 
 window.lcStartNewChat=function(){
-  lcDetachListeners();
-  lcSessionId=null;
-  localStorage.removeItem(LC_KEY);
+  lcDetachListeners();lcSessionId=null;localStorage.removeItem(LC_KEY);
   const ob=document.getElementById('lcNewChatAfterClose');if(ob)ob.remove();
   document.getElementById('lcClosedBanner').style.display='none';
   document.getElementById('lcInpWrap').style.display='flex';
@@ -9581,64 +9535,34 @@ window.lcGoToHistory=function(){
   const ob=document.getElementById('lcNewChatAfterClose');if(ob)ob.remove();
   document.getElementById('lcClosedBanner').style.display='none';
   document.getElementById('lcInpWrap').style.display='flex';
-  lcRenderHistory();
-  lcShowStage('lcStageHistory');
+  lcRenderHistory();lcShowStage('lcStageHistory');
 };
 
-window.lcOpenChatDirect=function(){
+window.lcOpenChatDirect=async function(){
   document.getElementById('lcOverlay').classList.add('show');
   _lcUnreadCount=0;checkNotifBell();
   const saved=localStorage.getItem(LC_KEY);
   if(saved){
     lcSessionId=saved;
-    lcDb.ref('sessions/'+saved).once('value').then(snap=>{
-      const d=snap.val();
-      if(!d){
-        localStorage.removeItem(LC_KEY);
-        lcSessionId=null;
-        lcRenderHistory();lcShowStage('lcStageHistory');
-      }else if(d.status==='closed'){
-        lcSaveToHistory(saved,d.name,d.problem,d.adminName,'closed');
-        localStorage.removeItem(LC_KEY);
-        lcSessionId=null;
-        lcRenderHistory();lcShowStage('lcStageHistory');
-      }else{
-        lcAttachListeners();
-        if(d.status==='pending')lcShowStage('lcStageWaiting');
-        else lcShowStage('lcStageChat');
-      }
-    }).catch(()=>{lcAttachListeners();});
+    const{data:d}=await sb.from('lc_sessions').select('status,name,problem,admin_name').eq('id',saved).single();
+    if(!d){localStorage.removeItem(LC_KEY);lcSessionId=null;lcRenderHistory();lcShowStage('lcStageHistory');}
+    else if(d.status==='closed'){await lcSaveToHistory(saved,d.name,d.problem,d.admin_name,'closed');localStorage.removeItem(LC_KEY);lcSessionId=null;lcRenderHistory();lcShowStage('lcStageHistory');}
+    else{await lcAttachListeners();if(d.status==='pending')lcShowStage('lcStageWaiting');else lcShowStage('lcStageChat');}
     return;
   }
-  lcRenderHistory();
-  lcShowStage('lcStageHistory');
+  lcRenderHistory();lcShowStage('lcStageHistory');
 };
 
-window.lcOpenChat=function(){
+window.lcOpenChat=async function(){
   document.getElementById('lcOverlay').classList.add('show');
   _lcUnreadCount=0;checkNotifBell();
   const saved=localStorage.getItem(LC_KEY);
   if(saved){
     lcSessionId=saved;
-    // بررسی دۆخی سێشنی پاشەکەوتراو
-    lcDb.ref('sessions/'+saved).once('value').then(snap=>{
-      const d=snap.val();
-      if(!d){
-        // سێشن سڕاوەتەوە، چاتی نوێ
-        localStorage.removeItem(LC_KEY);
-        lcSessionId=null;
-        lcShowHistoryOrForm();
-      } else if(d.status==='closed'){
-        // سێشن داخراوە — مێژوو پاشەکەوت بکە و نوێی دەستپێکردن
-        lcSaveToHistory(saved,d.name,d.problem,d.adminName);
-        localStorage.removeItem(LC_KEY);
-        lcSessionId=null;
-        lcShowHistoryOrForm();
-      } else {
-        // سێشن چالاک یان چاوەڕوانە
-        lcAttachListeners();
-      }
-    }).catch(()=>lcAttachListeners());
+    const{data:d}=await sb.from('lc_sessions').select('status,name,problem,admin_name').eq('id',saved).single();
+    if(!d){localStorage.removeItem(LC_KEY);lcSessionId=null;lcShowHistoryOrForm();}
+    else if(d.status==='closed'){await lcSaveToHistory(saved,d.name,d.problem,d.admin_name);localStorage.removeItem(LC_KEY);lcSessionId=null;lcShowHistoryOrForm();}
+    else{await lcAttachListeners();}
     return;
   }
   lcShowHistoryOrForm();
@@ -9647,7 +9571,6 @@ window.lcOpenChat=function(){
 async function lcShowHistoryOrForm(){
   let hist=[];
   try{hist=JSON.parse(localStorage.getItem(LC_HIST_KEY)||'[]');}catch(e){}
-  // ئەگەر localStorage بەتاڵ بوو، Supabase بپرسە
   if(!hist.length){
     try{
       if(typeof sb!=='undefined'&&typeof cu!=='undefined'&&cu&&cu.id){
@@ -9656,17 +9579,13 @@ async function lcShowHistoryOrForm(){
       }
     }catch(e){}
   }
-  if(hist.length>0){
-    lcRenderHistory();
-    lcShowStage('lcStageHistory');
-  }else{
-    lcShowStage('lcStageForm');
-  }
+  if(hist.length>0){lcRenderHistory();lcShowStage('lcStageHistory');}
+  else{lcShowStage('lcStageForm');}
 }
 
-window.lcCloseChat=function(){
-  document.getElementById('lcOverlay').classList.remove('show');
-};
+window.lcCloseChat=function(){document.getElementById('lcOverlay').classList.remove('show');};
+
+function lcGenId(){return'lc_'+Date.now().toString(36)+Math.random().toString(36).slice(2,9);}
 
 window.lcSubmitForm=async function(){
   const name=document.getElementById('lcFName').value.trim();
@@ -9676,30 +9595,17 @@ window.lcSubmitForm=async function(){
   const btn=document.getElementById('lcSubmitBtn');
   btn.disabled=true;btn.textContent='چاوەڕوان بە...';
   try{
-    const ref=lcDb.ref('sessions').push();
-    lcSessionId=ref.key;
-    await ref.set({name,email,problem,status:'pending',createdAt:Date.now()});
-    // ── ئاگادارکردنەوەی تیلیگرام کاتی دەستپێکردنی چات ──
+    lcSessionId=lcGenId();
+    await sb.from('lc_sessions').insert({id:lcSessionId,name,email,problem,status:'pending',admin_name:'ئەدمین'});
     try{
-      const _lcTgTxt='🔔 <b>داواکاری پشتگیری ژیوەی نوێ</b>\n'
-        +'━━━━━━━━━━━━━━━━\n'
-        +'👤 <b>ناو:</b> '+name+'\n'
-        +'✉️ <b>ئیمەیل:</b> '+email+'\n'
-        +'💬 <b>کێشە:</b> '+problem.substring(0,200)+'\n'
-        +'━━━━━━━━━━━━━━━━\n'
-        +'🔑 <b>سێشن:</b> #'+lcSessionId.slice(-8)+'\n'
-        +'⏰ <b>کات:</b> '+new Date().toLocaleString('ar')+'\n'
-        +'🟡 <b>باری تکت:</b> چاوەڕوانی پەسەندکردن ⏳';
-      fetch('https://api.telegram.org/bot'+FBW_TG_BOT+'/sendMessage',{
-        method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({chat_id:FBW_TG_CID,text:_lcTgTxt,parse_mode:'HTML'})
-      }).catch(()=>{});
+      const _lcTgTxt='🔔 <b>داواکاری پشتگیری ژیوەی نوێ</b>\n'+'━━━━━━━━━━━━━━━━\n'+'👤 <b>ناو:</b> '+name+'\n'+'✉️ <b>ئیمەیل:</b> '+email+'\n'+'💬 <b>کێشە:</b> '+problem.substring(0,200)+'\n'+'━━━━━━━━━━━━━━━━\n'+'🔑 <b>سێشن:</b> #'+lcSessionId.slice(-8)+'\n'+'⏰ <b>کات:</b> '+new Date().toLocaleString('ar')+'\n'+'🟡 <b>باری تکت:</b> چاوەڕوانی پەسەندکردن ⏳';
+      fetch('https://api.telegram.org/bot'+FBW_TG_BOT+'/sendMessage',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:FBW_TG_CID,text:_lcTgTxt,parse_mode:'HTML'})}).catch(()=>{});
     }catch(_){}
     localStorage.setItem(LC_KEY,lcSessionId);
     localStorage.setItem('proxo_lc_name',name);
-    lcSaveToHistory(lcSessionId,name,problem,'ئەدمین','pending');
+    await lcSaveToHistory(lcSessionId,name,problem,'ئەدمین','pending');
     lcShowStage('lcStageWaiting');
-    lcAttachListeners();
+    await lcAttachListeners();
   }catch(e){alert('هەڵە ڕووی دا، دووبارە هەوڵ بدەوە');}
   btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> دەستپێکردنی چات';
 };
@@ -9707,83 +9613,80 @@ window.lcSubmitForm=async function(){
 window.lcCancelWaiting=async function(){
   if(!lcSessionId)return;
   const _cancelId=lcSessionId;
-  await lcDb.ref('sessions/'+_cancelId).remove();
-  // ── سڕینەوەی سێشنەکە لە مێژووی چاتەکان ──
-  try{
-    const _h=JSON.parse(localStorage.getItem(LC_HIST_KEY)||'[]');
-    localStorage.setItem(LC_HIST_KEY,JSON.stringify(_h.filter(x=>x.id!==_cancelId)));
-  }catch(_){}
-  localStorage.removeItem(LC_KEY);
-  lcSessionId=null;
-  lcDetachListeners();
+  await sb.from('lc_sessions').delete().eq('id',_cancelId);
+  try{const _h=JSON.parse(localStorage.getItem(LC_HIST_KEY)||'[]');localStorage.setItem(LC_HIST_KEY,JSON.stringify(_h.filter(x=>x.id!==_cancelId)));}catch(_){}
+  localStorage.removeItem(LC_KEY);lcSessionId=null;
+  await lcDetachListeners();
   lcShowStage('lcStageForm');
 };
 
-function lcAttachListeners(){
-  if(lcUnsubSession)lcDb.ref('sessions/'+lcSessionId).off('value',lcUnsubSession);
-  lcUnsubSession=lcDb.ref('sessions/'+lcSessionId).on('value',snap=>{
-    const d=snap.val();
-    if(!d)return;
-    if(d.status==='active'){
-      lcShowStage('lcStageChat');
-      lcSaveToHistory(lcSessionId,d.name,d.problem,d.adminName,'active');
-      const bar=document.getElementById('lcInfoBar');
-      bar.style.display='flex';
-      const adminLbl=d.adminName||'ئەدمین';
-      document.getElementById('lcInfoText').textContent=adminLbl+' ئێستا لەسەر هێڵە لەگەڵتە';
-      // نیشاندانی ئایدی چات
-      let idPill=document.getElementById('lcChatIdPill');
-      if(!idPill){idPill=document.createElement('span');idPill.id='lcChatIdPill';idPill.className='lc-id-pill';bar.appendChild(idPill);}
-      idPill.textContent='#'+(lcSessionId||'').slice(-8);
-      lcPlayAccepted();
-    }else if(d.status==='pending'){
-      lcShowStage('lcStageWaiting');
-    }else if(d.status==='closed'){
-      // مێژوو پاشەکەوت بکە بە دۆخی داخراو
-      lcSaveToHistory(lcSessionId,d.name,d.problem,d.adminName,'closed');
-      localStorage.removeItem(LC_KEY);
-      lcDetachListeners();
-      const savedId=lcSessionId;
-      lcSessionId=null;
-      // نیشاندانی چاتی داخراو
-      lcShowStage('lcStageChat');
-      document.getElementById('lcClosedBanner').style.display='block';
-      document.getElementById('lcInpWrap').style.display='none';
-      // دووگمەی مێژوو و چاتی نوێ
-      const closedBanner=document.getElementById('lcClosedBanner');
-      if(!document.getElementById('lcNewChatAfterClose')){
-        const btnWrap=document.createElement('div');
-        btnWrap.id='lcNewChatAfterClose';
-        btnWrap.style.cssText='display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap';
-        btnWrap.innerHTML='<button onclick="lcGoToHistory()" style="padding:8px 16px;background:#f1f5f9;color:#1c2333;border:none;border-radius:10px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-history" style="margin-left:5px"></i>مێژووی چاتەکان</button>'+
-          '<button onclick="lcStartNewChat()" style="padding:8px 16px;background:#1c2333;color:#fff;border:none;border-radius:10px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-plus" style="margin-left:5px"></i>چاتی نوێ</button>';
-        closedBanner.parentNode.insertBefore(btnWrap,closedBanner.nextSibling);
+async function lcAttachListeners(){
+  await lcDetachListeners();
+  _lcMsgs=[];
+  // بارکردنی پەیامە کۆنەکان
+  const{data:initMsgs}=await sb.from('lc_messages').select('*').eq('session_id',lcSessionId).order('timestamp',{ascending:true});
+  if(initMsgs){_lcMsgs=initMsgs;lcRenderMessages(_lcMsgs);}
+  // گوێگرتن بۆ گۆڕانکاری سێشن
+  _lcSubSession=sb.channel('lc_session_'+lcSessionId)
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'lc_sessions',filter:'id=eq.'+lcSessionId},async p=>{
+      const d=p.new;if(!d)return;
+      if(d.status==='active'){
+        lcShowStage('lcStageChat');
+        await lcSaveToHistory(lcSessionId,d.name,d.problem,d.admin_name,'active');
+        const bar=document.getElementById('lcInfoBar');
+        bar.style.display='flex';
+        const adminLbl=d.admin_name||'ئەدمین';
+        document.getElementById('lcInfoText').textContent=adminLbl+' ئێستا لەسەر هێڵە لەگەڵتە';
+        let idPill=document.getElementById('lcChatIdPill');
+        if(!idPill){idPill=document.createElement('span');idPill.id='lcChatIdPill';idPill.className='lc-id-pill';bar.appendChild(idPill);}
+        idPill.textContent='#'+(lcSessionId||'').slice(-8);
+        lcPlayAccepted();
+      }else if(d.status==='pending'){
+        lcShowStage('lcStageWaiting');
+      }else if(d.status==='closed'){
+        await lcSaveToHistory(lcSessionId,d.name,d.problem,d.admin_name,'closed');
+        localStorage.removeItem(LC_KEY);
+        await lcDetachListeners();
+        const savedId=lcSessionId;lcSessionId=null;
+        lcShowStage('lcStageChat');
+        document.getElementById('lcClosedBanner').style.display='block';
+        document.getElementById('lcInpWrap').style.display='none';
+        const closedBanner=document.getElementById('lcClosedBanner');
+        if(!document.getElementById('lcNewChatAfterClose')){
+          const btnWrap=document.createElement('div');btnWrap.id='lcNewChatAfterClose';
+          btnWrap.style.cssText='display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap';
+          btnWrap.innerHTML='<button onclick="lcGoToHistory()" style="padding:8px 16px;background:#f1f5f9;color:#1c2333;border:none;border-radius:10px;font-family:'R',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-history" style="margin-left:5px"></i>مێژووی چاتەکان</button>'+'<button onclick="lcStartNewChat()" style="padding:8px 16px;background:#1c2333;color:#fff;border:none;border-radius:10px;font-family:'R',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-plus" style="margin-left:5px"></i>چاتی نوێ</button>';
+          closedBanner.parentNode.insertBefore(btnWrap,closedBanner.nextSibling);
+        }
+        setTimeout(()=>{lcSessionId=savedId;lcShowStage('lcStageFeedback');},1200);
       }
-      // فیدبەک دوای 1.2 چرکە
-      setTimeout(()=>{
-        lcSessionId=savedId;
-        lcShowStage('lcStageFeedback');
-      },1200);
-    }
-  });
-  if(lcUnsubMessages)lcDb.ref('messages/'+lcSessionId).off('value',lcUnsubMessages);
-  let firstMsg=true;
-  lcUnsubMessages=lcDb.ref('messages/'+lcSessionId).on('value',snap=>{
-    const d=snap.val();
-    lcRenderMessages(d?Object.entries(d).map(([id,v])=>({id,...v})).sort((a,b)=>a.timestamp-b.timestamp):[]);
-    if(!firstMsg&&d){const msgs=Object.values(d);const last=msgs.sort((a,b)=>a.timestamp-b.timestamp).pop();if(last&&last.sender==='admin'){lcPlayNotif();const _lcOv=document.getElementById('lcOverlay');if(!_lcOv||!_lcOv.classList.contains('show')){_lcUnreadCount++;checkNotifBell();}}}
-    firstMsg=false;
-  });
-  if(lcUnsubTyping)lcDb.ref('typing/'+lcSessionId+'/admin').off('value',lcUnsubTyping);
-  lcUnsubTyping=lcDb.ref('typing/'+lcSessionId+'/admin').on('value',snap=>lcRenderTyping(!!snap.val()));
+    })
+    .subscribe();
+  // گوێگرتن بۆ پەیامی نوێ
+  _lcSubMessages=sb.channel('lc_msgs_'+lcSessionId)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'lc_messages',filter:'session_id=eq.'+lcSessionId},p=>{
+      const msg=p.new;if(!msg)return;
+      _lcMsgs.push(msg);lcRenderMessages(_lcMsgs);
+      if(msg.sender==='admin'){
+        lcPlayNotif();
+        const _lcOv=document.getElementById('lcOverlay');
+        if(!_lcOv||!_lcOv.classList.contains('show')){_lcUnreadCount++;checkNotifBell();}
+      }
+    })
+    .subscribe();
+  // تایپکردن — Supabase Broadcast
+  if(_lcTypingCh){try{sb.removeChannel(_lcTypingCh);}catch(e){}}
+  _lcTypingCh=sb.channel('lc_typing_'+lcSessionId)
+    .on('broadcast',{event:'typing'},({payload})=>{
+      if(payload&&payload.sender==='admin')lcRenderTyping(!!payload.typing);
+    })
+    .subscribe();
 }
 
-function lcDetachListeners(){
-  if(lcSessionId){
-    if(lcUnsubSession)lcDb.ref('sessions/'+lcSessionId).off('value',lcUnsubSession);
-    if(lcUnsubMessages)lcDb.ref('messages/'+lcSessionId).off('value',lcUnsubMessages);
-    if(lcUnsubTyping)lcDb.ref('typing/'+lcSessionId+'/admin').off('value',lcUnsubTyping);
-  }
+async function lcDetachListeners(){
+  if(_lcSubSession){try{await sb.removeChannel(_lcSubSession);}catch(e){}_lcSubSession=null;}
+  if(_lcSubMessages){try{await sb.removeChannel(_lcSubMessages);}catch(e){}_lcSubMessages=null;}
+  if(_lcTypingCh){try{await sb.removeChannel(_lcTypingCh);}catch(e){}_lcTypingCh=null;}
 }
 
 function lcEsc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -9791,11 +9694,10 @@ function lcEsc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>
 function lcRenderMessages(msgs){
   const area=document.getElementById('lcMsgsArea');
   area.innerHTML='';
-  // دڵنیابوون لە چالاکبوونی خانەی نووسین لە کاتی سێشنی چالاک
   try{
-    if(lcSessionId&&lcDb){
-      lcDb.ref('sessions/'+lcSessionId+'/status').once('value',snap=>{
-        const st=snap.val();
+    if(lcSessionId){
+      sb.from('lc_sessions').select('status').eq('id',lcSessionId).single().then(({data})=>{
+        const st=data?.status;
         const wrap=document.getElementById('lcInpWrap');
         if(wrap)wrap.style.display=(st==='active')?'flex':'none';
       });
@@ -9803,16 +9705,16 @@ function lcRenderMessages(msgs){
   }catch(e){}
   msgs.forEach(m=>{
     const div=document.createElement('div');
-    div.className='lc-bubble '+m.sender;
+    div.className='lc-bubble '+(m.sender);
     const time=new Date(m.timestamp).toLocaleTimeString('ku-IQ',{hour:'2-digit',minute:'2-digit'});
     if(m.type==='image'&&m.data){
       div.style.padding='6px';
-      div.innerHTML=`<img class="lc-media-img" src="${m.data}" onclick="lcViewImg(this)" loading="lazy"><div class="lc-msg-time" style="padding:0 4px 2px">${time}</div>`;
+      div.innerHTML='<img class="lc-media-img" src="'+m.data+'" onclick="lcViewImg(this)" loading="lazy"><div class="lc-msg-time" style="padding:0 4px 2px">'+time+'</div>';
     }else if(m.type==='video'&&m.data){
       div.style.padding='6px';
-      div.innerHTML=`<video class="lc-media-vid" src="${m.data}" controls playsinline preload="metadata"></video><div class="lc-msg-time" style="padding:0 4px 2px">${time}</div>`;
+      div.innerHTML='<video class="lc-media-vid" src="'+m.data+'" controls playsinline preload="metadata"></video><div class="lc-msg-time" style="padding:0 4px 2px">'+time+'</div>';
     }else{
-      div.innerHTML=`<div>${lcEsc(m.text||'')}</div><div class="lc-msg-time">${time}</div>`;
+      div.innerHTML='<div>'+lcEsc(m.text||'')+'</div><div class="lc-msg-time">'+time+'</div>';
     }
     area.appendChild(div);
   });
@@ -9845,7 +9747,6 @@ function lcRenderTyping(show){
   }else if(!show&&ex){ex.remove();}
 }
 
-// ئاگاداری تیلیگرام — تەنها یەکجار بۆ هەر سێشنێک
 let _lcTgNotified=new Set();
 let _lcUnreadCount=0;
 
@@ -9854,40 +9755,23 @@ window.lcSendMsg=async function(){
   const btn=document.getElementById('lcSendBtn');
   const text=inp.value.trim();
   if(!text||!lcSessionId)return;
-  // دیاری ناردن
   if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i>';}
   inp.value='';inp.style.height='auto';
   const name=localStorage.getItem('proxo_lc_name')||'User';
   try{
-    await lcDb.ref('messages/'+lcSessionId).push({text,sender:'user',senderName:name,timestamp:Date.now()});
-    await lcDb.ref('typing/'+lcSessionId+'/user').set(false);
+    await sb.from('lc_messages').insert({session_id:lcSessionId,text,type:'text',sender:'user',sender_name:name,timestamp:Date.now()});
+    if(_lcTypingCh){try{_lcTypingCh.send({type:'broadcast',event:'typing',payload:{sender:'user',typing:false}});}catch(e){}}
     lcPlaySent();
-    // ── ئاگاداری تیلیگرام — تەنها یەکجار بۆ سێشنی نوێ ──
     if(!_lcTgNotified.has(lcSessionId)){
       _lcTgNotified.add(lcSessionId);
       try{
-        const _lcUser=cu?.user_metadata?.full_name||cu?.email||name||'بەکارهێنەر';
-        const tgText='💬 *پەیامی پشتگیری ڕاستەوخۆی نوێ*\n'
-          +'━━━━━━━━━━━━━━━━\n'
-          +'👤 *ناو:* '+_lcUser+'\n'
-          +'✉️ *ئیمەیل:* '+(cu?.email||'—')+'\n'
-          +'🆔 *ئایدی:* '+(cu?.id?.substring(0,14)||'—')+'...\n'
-          +'━━━━━━━━━━━━━━━━\n'
-          +'💬 *یەکەم پەیام:*\n'+text.substring(0,300)+'\n'
-          +'━━━━━━━━━━━━━━━━\n'
-          +'🔑 *سێشن:* '+lcSessionId.substring(0,20)+'...\n'
-          +'⏰ *کات:* '+new Date().toLocaleString('ar');
-        fetch('https://api.telegram.org/bot'+FBW_TG_BOT+'/sendMessage',{
-          method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({chat_id:FBW_TG_CID,text:tgText,parse_mode:'Markdown'})
-        }).catch(()=>{});
+        const _lcUser=(typeof cu!=='undefined'&&cu)?(cu?.user_metadata?.full_name||cu?.email||name):name;
+        const tgText='💬 *پەیامی پشتگیری ڕاستەوخۆی نوێ*\n'+'━━━━━━━━━━━━━━━━\n'+'👤 *ناو:* '+_lcUser+'\n'+'✉️ *ئیمەیل:* '+((typeof cu!=='undefined'&&cu?.email)||'—')+'\n'+'━━━━━━━━━━━━━━━━\n'+'💬 *یەکەم پەیام:*\n'+text.substring(0,300)+'\n'+'━━━━━━━━━━━━━━━━\n'+'🔑 *سێشن:* '+lcSessionId.substring(0,20)+'...\n'+'⏰ *کات:* '+new Date().toLocaleString('ar');
+        fetch('https://api.telegram.org/bot'+FBW_TG_BOT+'/sendMessage',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:FBW_TG_CID,text:tgText,parse_mode:'Markdown'})}).catch(()=>{});
       }catch(_){}
     }
-  }catch(e){
-    // ئەگەر هەڵە ڕووی دا، دووبارە متن بگەڕێنەوە
-    inp.value=text;
-  }finally{
-    // هەمیشە دووبارە چالاکی بکەوە بەردەوامی
+  }catch(e){inp.value=text;}
+  finally{
     if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane" style="transform:rotate(180deg)"></i>';}
     inp.focus();
     const area=document.getElementById('lcMsgsArea');
@@ -9895,7 +9779,6 @@ window.lcSendMsg=async function(){
   }
 };
 
-// ناردنی وێنە / ڤیدیۆ
 window.lcHandleMedia=async function(input){
   const file=input.files[0];
   if(!file||!lcSessionId)return;
@@ -9903,13 +9786,9 @@ window.lcHandleMedia=async function(input){
   const isImage=file.type.startsWith('image/');
   const isVideo=file.type.startsWith('video/');
   if(!isImage&&!isVideo){showToast&&showToast('تەنها وێنە و ڤیدیۆ پشتگیری دەکرێت','err');return;}
-  // پشکنینی قەبارە — ڤیدیۆ ماکسیمۆم 15MB، وێنە 10MB
   const maxBytes=isVideo?15*1024*1024:10*1024*1024;
-  if(file.size>maxBytes){
-    showToast&&showToast(isVideo?'ڤیدیۆ دەبێت کەمتر لە 15MB بێت':'وێنە دەبێت کەمتر لە 10MB بێت','err');return;
-  }
+  if(file.size>maxBytes){showToast&&showToast(isVideo?'ڤیدیۆ دەبێت کەمتر لە 15MB بێت':'وێنە دەبێت کەمتر لە 10MB بێت','err');return;}
   const name=localStorage.getItem('proxo_lc_name')||'User';
-  // نیشاندانی بارکردن
   const area=document.getElementById('lcMsgsArea');
   const loader=document.createElement('div');
   loader.className='lc-media-uploading';
@@ -9917,36 +9796,15 @@ window.lcHandleMedia=async function(input){
   area.appendChild(loader);area.scrollTop=area.scrollHeight;
   try{
     let dataUrl;
-    if(isImage){
-      // فشاردنی وێنە بەرپرسانەیانە
-      dataUrl=await lcCompressImage(file,1280,0.82);
-    }else{
-      dataUrl=await lcReadFileAsDataURL(file);
-    }
+    if(isImage){dataUrl=await lcCompressImage(file,1280,0.82);}
+    else{dataUrl=await lcReadFileAsDataURL(file);}
     loader.remove();
-    await lcDb.ref('messages/'+lcSessionId).push({
-      type:isImage?'image':'video',
-      data:dataUrl,
-      mimeType:file.type,
-      sender:'user',
-      senderName:name,
-      timestamp:Date.now()
-    });
+    await sb.from('lc_messages').insert({session_id:lcSessionId,type:isImage?'image':'video',data:dataUrl,mime_type:file.type,sender:'user',sender_name:name,timestamp:Date.now()});
     lcPlaySent();
-  }catch(e){
-    loader.remove();
-    showToast&&showToast('هەڵە لە ناردنی میدیا','err');
-  }
+  }catch(e){loader.remove();showToast&&showToast('هەڵە لە ناردنی میدیا','err');}
 };
 
-function lcReadFileAsDataURL(file){
-  return new Promise((res,rej)=>{
-    const r=new FileReader();
-    r.onload=e=>res(e.target.result);
-    r.onerror=rej;
-    r.readAsDataURL(file);
-  });
-}
+function lcReadFileAsDataURL(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsDataURL(file);});}
 
 function lcCompressImage(file,maxPx,quality){
   return new Promise((res,rej)=>{
@@ -9955,20 +9813,14 @@ function lcCompressImage(file,maxPx,quality){
       const img=new Image();
       img.onload=()=>{
         let w=img.width,h=img.height;
-        if(w>maxPx||h>maxPx){
-          if(w>h){h=Math.round(h*maxPx/w);w=maxPx;}
-          else{w=Math.round(w*maxPx/h);h=maxPx;}
-        }
-        const c=document.createElement('canvas');
-        c.width=w;c.height=h;
+        if(w>maxPx||h>maxPx){if(w>h){h=Math.round(h*maxPx/w);w=maxPx;}else{w=Math.round(w*maxPx/h);h=maxPx;}}
+        const c=document.createElement('canvas');c.width=w;c.height=h;
         c.getContext('2d').drawImage(img,0,0,w,h);
         res(c.toDataURL('image/jpeg',quality));
       };
-      img.onerror=rej;
-      img.src=e.target.result;
+      img.onerror=rej;img.src=e.target.result;
     };
-    reader.onerror=rej;
-    reader.readAsDataURL(file);
+    reader.onerror=rej;reader.readAsDataURL(file);
   });
 }
 
@@ -9976,15 +9828,17 @@ window.lcInputKeyDown=function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefa
 window.lcAutoResize=function(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,90)+'px';};
 
 document.getElementById('lcChatInput').addEventListener('input',function(){
-  if(!lcSessionId)return;
-  if(!lcIsTyping){lcIsTyping=true;lcDb.ref('typing/'+lcSessionId+'/user').set(true).catch(()=>{});}
+  if(!lcSessionId||!_lcTypingCh)return;
+  if(!lcIsTyping){
+    lcIsTyping=true;
+    try{_lcTypingCh.send({type:'broadcast',event:'typing',payload:{sender:'user',typing:true}});}catch(e){}
+  }
   clearTimeout(lcTypingTimer);
   lcTypingTimer=setTimeout(()=>{
     lcIsTyping=false;
-    lcDb.ref('typing/'+lcSessionId+'/user').set(false).catch(()=>{});
+    try{_lcTypingCh.send({type:'broadcast',event:'typing',payload:{sender:'user',typing:false}});}catch(e){}
   },2000);
 });
-// کلیلی Enter بۆ ناردن — بەردەوام
 document.getElementById('lcChatInput').addEventListener('keydown',function(e){
   if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();lcSendMsg();}
 });
@@ -9993,7 +9847,6 @@ document.getElementById('lcFName').addEventListener('input',function(){
   localStorage.setItem('proxo_lc_name',this.value.trim());
 });
 
-// ئۆتۆفیل لە سوپابەیس
 document.addEventListener('proxo_user_loaded',function(e){
   const u=e.detail;
   if(u&&u.name){
@@ -10005,7 +9858,6 @@ document.addEventListener('proxo_user_loaded',function(e){
   }
 });
 
-// ئەستێرەکان
 const lcRatingLabels=['','خراپ','مامناوەند','باش','زۆر باش','نایاب!'];
 window.lcSetRating=function(n){
   lcRating=n;
@@ -10018,15 +9870,10 @@ window.lcSetRating=function(n){
 
 window.lcSubmitFeedback=async function(){
   if(!lcRating||!lcSessionId)return;
-  await lcDb.ref('feedback/'+lcSessionId).set({
-    rating:lcRating,
-    comment:document.getElementById('lcFbComment').value.trim(),
-    timestamp:Date.now()
-  });
+  await sb.from('lc_feedback').insert({session_id:lcSessionId,rating:lcRating,comment:document.getElementById('lcFbComment').value.trim()});
   lcSessionId=null;
   lcShowStage('lcStageDone');
 };
-
 // ══ FIREBASE IMAGE BANNER SLIDER LOADER ══
 (function(){
   let _banners=[];
