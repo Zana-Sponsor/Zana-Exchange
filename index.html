@@ -1293,7 +1293,7 @@ textarea.lc-inp{resize:none;}
       </div>
       <input class="finp" type="email" id="authEmail" placeholder="ئیمەیل" dir="ltr">
       <div class="pass-wrap" id="authPassWrap">
-        <input class="finp" type="password" id="authPass" placeholder="پاسۆرد" dir="ltr"
+        <input class="finp" type="password" id="authPass" placeholder="وشەی نهێنی" dir="ltr"
           onkeydown="if(event.key==='Enter')doAuth()"
           oninput="updateStrength('authPass','authStrFill','authStrTxt')">
         <button type="button" class="pass-eye" onclick="togglePass('authPass',this)"><i class="fas fa-eye-slash"></i></button>
@@ -1307,7 +1307,7 @@ textarea.lc-inp{resize:none;}
         <span id="authBtnTxt">چوونەژوورەوە</span>
       </button>
       <div style="text-align:center;margin-top:10px" id="forgotLinkWrap">
-        <span onclick="showForgotStep()" style="font-size:12px;color:var(--mt);cursor:pointer;text-decoration:underline">پاسۆردم فەرامووشم کردووە</span>
+        <span onclick="showForgotStep()" style="font-size:12px;color:var(--mt);cursor:pointer;text-decoration:underline">وشەی نهێنیم لەبیرکردووە</span>
       </div>
       <div class="amsg" id="authMsg"></div>
 
@@ -1318,7 +1318,7 @@ textarea.lc-inp{resize:none;}
         <div id="fpStepA">
           <div style="text-align:center;margin-bottom:16px">
             <div style="width:56px;height:56px;border-radius:18px;background:rgba(28,35,51,.06);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px">🔑</div>
-            <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px">ڕێستکردنەوەی پاسۆرد</div>
+            <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px">ڕێستکردنەوەی وشەی نهێنی</div>
             <div style="font-size:12px;color:var(--mt)">ئیمەیلت بنووسە، کۆدی دڵنیاکردنەوە دەنێرینە</div>
           </div>
           <input class="finp" type="email" id="forgotEmail" placeholder="ئیمەیل" dir="ltr" onkeydown="if(event.key==='Enter')doForgotSendOtp()">
@@ -1364,10 +1364,10 @@ textarea.lc-inp{resize:none;}
           <div style="text-align:center;margin-bottom:18px">
             <div style="width:56px;height:56px;border-radius:18px;background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px"><i class="fas fa-circle-check" style="color:#16a34a"></i></div>
             <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px">ناسنامەت دڵنیاکرایەوە</div>
-            <div style="font-size:12px;color:var(--mt)">ئێستا پاسۆردی نوێت بنووسە</div>
+            <div style="font-size:12px;color:var(--mt)">ئێستا وشەی نهێنیی نوێت بنووسە</div>
           </div>
           <div class="pass-wrap" style="margin-bottom:0">
-            <input class="finp" type="password" id="fpNewPass" placeholder="پاسۆردی نوێ — کەمترین ٦ پیت" dir="ltr"
+            <input class="finp" type="password" id="fpNewPass" placeholder="وشەی نهێنیی نوێ — کەمترین ٦ پیت" dir="ltr"
               oninput="updateStrength('fpNewPass','fpStrFill','fpStrTxt')">
             <button type="button" class="pass-eye" onclick="togglePass('fpNewPass',this)"><i class="fas fa-eye-slash"></i></button>
           </div>
@@ -1376,13 +1376,13 @@ textarea.lc-inp{resize:none;}
             <div class="str-txt" id="fpStrTxt"></div>
           </div>
           <div class="pass-wrap" style="margin-bottom:14px">
-            <input class="finp" type="password" id="fpConfirmPass" placeholder="دووبارە پاسۆردی نوێ" dir="ltr">
+            <input class="finp" type="password" id="fpConfirmPass" placeholder="دووبارە وشەی نهێنیی نوێ" dir="ltr">
             <button type="button" class="pass-eye" onclick="togglePass('fpConfirmPass',this)"><i class="fas fa-eye-slash"></i></button>
           </div>
           <div class="amsg" id="fpMsgC" style="display:none;margin-bottom:12px"></div>
           <button class="abtn" id="fpSaveBtn" onclick="doForgotSavePass()">
             <i class="fas fa-lock"></i>
-            <span>پاشەکەوتکردنی پاسۆردی نوێ</span>
+            <span>پاشەکەوتکردنی وشەی نهێنیی نوێ</span>
           </button>
         </div>
 
@@ -1728,7 +1728,7 @@ textarea.lc-inp{resize:none;}
       <div class="pcard-hdr">
         <div class="pcard-hdr-left" style="color:#b45309"><span style="margin-left:5px"><i class="fas fa-coins"></i></span> کۆینی پرۆکسۆ</div>
         <span style="font-size:11px;cursor:pointer;color:#d97706;font-weight:700" onclick="openCoinsModal()">
-          <i class="fas fa-arrow-right-arrow-left"></i> گۆڕانەوە
+          <i class="fas fa-arrow-right-arrow-left"></i> گۆڕینەوە
         </span>
       </div>
       <div class="bal-row">
@@ -1737,7 +1737,7 @@ textarea.lc-inp{resize:none;}
       </div>
       <div style="font-size:12px;color:#b45309;margin-top:6px;background:rgba(245,158,11,.08);border-radius:10px;padding:8px 12px">
         <i class="fas fa-info-circle" style="margin-left:5px"></i>
-        هەر <span style="font-family:'R',sans-serif;direction:ltr;unicode-bidi:embed">50</span> کۆین = <span style="font-family:'R',sans-serif;direction:ltr;unicode-bidi:embed">500</span> IQD · کەمترین <span style="font-family:'R',sans-serif;direction:ltr;unicode-bidi:embed">500</span> کۆین بۆ گۆڕانەوە
+        هەر <span style="font-family:'R',sans-serif;direction:ltr;unicode-bidi:embed">50</span> کۆین = <span style="font-family:'R',sans-serif;direction:ltr;unicode-bidi:embed">500</span> IQD · کەمترین <span style="font-family:'R',sans-serif;direction:ltr;unicode-bidi:embed">500</span> کۆین بۆ گۆڕینەوە
       </div>
     </div>
     <!-- بانگێشتکردن -->
@@ -1772,7 +1772,7 @@ textarea.lc-inp{resize:none;}
       </div>
       <div class="plist-item" onclick="openChangePass()">
         <div class="plist-ico"><i class="fas fa-lock"></i></div>
-        <div class="plist-txt">گۆڕینی پاسۆرد</div>
+        <div class="plist-txt">گۆڕینی وشەی نهێنی</div>
         <i class="fas fa-chevron-left plist-arr"></i>
       </div>
       <div class="plist-item green" onclick="openWA()">
@@ -2587,7 +2587,7 @@ textarea.lc-inp{resize:none;}
           <span style="position:absolute;left:16px;top:50%;transform:translateY(-50%);font-family:'Inter',sans-serif;font-size:12px;font-weight:700;color:#4f6ef7;background:rgba(79,110,247,.1);padding:4px 8px;border-radius:7px;pointer-events:none">IQD</span>
           <span id="arcUsd" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:var(--mt2);pointer-events:none;white-space:nowrap;transition:color .2s">≈ $0</span>
         </div>
-        <div style="font-size:11px;color:var(--mt);text-align:center;margin-bottom:16px;font-family:'Inter',sans-serif">نرخی گۆڕانەوە: 1 USD = 1,800 IQD</div>
+        <div style="font-size:11px;color:var(--mt);text-align:center;margin-bottom:16px;font-family:'Inter',sans-serif">نرخی گۆڕینەوە: 1 USD = 1,800 IQD</div>
 
         <!-- Quick Amounts -->
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px">
@@ -2905,7 +2905,7 @@ textarea.lc-inp{resize:none;}
       <div class="coins-progress-track">
         <div class="coins-progress-fill" id="modalCoinsProgressFill" style="width:0%"></div>
       </div>
-      <div style="font-size:11px;color:var(--mt);margin-top:6px;text-align:center" id="modalCoinsProgressMsg">500 کۆین پێویستە بۆ گۆڕانەوە</div>
+      <div style="font-size:11px;color:var(--mt);margin-top:6px;text-align:center" id="modalCoinsProgressMsg">500 کۆین پێویستە بۆ گۆڕینەوە</div>
     </div>
     <!-- Info -->
     <div style="margin:14px 0">
@@ -2919,16 +2919,16 @@ textarea.lc-inp{resize:none;}
       </div>
       <div class="coins-info-item">
         <div class="coins-info-ico" style="background:rgba(37,99,235,.08);color:var(--bl)"><i class="fas fa-repeat"></i></div>
-        <div>کەمترین <span style="font-family:'R',sans-serif">500</span> کۆین پێویستە بۆ گۆڕانەوە بۆ <span style="font-family:'R',sans-serif">500</span> IQD باڵانس.</div>
+        <div>کەمترین <span style="font-family:'R',sans-serif">500</span> کۆین پێویستە بۆ گۆڕینەوە بۆ <span style="font-family:'R',sans-serif">500</span> IQD باڵانس.</div>
       </div>
     </div>
     <!-- Exchange Button (shown when >= 500) -->
     <button class="coins-exchange-btn" id="coinsExchangeBtn" onclick="exchangeCoins()" style="display:none">
-      <i class="fas fa-arrow-right-arrow-left"></i> گۆڕانەوە بۆ باڵانس
+      <i class="fas fa-arrow-right-arrow-left"></i> گۆڕینەوە بۆ باڵانس
     </button>
     <div class="coins-need-more" id="coinsNeedMore">
       <i class="fas fa-lock" style="color:var(--mt)"></i>
-      <span id="coinsNeedMoreTxt">500 کۆین پێویستە بۆ گۆڕانەوە</span>
+      <span id="coinsNeedMoreTxt">500 کۆین پێویستە بۆ گۆڕینەوە</span>
     </div>
   </div>
 </div>
@@ -3195,7 +3195,7 @@ textarea.lc-inp{resize:none;}
   <div class="mbox">
     <div class="mbar"></div>
     <div class="mhdr">
-      <h3><i class="fas fa-lock" style="color:var(--dark);margin-left:8px"></i>گۆڕینی پاسۆرد</h3>
+      <h3><i class="fas fa-lock" style="color:var(--dark);margin-left:8px"></i>گۆڕینی وشەی نهێنی</h3>
       <button class="mclose" onclick="closeChangePasMo()"><i class="fas fa-xmark"></i></button>
     </div>
 
@@ -3227,9 +3227,9 @@ textarea.lc-inp{resize:none;}
       <div style="text-align:center;margin-bottom:18px">
         <div style="width:52px;height:52px;border-radius:16px;background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:22px"><i class="fas fa-circle-check" style="color:#16a34a"></i></div>
         <div style="font-size:13px;font-weight:800;color:var(--dark);margin-bottom:3px">ناسنامەت دڵنیاکرایەوە</div>
-        <div style="font-size:11.5px;color:var(--mt)">ئێستا پاسۆردی نوێت بنووسە</div>
+        <div style="font-size:11.5px;color:var(--mt)">ئێستا وشەی نهێنیی نوێت بنووسە</div>
       </div>
-      <div class="mlbl">پاسۆردی نوێ</div>
+      <div class="mlbl">وشەی نهێنیی نوێ</div>
       <div class="pass-wrap" style="margin-bottom:0">
         <input class="finp" type="password" id="newPassInp" placeholder="کەمترین ٦ پیت" dir="ltr"
           oninput="updateStrength('newPassInp','cpStrFill','cpStrTxt')">
@@ -3239,14 +3239,14 @@ textarea.lc-inp{resize:none;}
         <div class="str-bar"><div class="str-fill" id="cpStrFill"></div></div>
         <div class="str-txt" id="cpStrTxt"></div>
       </div>
-      <div class="mlbl">دووبارە پاسۆردی نوێ</div>
+      <div class="mlbl">دووبارە وشەی نهێنیی نوێ</div>
       <div class="pass-wrap" style="margin-bottom:14px">
         <input class="finp" type="password" id="confirmPassInp" placeholder="دووبارە بنووسە" dir="ltr">
         <button type="button" class="pass-eye" onclick="togglePass('confirmPassInp',this)"><i class="fas fa-eye-slash"></i></button>
       </div>
       <div id="changePassMsg" style="display:none;font-size:12px;padding:10px 13px;border-radius:11px;margin-bottom:12px;text-align:center"></div>
       <button class="save-btn" onclick="doChangePassFinal()" id="changePassBtn">
-        <i class="fas fa-lock"></i> گۆڕینی پاسۆرد
+        <i class="fas fa-lock"></i> گۆڕینی وشەی نهێنی
       </button>
     </div>
 
@@ -3716,7 +3716,7 @@ function updateStrength(inputId, fillId, txtId) {
   if (!fill || !txt) return;
   if (!val) { fill.style.width = '0'; txt.textContent = ''; return; }
   const levels = [
-    { w: '33%',  c: '#ef4444', t: 'قەرزار' },
+    { w: '33%',  c: '#ef4444', t: 'ئاسان' },
     { w: '66%',  c: '#f97316', t: 'مامناوەند' },
     { w: '100%', c: '#22c55e', t: 'بەهێز' }
   ];
@@ -3954,10 +3954,10 @@ function showOtpMsg(t, c) {
 // ═══ KURDISH ERROR MESSAGES ═══
 function kuErr(msg){
   const m={
-    'Invalid login credentials':'ئیمەیل یان پاسۆرد هەڵەیە',
+    'Invalid login credentials':'ئیمەیل یان وشەی نهێنی هەڵەیە',
     'Email already registered':'ئەم ئیمەیلە پێشتر تۆمارکراوە',
     'User already registered':'ئەم ئیمەیلە پێشتر تۆمارکراوە',
-    'Password should be at least 6 characters':'پاسۆرد دەبێت کەمترین ٦ پیت بێت',
+    'Password should be at least 6 characters':'وشەی نهێنی دەبێت کەمترین ٦ پیت بێت',
     'Unable to validate email address: invalid format':'فۆرماتی ئیمەیل هەڵەیە',
     'Email not confirmed':'ئیمەیلەکەت دڵنیانەکراوەتەوە',
     'Too many requests':'زۆر جار هەوڵت دا، کەمێک چاوەڕوان بە',
@@ -3966,7 +3966,7 @@ function kuErr(msg){
     'Invalid email':'ئیمەیل هەڵەیە',
     'Signup disabled':'تۆمارکردن ئێستا گرتراوەتەوە',
     'Email rate limit exceeded':'زۆر جار ئیمەیل نێردرا، کەمێک چاوەڕوان بە',
-    'New password should be different from the old password':'پاسۆردی نوێ دەبێت جیاوازی لە پاسۆردی کۆن بێت',
+    'New password should be different from the old password':'وشەی نهێنیی نوێ دەبێت جیاوازی لە وشەی نهێنیی کۆن بێت',
     'Auth session missing':'تکایە دووبارە بچۆ ژوورەوە',
   };
   return m[msg] || msg;
@@ -4097,8 +4097,8 @@ async function doForgotVerifyOtp(){
 async function doForgotSavePass(){
   const np=document.getElementById('fpNewPass').value;
   const cp=document.getElementById('fpConfirmPass').value;
-  if(!np||np.length<6){fpShowMsg('C','پاسۆرد دەبێت کەمترین ٦ پیت بێت','err');return;}
-  if(np!==cp){fpShowMsg('C','پاسۆردەکان یەکسان نین','err');return;}
+  if(!np||np.length<6){fpShowMsg('C','وشەی نهێنی دەبێت کەمترین ٦ پیت بێت','err');return;}
+  if(np!==cp){fpShowMsg('C','وشەی نهێنیەکان یەکسان نین','err');return;}
   const btn=document.getElementById('fpSaveBtn');
   btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> گۆڕین...';
   try{
@@ -4108,7 +4108,7 @@ async function doForgotSavePass(){
     let data={};
     try{const txt=await res.text();if(txt.trim())data=JSON.parse(txt);}catch(_){}
     if(res.ok&&data.success!==false){
-      fpShowMsg('C','پاسۆردەکە بە سەرکەوتوویی گۆڕدرا، ئێستا بچۆ ژوورەوە','ok');
+      fpShowMsg('C','وشەی نهێنیەکە بە سەرکەوتوویی گۆڕدرا، ئێستا بچۆ ژوورەوە','ok');
       setTimeout(()=>cancelForgotStep(),2500);
     } else {
       fpShowMsg('C',data.message||'هەڵەیەک ڕووی دا، دووبارە هەوڵ بدەرەوە','err');
@@ -4116,7 +4116,7 @@ async function doForgotSavePass(){
   }catch(e){
     fpShowMsg('C',kuErr(e.message)||'هەڵەی تۆڕ','err');
   }finally{
-    btn.disabled=false;btn.innerHTML='<i class="fas fa-lock"></i> پاشەکەوتکردنی پاسۆردی نوێ';
+    btn.disabled=false;btn.innerHTML='<i class="fas fa-lock"></i> پاشەکەوتکردنی وشەی نهێنیی نوێ';
   }
 }
 
@@ -4229,15 +4229,15 @@ async function doChangePassFinal(){
   const cp=document.getElementById('confirmPassInp').value;
   const msgEl=document.getElementById('changePassMsg');
   function showCPMsg(t,c){msgEl.textContent=t;msgEl.className='amsg '+c;msgEl.style.display='block';}
-  if(!np||np.length<6){showCPMsg('پاسۆرد دەبێت کەمترین ٦ پیت بێت','err');return;}
-  if(np!==cp){showCPMsg('پاسۆردەکان یەکسان نین، دووبارە بنووسە','err');return;}
+  if(!np||np.length<6){showCPMsg('وشەی نهێنی دەبێت کەمترین ٦ پیت بێت','err');return;}
+  if(np!==cp){showCPMsg('وشەی نهێنیەکان یەکسان نین، دووبارە بنووسە','err');return;}
   const btn=document.getElementById('changePassBtn');
   btn.disabled=true;
   btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> گۆڕین...';
   try{
     const {error}=await sb.auth.updateUser({password:np});
     if(error) throw error;
-    showCPMsg('پاسۆردەکە بە سەرکەوتوویی گۆڕدرا','ok');
+    showCPMsg('وشەی نهێنیەکە بە سەرکەوتوویی گۆڕدرا','ok');
     document.getElementById('newPassInp').value='';
     document.getElementById('confirmPassInp').value='';
     setTimeout(()=>closeChangePasMo(),2000);
@@ -4245,7 +4245,7 @@ async function doChangePassFinal(){
     showCPMsg(kuErr(e.message)||'هەڵەیەک ڕووی دا','err');
   }finally{
     btn.disabled=false;
-    btn.innerHTML='<i class="fas fa-lock"></i> گۆڕینی پاسۆرد';
+    btn.innerHTML='<i class="fas fa-lock"></i> گۆڕینی وشەی نهێنی';
   }
 }
 
@@ -4282,12 +4282,12 @@ async function doAuth(){
     if(!nameVal){showAmsg('ناوی تەواو بنووسە','err');return;}
     if(!email){showAmsg('ئیمەیل بنووسە','err');return;}
     if(!email.toLowerCase().endsWith('@gmail.com')){showAmsg('تەنها ئیمەیلی Gmail (@gmail.com) پاشگیری دەکرێت','err');return;}
-    if(!pass){showAmsg('پاسۆرد بنووسە','err');return;}
+    if(!pass){showAmsg('وشەی نهێنی بنووسە','err');return;}
   } else {
     if(!email){showAmsg('ئیمەیل بنووسە','err');return;}
-    if(!pass){showAmsg('پاسۆرد بنووسە','err');return;}
+    if(!pass){showAmsg('وشەی نهێنی بنووسە','err');return;}
   }
-  if(pass.length<6){showAmsg('پاسۆرد کەمترین ٦ پیت','err');return;}
+  if(pass.length<6){showAmsg('وشەی نهێنی کەمترین ٦ پیت','err');return;}
   btn.disabled=true;
   btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> پشکنین...';
   try{
@@ -4296,12 +4296,12 @@ async function doAuth(){
       const {data:existCheck}=await sb.from('profiles').select('id').eq('email',email).maybeSingle();
       if(existCheck){showAmsg('ئەم ئیمەیلە پێشتر تۆمارکراوە — بچۆ ژوورەوە','err');return;}
     }
-    // ── پشکنینی پاسۆرد پێش ناردنی کۆد (تەنها لە چوونەژوورەوەدا) ──
+    // ── پشکنینی وشەی نهێنی پێش ناردنی کۆد (تەنها لە چوونەژوورەوەدا) ──
     if(aMode==='login'){
       btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> پشکنین...';
       const {data:credData,error:credErr}=await sb.auth.signInWithPassword({email,password:pass});
       if(credErr){
-        showAmsg('ئیمەیل یان پاسۆرد هەڵەیە','err');
+        showAmsg('ئیمەیل یان وشەی نهێنی هەڵەیە','err');
         return;
       }
       // ══ چێکی بانکردن پێش ناردنی کۆد ══
@@ -5422,12 +5422,12 @@ function openCoinsModal(){
     if(coins>=COINS_MIN_EXCHANGE){
       exchangeBtn.style.display='flex';
       needMore.style.display='none';
-      progressMsg.textContent='ئامادەیت بۆ گۆڕانەوە — '+(coins*COINS_TO_IQD).toLocaleString()+' IQD وەردەگریت';
+      progressMsg.textContent='ئامادەیت بۆ گۆڕینەوە — '+(coins*COINS_TO_IQD).toLocaleString()+' IQD وەردەگریت';
       progressMsg.style.color='var(--gr)';
     } else {
       exchangeBtn.style.display='none';
       needMore.style.display='flex';
-      needMoreTxt.textContent=remaining.toLocaleString()+' کۆین تر پێویستە بۆ گۆڕانەوە';
+      needMoreTxt.textContent=remaining.toLocaleString()+' کۆین تر پێویستە بۆ گۆڕینەوە';
       progressMsg.textContent=remaining.toLocaleString()+' کۆین تر پێویستە';
       progressMsg.style.color='var(--mt)';
     }
@@ -5442,7 +5442,7 @@ async function exchangeCoins(){
   if(coins<COINS_MIN_EXCHANGE){showToast('500 کۆین پێویستە','err');return;}
 
   btn.disabled=true;
-  btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> گۆڕانەوە...';
+  btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> گۆڕینەوە...';
 
   try{
     const iqToAdd=coins*COINS_TO_IQD; // IQD amount
@@ -5456,7 +5456,7 @@ async function exchangeCoins(){
     // Log coin transaction (تەنها لەم جدولدا تۆماردەکرێت — دووجار ناکرێت)
     await sb.from('pa_coin_transactions').insert({
       user_id:cu.id, amount:-coins,
-      reason:'گۆڕانەوە بۆ باڵانس — '+iqToAdd.toLocaleString()+' IQD',
+      reason:'گۆڕینەوە بۆ باڵانس — '+iqToAdd.toLocaleString()+' IQD',
       balance_after:0
     }).maybeSingle();
 
@@ -5468,7 +5468,7 @@ async function exchangeCoins(){
     showToast('هەڵەیەک ڕوویدا: '+e.message,'err');
   }finally{
     btn.disabled=false;
-    btn.innerHTML='<i class="fas fa-arrow-right-arrow-left"></i> گۆڕانەوە بۆ باڵانس';
+    btn.innerHTML='<i class="fas fa-arrow-right-arrow-left"></i> گۆڕینەوە بۆ باڵانس';
   }
 }
 function openWA(){window.open('https://wa.me/9647512345678','_blank');}
@@ -8605,10 +8605,10 @@ async function loadTxHistory(){
   }));
 
   // کۆین گۆڕین — تەنها ئەوانەی amount منفی (گۆڕینەوە بۆ باڵانس)
-  const coinExchangeItems=(coinTxs||[]).filter(c=>parseInt(c.amount)<0&&(c.reason||'').includes('گۆڕانەوە')).map(c=>({
+  const coinExchangeItems=(coinTxs||[]).filter(c=>parseInt(c.amount)<0&&(c.reason||'').includes('گۆڕینەوە')).map(c=>({
     id:c.id,
     kind:'coin_exchange',
-    label:c.reason||'گۆڕانەوەی کۆین بۆ باڵانس',
+    label:c.reason||'گۆڕینەوەی کۆین بۆ باڵانس',
     coins_amount:Math.abs(parseInt(c.amount)),
     usd_amount:parseFloat((Math.abs(parseInt(c.amount))*COINS_TO_USD).toFixed(2)),
     amount:parseFloat((Math.abs(parseInt(c.amount))*COINS_TO_USD).toFixed(2)),
