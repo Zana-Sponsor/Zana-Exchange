@@ -9355,27 +9355,8 @@ function lcPlayAccepted(){try{const c=lcGetAudioCtx();[523,659,784].forEach((f,i
 function lcPlaySent(){try{const c=lcGetAudioCtx(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.setValueAtTime(660,c.currentTime);o.frequency.exponentialRampToValueAtTime(880,c.currentTime+.1);g.gain.setValueAtTime(.15,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.2);o.start(c.currentTime);o.stop(c.currentTime+.2);}catch(e){}}
 
 // ئۆنلاین بودنی ئەدمین
-// ── خوێندنەوەی دۆخی ئادمین لە Supabase ──
-(async function(){
-  try{
-    if(typeof sb!=='undefined'){
-      const{data}=await sb.from('lc_admin_status').select('online').eq('id',1).single();
-      if(data){lcAdminOnline=!!data.online;}
-    }
-  }catch(_){}
-})();
-// ── ریئەلتایمی Supabase بۆ دۆخی ئادمین ──
-if(typeof sb!=='undefined'){
-  try{
-    sb.channel('lc_admin_status_rt')
-      .on('postgres_changes',{event:'UPDATE',schema:'public',table:'lc_admin_status',filter:'id=eq.1'},
-        payload=>{
-          if(payload.new){lcAdminOnline=!!payload.new.online;_lcApplyAdminStatus();}
-        })
-      .subscribe();
-  }catch(_){}
-}
-function _lcApplyAdminStatus(){
+lcDb.ref('adminStatus/online').on('value',snap=>{
+  lcAdminOnline=!!snap.val();
   const dot=document.getElementById('lcNavDot');
   const avDot=document.getElementById('lcAvDot');
   const status=document.getElementById('lcHeadStatus');
@@ -9388,17 +9369,11 @@ function _lcApplyAdminStatus(){
     avDot&&(avDot.className='lc-av-dot off');
     status&&(status.className='lc-head-status off',status.textContent='● ئۆفلاین — وەڵام دواتر دەدەین');
   }
+  // بەشی سایدبار دەرئیدەخات دوای لۆدکردن
   const sideItem=document.getElementById('lcSidebarItem');
   if(sideItem)sideItem.style.display='flex';
   const sideNavDot=document.getElementById('lcSideNavDot');
   if(sideNavDot)sideNavDot.style.display=lcAdminOnline?'block':'none';
-}
-lcDb.ref('adminStatus/online').on('value',snap=>{
-  lcAdminOnline=!!snap.val();
-  const dot=document.getElementById('lcNavDot');
-  const avDot=document.getElementById('lcAvDot');
-  const status=document.getElementById('lcHeadStatus');
-  _lcApplyAdminStatus();
 });
 
 function lcShowStage(id){
@@ -9723,19 +9698,6 @@ window.lcSubmitForm=async function(){
     localStorage.setItem(LC_KEY,lcSessionId);
     localStorage.setItem('proxo_lc_name',name);
     lcSaveToHistory(lcSessionId,name,problem,'ئەدمین','pending');
-    // ── پاشەکەوتکردنی سێشن لە Supabase ──
-    try{
-      if(typeof sb!=='undefined'){
-        await sb.from('lc_sessions').upsert({
-          id:lcSessionId,
-          name:name,
-          email:email,
-          problem:problem,
-          status:'pending',
-          admin_name:'ئەدمین'
-        },{onConflict:'id'});
-      }
-    }catch(_sb_e){}
     lcShowStage('lcStageWaiting');
     lcAttachListeners();
   }catch(e){alert('هەڵە ڕووی دا، دووبارە هەوڵ بدەوە');}
@@ -9746,8 +9708,6 @@ window.lcCancelWaiting=async function(){
   if(!lcSessionId)return;
   const _cancelId=lcSessionId;
   await lcDb.ref('sessions/'+_cancelId).remove();
-  // ── نوێکردنەوەی دۆخ بۆ cancelled لە Supabase ──
-  try{if(typeof sb!=='undefined'){await sb.from('lc_sessions').update({status:'closed',updated_at:new Date().toISOString()}).eq('id',_cancelId);}}catch(_){}
   // ── سڕینەوەی سێشنەکە لە مێژووی چاتەکان ──
   try{
     const _h=JSON.parse(localStorage.getItem(LC_HIST_KEY)||'[]');
@@ -9767,8 +9727,6 @@ function lcAttachListeners(){
     if(d.status==='active'){
       lcShowStage('lcStageChat');
       lcSaveToHistory(lcSessionId,d.name,d.problem,d.adminName,'active');
-      // ── نوێکردنەوەی دۆخ لە Supabase ──
-      try{if(typeof sb!=='undefined'){await sb.from('lc_sessions').update({status:'active',admin_name:d.adminName||'ئەدمین',updated_at:new Date().toISOString()}).eq('id',lcSessionId);}}catch(_){}
       const bar=document.getElementById('lcInfoBar');
       bar.style.display='flex';
       const adminLbl=d.adminName||'ئەدمین';
@@ -9783,8 +9741,6 @@ function lcAttachListeners(){
     }else if(d.status==='closed'){
       // مێژوو پاشەکەوت بکە بە دۆخی داخراو
       lcSaveToHistory(lcSessionId,d.name,d.problem,d.adminName,'closed');
-      // ── نوێکردنەوەی دۆخ بۆ closed لە Supabase ──
-      try{if(typeof sb!=='undefined'){await sb.from('lc_sessions').update({status:'closed',admin_name:d.adminName||'ئەدمین',updated_at:new Date().toISOString()}).eq('id',lcSessionId);}}catch(_){}
       localStorage.removeItem(LC_KEY);
       lcDetachListeners();
       const savedId=lcSessionId;
@@ -9903,23 +9859,9 @@ window.lcSendMsg=async function(){
   inp.value='';inp.style.height='auto';
   const name=localStorage.getItem('proxo_lc_name')||'User';
   try{
-    const _lcMsgTs=Date.now();
-    await lcDb.ref('messages/'+lcSessionId).push({text,sender:'user',senderName:name,timestamp:_lcMsgTs});
+    await lcDb.ref('messages/'+lcSessionId).push({text,sender:'user',senderName:name,timestamp:Date.now()});
     await lcDb.ref('typing/'+lcSessionId+'/user').set(false);
     lcPlaySent();
-    // ── پاشەکەوتکردنی پەیام لە Supabase ──
-    try{
-      if(typeof sb!=='undefined'){
-        await sb.from('lc_messages').insert({
-          session_id:lcSessionId,
-          text:text,
-          type:'text',
-          sender:'user',
-          sender_name:name,
-          timestamp:_lcMsgTs
-        });
-      }
-    }catch(_sb_e){}
     // ── ئاگاداری تیلیگرام — تەنها یەکجار بۆ سێشنی نوێ ──
     if(!_lcTgNotified.has(lcSessionId)){
       _lcTgNotified.add(lcSessionId);
@@ -9982,30 +9924,15 @@ window.lcHandleMedia=async function(input){
       dataUrl=await lcReadFileAsDataURL(file);
     }
     loader.remove();
-    const _lcMediaTs=Date.now();
     await lcDb.ref('messages/'+lcSessionId).push({
       type:isImage?'image':'video',
       data:dataUrl,
       mimeType:file.type,
       sender:'user',
       senderName:name,
-      timestamp:_lcMediaTs
+      timestamp:Date.now()
     });
     lcPlaySent();
-    // ── پاشەکەوتکردنی میدیا لە Supabase (بەبێ data بۆ قورسنەبوون) ──
-    try{
-      if(typeof sb!=='undefined'){
-        await sb.from('lc_messages').insert({
-          session_id:lcSessionId,
-          text:'['+( isImage?'وێنە':'ڤیدیۆ' )+']',
-          type:isImage?'image':'video',
-          mime_type:file.type,
-          sender:'user',
-          sender_name:name,
-          timestamp:_lcMediaTs
-        });
-      }
-    }catch(_sb_e){}
   }catch(e){
     loader.remove();
     showToast&&showToast('هەڵە لە ناردنی میدیا','err');
@@ -10091,22 +10018,11 @@ window.lcSetRating=function(n){
 
 window.lcSubmitFeedback=async function(){
   if(!lcRating||!lcSessionId)return;
-  const _fbComment=document.getElementById('lcFbComment').value.trim();
   await lcDb.ref('feedback/'+lcSessionId).set({
     rating:lcRating,
-    comment:_fbComment,
+    comment:document.getElementById('lcFbComment').value.trim(),
     timestamp:Date.now()
   });
-  // ── پاشەکەوتکردنی فیدبەک لە Supabase ──
-  try{
-    if(typeof sb!=='undefined'){
-      await sb.from('lc_feedback').insert({
-        session_id:lcSessionId,
-        rating:lcRating,
-        comment:_fbComment||null
-      });
-    }
-  }catch(_sb_e){}
   lcSessionId=null;
   lcShowStage('lcStageDone');
 };
