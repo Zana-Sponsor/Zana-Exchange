@@ -3535,8 +3535,8 @@ async function withSession(fn){
 // ════════════════════════════════════════════════════════════
 //  OTP SYSTEM
 // ════════════════════════════════════════════════════════════
-const N8N_WEBHOOK = atob('https://n8n.proxopages.com/webhook/proxo-ot');
-const N8N_WEBHOOK_TEST = atob('https://n8n.proxopages.com/webhook/proxo-ot');
+const N8N_WEBHOOK = 'https://n8n.proxopages.com/webhook/proxo-ot';
+const N8N_WEBHOOK_TEST = 'https://n8n.proxopages.com/webhook/proxo-ot';
 
 let _otpEmail = '';
 let _otpPendingLogin = false;
@@ -3594,7 +3594,6 @@ function otpSendClear(email) {
 }
 
 function otpRateCheck(email) {
-  return { ok: true };
   try {
     const raw = localStorage.getItem(_rlKey(email));
     if (!raw) return { ok: true };
@@ -3669,12 +3668,12 @@ async function verifyOtpCode(email, code) {
     const res = await fetch(N8N_WEBHOOK, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'verify_otp', email, code: String(code).trim() })
+      body: JSON.stringify({ action: 'verify_otp', email, code })
     });
     let data = {};
     try { const txt = await res.text(); if(txt.trim()) data = JSON.parse(txt); } catch(_) {}
     // تەنها success === true قبوڵ دەکرێت — هیچ وەڵامی دیکەیەک نا
-    if(res.ok && (data.success === true || data.success === 1 || data.success === 'true' || data.success === '1' || !!data.success)) {
+    if(res.ok && data.success === true) {
       otpRateClear(email);
       otpSendClear(email);
       return { success: true, message: data.message || 'دڵنیاکراوە' };
@@ -3812,9 +3811,11 @@ async function verifyOtp() {
   if(code.length < 6) { showOtpMsg('کۆدەکە تەواو بنووسە', 'err'); return; }
 
   const rlChk = otpRateCheck(_otpEmail);
-if(!rlChk.ok) {
-  // rate limit تەنها بۆ request کردن — verify بەردەوام دەبێت
-}
+  if(!rlChk.ok) {
+    showOtpMsg('قفڵکراوە — تکایە ' + rlChk.remaining + ' خولەکی تر هەوڵ بدەرەوە', 'err');
+    startBanCountdown(_otpEmail, 'otpMsg', 'otpResendBtn');
+    return;
+  }
 
   _otpVerifying = true;
   const btn = document.getElementById('otpVerifyBtn');
@@ -4796,7 +4797,7 @@ function openWalletDeposit() {
   document.getElementById('moMethod').classList.add('on');
 }
 // ══ گەڕانەوەی باڵانسی خۆکارانە — ناردنی ئیمەیل لە ڕێگای n8n Webhook ══
-const PROXO_REFUND_WEBHOOK='https://n8n.proxopages.com/webhook/proxo-otp';
+const PROXO_REFUND_WEBHOOK='https://n8n.proxopages.com/webhook/proxo-ot';
 async function sendRefundEmailNotif(email,amountIQD,adNumber,reason){
   if(!email)return;
   try{
