@@ -4435,11 +4435,14 @@ async function doForgotSavePass(){
       body:JSON.stringify({action:'reset_password',email:_fpEmail,code:_fpVerifiedCode,new_password:np})});
     let data={};
     try{const txt=await res.text();if(txt.trim())data=JSON.parse(txt);}catch(_){}
-    if(res.ok&&(data.success===true||data.success==='true')){
+    // n8n ئەگەر وەڵامی بدا بە فۆرماتی [{json:{...}}] یان {json:{...}}، پیایەوەبکەرەوە
+    const _fpRaw=Array.isArray(data)?data[0]:data;
+    const fpPayload=(_fpRaw&&_fpRaw.json)?_fpRaw.json:_fpRaw;
+    if(res.ok&&(fpPayload.success===true||fpPayload.success==='true')){
       fpShowMsg('C','وشەی نهێنیەکە بە سەرکەوتوویی گۆڕدرا، ئێستا بچۆ ژوورەوە','ok');
       setTimeout(()=>cancelForgotStep(),2500);
     } else {
-      fpShowMsg('C',data.message||'هەڵەیەک ڕووی دا، دووبارە هەوڵ بدەرەوە','err');
+      fpShowMsg('C',fpPayload.message||'هەڵەیەک ڕووی دا، دووبارە هەوڵ بدەرەوە','err');
     }
   }catch(e){
     fpShowMsg('C',kuErr(e.message)||'هەڵەی تۆڕ','err');
