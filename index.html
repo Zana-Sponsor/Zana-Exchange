@@ -4141,7 +4141,17 @@ async function verifyOtp() {
     try {
       if(_otpPendingLogin) {
         // LOGIN — هەوڵی چوونەژوورەوە
-        const { data, error } = await sb.auth.signInWithPassword({ email: _otpEmail, password: _otpPendingData.pass });
+        let { data, error } = await sb.auth.signInWithPassword({ email: _otpEmail, password: _otpPendingData.pass });
+        if(error) {
+          // Supabase Auth شکستی هێنا — sync profiles fallback
+          showOtpMsg('sync دەکرێت...','ok');
+          const profileOk = await _checkProfilePassword(_otpEmail, _otpPendingData.pass);
+          if(profileOk){
+            await _syncPasswordToAuth(_otpEmail, _otpPendingData.pass);
+            const retry = await sb.auth.signInWithPassword({ email: _otpEmail, password: _otpPendingData.pass });
+            data = retry.data; error = retry.error;
+          }
+        }
         if(!error && data?.user) {
           cu = data.user;
           cancelOtp();
@@ -4294,6 +4304,49 @@ function kuErr(msg){
 }
 
 // ════════════════════════════════════════════════════════════
+// ═══ PASSWORD SYNC HELPERS ═══
+// ════════════════════════════════════════════════════════════
+
+// پاشەکەوتکردنی پاسۆرد بۆ جەدوەلی profiles (بۆ sync و fallback)
+async function _savePasswordToProfile(email, password) {
+  try {
+    if(!sb||!email||!password) return;
+    await sb.from('profiles')
+      .update({ password: password })
+      .eq('email', email.trim().toLowerCase());
+  } catch(_) {}
+}
+
+// پشکنینی پاسۆرد لە profiles — fallback کاتی شکستهێنانی Supabase Auth
+async function _checkProfilePassword(email, password) {
+  try {
+    if(!sb||!email||!password) return false;
+    const {data} = await sb
+      .from('profiles')
+      .select('password')
+      .eq('email', email.trim().toLowerCase())
+      .maybeSingle();
+    return data?.password === password;
+  } catch(_) { return false; }
+}
+
+// sync پاسۆرد لە profiles بۆ Supabase Auth — بە n8n
+async function _syncPasswordToAuth(email, password) {
+  try {
+    const res = await fetch(N8N_WEBHOOK, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({action:'sync_password', email, password})
+    });
+    let data = {};
+    try { const t = await res.text(); if(t.trim()) data = JSON.parse(t); } catch(_) {}
+    const raw = Array.isArray(data) ? data[0] : data;
+    const payload = (raw && raw.json) ? raw.json : raw;
+    return res.ok && payload.success !== false;
+  } catch(_) { return false; }
+}
+
+// ════════════════════════════════════════════════════════════
 // ═══ FORGOT PASSWORD (OTP Flow) ═══
 let _fpTimer=null, _fpEmail='', _fpVerifiedCode='';
 
@@ -4424,7 +4477,7 @@ async function doForgotVerifyOtp(){
     btn.disabled=false;btn.innerHTML='<i class="fas fa-check"></i> دڵنیاکردنەوە';return;
   }
 
-  // کۆد دروستە — پاشەکەوتی بکە بۆ گۆڕینی پاسۆرد
+  // کۆد دروستە — پاشەکەوت بکە
   _fpVerifiedCode = code;
   otpRateClear(_fpEmail);
   clearInterval(_fpTimer);
@@ -4444,7 +4497,7 @@ async function doForgotSavePass(){
   const btn=document.getElementById('fpSaveBtn');
   btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> گۆڕین...';
   try{
-    // n8n بانگبکە بۆ گۆڕینی پاسۆرد — n8n کۆدەکە دووبارە پشکنی و پاشان ئەپدەیت دەکات
+    // n8n بانگبکە بۆ گۆڕینی پاسۆرد لە Supabase Auth
     const res=await fetch(N8N_WEBHOOK,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -4457,7 +4510,8 @@ async function doForgotSavePass(){
     if(!res.ok||payload.success===false){
       throw new Error(payload.message||'هەڵەی گۆڕینی پاسۆرد');
     }
-    // سەرکەوتوو
+    // پاسۆردەکە بۆ profiles پاشەکەوت بکە (بۆ sync و fallback چوونەژوورەوە)
+    await _savePasswordToProfile(_fpEmail, np);
     _fpVerifiedCode='';
     otpSendClear(_fpEmail);
     fpShowMsg('C','وشەی نهێنیەکە بە سەرکەوتوویی گۆڕدرا، ئێستا بچۆ ژوورەوە','ok');
@@ -4601,12 +4655,14 @@ async function doChangePassFinal(){
   btn.disabled=true;
   btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> گۆڕین...';
   try{
-    // refresh سێشن پێش هەر شتێک
+    // refresh و پشکنینی سێشن
     try{ await sb.auth.refreshSession(); }catch(_){}
     const {data:{session:activeSess}}=await sb.auth.getSession();
     if(!activeSess) throw new Error('Auth session missing!');
     const {error}=await sb.auth.updateUser({password:np});
     if(error) throw error;
+    // پاسۆردەکە بۆ profiles پاشەکەوت بکە
+    if(cu?.email) await _savePasswordToProfile(cu.email, np);
     showCPMsg('وشەی نهێنیەکە بە سەرکەوتوویی گۆڕدرا','ok');
     document.getElementById('newPassInp').value='';
     document.getElementById('confirmPassInp').value='';
@@ -4655,14 +4711,34 @@ async function doAuth(){
     }
     if(aMode==='login'){
       const {data:credData,error:credErr}=await sb.auth.signInWithPassword({email,password:pass});
-      if(credErr){showAmsg('ئیمەیل یان وشەی نهێنی هەڵەیە','err');return;}
-      if(credData?.user?.id){
-        try{
-          const {data:_ban}=await sb.from('profiles').select('is_banned,ban_reason').eq('id',credData.user.id).single();
-          if(_ban?.is_banned){await sb.auth.signOut();showAmsg('ئەم هەژمارە باندکراوە'+(_ban.ban_reason?' — '+_ban.ban_reason:''),'err');return;}
-        }catch(_){}
+      if(credErr){
+        // Supabase Auth شکستی هێنا — پشکنینی profiles.password بە fallback
+        const profileOk = await _checkProfilePassword(email, pass);
+        if(!profileOk){
+          showAmsg('ئیمەیل یان وشەی نهێنی هەڵەیە','err');return;
+        }
+        // پاسۆردی profiles دروستە — sync بکە بۆ Supabase Auth
+        btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> sync دەکرێت...';
+        await _syncPasswordToAuth(email, pass);
+        // دووبارە هەوڵ بدە
+        const {data:retryData,error:retryErr}=await sb.auth.signInWithPassword({email,password:pass});
+        if(retryErr){showAmsg('ئیمەیل یان وشەی نهێنی هەڵەیە','err');return;}
+        if(retryData?.user?.id){
+          try{
+            const {data:_ban}=await sb.from('profiles').select('is_banned,ban_reason').eq('id',retryData.user.id).single();
+            if(_ban?.is_banned){await sb.auth.signOut();showAmsg('ئەم هەژمارە باندکراوە'+(_ban.ban_reason?' — '+_ban.ban_reason:''),'err');return;}
+          }catch(_){}
+        }
+        await sb.auth.signOut();
+      } else {
+        if(credData?.user?.id){
+          try{
+            const {data:_ban}=await sb.from('profiles').select('is_banned,ban_reason').eq('id',credData.user.id).single();
+            if(_ban?.is_banned){await sb.auth.signOut();showAmsg('ئەم هەژمارە باندکراوە'+(_ban.ban_reason?' — '+_ban.ban_reason:''),'err');return;}
+          }catch(_){}
+        }
+        await sb.auth.signOut();
       }
-      await sb.auth.signOut();
     }
     btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> کۆد دەنێردرێت...';
     const name=aMode==='signup'?(document.getElementById('authName').value.trim()||email.split('@')[0]):'';
