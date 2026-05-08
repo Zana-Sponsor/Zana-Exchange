@@ -213,6 +213,21 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .amsg.ok{background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.2);color:var(--gr);}
 .amsg.err{background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);color:var(--rd);}
 
+/* ══ AUTH MULTI-STEP ══ */
+@keyframes stepIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:translateX(0)}}
+.auth-steps{display:flex;justify-content:center;margin-bottom:20px;}
+.auth-steps-track{display:flex;gap:8px;align-items:center;}
+.auth-step-dot{width:8px;height:8px;border-radius:50%;background:var(--b2);transition:all .35s ease;}
+.auth-step-dot.done{background:var(--dark);width:20px;border-radius:4px;}
+.auth-step-dot.active{background:var(--dark);width:16px;border-radius:4px;}
+.auth-step{animation:stepIn .28s ease;}
+.auth-step-icon{width:68px;height:68px;border-radius:22px;background:var(--bg);border:1.5px solid var(--b1);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 2px 12px rgba(28,35,51,.06);}
+.auth-step-label{text-align:center;margin-bottom:20px;}
+.auth-step-label h3{font-size:18px;font-weight:900;color:var(--dark);margin-bottom:5px;letter-spacing:-.3px;}
+.auth-step-label p{font-size:12.5px;color:var(--mt);}
+.auth-step-back{display:flex;align-items:center;justify-content:center;gap:6px;font-size:12.5px;color:var(--mt);cursor:pointer;margin-top:14px;padding:4px 0;user-select:none;}
+.auth-step-back:active{opacity:.7;}
+
 /* ══ OFFLINE BANNER ══ */
 #offlineBanner{display:none;position:fixed;top:0;left:0;right:0;z-index:99999;background:var(--rd);color:#fff;font-size:13px;font-family:'R',sans-serif;text-align:center;padding:10px 16px;font-weight:700;}
 #offlineBanner.show{display:block;}
@@ -1345,32 +1360,81 @@ function _clipboardFallback(text, onSuccess, onFail) {
       <p>بەڕێوەبردنی ڕیکلامەکانی تیکتۆک</p>
     </div>
     <div class="auth-card">
+      <!-- Tab Switcher -->
       <div class="atabs" id="atabs">
         <button class="atab on" id="tabL" onclick="switchTab('login')">چوونەژوورەوە</button>
         <button class="atab" id="tabS" onclick="switchTab('signup')">تۆمارکردن</button>
       </div>
-      <div id="nameWrap" style="display:none">
-        <input class="finp" type="text" id="authName" placeholder="ناوی تەواو">
+      <!-- Step Indicator -->
+      <div class="auth-steps" id="authStepsWrap">
+        <div class="auth-steps-track" id="authStepsTrack"></div>
       </div>
-      <input class="finp" type="email" id="authEmail" placeholder="ئیمەیل" dir="ltr">
-      <div class="pass-wrap" id="authPassWrap">
-        <input class="finp" type="password" id="authPass" placeholder="وشەی نهێنی" dir="ltr"
-          onkeydown="if(event.key==='Enter')doAuth()"
-          oninput="updateStrength('authPass','authStrFill','authStrTxt')">
-        <button type="button" class="pass-eye" onclick="togglePass('authPass',this)"><i class="fas fa-eye-slash"></i></button>
+      <!-- Step: Name (Signup only) -->
+      <div class="auth-step" id="authStepName" style="display:none">
+        <div class="auth-step-icon">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="auth-step-label">
+          <h3>ناوی تەواو</h3>
+          <p>ناوت بنووسە بۆ دروستکردنی هەژمار</p>
+        </div>
+        <input class="finp" type="text" id="authName" placeholder="ناوی تەواو" onkeydown="if(event.key==='Enter')nextAuthStep('name')">
+        <button class="abtn" onclick="nextAuthStep('name')">
+          <i class="fas fa-arrow-left"></i>
+          <span>دواتر</span>
+        </button>
+        <div class="amsg" id="authMsgName"></div>
       </div>
-      <div class="str-wrap" id="authStrWrap" style="display:none">
-        <div class="str-bar"><div class="str-fill" id="authStrFill"></div></div>
-        <div class="str-txt" id="authStrTxt"></div>
+      <!-- Step: Email -->
+      <div class="auth-step" id="authStepEmail">
+        <div class="auth-step-icon">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </div>
+        <div class="auth-step-label">
+          <h3>ئیمەیل</h3>
+          <p>ئیمەیلی Gmail بنووسە</p>
+        </div>
+        <input class="finp" type="email" id="authEmail" placeholder="example@gmail.com" dir="ltr" onkeydown="if(event.key==='Enter')nextAuthStep('email')">
+        <button class="abtn" onclick="nextAuthStep('email')">
+          <i class="fas fa-arrow-left"></i>
+          <span>دواتر</span>
+        </button>
+        <div class="amsg" id="authMsgEmail"></div>
+        <div class="auth-step-back" id="authEmailBackBtn" style="display:none" onclick="prevAuthStep('email')">
+          <i class="fas fa-arrow-right"></i> گەڕانەوە
+        </div>
       </div>
-      <button class="abtn" id="authBtn" onclick="doAuth()">
-        <i class="fas fa-arrow-left"></i>
-        <span id="authBtnTxt">چوونەژوورەوە</span>
-      </button>
-      <div style="text-align:center;margin-top:10px" id="forgotLinkWrap">
-        <span onclick="showForgotStep()" style="font-size:12px;color:var(--mt);cursor:pointer;text-decoration:underline">وشەی نهێنیم لەبیرکردووە</span>
+      <!-- Step: Password -->
+      <div class="auth-step" id="authStepPass" style="display:none">
+        <div class="auth-step-icon">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div class="auth-step-label">
+          <h3>وشەی نهێنی</h3>
+          <p id="passStepSub">وشەی نهێنیت بنووسە</p>
+        </div>
+        <div class="pass-wrap" id="authPassWrap">
+          <input class="finp" type="password" id="authPass" placeholder="وشەی نهێنی" dir="ltr"
+            onkeydown="if(event.key==='Enter')nextAuthStep('pass')"
+            oninput="updateStrength('authPass','authStrFill','authStrTxt')">
+          <button type="button" class="pass-eye" onclick="togglePass('authPass',this)"><i class="fas fa-eye-slash"></i></button>
+        </div>
+        <div class="str-wrap" id="authStrWrap" style="display:none">
+          <div class="str-bar"><div class="str-fill" id="authStrFill"></div></div>
+          <div class="str-txt" id="authStrTxt"></div>
+        </div>
+        <button class="abtn" id="authBtn" onclick="nextAuthStep('pass')">
+          <i class="fas fa-arrow-left"></i>
+          <span id="authBtnTxt">چوونەژوورەوە</span>
+        </button>
+        <div class="amsg" id="authMsg"></div>
+        <div id="forgotLinkWrap" style="display:none;text-align:center;margin-top:10px">
+          <span onclick="showForgotStep()" style="font-size:12px;color:var(--mt);cursor:pointer;text-decoration:underline">وشەی نهێنیم لەبیرکردووە</span>
+        </div>
+        <div class="auth-step-back" onclick="prevAuthStep('pass')">
+          <i class="fas fa-arrow-right"></i> گەڕانەوە
+        </div>
       </div>
-      <div class="amsg" id="authMsg"></div>
 
       <!-- Forgot Password Step -->
       <div id="forgotStep" style="display:none">
@@ -3829,20 +3893,95 @@ function updateStrength(inputId, fillId, txtId) {
 
 // ── لیستی IDی فۆرمی auth کە دەبێت بشارێتەوە کاتی OTP/Forgot ──
 // (forgotStep تێدا نییە چونکە خۆی جیا بەڕێوەدەچێت)
-const _authFormIds = ['atabs','nameWrap','authEmail','authPassWrap','authBtn','forgotLinkWrap','authMsg'];
+// ── Step navigation state ──────────────────────────────────
+let authCurrentStep = 'email';
+function _getSteps() {
+  return aMode === 'signup' ? ['name','email','pass'] : ['email','pass'];
+}
+function _renderStepDots(currentStep) {
+  const steps = _getSteps();
+  const track = document.getElementById('authStepsTrack');
+  if(!track) return;
+  const currentIdx = steps.indexOf(currentStep);
+  track.innerHTML = steps.map((s, i) => {
+    let cls = 'auth-step-dot';
+    if(i < currentIdx) cls += ' done';
+    else if(i === currentIdx) cls += ' active';
+    return '<div class="' + cls + '"></div>';
+  }).join('');
+}
+function goAuthStep(step) {
+  authCurrentStep = step;
+  ['authStepName','authStepEmail','authStepPass'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = 'none';
+  });
+  const capStep = step.charAt(0).toUpperCase() + step.slice(1);
+  const stepEl = document.getElementById('authStep' + capStep);
+  if(stepEl) { stepEl.style.display = 'block'; void stepEl.offsetWidth; stepEl.style.animation='none'; void stepEl.offsetWidth; stepEl.style.animation=''; }
+  const sw = document.getElementById('authStrWrap');
+  if(sw) sw.style.display = (step === 'pass' && aMode === 'signup') ? 'flex' : 'none';
+  const fl = document.getElementById('forgotLinkWrap');
+  if(fl) fl.style.display = (step === 'pass' && aMode === 'login') ? 'block' : 'none';
+  const ebb = document.getElementById('authEmailBackBtn');
+  if(ebb) ebb.style.display = aMode === 'signup' ? 'flex' : 'none';
+  if(step === 'pass') {
+    const bt = document.getElementById('authBtnTxt');
+    if(bt) bt.textContent = aMode === 'login' ? 'چوونەژوورەوە' : 'تۆمارکردن';
+    const am = document.getElementById('authMsg');
+    if(am) am.style.display = 'none';
+  }
+  _renderStepDots(step);
+  setTimeout(() => {
+    if(step === 'name') document.getElementById('authName')?.focus();
+    else if(step === 'email') document.getElementById('authEmail')?.focus();
+    else if(step === 'pass') document.getElementById('authPass')?.focus();
+  }, 60);
+}
+function _showStepMsg(id, text, type) {
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.textContent = text;
+  el.className = 'amsg ' + type;
+  el.style.display = 'block';
+}
+function nextAuthStep(from) {
+  ['authMsgName','authMsgEmail','authMsg'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.style.display = 'none';
+  });
+  if(from === 'name') {
+    const name = document.getElementById('authName').value.trim();
+    if(!name) { _showStepMsg('authMsgName','ناوی تەواو بنووسە','err'); return; }
+    goAuthStep('email');
+  } else if(from === 'email') {
+    const email = document.getElementById('authEmail').value.trim();
+    if(!email) { _showStepMsg('authMsgEmail','ئیمەیل بنووسە','err'); return; }
+    if(!email.toLowerCase().endsWith('@gmail.com')) { _showStepMsg('authMsgEmail','تەنها ئیمەیلی Gmail پاشگیری دەکرێت','err'); return; }
+    goAuthStep('pass');
+  } else if(from === 'pass') {
+    doAuth();
+  }
+}
+function prevAuthStep(from) {
+  if(from === 'email') { goAuthStep('name'); }
+  else if(from === 'pass') { goAuthStep(aMode === 'signup' ? 'email' : 'email'); }
+}
 
 // ── نیشاندانی بەشی OTP ───────────────────────────────────
 function _hideAuthForm() {
-  _authFormIds.forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
-  document.getElementById('authStrWrap').style.display = 'none';
+  ['atabs','authStepsWrap','authStepName','authStepEmail','authStepPass'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = 'none';
+  });
 }
 function _restoreAuthForm() {
-  _authFormIds.forEach(id => { const el = document.getElementById(id); if(el) el.style.display = ''; });
-  document.getElementById('nameWrap').style.display = aMode === 'signup' ? 'block' : 'none';
-  document.getElementById('forgotLinkWrap').style.display = aMode === 'login' ? 'block' : 'none';
-  document.getElementById('authMsg').style.display = 'none';
-  // strength meter: تەنها لە signup دەردەکەوێت، لە login هەرگیز
-  document.getElementById('authStrWrap').style.display = aMode === 'signup' ? 'flex' : 'none';
+  const atabs = document.getElementById('atabs');
+  if(atabs) atabs.style.display = '';
+  const asw = document.getElementById('authStepsWrap');
+  if(asw) asw.style.display = '';
+  const am = document.getElementById('authMsg');
+  if(am) am.style.display = 'none';
+  goAuthStep(aMode === 'login' ? 'email' : 'name');
 }
 
 function showOtpStep(email) {
@@ -4405,79 +4544,49 @@ function switchTab(m){
   aMode=m;
   document.getElementById('tabL').classList.toggle('on',m==='login');
   document.getElementById('tabS').classList.toggle('on',m==='signup');
-  document.getElementById('nameWrap').style.display=m==='signup'?'block':'none';
-  document.getElementById('forgotLinkWrap').style.display=m==='login'?'block':'none';
-  document.getElementById('authBtnTxt').textContent=m==='login'?'چوونەژوورەوە':'تۆمارکردن';
-  document.getElementById('authMsg').style.display='none';
-  // پاک کردنەوەی فیلدەکان کاتی گۆڕینی تاب
-  document.getElementById('authEmail').value='';
-  document.getElementById('authPass').value='';
-  if(document.getElementById('authName')) document.getElementById('authName').value='';
-  // Strength meter تەنها لە تۆمارکردندا دیارە
-  const sw = document.getElementById('authStrWrap');
-  if(sw) sw.style.display = m==='signup' ? 'flex' : 'none';
-  // reset eye icon and strength bar when switching tabs
-  const ap = document.getElementById('authPass');
+  ['authName','authEmail','authPass'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  ['authMsgName','authMsgEmail','authMsg'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.style.display='none';
+  });
+  const ap=document.getElementById('authPass');
   if(ap){ ap.type='password'; updateStrength('authPass','authStrFill','authStrTxt'); }
-  const eye = ap?.closest('.pass-wrap')?.querySelector('.pass-eye i');
-  if(eye) eye.className = 'fas fa-eye-slash';
+  const eye=ap?.closest('.pass-wrap')?.querySelector('.pass-eye i');
+  if(eye) eye.className='fas fa-eye-slash';
+  goAuthStep(m==='login'?'email':'name');
 }
 async function doAuth(){
   const email=document.getElementById('authEmail').value.trim();
   const pass=document.getElementById('authPass').value;
   const btn=document.getElementById('authBtn');
-  // ── چێکی هەر فیلدێک جیاوازانە ──
-  if(aMode==='signup'){
-    const nameVal=(document.getElementById('authName')?.value||'').trim();
-    if(!nameVal){showAmsg('ناوی تەواو بنووسە','err');return;}
-    if(!email){showAmsg('ئیمەیل بنووسە','err');return;}
-    if(!email.toLowerCase().endsWith('@gmail.com')){showAmsg('تەنها ئیمەیلی Gmail (@gmail.com) پاشگیری دەکرێت','err');return;}
-    if(!pass){showAmsg('وشەی نهێنی بنووسە','err');return;}
-  } else {
-    if(!email){showAmsg('ئیمەیل بنووسە','err');return;}
-    if(!pass){showAmsg('وشەی نهێنی بنووسە','err');return;}
-  }
-  if(pass.length<6){showAmsg('وشەی نهێنی کەمترین ٦ پیت','err');return;}
+  if(!email){showAmsg('ئیمەیل بنووسە','err');return;}
+  if(!pass){showAmsg('وشەی نهێنی بنووسە','err');return;}
+  if(pass.length<6){showAmsg('وشەی نهێنی کەمترین ٦ پیت دەبێت','err');return;}
   btn.disabled=true;
   btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> پشکنین...';
   try{
-    // ── چێکی تۆمارکردنی ئیمەیل ──────────────────────────
     if(aMode==='signup'){
       const {data:existCheck}=await sb.from('profiles').select('id').eq('email',email).maybeSingle();
       if(existCheck){showAmsg('ئەم ئیمەیلە پێشتر تۆمارکراوە — بچۆ ژوورەوە','err');return;}
     }
-    // ── پشکنینی وشەی نهێنی پێش ناردنی کۆد (تەنها لە چوونەژوورەوەدا) ──
     if(aMode==='login'){
-      btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> پشکنین...';
       const {data:credData,error:credErr}=await sb.auth.signInWithPassword({email,password:pass});
-      if(credErr){
-        showAmsg('ئیمەیل یان وشەی نهێنی هەڵەیە','err');
-        return;
-      }
-      // ══ چێکی بانکردن پێش ناردنی کۆد ══
+      if(credErr){showAmsg('ئیمەیل یان وشەی نهێنی هەڵەیە','err');return;}
       if(credData?.user?.id){
         try{
-          const {data:_ban}=await sb.from('profiles')
-            .select('is_banned,ban_reason')
-            .eq('id',credData.user.id)
-            .single();
-          if(_ban?.is_banned){
-            await sb.auth.signOut();
-            showAmsg('ئەم هەژمارە باندکراوە' + (_ban.ban_reason ? ' — ' + _ban.ban_reason : ''), 'err');
-            return;
-          }
+          const {data:_ban}=await sb.from('profiles').select('is_banned,ban_reason').eq('id',credData.user.id).single();
+          if(_ban?.is_banned){await sb.auth.signOut();showAmsg('ئەم هەژمارە باندکراوە'+(_ban.ban_reason?' — '+_ban.ban_reason:''),'err');return;}
         }catch(_){}
       }
       await sb.auth.signOut();
     }
-    // ── OTP Flow ────────────────────────────────────────────
     btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> کۆد دەنێردرێت...';
-    const name = aMode==='signup'?(document.getElementById('authName').value.trim()||email.split('@')[0]):'';
-    _otpPendingLogin = (aMode==='login');
-    _otpPendingData  = { pass, name };
-    _otpPurpose = aMode === 'login' ? 'login' : 'signup';
-
-    const result = await requestOtp(email, _otpPurpose);
+    const name=aMode==='signup'?(document.getElementById('authName').value.trim()||email.split('@')[0]):'';
+    _otpPendingLogin=(aMode==='login');
+    _otpPendingData={pass,name};
+    _otpPurpose=aMode==='login'?'login':'signup';
+    const result=await requestOtp(email,_otpPurpose);
     if(!result.success){
       showAmsg(result.message||'هەڵەی ناردنی کۆد','err');
       btn.disabled=false;
@@ -4485,7 +4594,6 @@ async function doAuth(){
       return;
     }
     showOtpStep(email);
-    // ──────────────────────────────────────────────────────
   }catch(e){
     showAmsg(kuErr(e.message)||'هەڵەیەک ڕووی دا','err');
   }finally{
@@ -5184,6 +5292,8 @@ function showAuth(){
   document.getElementById('app').style.display='none';
   document.getElementById('bnav').style.display='none';
   const avb=document.getElementById('authVersionBar');if(avb)avb.style.display='block';
+  // Initialize multi-step to first step
+  goAuthStep(aMode==='login'?'email':'name');
 }
 
 async function boot(){
