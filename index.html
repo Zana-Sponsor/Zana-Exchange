@@ -4264,6 +4264,7 @@ function showOtpMsg(t, c) {
 // ════════════════════════════════════════════════════════════
 // ═══ KURDISH ERROR MESSAGES ═══
 function kuErr(msg){
+  if(!msg) return '';
   const m={
     'Invalid login credentials':'ئیمەیل یان وشەی نهێنی هەڵەیە',
     'Email already registered':'ئەم ئیمەیلە پێشتر تۆمارکراوە',
@@ -4279,7 +4280,18 @@ function kuErr(msg){
     'Email rate limit exceeded':'زۆر جار ئیمەیل نێردرا، کەمێک چاوەڕوان بە',
     'New password should be different from the old password':'وشەی نهێنیی نوێ دەبێت جیاوازی لە وشەی نهێنیی کۆن بێت',
     'Auth session missing':'تکایە دووبارە بچۆ ژوورەوە',
+    'Auth session missing!':'تکایە دووبارە بچۆ ژوورەوە',
+    'Token has expired or is invalid':'کاتی کۆدەکە تێپەڕیوە یان هەڵەیە — کۆدی نوێ داواکە',
+    'Invalid token':'کۆدی هەڵەیە یان تێپەڕیوە',
+    'Otp expired':'کاتی کۆدەکە تێپەڕیوە — کۆدی نوێ داواکە',
+    'For security purposes, you can only request this after 60 seconds':'بۆ ئاسایشەوە، ١ خولەک چاوەڕوان بە',
+    'over_email_send_rate_limit':'زۆر جار ئیمەیل نێردرا، کەمێک چاوەڕوان بە',
+    'should be different from the old password':'وشەی نهێنیی نوێ دەبێت جیاوازی لە وشەی نهێنیی کۆن بێت',
   };
+  // partial match
+  for(const [k,v] of Object.entries(m)){
+    if(msg.includes(k)) return v;
+  }
   return m[msg] || msg;
 }
 
@@ -4336,9 +4348,10 @@ async function fpResendOtp(){
   document.getElementById('fpResendBtn').style.display='none';
   document.getElementById('fpTimerWrap').style.color='';
   fpShowMsg('B','ناردن...','ok');
-  // بە Supabase خۆی کۆدی نوێ بنێرە
+  // کۆدی نوێ بنێرە بە Supabase
   const {error}=await sb.auth.signInWithOtp({email:_fpEmail,options:{shouldCreateUser:false}});
   if(!error){
+    otpSendRecord(_fpEmail);
     fpShowMsg('B','کۆدی نوێ نێردرا','ok');
     ['fp1','fp2','fp3','fp4','fp5','fp6'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     document.getElementById('fp1')?.focus();
@@ -4389,16 +4402,39 @@ async function doForgotVerifyOtp(){
   const btn=document.getElementById('fpVerifyBtn');
   btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> پشکنین...';
   // ڕاستەوخۆ Supabase بەکاربهێنە بۆ دڵنیاکردنەوەی کۆد و دروستکردنی سێشن
-  const {error}=await sb.auth.verifyOtp({email:_fpEmail,token:code,type:'email'});
+  let verifyError = null;
+  let verifySession = null;
+  // تاقیکردنەوەی type:'email' یەکەم — بۆ بەکارهێنەرانی OTP
+  try {
+    const {data: d1, error: e1} = await sb.auth.verifyOtp({email:_fpEmail,token:code,type:'email'});
+    if(!e1 && d1?.session){
+      verifySession = d1.session;
+    } else if(e1){
+      // تاقیکردنەوەی type:'recovery' بە عنوان fallback
+      const {data: d2, error: e2} = await sb.auth.verifyOtp({email:_fpEmail,token:code,type:'recovery'});
+      if(!e2 && d2?.session){
+        verifySession = d2.session;
+      } else {
+        verifyError = e2 || e1;
+      }
+    }
+  } catch(ex) {
+    verifyError = ex;
+  }
   _fpVerifying = false;
-  if(error){
+  if(verifyError){
     const rl = otpRateRecord(_fpEmail);
     if(rl && !rl.ok){
       fpShowMsg('B','زۆر جار هەوڵت دا — تکایە ' + rl.remaining + ' خولەکی تر هەوڵ بدەرەوە','err');
     } else {
-      fpShowMsg('B',kuErr(error.message)||'کۆدی هەڵە','err');
+      const em = verifyError?.message || '';
+      fpShowMsg('B',kuErr(em)||'کۆدی هەڵە یان تێپەڕیوە','err');
     }
     btn.disabled=false;btn.innerHTML='<i class="fas fa-check"></i> دڵنیاکردنەوە';return;
+  }
+  // سێشن پاشەکەوت بکە بۆ بەکارهێنان لە doForgotSavePass
+  if(verifySession){
+    try{ await sb.auth.setSession({access_token:verifySession.access_token,refresh_token:verifySession.refresh_token}); }catch(_){}
   }
   clearInterval(_fpTimer);
   document.getElementById('fpStepB').style.display='none';
@@ -4416,7 +4452,26 @@ async function doForgotSavePass(){
   const btn=document.getElementById('fpSaveBtn');
   btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> گۆڕین...';
   try{
-    // ڕاستەوخۆ Supabase updateUser — سێشنی کە لە verifyOtp دروستکرا بەکاردێت
+    // پشکنینی سێشن پێش هەموو شتێک
+    const {data:{session:curSession}} = await sb.auth.getSession();
+    if(!curSession){
+      // هەوڵی refresh
+      const {error:refreshErr} = await sb.auth.refreshSession();
+      if(refreshErr){
+        fpShowMsg('C','سێشنەکەت بوونی نییە، تکایە کۆدەکە دووبارە داواکە','err');
+        // گەڕانەوە بۆ ئادیمی کۆد
+        document.getElementById('fpStepC').style.display='none';
+        document.getElementById('fpStepB').style.display='block';
+        ['fp1','fp2','fp3','fp4','fp5','fp6'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+        document.getElementById('fp1')?.focus();
+        btn.disabled=false;btn.innerHTML='<i class="fas fa-lock"></i> پاشەکەوتکردنی وشەی نهێنیی نوێ';
+        return;
+      }
+    } else {
+      // refresh بکە بۆ مطمئن بوون
+      try{ await sb.auth.refreshSession(); }catch(_){}
+    }
+    // ئێستا updateUser بانگبکە
     const {error}=await sb.auth.updateUser({password:np});
     if(error) throw error;
     fpShowMsg('C','وشەی نهێنیەکە بە سەرکەوتوویی گۆڕدرا، ئێستا بچۆ ژوورەوە','ok');
@@ -4561,7 +4616,14 @@ async function doChangePassFinal(){
   btn.disabled=true;
   btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> گۆڕین...';
   try{
-    await sb.auth.refreshSession();
+    // سێشن پشکنین و refresh
+    const {data:{session:activeSess}} = await sb.auth.getSession();
+    if(!activeSess){
+      const {error:re} = await sb.auth.refreshSession();
+      if(re) throw new Error('Auth session missing!');
+    } else {
+      try{ await sb.auth.refreshSession(); }catch(_){}
+    }
     const {error}=await sb.auth.updateUser({password:np});
     if(error) throw error;
     showCPMsg('وشەی نهێنیەکە بە سەرکەوتوویی گۆڕدرا','ok');
