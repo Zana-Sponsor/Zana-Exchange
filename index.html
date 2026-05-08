@@ -4651,18 +4651,29 @@ async function doChangePassFinal(){
   function showCPMsg(t,c){msgEl.textContent=t;msgEl.className='amsg '+c;msgEl.style.display='block';}
   if(!np||np.length<6){showCPMsg('وشەی نهێنی دەبێت کەمترین ٦ پیت بێت','err');return;}
   if(np!==cp){showCPMsg('وشەی نهێنیەکان یەکسان نین، دووبارە بنووسە','err');return;}
+  if(!cu?.email){showCPMsg('هەژمارەکەت ناسراو نییە، تکایە دووبارە بچۆ ژوورەوە','err');return;}
   const btn=document.getElementById('changePassBtn');
   btn.disabled=true;
   btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> گۆڕین...';
   try{
-    // refresh و پشکنینی سێشن
-    try{ await sb.auth.refreshSession(); }catch(_){}
-    const {data:{session:activeSess}}=await sb.auth.getSession();
-    if(!activeSess) throw new Error('Auth session missing!');
-    const {error}=await sb.auth.updateUser({password:np});
-    if(error) throw error;
+    let clientOk=false;
+    // هەوڵ: گۆڕین لەڕێگەی سێشنی Supabase
+    try{
+      await sb.auth.refreshSession();
+      const {data:{session:activeSess}}=await sb.auth.getSession();
+      if(activeSess){
+        const {error:ue}=await sb.auth.updateUser({password:np});
+        if(!ue) clientOk=true;
+      }
+    }catch(_){}
+    // پشتگیری: گۆڕین لەڕێگەی N8N Admin API (دڵنیایی)
+    showCPMsg('sync دەکرێت...','ok');
+    const syncOk=await _syncPasswordToAuth(cu.email, np);
+    if(!clientOk && !syncOk){
+      throw new Error('هەڵەی گۆڕینی پاسۆرد — تکایە دووبارە هەوڵ بدەرەوە');
+    }
     // پاسۆردەکە بۆ profiles پاشەکەوت بکە
-    if(cu?.email) await _savePasswordToProfile(cu.email, np);
+    await _savePasswordToProfile(cu.email, np);
     showCPMsg('وشەی نهێنیەکە بە سەرکەوتوویی گۆڕدرا','ok');
     document.getElementById('newPassInp').value='';
     document.getElementById('confirmPassInp').value='';
