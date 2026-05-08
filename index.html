@@ -4914,11 +4914,6 @@ function startNotifListener() {
     if (ts <= _notifLastSeen) return;
 
     // نوێکردنەوەی بەڵی ئاگاداری — مستقیم badge نیشان بدە
-    _pushNotifUnread++;
-    (function(){
-      const dot=document.getElementById('notifDot');
-      if(dot){dot.textContent=_pushNotifUnread>99?'99+':String(_pushNotifUnread);dot.classList.add('show');}
-    })();
     checkNotifBell();
 
     // ئەگەر بەشی ئاگاداریەکان کراوەیە، دووبارە بارکە
@@ -5401,15 +5396,8 @@ async function boot(){
   })();
   // ═══ ٥. CHECK NOTIFICATIONS ═══
   checkNotifBell();
-  // Real-time notifications listener
-  sb.channel('notif_'+cu.id)
-    .on('postgres_changes',{event:'INSERT',schema:'public',table:'pa_notifications',filter:`user_id=eq.${cu.id}`},()=>{
-      _pushNotifUnread++;
-      const _nd=document.getElementById('notifDot');
-      if(_nd){_nd.textContent=_pushNotifUnread>99?'99+':String(_pushNotifUnread);_nd.classList.add('show');}
-      checkNotifBell();
-    })
-    .subscribe();
+  setTimeout(checkNotifBell, 2000);
+  setInterval(checkNotifBell, 90000);
 
   // ══ چێکی بانکردنی خۆکار — هەر ٣ خولەک جارێک ══
   setInterval(async()=>{
@@ -5552,9 +5540,6 @@ async function boot(){
   // ══ REALTIME: pa_notifications INSERT ══ (نوێکردنەوەی خۆکاری بەشی ئاگاداریەکان)
   sb.channel('notif_full_rt_'+cu.id)
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'pa_notifications',filter:`user_id=eq.${cu.id}`},(payload)=>{
-      _pushNotifUnread++;
-      const _nd2=document.getElementById('notifDot');
-      if(_nd2){_nd2.textContent=_pushNotifUnread>99?'99+':String(_pushNotifUnread);_nd2.classList.add('show');}
       checkNotifBell();
       const pgNotif = document.getElementById('pgNotifications');
       if(pgNotif && pgNotif.classList.contains('on')) loadNotifications();
@@ -8499,7 +8484,7 @@ async function checkNotifBell(){
       if(!error)cnt=count||0;
     }catch(_){}
   }
-  const total=cnt+_lcUnreadCount+_pushNotifUnread;
+  const total=cnt+_lcUnreadCount;
   if(total>0){dot.textContent=total>99?'99+':String(total);dot.classList.add('show');}
   else{dot.textContent='';dot.classList.remove('show');}
 }
