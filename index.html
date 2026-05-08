@@ -3809,63 +3809,28 @@ async function requestOtp(email, purpose='login') {
   }
 }
 
-// ── دڵنیاکردنەوەی OTP — ڕاستەوخۆ لە Supabase (بەبێ n8n) ──
+// ── دڵنیاکردنەوەی OTP — لەڕێگەی N8N ──
 async function verifyOtpCode(email, code, keepRecord = false) {
   try {
-    if (!sb) return { success: false, message: 'سیستەم ئامادە نییە، دووبارە هەوڵ بدەرەوە' };
-
     const codeStr = String(code).trim();
     const emailStr = String(email).trim();
 
-    // ڕاستەوخۆ Supabase بپرسە — هەم ئیمەیل هەم کۆد
-    const { data: rows, error } = await sb
-      .from('otp_codes')
-      .select('*')
-      .eq('email', emailStr)
-      .order('created_at', { ascending: false })
-      .limit(5);
+    const res = await fetch(N8N_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'verify_otp', email: emailStr, code: codeStr, keepRecord })
+    });
+    let data = {};
+    try { const txt = await res.text(); if(txt.trim()) data = JSON.parse(txt); } catch(_) {}
+    const _raw = Array.isArray(data) ? data[0] : data;
+    const payload = (_raw && _raw.json) ? _raw.json : _raw;
 
-    if (error) {
-      // ئەگەر sb query شکا، fallback بۆ n8n
-      const res = await fetch(N8N_WEBHOOK, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'verify_otp', email: emailStr, code: codeStr })
-      });
-      let data = {};
-      try { const txt = await res.text(); if(txt.trim()) data = JSON.parse(txt); } catch(_) {}
-      const _raw = Array.isArray(data) ? data[0] : data;
-      const payload = (_raw && _raw.json) ? _raw.json : _raw;
-      if(res.ok && payload.success === true) {
-        otpRateClear(email); otpSendClear(email);
-        return { success: true, message: payload.message || 'دڵنیاکراوە' };
-      }
-      return { success: false, message: payload.message || 'کۆدی هەڵە' };
+    if(res.ok && payload.success === true) {
+      otpRateClear(email);
+      otpSendClear(email);
+      return { success: true, message: payload.message || 'دڵنیاکراوە' };
     }
-
-    if (!rows || rows.length === 0) {
-      return { success: false, message: 'کۆدی تازە داواکە' };
-    }
-
-    // دۆزینەوەی کۆدی دروست
-    const row = rows.find(r => String(r.code).trim() === codeStr) || null;
-
-    if (!row) {
-      return { success: false, message: 'کۆدی هەڵە' };
-    }
-
-    if (new Date(row.expires_at) < new Date()) {
-      await sb.from('otp_codes').delete().eq('id', row.id);
-      return { success: false, message: 'کاتی کۆدەکە تێپەڕیوە — کۆدی نوێ داواکە' };
-    }
-
-    // کۆد دروستە — بیسڕەرەوە (تەنها ئەگەر keepRecord نەبوو)
-    if(!keepRecord) {
-      await sb.from('otp_codes').delete().eq('id', row.id);
-    }
-    otpRateClear(email);
-    otpSendClear(email);
-    return { success: true, message: 'دڵنیاکراوە' };
+    return { success: false, message: payload.message || 'کۆدی هەڵە' };
 
   } catch(e) {
     return { success: false, message: 'هەڵەی تۆڕ: ' + e.message };
