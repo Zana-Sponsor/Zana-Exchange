@@ -1648,8 +1648,12 @@ function _clipboardFallback(text, onSuccess, onFail) {
         </div>
         <div class="sidebar-item-txt">پشتگیری ڕاستەوخۆ</div>
       </div>
+      <div class="sidebar-item green" id="sidebarLoginItem" onclick="showAuth();closeSidebar();" style="display:none">
+        <div class="sidebar-item-ico"><i class="fas fa-right-to-bracket"></i></div>
+        <div class="sidebar-item-txt">چوونەژوورەوە / خۆتۆمارکردن</div>
+      </div>
       <div class="sidebar-div"></div>
-      <div class="sidebar-item red" onclick="doLogout()">
+      <div class="sidebar-item red" id="sidebarLogoutItem" onclick="doLogout()">
         <div class="sidebar-item-ico"><i class="fas fa-right-from-bracket"></i></div>
         <div class="sidebar-item-txt">چوونەدەرەوە</div>
       </div>
@@ -3578,6 +3582,8 @@ function shareRefLink(){
 // بینە: handle_auto_referral RPC لە confirmOtp() دا بانگدەکرێت
 
 let sb, cu=null, aMode='login';
+let _pendingPage=null;
+const PROTECTED_PAGES=['create','myads','profile','txhistory','wallet','proxolink','promocodes','giveaway','notifications','support'];
 let _deviceFp='', _deviceLocalId='';
 let _txMap={};
 let budget=18500, days=1, dailyCost=18500, dailyUSD=10, budgetTier=0, tierIndex=0, depAmt=50;
@@ -5296,16 +5302,16 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
   sb.auth.getSession().then(({data:{session}})=>{
     if(session?.user){cu=session.user;boot();}
-    else{_hideSessionLoader();showAuth();}
-  }).catch(()=>{_hideSessionLoader();showAuth();});
+    else{_hideSessionLoader();bootGuest();}
+  }).catch(()=>{_hideSessionLoader();bootGuest();});
   // ڵاوەڽی: ئەگەر Supabase لە ماوەی ٨ چرکەدا ﺒﺴ دەی نەبووایە، فۆرمی چوونەژوورەوە پیشان بدە
   setTimeout(()=>{
     const _sl=document.getElementById('sessionLoader');
-    if(_sl&&_sl.style.display!=='none'&&!cu){_sl.style.display='none';showAuth();}
+    if(_sl&&_sl.style.display!=='none'&&!cu){_sl.style.display='none';bootGuest();}
   },8000);
   sb.auth.onAuthStateChange((_,s)=>{
     if(s?.user&&!cu){cu=s.user;_hideSessionLoader();}
-    else if(!s&&cu){cu=null;showAuth();}
+    else if(!s&&cu){cu=null;bootGuest();}
   });
 });
 
@@ -5316,7 +5322,28 @@ function showAuth(){
   document.getElementById('bnav').style.display='none';
   const avb=document.getElementById('authVersionBar');if(avb)avb.style.display='block';
   // Initialize multi-step to first step
-  goAuthStep(aMode==='login'?'email':'name');
+  switchTab('login');
+}
+
+function bootGuest(){
+  document.getElementById('authWrap').style.display='none';
+  document.getElementById('app').style.display='flex';
+  document.getElementById('bnav').style.display='block';
+  const _avb=document.getElementById('authVersionBar');if(_avb)_avb.style.display='none';
+  updateSidebarAuth(false);
+  goPageDirect('home');
+}
+
+function updateSidebarAuth(isUser){
+  const loginItem=document.getElementById('sidebarLoginItem');
+  const logoutItem=document.getElementById('sidebarLogoutItem');
+  if(loginItem) loginItem.style.display=isUser?'none':'flex';
+  if(logoutItem) logoutItem.style.display=isUser?'flex':'none';
+  // sidebar user info
+  const sbHead=document.querySelector('.sidebar-head');
+  if(sbHead) sbHead.style.display=isUser?'flex':'none';
+  const sbBal=document.querySelector('.sidebar-bal');
+  if(sbBal) sbBal.style.display=isUser?'flex':'none';
 }
 
 async function boot(){
@@ -5330,7 +5357,7 @@ async function boot(){
       await sb.auth.signOut();
       cu = null;
       const sl2=document.getElementById('sessionLoader');if(sl2)sl2.style.display='none';
-      showAuth();
+      bootGuest(); showAmsg('ئەکاونتەکەت هاوگرتراوە'+(_bp?.ban_reason?' — '+_bp.ban_reason:''),'err');
       showAmsg('ئەکاونتەکەت هاوگرتراوە' + (_bp.ban_reason ? ' — ' + _bp.ban_reason : ''), 'err');
       return;
     }
@@ -5344,7 +5371,9 @@ async function boot(){
   await Promise.all([loadBal(), loadCoins()]);
   loadProfile();
   loadMyCards();
-  goPage('home');
+  updateSidebarAuth(true);
+  const _pp=_pendingPage;_pendingPage=null;
+  goPage(_pp||'home');
   loadHomeBanner();
   startNotifListener(); // ── Firebase realtime notifications ──
   // ═══ MAINTENANCE MODE CHECK ═══
@@ -5604,7 +5633,7 @@ async function loadBal(){
 }
 
 async function doLogout(){
-  await sb.auth.signOut();cu=null;showAuth();
+  await sb.auth.signOut();cu=null;bootGuest();
 }
 
 // ════════════════════════════════════════════════
@@ -5800,6 +5829,12 @@ const _PAGE_LOCK_MAP={
 };
 
 function goPage(p){
+  // چێکی چوونەژوورەوە — بەش پارێزراو
+  if(!cu && PROTECTED_PAGES.includes(p)){
+    _pendingPage=p;
+    showAuth();
+    return;
+  }
   // چێکی قفڵ پێش کردنەوەی بەش
   const lockKey=_PAGE_LOCK_MAP[p];
   if(lockKey && checkSectionLock(lockKey)) return;
