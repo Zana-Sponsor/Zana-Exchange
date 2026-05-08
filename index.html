@@ -3689,6 +3689,7 @@ let _otpPendingLogin = false;
 let _otpPendingData = null;
 let _otpTimer = null;
 let _otpPurpose = 'login'; // 'login'|'signup'|'reset_password'|'change_password'
+let _useSupabaseOtp = false; // کاتی چوونەژوورەوە لەڕێگەی Supabase OTP
 // کلاینت-ساید OTP ستۆر: { [email]: { code, expires } }
 const _clientOtpStore = {};
 
@@ -4140,26 +4141,36 @@ async function verifyOtp() {
   setTimeout(async () => {
     try {
       if(_otpPendingLogin) {
-        // LOGIN — هەوڵی چوونەژوورەوە
-        let { data, error } = await sb.auth.signInWithPassword({ email: _otpEmail, password: _otpPendingData.pass });
-        if(error) {
-          // Supabase Auth شکستی هێنا — sync profiles fallback
-          showOtpMsg('sync دەکرێت...','ok');
-          const profileOk = await _checkProfilePassword(_otpEmail, _otpPendingData.pass);
-          if(profileOk){
-            await _syncPasswordToAuth(_otpEmail, _otpPendingData.pass);
-            const retry = await sb.auth.signInWithPassword({ email: _otpEmail, password: _otpPendingData.pass });
-            data = retry.data; error = retry.error;
+        // LOGIN — سێشن لەڕێگەی Supabase OTP (بەبێ پێویستی بە signInWithPassword)
+        if(_useSupabaseOtp){
+          const {data:ovData, error:ovErr}=await sb.auth.verifyOtp({email:_otpEmail, token:code, type:'email'});
+          if(!ovErr && ovData?.user){
+            _useSupabaseOtp=false;
+            cu=ovData.user;
+            cancelOtp();
+            await boot();
+          } else {
+            const rl=otpRateRecord(_otpEmail);
+            if(rl&&!rl.ok){
+              showOtpMsg('زۆر جار هەوڵت دا — تکایە '+rl.remaining+' خولەکی تر هەوڵ بدەرەوە','err');
+              startBanCountdown(_otpEmail,'otpMsg','otpResendBtn');
+            } else {
+              showOtpMsg(kuErr(ovErr?.message)||'کۆدی هەڵە','err');
+            }
+            btn.disabled=false;
+            btn.innerHTML='<i class="fas fa-check"></i> دڵنیاکردنەوە';
           }
-        }
-        if(!error && data?.user) {
-          cu = data.user;
-          cancelOtp();
-          await boot();
         } else {
-          // چوونەژوورەوە سەرنەکەوت — هەڵە نیشان بدە
-          cancelOtp();
-          showAmsg(kuErr(error?.message) || 'هەڵەیەک ڕووی دا، دووبارە هەوڵ بدەرەوە', 'err');
+          // fallback: N8N OTP (تۆمارکردن یان فلۆی کۆن)
+          let { data, error } = await sb.auth.signInWithPassword({ email: _otpEmail, password: _otpPendingData.pass });
+          if(!error && data?.user) {
+            cu = data.user;
+            cancelOtp();
+            await boot();
+          } else {
+            cancelOtp();
+            showAmsg(kuErr(error?.message) || 'هەڵەیەک ڕووی دا، دووبارە هەوڵ بدەرەوە', 'err');
+          }
         }
       } else {
         // SIGNUP
@@ -4219,20 +4230,33 @@ async function verifyOtp() {
 
 // ── ناردنی دووبارەی OTP ───────────────────────────────────
 async function resendOtp() {
-  // چێکی rate limit پێش داواکردن
+  document.getElementById('otpResendBtn').style.display = 'none';
+  document.getElementById('otpTimerWrap').style.color = '';
+  showOtpMsg('ناردن...', 'ok');
+  ['otp1','otp2','otp3','otp4','otp5','otp6'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  if(_useSupabaseOtp){
+    // چوونەژوورەوە: Supabase OTP دووبارە بنێرە
+    const {error:rErr}=await sb.auth.signInWithOtp({email:_otpEmail, options:{shouldCreateUser:false}});
+    if(!rErr){
+      showOtpMsg('کۆدی نوێ نێردرا','ok');
+      document.getElementById('otp1')?.focus();
+      startOtpTimer(600);
+    } else {
+      showOtpMsg(kuErr(rErr.message)||'هەڵەی ناردن','err');
+      document.getElementById('otpResendBtn').style.display='block';
+    }
+    return;
+  }
+  // N8N OTP (تۆمارکردن، گۆڕینی پاسۆرد، ...)
   const chk = otpRateCheck(_otpEmail);
   if (!chk.ok) {
     showOtpMsg('تکایە ' + chk.remaining + ' خولەکی تر هەوڵ بدەرەوە', 'err');
     startBanCountdown(_otpEmail, 'otpMsg', 'otpResendBtn');
     return;
   }
-  document.getElementById('otpResendBtn').style.display = 'none';
-  document.getElementById('otpTimerWrap').style.color = '';
-  showOtpMsg('ناردن...', 'ok');
   const result = await requestOtp(_otpEmail, _otpPurpose);
   if(result.success) {
     showOtpMsg('کۆدی نوێ نێردرا', 'ok');
-    ['otp1','otp2','otp3','otp4','otp5','otp6'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
     document.getElementById('otp1')?.focus();
     startOtpTimer(600);
   } else {
@@ -4658,28 +4682,14 @@ async function doChangePassFinal(){
   btn.disabled=true;
   btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> گۆڕین...';
   try{
-    // ١. پاسۆرد بۆ profiles پاشەکەوت بکە (سەرچاوەی ڕاستەقینە)
+    // پاسۆرد بۆ profiles پاشەکەوت بکە — سەرچاوەی ڕاستەقینەی پاسۆرد
     await _savePasswordToProfile(cu.email, np);
-    // ٢. هەوڵی گۆڕین لەڕێگەی سێشنی ئێستا
+    // هەوڵی گۆڕین لە Supabase Auth یش بکە (پشتگیری)
     try{
       await sb.auth.refreshSession();
       const {data:{session:ss}}=await sb.auth.getSession();
       if(ss) await sb.auth.updateUser({password:np});
     }catch(_){}
-    // ٣. دەستبەجێ تاقیی دەکەینەوە — ئایا پاسۆردەکە لە Supabase Auth ڕاستە؟
-    showCPMsg('پشکنین...','ok');
-    const {error:chkErr}=await sb.auth.signInWithPassword({email:cu.email,password:np});
-    if(chkErr){
-      // updateUser کارنەکرد — sync لەڕێگەی N8N
-      showCPMsg('sync دەکرێت...','ok');
-      await _syncPasswordToAuth(cu.email, np);
-      // دووبارە تاقی
-      const {error:retryErr}=await sb.auth.signInWithPassword({email:cu.email,password:np});
-      if(retryErr){
-        // هەر دوو ڕێگاش شکستی هێنا — پاسۆرد تەنها لە profiles پاشەکەوتە
-        // چوونەژوورەوە لەڕێگەی profiles دەبێت
-      }
-    }
     _cpVerifiedCode='';
     showCPMsg('وشەی نهێنیەکە بە سەرکەوتوویی گۆڕدرا','ok');
     document.getElementById('newPassInp').value='';
@@ -4728,22 +4738,31 @@ async function doAuth(){
       if(existCheck){showAmsg('ئەم ئیمەیلە پێشتر تۆمارکراوە — بچۆ ژوورەوە','err');return;}
     }
     if(aMode==='login'){
-      // ١. سەرەتا پاسۆرد لە profiles پشکنە (سەرچاوەی ڕاستەقینە)
+      // ١. پاسۆرد لە profiles پشکنە
       const profileOk = await _checkProfilePassword(email, pass);
       if(!profileOk){
-        // profiles پاسۆردەکە نەناسی — هەوڵی Supabase Auth بکە بە fallback
+        // profiles نەناسی — هەوڵی Supabase Auth بکە بە fallback
         const {error:fbErr}=await sb.auth.signInWithPassword({email,password:pass});
         if(fbErr){showAmsg('ئیمەیل یان وشەی نهێنی هەڵەیە','err');return;}
-        // Supabase Auth ناسی — پاسۆرد sync بکە بۆ profiles
+        // Supabase Auth ناسی — sync بکە بۆ profiles
         await _savePasswordToProfile(email, pass);
+        await sb.auth.signOut();
       }
       // ٢. پشکنینی ban
       try{
         const {data:profRow}=await sb.from('profiles').select('id,is_banned,ban_reason').eq('email',email.trim().toLowerCase()).maybeSingle();
         if(profRow?.is_banned){showAmsg('ئەم هەژمارە باندکراوە'+(profRow.ban_reason?' — '+profRow.ban_reason:''),'err');return;}
       }catch(_){}
-      // ٣. پاسۆرد دروستە — مۆدی OTP بچۆ (signOut ناکەین ئێرە چونکە حاجەتمان نییە)
-      try{ await sb.auth.signOut(); }catch(_){}
+      // ٣. پاسۆرد دروستە — Supabase OTP بنێرە بۆ سێشن دروستکردن (بەبێ signInWithPassword)
+      btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> کۆد دەنێردرێت...';
+      const {error:sbOtpErr}=await sb.auth.signInWithOtp({email, options:{shouldCreateUser:false}});
+      if(sbOtpErr){showAmsg(kuErr(sbOtpErr.message)||'هەڵەی ناردنی کۆد','err');return;}
+      _useSupabaseOtp=true;
+      _otpPendingLogin=true;
+      _otpPendingData={pass,name:''};
+      _otpPurpose='login';
+      showOtpStep(email);
+      return;
     }
     btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> کۆد دەنێردرێت...';
     const name=aMode==='signup'?(document.getElementById('authName').value.trim()||email.split('@')[0]):'';
