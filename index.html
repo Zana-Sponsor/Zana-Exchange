@@ -3966,7 +3966,7 @@ function _showStepMsg(id, text, type) {
   el.className = 'amsg ' + type;
   el.style.display = 'block';
 }
-function nextAuthStep(from) {
+async function nextAuthStep(from) {
   ['authMsgName','authMsgEmail','authMsg'].forEach(id => {
     const el = document.getElementById(id); if(el) el.style.display = 'none';
   });
@@ -3978,6 +3978,39 @@ function nextAuthStep(from) {
     const email = document.getElementById('authEmail').value.trim();
     if(!email) { _showStepMsg('authMsgEmail','ئیمەیل بنووسە','err'); return; }
     if(!email.toLowerCase().endsWith('@gmail.com')) { _showStepMsg('authMsgEmail','تەنها ئیمەیلی Gmail پاشگیری دەکرێت','err'); return; }
+    // ── پشکنینی ئیمەیل لە دەیتابەیس ──
+    const stepBtn = document.querySelector('#authStepEmail .abtn');
+    const origHtml = stepBtn ? stepBtn.innerHTML : null;
+    if(stepBtn) { stepBtn.disabled = true; stepBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> پشکنین...'; }
+    try {
+      const { data: exists } = await sb.from('profiles').select('id').eq('email', email).maybeSingle();
+      if(aMode === 'signup' && exists) {
+        // ئیمەیل پێشتر تۆمارکراوە — بڕۆ بەشی چوونەژوورەوە
+        _showStepMsg('authMsgEmail', 'ئەم ئیمەیلە پێشتر تۆمارکراوە ✓', 'ok');
+        setTimeout(() => {
+          switchTab('login');
+          const emailInp = document.getElementById('authEmail');
+          if(emailInp) emailInp.value = email;
+          goAuthStep('pass');
+          _showStepMsg('authMsgEmail','','ok');
+        }, 1200);
+        return;
+      } else if(aMode === 'login' && !exists) {
+        // ئیمەیل تۆمارنەکراوە — بڕۆ بەشی تۆمارکردن
+        _showStepMsg('authMsgEmail', 'ئەم ئیمەیلە تۆمارنەکراوە — هەژمارێک دروست بکە', 'err');
+        setTimeout(() => {
+          switchTab('signup');
+          goAuthStep('email');
+          const emailInp = document.getElementById('authEmail');
+          if(emailInp) emailInp.value = email;
+        }, 1400);
+        return;
+      }
+    } catch(e) {
+      // ئەگەر پشکنین سەرنەکەوت، بەردەوام بە
+    } finally {
+      if(stepBtn && origHtml) { stepBtn.disabled = false; stepBtn.innerHTML = origHtml; }
+    }
     goAuthStep('pass');
   } else if(from === 'pass') {
     doAuth();
@@ -4545,6 +4578,7 @@ async function doChangePassFinal(){
   btn.disabled=true;
   btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> گۆڕین...';
   try{
+    await sb.auth.refreshSession();
     const {error}=await sb.auth.updateUser({password:np});
     if(error) throw error;
     showCPMsg('وشەی نهێنیەکە بە سەرکەوتوویی گۆڕدرا','ok');
@@ -5156,7 +5190,7 @@ async function submitWalletDeposit() {
     try {
       await sb.from('pa_transactions').insert({
         user_id: cu.id,
-        amount: amt,
+        amount: amt / 1800,
         method: meth,
         note: (name ? 'ناو: ' + name : '') + (note ? ' | ' + note : '') || null,
         status: 'pending',
