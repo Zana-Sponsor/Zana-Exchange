@@ -192,10 +192,10 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .phone-flag{padding:12px 14px;background:var(--bg);border:1.5px solid var(--b1);border-radius:13px;font-size:15px;flex-shrink:0;}
 
 /* ══ AUTH ══ */
-#authWrap{min-height:100vh;min-height:-webkit-fill-available;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--w);}
+#authWrap{min-height:100vh;min-height:-webkit-fill-available;display:flex;align-items:flex-start;justify-content:center;padding:48px 24px 80px;background:var(--w);}
 .auth-inner{width:100%;max-width:400px;}
-.auth-brand{text-align:center;margin-bottom:32px;}
-.auth-brand h1{font-size:30px;font-weight:900;color:var(--dark);letter-spacing:-1px;}
+.auth-brand{text-align:center;margin-bottom:24px;}
+.auth-brand h1{font-size:28px;font-weight:900;color:var(--dark);letter-spacing:-.5px;font-family:"Inter",sans-serif;}
 .auth-brand h1 span{color:var(--dark2);}
 .auth-brand p{font-size:13px;color:var(--mt);margin-top:6px;}
 .auth-card{background:var(--w);border:1px solid rgba(232,234,240,.75);border-radius:26px;padding:28px 24px;box-shadow:0 4px 24px rgba(0,0,0,.06);}
@@ -1362,7 +1362,7 @@ function _clipboardFallback(text, onSuccess, onFail) {
 <div id="authWrap">
   <div class="auth-inner">
     <div class="auth-brand">
-      <h1>Proxo <span>Ads</span></h1>
+      <h1>Proxo <span>App</span></h1>
       <p>بەڕێوەبردنی ڕیکلامەکانی تیکتۆک</p>
     </div>
     <div class="auth-card">
@@ -1393,6 +1393,9 @@ function _clipboardFallback(text, onSuccess, onFail) {
           <span>دواتر</span>
         </button>
         <div class="amsg" id="authMsgName"></div>
+        <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--mt)">
+          هەژمارت هەیە؟ <span onclick="switchTab('login')" style="color:var(--dark);font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:2px">ئێستا بچۆ ژوورەوە</span>
+        </div>
       </div>
       <!-- Step: Email -->
       <div class="auth-step" id="authStepEmail">
