@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ku">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LONDON STORE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+      @font-face { font-family: 'Rabar_021'; src: url('https://raw.githubusercontent.com/Zana-Sponsor/Zana-Sponsor/main/Rabar_021.woff2') format('woff2'); }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: 'Rabar_021', sans-serif; background: #f0f0f0; display: flex; justify-content: center; min-height: 100vh; }
+      .page { width: 100%; max-width: 430px; min-height: 100vh; display: flex; flex-direction: column; align-items: center; background: #f0f0f0; padding-bottom: 60px; }
+      .top-banner { width: 100%; background: linear-gradient(to right,#5b1fa8,#c855e0); padding: 36px 20px 60px; text-align: center; }
+      .name { font-size: 22px; font-weight: 600; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,.3); font-family: 'Inter', 'Rabar_021', sans-serif; }
+      .desc { font-size: 14px; color: rgba(255,255,255,.9); line-height: 1.9; text-align: center; margin-top: 10px; padding: 0 10px; white-space: pre-line; }
+      .content { width: 100%; padding: 0 18px; margin-top: -30px; }
+      .card-inner { background: #fff; border-radius: 24px; padding: 24px 16px 20px; box-shadow: 0 4px 24px rgba(0,0,0,.1); display: flex; flex-direction: column; gap: 10px; align-items: center; }
+      .btn-classic { display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; padding: 14px 16px; border-radius: 50px; font-size: 16px; font-weight: 700; color: #fff; text-decoration: none; cursor: pointer; transition: transform .12s, opacity .12s; width: 100%; }
+      .btn-classic:active { transform: scale(.97); opacity: .9; }
+      .btn-classic .ic-wrap { display: flex; align-items: center; justify-content: center; font-size: 22px; }
+      .btn-classic span { text-align: center; }
+      .btn-classic .ic-spacer { width: 44px; }
+      .tt-classic { display: flex; align-items: center; justify-content: center;
+        gap: 7px; margin-top: 4px; padding: 8px 20px; border-radius: 50px;
+        background: #111; color: #fff; text-decoration: none;
+        font-family: 'Rabar_021', sans-serif; font-size: 13px; font-weight: 600; transition: transform .12s; }
+      .tt-classic i { font-size: 18px; }
+      #wa i { font-size: 25px; }
+      #vb i { font-size: 22px; }
+      #tg i { font-size: 22px; }
+      #ig i { font-size: 22px; }
+      #ph i { font-size: 20px; }
+      #as i { font-size: 20px; }
+      .tt-classic:active { transform: scale(.96); }
+      .footer { width: 100%; margin-top: 80px; padding: 0 18px 20px; text-align: center; }
+      .footer small { display: block; font-size: 11px; color: #aaa; margin-bottom: 8px; }
+      .footer img { height: 13px; display: block; margin: 0 auto 10px; }
+      .legal { font-size: 10px; color: #bbb; }
+      .legal a { color: inherit; text-decoration: none; margin: 0 5px; }
+      .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 10000; }
+      .modal-overlay.active { display: flex; animation: fadeIn 0.2s ease; }
+      .modal-content { width: 85%; max-width: 320px; padding: 35px 25px; border-radius: 24px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.3); background: #16181d; color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+      .modal-content h3 { margin: 0 0 16px; font-size: 20px; }
+      .modal-content p { font-size: 14px; opacity: 0.7; margin-bottom: 25px; line-height: 1.6; }
+      .btn-confirm { width: 100%; padding: 16px; border-radius: 16px; border: none; font-family: 'Rabar_021'; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-bottom: 12px; }
+      .btn-cancel { color: #888; font-size: 14px; cursor: pointer; display: inline-block; padding: 5px; }
+      .btn-confirm.confirm-wh { background: #28E16D; color: #000; }
+      .btn-confirm.confirm-vi { background: #7360f2; color: #fff; }
+      .btn-confirm.confirm-te { background: #26A5E4; color: #fff; }
+      .btn-confirm.confirm-ph { background: #fff;    color: #000; }
+      .btn-confirm.confirm-as { background: #e03030; color: #fff; }
+      .btn-confirm.confirm-in { background: #dc2743; color: #fff; }
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes shine { 0% { left: -100%; } 100% { left: 150%; } }
+      .shine-active { overflow: hidden; position: relative; }
+      .shine-active::after { content:''; position:absolute; top:0; left:-100%; width:60%; height:100%; background:linear-gradient(to right,transparent,rgba(255,255,255,0.12),transparent); transform:skewX(-25deg); animation: shine 2.5s ease-in-out infinite; pointer-events:none; border-radius:inherit; }
+      .no-shine::after { animation: none !important; display:none; }
+    </style>
+  </head>
+
+  <body>
+    <div class="modal-overlay" id="confirm-modal">
+      <div class="modal-content">
+        <h3 id="modal-title">...</h3>
+        <p>ئایا دەتەوێت پەیوەندیمان پێوە بکەی؟</p>
+        <button id="main-confirm-btn" class="btn-confirm" onclick="goLink()">بەڵێ، بەردەوام بە</button>
+        <div class="btn-cancel" onclick="closeModal()">پاشگەزبوونەوە</div>
+      </div>
+    </div>
+    <div class="page">
+      <div class="top-banner">
+        <h1 class="name">LONDON STORE</h1>
+        <p class="desc">ئەکاونتی هەرزان و ڕاقی پۆست کراوە، جۆینی تیلیگرام بن، خەڵاتیش دانراوە</p>
+      </div>
+      <div class="content">
+        <div class="card-inner">
+          <a id="tg" class="btn-classic shine-active" style="background:#29a8eb">
+            <div class="ic-spacer"></div><span>تیلیگرام</span>
+            <div class="ic-wrap"><i class="fab fa-telegram"></i></div>
+          </a>
+          <a href="https://www.tiktok.com/@l4ndon.store" target="_blank" class="tt-classic"><span dir="ltr">@l4ndon.store</span><i class="fab fa-tiktok"></i></a>
+        </div>
+      </div>
+      <div class="footer">
+        <small>سپۆنسەر کراوە لەلایەن</small>
+        <a href="https://www.tiktok.com/@proxo_iq" target="_blank">
+          <img src="https://image2url.com/r2/default/images/1772757087694-7bee9862-8ba7-44c2-9056-a4543f25aa32.webp" alt="Sponsor">
+        </a>
+        <div class="legal">
+          <a href="https://proxopages.com/policy" target="_blank">Privacy Policy</a> | <a href="https://proxopages.com/terms" target="_blank">Terms &amp; Conditions</a>
+        </div>
+      </div>
+    </div>
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      let selectedApp = '';
+      let selectedUrl = '';
+      
+      function askConfirm(name, url, kurdishName) {
+          selectedApp = name;
+          selectedUrl = url;
+          const btn   = document.getElementById('main-confirm-btn');
+          const title = document.getElementById('modal-title');
+          title.innerText = kurdishName;
+          btn.className   = 'btn-confirm confirm-' + name.toLowerCase().substring(0, 2);
+          document.getElementById('confirm-modal').classList.add('active');
+          if (navigator.vibrate) navigator.vibrate(25);
+      }
+      
+      function closeModal() { document.getElementById('confirm-modal').classList.remove('active'); }
+      
+      function goLink() {
+          // لۆژیکی نوێ بۆ پشکنینی ٢٤ کاتژمێر
+          const lastTrackTime   = localStorage.getItem('tt_contact_timestamp');
+          const currentTime     = new Date().getTime();
+          const twentyFourHours = 24 * 60 * 60 * 1000; // ٢٤ کاتژمێر بە میلی چرکە
+      
+          if (window.ttq) {
+              if (!lastTrackTime || (currentTime - lastTrackTime > twentyFourHours)) {
+                  ttq.track('Contact', { content_id: 'contact_button', content_name: selectedApp });
+                  localStorage.setItem('tt_contact_timestamp', currentTime);
+              }
+          }
+      
+          closeModal();
+          setTimeout(() => { window.location.href = selectedUrl; }, 700);
+      }
+      
+      !function (w, d, t) {
+        w.TiktokAnalyticsObject = t;
+        var ttq = w[t] = w[t] || [];
+        ttq.methods = ['page','track','identify','instances','debug','on','off','once','ready','alias','group','enableCookie','disableCookie','holdConsent','revokeConsent','grantConsent'];
+        ttq.setAndDefer = function(t, e) { t[e] = function() { t.push([e].concat(Array.prototype.slice.call(arguments, 0))); }; };
+        for (var i = 0; i < ttq.methods.length; i++) ttq.setAndDefer(ttq, ttq.methods[i]);
+        ttq.instance = function(t) {
+          for (var e = ttq._i[t] || [], n = 0; n < ttq.methods.length; n++) ttq.setAndDefer(e, ttq.methods[n]);
+          return e;
+        };
+        ttq.load = function(e, n) {
+          var r = 'https://analytics.tiktok.com/i18n/pixel/events.js';
+          ttq._i = ttq._i || {}; ttq._i[e] = []; ttq._i[e]._u = r;
+          ttq._t = ttq._t || {}; ttq._t[e] = +new Date;
+          ttq._o = ttq._o || {}; ttq._o[e] = n || {};
+          var s = document.createElement('script');
+          s.type = 'text/javascript'; s.async = true;
+          s.src = r + '?sdkid=' + e + '&lib=' + t;
+          e = document.getElementsByTagName('script')[0];
+          e.parentNode.insertBefore(s, e);
+        };
+        ttq.load('D6BIIA3C77U1CE9DCUMG'); // ← Pixel ID دەتوانی لێرەدا بیگۆڕی
+        ttq.page();
+      }(window, document, 'ttq');
+      
+      document.addEventListener('DOMContentLoaded', function() {
+          document.getElementById("tg").onclick = function() {
+              askConfirm("telegram", "https://t.me/xalo_ramizz", "تیلیگرام");
+          };
+        window.onclick = function(e) { if (e.target.id === 'confirm-modal') closeModal(); }
+        setTimeout(function(){ var s=document.querySelector('.shine-active'); if(s) s.classList.add('no-shine'); }, 10000);
+        (function(){var b=document.querySelectorAll('.btn-classic');var n=b.length;var m=n<=2?80:n<=3?100:n<=4?120:n<=5?140:160;var f=document.querySelector('.footer');if(f)f.style.marginTop=m+'px';})();
+      });
+    </script>
+  </body>
+
+</html>
