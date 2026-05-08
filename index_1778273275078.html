@@ -339,7 +339,7 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .notif-dot{position:absolute;top:6px;left:6px;width:9px;height:9px;border-radius:50%;background:var(--rd);border:2px solid var(--w);display:none;animation:pulse 1.5s infinite;}
 .notif-dot.show{display:block;}
 .notif-count{position:absolute;top:-5px;left:-5px;min-width:18px;height:18px;border-radius:9px;background:#dc2626;border:2px solid var(--w);display:none;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;padding:0 4px;font-family:'Inter',sans-serif;box-shadow:0 2px 6px rgba(220,38,38,.4);}
-.notif-count.show{display:flex;animation:pulse .6s ease;}
+.notif-count.show{display:flex;animation:pulse 1.5s ease-in-out infinite;}
 
 /* ══ DEPOSIT FLOW v2 ══ */
 .dep-pm-btn{width:46px;height:46px;border-radius:14px;border:1.5px solid var(--b1);background:var(--bg);color:var(--dark);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;font-family:'Inter',sans-serif;font-weight:300;}
@@ -4913,8 +4913,12 @@ function startNotifListener() {
     const ts = n.timestamp || 0;
     if (ts <= _notifLastSeen) return;
 
-    // نوێکردنەوەی بەڵی ئاگاداری
+    // نوێکردنەوەی بەڵی ئاگاداری — مستقیم badge نیشان بدە
     _pushNotifUnread++;
+    (function(){
+      const dot=document.getElementById('notifDot');
+      if(dot){dot.textContent=_pushNotifUnread>99?'99+':String(_pushNotifUnread);dot.classList.add('show');}
+    })();
     checkNotifBell();
 
     // ئەگەر بەشی ئاگاداریەکان کراوەیە، دووبارە بارکە
@@ -5400,6 +5404,9 @@ async function boot(){
   // Real-time notifications listener
   sb.channel('notif_'+cu.id)
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'pa_notifications',filter:`user_id=eq.${cu.id}`},()=>{
+      _pushNotifUnread++;
+      const _nd=document.getElementById('notifDot');
+      if(_nd){_nd.textContent=_pushNotifUnread>99?'99+':String(_pushNotifUnread);_nd.classList.add('show');}
       checkNotifBell();
     })
     .subscribe();
@@ -5545,6 +5552,9 @@ async function boot(){
   // ══ REALTIME: pa_notifications INSERT ══ (نوێکردنەوەی خۆکاری بەشی ئاگاداریەکان)
   sb.channel('notif_full_rt_'+cu.id)
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'pa_notifications',filter:`user_id=eq.${cu.id}`},(payload)=>{
+      _pushNotifUnread++;
+      const _nd2=document.getElementById('notifDot');
+      if(_nd2){_nd2.textContent=_pushNotifUnread>99?'99+':String(_pushNotifUnread);_nd2.classList.add('show');}
       checkNotifBell();
       const pgNotif = document.getElementById('pgNotifications');
       if(pgNotif && pgNotif.classList.contains('on')) loadNotifications();
