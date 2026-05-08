@@ -4526,6 +4526,7 @@ async function doForgotSavePass(){
 // ════════════════════════════════════════════════════════════
 // ═══ CHANGE PASSWORD (Settings) — OTP Flow ═══
 let _cpTimer = null;
+let _cpVerifiedCode = '';
 
 function cpShowMsg(t,c){
   const el=document.getElementById('cpOtpMsg');
@@ -4639,6 +4640,7 @@ async function doVerifyCpOtp(){
     return;
   }
   clearInterval(_cpTimer);
+  _cpVerifiedCode = code;
   // بڕۆ بۆ step 2
   document.getElementById('cpStep1').style.display='none';
   document.getElementById('cpStep2').style.display='block';
@@ -4652,28 +4654,33 @@ async function doChangePassFinal(){
   if(!np||np.length<6){showCPMsg('وشەی نهێنی دەبێت کەمترین ٦ پیت بێت','err');return;}
   if(np!==cp){showCPMsg('وشەی نهێنیەکان یەکسان نین، دووبارە بنووسە','err');return;}
   if(!cu?.email){showCPMsg('هەژمارەکەت ناسراو نییە، تکایە دووبارە بچۆ ژوورەوە','err');return;}
+  if(!_cpVerifiedCode){showCPMsg('تکایە دووبارە مۆدالەکە ببەستەرەوە و کۆدی دڵنیایی بنووسە','err');return;}
   const btn=document.getElementById('changePassBtn');
   btn.disabled=true;
   btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> گۆڕین...';
   try{
-    let clientOk=false;
-    // هەوڵ: گۆڕین لەڕێگەی سێشنی Supabase
+    // گۆڕینی پاسۆرد لەڕێگەی N8N Admin API — هەمان ڕێگەی "وشەی نهێنیم لەبیرکردووم"
+    const res=await fetch(N8N_WEBHOOK,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'reset_password',email:cu.email,password:np,code:_cpVerifiedCode})
+    });
+    let data={};
+    try{const txt=await res.text();if(txt.trim())data=JSON.parse(txt);}catch(_){}
+    const _raw=Array.isArray(data)?data[0]:data;
+    const payload=(_raw&&_raw.json)?_raw.json:_raw;
+    if(!res.ok||payload.success===false){
+      throw new Error(payload.message||'هەڵەی گۆڕینی پاسۆرد');
+    }
+    // پشتگیری: گۆڕین لەڕێگەی سێشنی ئێستاش
     try{
       await sb.auth.refreshSession();
       const {data:{session:activeSess}}=await sb.auth.getSession();
-      if(activeSess){
-        const {error:ue}=await sb.auth.updateUser({password:np});
-        if(!ue) clientOk=true;
-      }
+      if(activeSess) await sb.auth.updateUser({password:np});
     }catch(_){}
-    // پشتگیری: گۆڕین لەڕێگەی N8N Admin API (دڵنیایی)
-    showCPMsg('sync دەکرێت...','ok');
-    const syncOk=await _syncPasswordToAuth(cu.email, np);
-    if(!clientOk && !syncOk){
-      throw new Error('هەڵەی گۆڕینی پاسۆرد — تکایە دووبارە هەوڵ بدەرەوە');
-    }
     // پاسۆردەکە بۆ profiles پاشەکەوت بکە
     await _savePasswordToProfile(cu.email, np);
+    _cpVerifiedCode='';
     showCPMsg('وشەی نهێنیەکە بە سەرکەوتوویی گۆڕدرا','ok');
     document.getElementById('newPassInp').value='';
     document.getElementById('confirmPassInp').value='';
