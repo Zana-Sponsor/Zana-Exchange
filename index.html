@@ -3809,7 +3809,7 @@ async function requestOtp(email, purpose='login') {
 }
 
 // ── دڵنیاکردنەوەی OTP — ڕاستەوخۆ لە Supabase (بەبێ n8n) ──
-async function verifyOtpCode(email, code) {
+async function verifyOtpCode(email, code, keepRecord = false) {
   try {
     if (!sb) return { success: false, message: 'سیستەم ئامادە نییە، دووبارە هەوڵ بدەرەوە' };
 
@@ -3858,8 +3858,10 @@ async function verifyOtpCode(email, code) {
       return { success: false, message: 'کاتی کۆدەکە تێپەڕیوە — کۆدی نوێ داواکە' };
     }
 
-    // کۆد دروستە — بیسڕەرەوە
-    await sb.from('otp_codes').delete().eq('id', row.id);
+    // کۆد دروستە — بیسڕەرەوە (تەنها ئەگەر keepRecord نەبوو)
+    if(!keepRecord) {
+      await sb.from('otp_codes').delete().eq('id', row.id);
+    }
     otpRateClear(email);
     otpSendClear(email);
     return { success: true, message: 'دڵنیاکراوە' };
@@ -4399,7 +4401,7 @@ async function doForgotVerifyOtp(){
   _fpVerifying = true;
   const btn=document.getElementById('fpVerifyBtn');
   btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> پشکنین...';
-  const result=await verifyOtpCode(_fpEmail,code);
+  const result=await verifyOtpCode(_fpEmail,code,true); // keepRecord=true: n8n دەبێت کۆدەکە پشکنێت
   _fpVerifying = false;
   if(!result.success){
     const rl = otpRateRecord(_fpEmail);
@@ -4433,7 +4435,7 @@ async function doForgotSavePass(){
       body:JSON.stringify({action:'reset_password',email:_fpEmail,code:_fpVerifiedCode,new_password:np})});
     let data={};
     try{const txt=await res.text();if(txt.trim())data=JSON.parse(txt);}catch(_){}
-    if(res.ok&&data.success!==false){
+    if(res.ok&&(data.success===true||data.success==='true')){
       fpShowMsg('C','وشەی نهێنیەکە بە سەرکەوتوویی گۆڕدرا، ئێستا بچۆ ژوورەوە','ok');
       setTimeout(()=>cancelForgotStep(),2500);
     } else {
