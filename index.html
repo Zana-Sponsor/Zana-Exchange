@@ -159,6 +159,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   --gr:#16a34a;--rd:#dc2626;--yw:#d97706;--bl:#2563eb;
   --mt:#8b95a8;--mt2:#6b7585;
   --tx:#1c2333;
+  --or:#f59e0b;--dk:#1c2333;
 }
 body{font-family:'R',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;min-height:-webkit-fill-available;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:none;}
 /* ══ SCROLL PERFORMANCE ══ */
@@ -5424,7 +5425,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   setTimeout(()=>{
     const _sl=document.getElementById('sessionLoader');
     if(_sl&&_sl.style.display!=='none'&&!cu){_sl.style.display='none';showAuth();}
-  },8000);
+  },5000);
   sb.auth.onAuthStateChange((_,s)=>{
     if(s?.user&&!cu){cu=s.user;_hideSessionLoader();}
     else if(!s&&cu){cu=null;showAuth();}
@@ -5442,26 +5443,25 @@ function showAuth(){
 }
 
 async function boot(){
-  // ══ چێکی بانکردن — پێش هەموو شتێک ══
-  try {
-    const { data: _bp } = await sb.from('profiles')
-      .select('is_banned,ban_reason')
-      .eq('id', cu.id)
-      .single();
-    if (_bp?.is_banned) {
-      await sb.auth.signOut();
-      cu = null;
-      const sl2=document.getElementById('sessionLoader');if(sl2)sl2.style.display='none';
-      showAuth();
-      showAmsg('ئەکاونتەکەت هاوگرتراوە' + (_bp.ban_reason ? ' — ' + _bp.ban_reason : ''), 'err');
-      return;
-    }
-  } catch(_e) {}
+  // ── فووری شاردنەوەی sessionLoader پێش هەموو شتێک ──
   const sl=document.getElementById('sessionLoader');if(sl)sl.style.display='none';
   document.getElementById('authWrap').style.display='none';
   document.getElementById('app').style.display='flex';
   document.getElementById('bnav').style.display='block';
   const _avb=document.getElementById('authVersionBar');if(_avb)_avb.style.display='none';
+  // ══ چێکی بانکردن — بە race timeout بۆ ئەوەی لۆدینگ مەهاته ══
+  try {
+    const _banP = sb.from('profiles').select('is_banned,ban_reason').eq('id', cu.id).single().then(r=>r.data);
+    const _timeP = new Promise(r=>setTimeout(()=>r(null),4000));
+    const _bp = await Promise.race([_banP, _timeP]);
+    if (_bp?.is_banned) {
+      await sb.auth.signOut();
+      cu = null;
+      showAuth();
+      showAmsg('ئەکاونتەکەت هاوگرتراوە' + (_bp.ban_reason ? ' — ' + _bp.ban_reason : ''), 'err');
+      return;
+    }
+  } catch(_e) {}
   await Promise.all([loadAppSectionLocks(), ensureWallet(), ensureCoinsWallet()]);
   await Promise.all([loadBal(), loadCoins()]);
   loadProfile();
