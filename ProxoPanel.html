@@ -2846,8 +2846,8 @@ if (target === 'all') {
         action: 'panel_notification',
         email: u.email,
         userName: u.full_name || 'بەکارهێنەر',
-        title,
-        message: body,
+        title: document.getElementById('notifTitle').value.trim(),  // ✅
+        message: document.getElementById('notifBody').value.trim(),  // ✅ ڕاستە
         type: selectedNotifType
       })
     });
@@ -2864,8 +2864,8 @@ if (target === 'all') {
         action: 'panel_notification',
         email: prof.email,
         userName: prof.full_name || 'بەکارهێنەر',
-        title,
-        message: body,
+        title: document.getElementById('notifTitle').value.trim(),  // ✅
+        message: document.getElementById('notifBody').value.trim(),  // ✅ ڕاستە
         type: selectedNotifType
       })
     });
