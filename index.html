@@ -868,42 +868,57 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .sidebar-bal-val{font-size:16px;font-weight:900;color:#fff;direction:ltr;}
 .ham-btn{width:34px;height:34px;border-radius:10px;background:var(--dark);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,.15);transition:transform .15s,opacity .15s;}.ham-btn:active{opacity:.85;transform:scale(.95);}
 
-/* ══ TUTORIALS PAGE — LIGHT REDESIGN ══ */
-.tut-lhero{display:flex;align-items:center;gap:11px;padding:16px 0 14px;}
-.tut-lhero-icon{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;flex-shrink:0;box-shadow:0 4px 14px rgba(99,102,241,.25);}
-.tut-lhero-title{font-size:18px;font-weight:900;color:var(--dark);}
-.tut-lhero-sub{font-size:11.5px;color:var(--mt);margin-top:2px;}
+/* ══ TUTORIALS PAGE — PREMIUM REDESIGN ══ */
+/* Hero Banner */
+.tut-lhero{position:relative;margin:-16px -16px 18px;padding:28px 20px 24px;background:linear-gradient(135deg,#1c2333 0%,#2e3a50 60%,#3d4f6e 100%);overflow:hidden;border-radius:0 0 28px 28px;}
+.tut-lhero::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(99,102,241,.15);pointer-events:none;}
+.tut-lhero::after{content:'';position:absolute;bottom:-30px;left:-20px;width:100px;height:100px;border-radius:50%;background:rgba(139,92,246,.1);pointer-events:none;}
+.tut-lhero-inner{position:relative;display:flex;align-items:center;gap:14px;}
+.tut-lhero-icon{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;flex-shrink:0;box-shadow:0 8px 24px rgba(99,102,241,.4);}
+.tut-lhero-text{flex:1;}
+.tut-lhero-title{font-size:20px;font-weight:900;color:#fff;letter-spacing:-.3px;}
+.tut-lhero-sub{font-size:12px;color:rgba(255,255,255,.6);margin-top:4px;line-height:1.5;}
+.tut-lhero-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:4px 11px;font-size:10px;font-weight:700;color:rgba(255,255,255,.75);margin-top:8px;backdrop-filter:blur(4px);}
+/* Filter chips scroll row */
+.tut-filter-row{display:flex;gap:8px;overflow-x:auto;padding:0 0 4px;margin-bottom:16px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+.tut-filter-row::-webkit-scrollbar{display:none;}
+.tut-cat{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:20px;font-family:'R',sans-serif;font-size:11.5px;font-weight:700;cursor:pointer;border:1.5px solid var(--b1);background:var(--w);color:var(--mt2);transition:all .22s;white-space:nowrap;touch-action:manipulation;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+.tut-cat.on{background:linear-gradient(135deg,#1c2333,#2e3a50);color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(28,35,51,.25);}
+.tut-cat:active{opacity:.8;transform:scale(.96);}
+.tut-cat i{font-size:10px;}
 /* ── Post-style tutorial card ── */
-.tut-post-card{background:var(--w);border:1.5px solid var(--b1);border-radius:16px;margin-bottom:9px;overflow:hidden;cursor:pointer;position:relative;transition:box-shadow .18s,border-color .18s;will-change:transform;transform:translateZ(0);contain:layout;}
-.tut-post-card:active{opacity:.92;}
-.tut-post-card.open{border-color:var(--b2);box-shadow:0 4px 20px rgba(0,0,0,.07);}
-.tut-post-head{display:flex;align-items:center;gap:11px;padding:12px 14px;}
-.tut-post-avatar{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;flex-shrink:0;}
+.tut-post-card{background:var(--w);border:1.5px solid var(--b1);border-radius:18px;margin-bottom:10px;overflow:hidden;cursor:pointer;position:relative;transition:box-shadow .2s,border-color .2s,transform .15s;will-change:transform;transform:translateZ(0);contain:layout;box-shadow:0 2px 8px rgba(0,0,0,.04);}
+.tut-post-card:active{transform:scale(.985);opacity:.95;}
+.tut-post-card.open{border-color:rgba(99,102,241,.25);box-shadow:0 6px 24px rgba(99,102,241,.1);}
+.tut-post-head{display:flex;align-items:center;gap:12px;padding:14px 14px;}
+.tut-post-avatar{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,.15);}
 .tut-post-info{flex:1;min-width:0;}
-.tut-post-title{font-size:13px;font-weight:800;color:var(--dark);line-height:1.4;}
-.tut-post-dur{font-size:10.5px;color:var(--mt);display:flex;align-items:center;gap:4px;margin-top:4px;}
-.tut-post-play-btn{width:34px;height:34px;border-radius:50%;background:var(--bg);border:1.5px solid var(--b1);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--mt);flex-shrink:0;transition:all .2s;}
-.tut-post-card.open .tut-post-play-btn{background:var(--dark);color:#fff;border-color:var(--dark);}
+.tut-post-title{font-size:13.5px;font-weight:800;color:var(--dark);line-height:1.45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tut-post-dur{font-size:10.5px;color:var(--mt);display:flex;align-items:center;gap:6px;margin-top:5px;flex-wrap:wrap;}
+.tut-post-dur-time{display:inline-flex;align-items:center;gap:3px;background:var(--bg);border:1px solid var(--b1);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;color:var(--mt2);}
+.tut-post-dur-cat{display:inline-flex;align-items:center;gap:3px;border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;color:#fff;}
+.tut-post-play-btn{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#ef4444,#dc2626);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;flex-shrink:0;transition:all .2s;box-shadow:0 4px 12px rgba(220,38,38,.3);padding-left:2px;}
+.tut-post-card.open .tut-post-play-btn{background:linear-gradient(135deg,#1c2333,#2e3a50);box-shadow:0 4px 12px rgba(28,35,51,.3);}
+/* Divider inside card */
+.tut-post-divider{height:1px;background:var(--b1);margin:0 14px;}
+.tut-post-card.open .tut-post-divider{display:block;}
 /* Expanded video area */
-.tut-post-video{display:none;padding:0 12px 12px;}
-.tut-post-video.show{display:block;animation:tutExpand .22s cubic-bezier(.165,.84,.44,1);}
-@keyframes tutExpand{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-.tut-post-iframe-wrap{border-radius:12px;overflow:hidden;box-shadow:0 3px 16px rgba(0,0,0,.09);}
+.tut-post-video{display:none;padding:12px 12px 12px;}
+.tut-post-video.show{display:block;animation:tutExpand .25s cubic-bezier(.165,.84,.44,1);}
+@keyframes tutExpand{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.tut-post-iframe-wrap{border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.12);}
 .tut-ytthumb{position:absolute;inset:0;cursor:pointer;background:#000;display:flex;align-items:center;justify-content:center;border-radius:0;}
 .tut-ytthumb img{width:100%;height:100%;object-fit:cover;display:block;}
-.tut-ytthumb-btn{position:absolute;width:58px;height:58px;background:rgba(220,38,38,.92);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;padding-left:4px;box-shadow:0 4px 20px rgba(0,0,0,.45);transition:transform .15s;}
-.tut-ytthumb:active .tut-ytthumb-btn{transform:scale(.9);}
+.tut-ytthumb-btn{position:absolute;width:62px;height:62px;background:rgba(220,38,38,.95);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;padding-left:4px;box-shadow:0 6px 28px rgba(0,0,0,.5);transition:transform .15s,background .15s;}
+.tut-ytthumb:active .tut-ytthumb-btn{transform:scale(.88);background:#b91c1c;}
 .tut-post-iframe-wrap{position:relative;padding-top:56.25%;}.tut-post-iframe-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;background:#111;display:block;}
-.tut-post-close-row{display:none;align-items:center;justify-content:center;padding:8px 12px 12px;}
+.tut-post-close-row{display:none;align-items:center;justify-content:center;padding:0 12px 12px;}
 .tut-post-card.open .tut-post-close-row{display:flex;}
-.tut-post-close-btn{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--mt);background:var(--bg);border:1.5px solid var(--b1);border-radius:20px;padding:5px 14px;cursor:pointer;}
+.tut-post-close-btn{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--mt2);background:var(--bg);border:1.5px solid var(--b1);border-radius:20px;padding:7px 18px;cursor:pointer;transition:all .18s;}
+.tut-post-close-btn:active{background:var(--dark);color:#fff;border-color:var(--dark);}
 /* Section label */
 .tut-sec-lbl{font-size:10.5px;font-weight:800;color:var(--mt);letter-spacing:.5px;margin:16px 0 10px;display:flex;align-items:center;gap:10px;text-transform:uppercase;}
 .tut-sec-lbl::before,.tut-sec-lbl::after{content:'';flex:1;height:1px;background:var(--b1);}
-/* Tutorial section filter chips */
-.tut-cat{display:inline-flex;align-items:center;padding:6px 13px;border-radius:20px;font-family:'R',sans-serif;font-size:11.5px;font-weight:700;cursor:pointer;border:1.5px solid var(--b1);background:var(--w);color:var(--mt);transition:all .2s;white-space:nowrap;touch-action:manipulation;}
-.tut-cat.on{background:var(--dark);color:#fff;border-color:var(--dark);}
-.tut-cat:active{opacity:.8;}
 /* Quick step 2-col grid */
 .tut-step-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:24px;}
 .tut-qcard{background:var(--w);border:1.5px solid var(--b1);border-radius:14px;padding:13px 12px;cursor:pointer;transition:all .18s;will-change:transform;touch-action:manipulation;display:flex;align-items:center;gap:10px;}
@@ -2553,22 +2568,33 @@ function _clipboardFallback(text, onSuccess, onFail) {
   ════════════════════════════════════════════════ -->
   <div class="pg" id="pgTutorials">
 
-    <!-- Hero -->
+    <!-- Hero Banner -->
     <div class="tut-lhero">
-      <div class="tut-lhero-icon"><i class="fas fa-circle-play"></i></div>
-      <div>
-        <div class="tut-lhero-title">فێرکارییەکان</div>
-        <div class="tut-lhero-sub">کلیک بکە و ڤیدیۆکەت لێرەوە ببینە</div>
+      <div class="tut-lhero-inner">
+        <div class="tut-lhero-icon"><i class="fas fa-play-circle"></i></div>
+        <div class="tut-lhero-text">
+          <div class="tut-lhero-title">فێرکارییەکان</div>
+          <div class="tut-lhero-sub">کلیک بکە و ڤیدیۆکەت لێرەوە ببینە</div>
+          <div class="tut-lhero-badge"><i class="fas fa-bolt"></i> فێربوون بە ئاسانی</div>
+        </div>
       </div>
     </div>
 
     <!-- فلتەری بەش -->
-    <div id="tutFilterChips" style="display:none;gap:7px;flex-wrap:wrap;margin-bottom:14px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch">
-      <span class="tut-cat on" onclick="_tutSetFilter('all',this)">هەموو</span>
+    <div id="tutFilterChips" style="display:none;" class="tut-filter-row">
+      <span class="tut-cat on" onclick="_tutSetFilter('all',this)"><i class="fas fa-th-large"></i> هەموو</span>
     </div>
 
     <!-- Dynamic Tutorials loaded from Supabase pa_tutorials -->
-    <div id="tutDynamicList"><div style="text-align:center;padding:30px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin" style="font-size:20px"></i></div></div>
+    <div id="tutDynamicList">
+      <div style="text-align:center;padding:40px 20px;color:var(--mt)">
+        <div style="width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 8px 24px rgba(99,102,241,.3)">
+          <i class="fas fa-circle-notch fa-spin" style="font-size:22px;color:#fff"></i>
+        </div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark)">چاوەڕوانبە...</div>
+        <div style="font-size:11px;color:var(--mt);margin-top:4px">ڤیدیۆکان بار دەبن</div>
+      </div>
+    </div>
 
     <div style="height:24px"></div>
   </div>
@@ -5724,19 +5750,32 @@ function _tutRenderFiltered(){
   if(!wrap)return;
   var rows=_tutSecFilter==='all'?_tutAllRows:_tutAllRows.filter(function(t){return t.section===_tutSecFilter;});
   if(!rows.length){wrap.innerHTML='<div style="text-align:center;padding:30px;color:var(--mt);font-size:13px">هیچ فێرکارییەک نەدۆزرایەوە</div>';return;}
-  var secColors={'دەستپێک':'linear-gradient(135deg,#f97316,#ef4444)','ڕیکلام':'linear-gradient(135deg,#2563eb,#0ea5e9)','ئامراز':'linear-gradient(135deg,#7c3aed,#a855f7)','باڵانس':'linear-gradient(135deg,#16a34a,#10b981)','کۆین':'linear-gradient(135deg,#d97706,#f59e0b)','گشتگیر':'linear-gradient(135deg,#0ea5e9,#6366f1)'};
-  var gradients=['linear-gradient(135deg,#6366f1,#8b5cf6)','linear-gradient(135deg,#16a34a,#10b981)','linear-gradient(135deg,#2563eb,#0ea5e9)','linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#f97316,#ef4444)','linear-gradient(135deg,#0ea5e9,#6366f1)'];
+  var secMeta={
+    'دەستپێک':{grad:'linear-gradient(135deg,#f97316,#ef4444)',icon:'fa-rocket',tc:'#f97316'},
+    'ڕیکلام':{grad:'linear-gradient(135deg,#2563eb,#0ea5e9)',icon:'fa-bullhorn',tc:'#2563eb'},
+    'ئامراز':{grad:'linear-gradient(135deg,#7c3aed,#a855f7)',icon:'fa-tools',tc:'#7c3aed'},
+    'باڵانس':{grad:'linear-gradient(135deg,#16a34a,#10b981)',icon:'fa-wallet',tc:'#16a34a'},
+    'کۆین':{grad:'linear-gradient(135deg,#d97706,#f59e0b)',icon:'fa-coins',tc:'#d97706'},
+    'گشتگیر':{grad:'linear-gradient(135deg,#0ea5e9,#6366f1)',icon:'fa-info-circle',tc:'#0ea5e9'}
+  };
+  var defMeta=[
+    {grad:'linear-gradient(135deg,#6366f1,#8b5cf6)',icon:'fa-play-circle',tc:'#6366f1'},
+    {grad:'linear-gradient(135deg,#16a34a,#10b981)',icon:'fa-video',tc:'#16a34a'},
+    {grad:'linear-gradient(135deg,#2563eb,#0ea5e9)',icon:'fa-film',tc:'#2563eb'},
+    {grad:'linear-gradient(135deg,#7c3aed,#a855f7)',icon:'fa-graduation-cap',tc:'#7c3aed'},
+    {grad:'linear-gradient(135deg,#f97316,#ef4444)',icon:'fa-star',tc:'#f97316'},
+    {grad:'linear-gradient(135deg,#0ea5e9,#6366f1)',icon:'fa-lightbulb',tc:'#0ea5e9'}
+  ];
   wrap.innerHTML=rows.map(function(t,i){
     var cid='dbtpost'+i;
-    var ytUrl=(t.youtube_url||'').replace(/'/g,"\\'");
-    var grad=secColors[t.section]||gradients[i%gradients.length];
-    var metaParts=[];
-    if(t.duration)metaParts.push('<i class="fas fa-clock" style="font-size:9px;margin-left:3px"></i>'+t.duration+' خولەک');
-    if(t.section)metaParts.push('<span style="font-weight:700">'+t.section+'</span>');
-    var dur=metaParts.length?('<div class="tut-post-dur">'+metaParts.join('<span style="margin:0 5px;opacity:.4">·</span>')+'</div>'):'';
+    var ytUrl=(t.youtube_url||'').replace(/'/g,"\'");
+    var sm=secMeta[t.section]||defMeta[i%defMeta.length];
+    var catBadge=t.section?('<span class="tut-post-dur-cat" style="background:'+sm.grad+'"><i class="fas '+sm.icon+'" style="font-size:8px"></i> '+t.section+'</span>'):'';
+    var timeBadge=t.duration?('<span class="tut-post-dur-time"><i class="fas fa-clock" style="color:'+sm.tc+'"></i> '+t.duration+' خولەک</span>'):'';
+    var dur=(timeBadge||catBadge)?('<div class="tut-post-dur">'+timeBadge+catBadge+'</div>'):'';
     return '<div class="tut-post-card" id="'+cid+'" data-cat="'+(t.section||'tutorial')+'" onclick="toggleTutPost(\''+cid+'\',\''+ytUrl+'\',[])">'
       +'<div class="tut-post-head">'
-      +'<div class="tut-post-avatar" style="background:'+grad+'"><i class="fas fa-play"></i></div>'
+      +'<div class="tut-post-avatar" style="background:'+sm.grad+'"><i class="fas '+sm.icon+'"></i></div>'
       +'<div class="tut-post-info">'
       +'<div class="tut-post-title">'+(t.title||'—')+'</div>'
       +dur
@@ -5746,7 +5785,7 @@ function _tutRenderFiltered(){
       +'<div class="tut-post-video" id="dbtvid'+i+'">'
       +'<div class="tut-post-iframe-wrap"></div>'
       +'</div>'
-      +'<div class="tut-post-close-row"><span class="tut-post-close-btn" onclick="event.stopPropagation();toggleTutPost(\''+cid+'\',\'\',[])"><i class="fas fa-chevron-up"></i>داخستن</span></div>'
+      +'<div class="tut-post-close-row"><span class="tut-post-close-btn" onclick="event.stopPropagation();toggleTutPost(\''+cid+'\',\'\',[])"><i class="fas fa-times-circle"></i> داخستن</span></div>'
       +'</div>';
   }).join('');
   _tutBuildFilterChips();
@@ -5758,9 +5797,11 @@ function _tutBuildFilterChips(){
   var sections=[...new Set(_tutAllRows.map(function(t){return t.section;}).filter(Boolean))];
   if(!sections.length){filterWrap.style.display='none';return;}
   filterWrap.style.display='flex';
-  var html='<span class="tut-cat on" onclick="_tutSetFilter(\'all\',this)">هەموو</span>';
+  var secIcons={'دەستپێک':'fa-rocket','ڕیکلام':'fa-bullhorn','ئامراز':'fa-tools','باڵانس':'fa-wallet','کۆین':'fa-coins','گشتگیر':'fa-info-circle'};
+  var html='<span class="tut-cat on" onclick="_tutSetFilter(\'all\',this)"><i class="fas fa-th-large"></i> هەموو</span>';
   sections.forEach(function(s){
-    html+='<span class="tut-cat" onclick="_tutSetFilter(\''+s+'\',this)">'+s+'</span>';
+    var ico=secIcons[s]||'fa-circle';
+    html+='<span class="tut-cat" onclick="_tutSetFilter(\''+s+'\',this)"><i class="fas '+ico+'"></i> '+s+'</span>';
   });
   filterWrap.innerHTML=html;
 }
