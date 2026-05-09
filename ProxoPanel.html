@@ -2830,47 +2830,46 @@ async function sendNotification(){
   document.getElementById('notifTitle').value='';
   document.getElementById('notifBody').value='';
   loadNotifHistory();
-  
-  // ئیمێڵ بنێرە بە n8n
-const webhookURL = 'https://n8n.proxopages.com/webhook/send_otp1';
 
-if (target === 'all') {
-  // ئیمێڵی هەموو بەکارهێنەران وەربگرە
-  const { data: allUsers } = await sb.from('profiles').select('email, full_name');
-  for (const u of allUsers || []) {
-    if (!u.email) continue;
-    fetch(webhookURL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'panel_notification',
-        email: u.email,
-        userName: u.full_name || 'بەکارهێنەر',
-        title: document.getElementById('notifTitle').value.trim(),  // ✅
-        message: document.getElementById('notifBody').value.trim(),  // ✅ ڕاستە
-        type: selectedNotifType
-      })
-    });
+  // ئیمێڵ بنێرە بە n8n
+  const webhookURL = 'https://n8n.proxopages.com/webhook/send_otp1';
+
+  if (target === 'all') {
+    const { data: allUsers } = await sb.from('profiles').select('email, full_name');
+    for (const u of allUsers || []) {
+      if (!u.email) continue;
+      fetch(webhookURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'panel_notification',
+          email: u.email,
+          userName: u.full_name || 'بەکارهێنەر',
+          title: title,
+          message: body,
+          type: selectedNotifType
+        })
+      });
+    }
+  } else {
+    const { data: prof2 } = await sb.from('profiles')
+      .select('email, full_name').eq('email', document.getElementById('notifUserEmail').value.trim()).single();
+    if (prof2) {
+      fetch(webhookURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'panel_notification',
+          email: prof2.email,
+          userName: prof2.full_name || 'بەکارهێنەر',
+          title: title,
+          message: body,
+          type: selectedNotifType
+        })
+      });
+    }
   }
-} else {
-  // بەکارهێنەرێکی دیاریکراو
-  const { data: prof } = await sb.from('profiles')
-    .select('email, full_name').eq('email', document.getElementById('notifUserEmail').value.trim()).single();
-  if (prof) {
-    fetch(webhookURL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'panel_notification',
-        email: prof.email,
-        userName: prof.full_name || 'بەکارهێنەر',
-        title: document.getElementById('notifTitle').value.trim(),  // ✅
-        message: document.getElementById('notifBody').value.trim(),  // ✅ ڕاستە
-        type: selectedNotifType
-      })
-    });
-  }
-}
+}  // ← داخستنی sendNotification
 
 async function loadNotifHistory(){
   const{data:_ntxs}=await sb.from('pa_notifications').select('*').order('created_at',{ascending:false}).limit(30);
