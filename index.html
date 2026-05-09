@@ -896,6 +896,10 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 /* Section label */
 .tut-sec-lbl{font-size:10.5px;font-weight:800;color:var(--mt);letter-spacing:.5px;margin:16px 0 10px;display:flex;align-items:center;gap:10px;text-transform:uppercase;}
 .tut-sec-lbl::before,.tut-sec-lbl::after{content:'';flex:1;height:1px;background:var(--b1);}
+/* Tutorial section filter chips */
+.tut-cat{display:inline-flex;align-items:center;padding:6px 13px;border-radius:20px;font-family:'R',sans-serif;font-size:11.5px;font-weight:700;cursor:pointer;border:1.5px solid var(--b1);background:var(--w);color:var(--mt);transition:all .2s;white-space:nowrap;touch-action:manipulation;}
+.tut-cat.on{background:var(--dark);color:#fff;border-color:var(--dark);}
+.tut-cat:active{opacity:.8;}
 /* Quick step 2-col grid */
 .tut-step-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:24px;}
 .tut-qcard{background:var(--w);border:1.5px solid var(--b1);border-radius:14px;padding:13px 12px;cursor:pointer;transition:all .18s;will-change:transform;touch-action:manipulation;display:flex;align-items:center;gap:10px;}
@@ -2552,6 +2556,11 @@ function _clipboardFallback(text, onSuccess, onFail) {
         <div class="tut-lhero-title">فێرکارییەکان</div>
         <div class="tut-lhero-sub">کلیک بکە و ڤیدیۆکەت لێرەوە ببینە</div>
       </div>
+    </div>
+
+    <!-- فلتەری بەش -->
+    <div id="tutFilterChips" style="display:none;gap:7px;flex-wrap:wrap;margin-bottom:14px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch">
+      <span class="tut-cat on" onclick="_tutSetFilter('all',this)">هەموو</span>
     </div>
 
     <!-- Dynamic Tutorials loaded from Supabase pa_tutorials -->
@@ -5713,36 +5722,76 @@ function _extractYtId(url){
   var m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/);
   return m?m[1]:'';
 }
+var _tutAllRows = [];
+var _tutSecFilter = 'all';
+
 async function loadTutorials(){
   var wrap=document.getElementById('tutDynamicList');
   if(!wrap)return;
   wrap.innerHTML='<div style="text-align:center;padding:30px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin" style="font-size:20px"></i></div>';
   try{
     var res=await sb.from('pa_tutorials').select('*').order('created_at',{ascending:false});
-    var rows=(res.data)||[];
-    if(!rows.length){wrap.innerHTML='';return;}
-    var gradients=['linear-gradient(135deg,#6366f1,#8b5cf6)','linear-gradient(135deg,#16a34a,#10b981)','linear-gradient(135deg,#2563eb,#0ea5e9)','linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#f97316,#ef4444)','linear-gradient(135deg,#0ea5e9,#6366f1)'];
-    wrap.innerHTML=rows.map(function(t,i){
-      var cid='dbtpost'+i;
-      var ytUrl=(t.youtube_url||'').replace(/'/g,"\\'");
-      var grad=gradients[i%gradients.length];
-      var dur=t.description?('<div class="tut-post-dur" style="font-size:11px;color:var(--mt)">'+t.description.substring(0,55)+(t.description.length>55?'...':'')+'</div>'):'';
-      return '<div class="tut-post-card" id="'+cid+'" data-cat="tutorial" onclick="toggleTutPost(\''+cid+'\',\''+ytUrl+'\',[])">'
-        +'<div class="tut-post-head">'
-        +'<div class="tut-post-avatar" style="background:'+grad+'"><i class="fas fa-play"></i></div>'
-        +'<div class="tut-post-info">'
-        +'<div class="tut-post-title">'+(t.title||'—')+'</div>'
-        +dur
-        +'</div>'
-        +'<div class="tut-post-play-btn"><i class="fas fa-play"></i></div>'
-        +'</div>'
-        +'<div class="tut-post-video" id="dbtvid'+i+'">'
-        +'<div class="tut-post-iframe-wrap"><iframe src="" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" loading="lazy"></iframe></div>'
-        +'</div>'
-        +'<div class="tut-post-close-row"><span class="tut-post-close-btn" onclick="event.stopPropagation();toggleTutPost(\''+cid+'\',\'\',[])"><i class="fas fa-chevron-up"></i>داخستن</span></div>'
-        +'</div>';
-    }).join('');
+    _tutAllRows=(res.data)||[];
+    _tutRenderFiltered();
   }catch(e){wrap.innerHTML='';}
+}
+
+function _tutRenderFiltered(){
+  var wrap=document.getElementById('tutDynamicList');
+  if(!wrap)return;
+  var rows=_tutSecFilter==='all'?_tutAllRows:_tutAllRows.filter(function(t){return t.section===_tutSecFilter;});
+  if(!rows.length){wrap.innerHTML='<div style="text-align:center;padding:30px;color:var(--mt);font-size:13px">هیچ فێرکارییەک نەدۆزرایەوە</div>';return;}
+  var secColors={'دەستپێک':'linear-gradient(135deg,#f97316,#ef4444)','ڕیکلام':'linear-gradient(135deg,#2563eb,#0ea5e9)','ئامراز':'linear-gradient(135deg,#7c3aed,#a855f7)','باڵانس':'linear-gradient(135deg,#16a34a,#10b981)','کۆین':'linear-gradient(135deg,#d97706,#f59e0b)','گشتگیر':'linear-gradient(135deg,#0ea5e9,#6366f1)'};
+  var gradients=['linear-gradient(135deg,#6366f1,#8b5cf6)','linear-gradient(135deg,#16a34a,#10b981)','linear-gradient(135deg,#2563eb,#0ea5e9)','linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#f97316,#ef4444)','linear-gradient(135deg,#0ea5e9,#6366f1)'];
+  wrap.innerHTML=rows.map(function(t,i){
+    var cid='dbtpost'+i;
+    var ytUrl=(t.youtube_url||'').replace(/'/g,"\\'");
+    var grad=secColors[t.section]||gradients[i%gradients.length];
+    var metaParts=[];
+    if(t.duration)metaParts.push('<i class="fas fa-clock" style="font-size:9px;margin-left:3px"></i>'+t.duration+' خولەک');
+    if(t.section)metaParts.push('<span style="font-weight:700">'+t.section+'</span>');
+    var dur=metaParts.length?('<div class="tut-post-dur">'+metaParts.join('<span style="margin:0 5px;opacity:.4">·</span>')+'</div>'):'';
+    return '<div class="tut-post-card" id="'+cid+'" data-cat="'+(t.section||'tutorial')+'" onclick="toggleTutPost(\''+cid+'\',\''+ytUrl+'\',[])">'
+      +'<div class="tut-post-head">'
+      +'<div class="tut-post-avatar" style="background:'+grad+'"><i class="fas fa-play"></i></div>'
+      +'<div class="tut-post-info">'
+      +'<div class="tut-post-title">'+(t.title||'—')+'</div>'
+      +dur
+      +'</div>'
+      +'<div class="tut-post-play-btn"><i class="fas fa-play"></i></div>'
+      +'</div>'
+      +'<div class="tut-post-video" id="dbtvid'+i+'">'
+      +'<div class="tut-post-iframe-wrap"><iframe src="" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" loading="lazy"></iframe></div>'
+      +'</div>'
+      +'<div class="tut-post-close-row"><span class="tut-post-close-btn" onclick="event.stopPropagation();toggleTutPost(\''+cid+'\',\'\',[])"><i class="fas fa-chevron-up"></i>داخستن</span></div>'
+      +'</div>';
+  }).join('');
+  _tutBuildFilterChips();
+}
+
+function _tutBuildFilterChips(){
+  var filterWrap=document.getElementById('tutFilterChips');
+  if(!filterWrap)return;
+  var sections=[...new Set(_tutAllRows.map(function(t){return t.section;}).filter(Boolean))];
+  if(!sections.length){filterWrap.style.display='none';return;}
+  filterWrap.style.display='flex';
+  var html='<span class="tut-cat on" onclick="_tutSetFilter(\'all\',this)">هەموو</span>';
+  sections.forEach(function(s){
+    html+='<span class="tut-cat" onclick="_tutSetFilter(\''+s+'\',this)">'+s+'</span>';
+  });
+  filterWrap.innerHTML=html;
+}
+
+function _tutSetFilter(sec,el){
+  _tutSecFilter=sec;
+  document.querySelectorAll('.tut-cat').forEach(function(c){c.classList.remove('on');});
+  if(el)el.classList.add('on');
+  if(_openTutId){
+    var prev=document.getElementById(_openTutId);
+    if(prev){prev.classList.remove('open');var pv=prev.querySelector('.tut-post-video');if(pv){pv.classList.remove('show');var pf=pv.querySelector('iframe');if(pf)pf.src='';}}
+    _openTutId=null;
+  }
+  _tutRenderFiltered();
 }
 
 /* ── Tutorial post toggle (inline expand) ── */
