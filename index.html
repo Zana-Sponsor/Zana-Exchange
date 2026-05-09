@@ -2570,31 +2570,6 @@ function _clipboardFallback(text, onSuccess, onFail) {
     <!-- Dynamic Tutorials loaded from Supabase pa_tutorials -->
     <div id="tutDynamicList"><div style="text-align:center;padding:30px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin" style="font-size:20px"></i></div></div>
 
-    <!-- Quick Steps -->
-    <div class="tut-sec-lbl">هەنگاوەکانی دەستپێک</div>
-    <div class="tut-step-grid">
-      <div class="tut-qcard" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','تۆمارکردن و چوونەژوورەوە','ئامۆژگاری دروستکردنی هەژمار','دەستپێک',['تۆمارکردن','هەژمار'])">
-        <div class="tut-qcard-num" style="background:linear-gradient(135deg,#f97316,#ef4444)">١</div>
-        <div class="tut-qcard-title">تۆمارکردن و چوونەژوورەوە</div>
-        <div class="tut-qcard-arrow"><i class="fas fa-play" style="font-size:8px"></i></div>
-      </div>
-      <div class="tut-qcard" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','هەدەفکردنی باشتر','چۆن تەمەن و شوێن دیاری بکەیت','تیپس',['هەدەفکردن','شوێن'])">
-        <div class="tut-qcard-num" style="background:linear-gradient(135deg,#0ea5e9,#2563eb)">٢</div>
-        <div class="tut-qcard-title">هەدەفکردنی باشتر</div>
-        <div class="tut-qcard-arrow"><i class="fas fa-play" style="font-size:8px"></i></div>
-      </div>
-      <div class="tut-qcard" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','بانگێشتکردن و کۆین','چۆن کۆین وەربگریت','کۆین',['کۆین','بانگێشتکردن'])">
-        <div class="tut-qcard-num" style="background:linear-gradient(135deg,#d97706,#f59e0b)">٣</div>
-        <div class="tut-qcard-title">کۆین و بانگێشتکردن</div>
-        <div class="tut-qcard-arrow"><i class="fas fa-play" style="font-size:8px"></i></div>
-      </div>
-      <div class="tut-qcard" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','پشکنینی ئامار','خوێندنەوەی ئەنجامی ڕیکلام','ئەنجام',['ئامار','ئەنجام'])">
-        <div class="tut-qcard-num" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">٤</div>
-        <div class="tut-qcard-title">پشکنینی ئامار</div>
-        <div class="tut-qcard-arrow"><i class="fas fa-play" style="font-size:8px"></i></div>
-      </div>
-    </div>
-
     <div style="height:24px"></div>
   </div>
 
@@ -5769,7 +5744,7 @@ function _tutRenderFiltered(){
       +'<div class="tut-post-play-btn"><i class="fas fa-play" style="margin-right:-1px"></i></div>'
       +'</div>'
       +'<div class="tut-post-video" id="dbtvid'+i+'">'
-      +'<div class="tut-post-iframe-wrap"><iframe src="" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" loading="lazy"></iframe></div>'
+      +'<div class="tut-post-iframe-wrap" id="dbtwrap'+i+'"><div class="tut-vid-loader"><i class="fas fa-circle-notch fa-spin"></i></div></div>'
       +'</div>'
       +'<div class="tut-post-close-row"><span class="tut-post-close-btn" onclick="event.stopPropagation();toggleTutPost(\''+cid+'\',\'\',[])"><i class="fas fa-chevron-up"></i>داخستن</span></div>'
       +'</div>';
@@ -5814,7 +5789,9 @@ function toggleTutPost(id, url, tags){
   if(card.classList.contains('open')){
     card.classList.remove('open');
     if(vid) vid.classList.remove('show');
-    if(iframe){ iframe.src = ''; }
+    var closeWrapId = 'dbtwrap' + id.replace('dbtpost','');
+    var closeWrap = document.getElementById(closeWrapId);
+    if(closeWrap){ closeWrap.innerHTML = '<div class="tut-vid-loader"><i class="fas fa-circle-notch fa-spin"></i></div>'; }
     _openTutId = null;
     return;
   }
@@ -5836,15 +5813,17 @@ function toggleTutPost(id, url, tags){
   card.classList.add('open');
   if(vid) vid.classList.add('show');
 
-  // Build embed URL
-  if(iframe){
+  // Build embed URL and inject iframe dynamically
+  var wrapId = 'dbtwrap' + id.replace('dbtpost','');
+  var wrap = document.getElementById(wrapId);
+  if(wrap && url){
     var embedUrl = url;
     var ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
-    if(ytMatch){ embedUrl = 'https://www.youtube.com/embed/' + ytMatch[1] + '?autoplay=1&rel=0'; }
+    if(ytMatch){ embedUrl = 'https://www.youtube.com/embed/' + ytMatch[1] + '?autoplay=1&rel=0&enablejsapi=1'; }
     else if(url.indexOf('/embed/') > -1 && url.indexOf('autoplay') === -1){
       embedUrl = url + (url.indexOf('?') > -1 ? '&' : '?') + 'autoplay=1&rel=0';
     }
-    iframe.src = embedUrl;
+    wrap.innerHTML = '<iframe src="' + embedUrl + '" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture; fullscreen" loading="eager" style="display:block;width:100%;aspect-ratio:16/9;border:none;background:#111;border-radius:14px" onerror="this.parentNode.innerHTML='<div style=\'padding:20px;text-align:center;\'><a href=\''+embedUrl.replace(/autoplay=1/,\'autoplay=0\')+'\'target=\'_blank\'style=\'color:#6366f1;font-weight:700;font-size:13px;display:inline-flex;align-items:center;gap:8px;\'><i class=\'fab fa-youtube\'style=\'font-size:22px;color:#ef4444\'></i>یوتیوبەکەدا ببینە</a></div>'"></iframe>';
   }
 
   // Scroll into view
