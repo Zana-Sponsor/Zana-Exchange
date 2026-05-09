@@ -889,7 +889,7 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .tut-post-video.show{display:block;animation:tutExpand .22s cubic-bezier(.165,.84,.44,1);}
 @keyframes tutExpand{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 .tut-post-iframe-wrap{border-radius:12px;overflow:hidden;box-shadow:0 3px 16px rgba(0,0,0,.09);}
-.tut-post-iframe-wrap iframe{display:block;width:100%;aspect-ratio:16/9;border:none;background:#111;}
+.tut-post-iframe-wrap{position:relative;padding-top:56.25%;}.tut-post-iframe-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;background:#111;display:block;}
 .tut-post-close-row{display:none;align-items:center;justify-content:center;padding:8px 12px 12px;}
 .tut-post-card.open .tut-post-close-row{display:flex;}
 .tut-post-close-btn{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--mt);background:var(--bg);border:1.5px solid var(--b1);border-radius:20px;padding:5px 14px;cursor:pointer;}
@@ -915,7 +915,7 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .tvp-header-label{font-size:10px;color:var(--mt);font-weight:700;letter-spacing:.6px;text-transform:uppercase;margin-bottom:2px;}
 .tvp-header-title{font-size:14px;font-weight:800;color:var(--dark);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .tvp-video-wrap{margin:16px;border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.1);}
-.tvp-video-wrap iframe{display:block;width:100%;aspect-ratio:16/9;border:none;background:#111;}
+.tvp-video-wrap{position:relative;padding-top:56.25%;}.tvp-video-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;background:#111;display:block;}
 .tvp-info-card{margin:0 16px 14px;background:var(--w);border:1.5px solid var(--b1);border-radius:16px;padding:14px 16px;}
 .tvp-info-title{font-size:15px;font-weight:800;color:var(--dark);margin-bottom:6px;line-height:1.4;}
 .tvp-info-desc{font-size:12.5px;color:var(--mt);line-height:1.8;}
@@ -2565,27 +2565,6 @@ function _clipboardFallback(text, onSuccess, onFail) {
 
     <!-- Dynamic Tutorials loaded from Supabase pa_tutorials -->
     <div id="tutDynamicList"><div style="text-align:center;padding:30px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin" style="font-size:20px"></i></div></div>
-
-    <!-- Quick Steps -->
-    <div class="tut-sec-lbl">هەنگاوەکانی دەستپێک</div>
-    <div class="tut-step-grid">
-      <div class="tut-qcard" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','تۆمارکردن و چوونەژوورەوە','ئامۆژگاری دروستکردنی هەژمار','دەستپێک',['تۆمارکردن','هەژمار'])">
-        <div class="tut-qcard-num" style="background:linear-gradient(135deg,#f97316,#ef4444)">١</div>
-        <div class="tut-qcard-title">تۆمارکردن و چوونەژوورەوە</div>
-      </div>
-      <div class="tut-qcard" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','هەدەفکردنی باشتر','چۆن تەمەن و شوێن دیاری بکەیت','تیپس',['هەدەفکردن','شوێن'])">
-        <div class="tut-qcard-num" style="background:linear-gradient(135deg,#0ea5e9,#2563eb)">٢</div>
-        <div class="tut-qcard-title">هەدەفکردنی باشتر</div>
-      </div>
-      <div class="tut-qcard" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','بانگێشتکردن و کۆین','چۆن کۆین وەربگریت','کۆین',['کۆین','بانگێشتکردن'])">
-        <div class="tut-qcard-num" style="background:linear-gradient(135deg,#d97706,#f59e0b)">٣</div>
-        <div class="tut-qcard-title">کۆین و بانگێشتکردن</div>
-      </div>
-      <div class="tut-qcard" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','پشکنینی ئامار','خوێندنەوەی ئەنجامی ڕیکلام','ئەنجام',['ئامار','ئەنجام'])">
-        <div class="tut-qcard-num" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">٤</div>
-        <div class="tut-qcard-title">پشکنینی ئامار</div>
-      </div>
-    </div>
 
     <div style="height:24px"></div>
   </div>
