@@ -5781,6 +5781,7 @@ function _tutSetFilter(sec,el){
 var _openTutId = null;
 function _ytThumbClick(el, embedUrl){
   el.style.display='none';
+  if(window.event) window.event.stopPropagation();
   var wrap=el.parentNode;
   var fi=document.createElement('iframe');
   fi.allowFullscreen=true;
@@ -5846,7 +5847,7 @@ function toggleTutPost(id, url, tags){
       var _thumb = wrap.querySelector('.tut-ytthumb');
       var _timg = _thumb ? _thumb.querySelector('img') : null;
       if(_timg){ _timg.src = thumbUrl; _timg.onerror = function(){ this.style.display='none'; }; }
-      if(_thumb){ (function(eu){ _thumb.onclick = function(){ _ytThumbClick(_thumb, eu); }; })(embedUrl); }
+      if(_thumb){ (function(eu){ _thumb.onclick = function(e){ e.stopPropagation(); _ytThumbClick(_thumb, eu); }; })(embedUrl); }
         } else if(url){
       // Non-YouTube URL — load iframe directly
       var fi=document.createElement('iframe');
