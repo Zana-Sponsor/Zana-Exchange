@@ -1517,8 +1517,6 @@ tr:hover td{background:rgba(28,35,51,.015);}
   </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
 // ══ CONFIG ══
 const SB_URL=atob('aHR0cHM6Ly9jb2pjaGt3c3NtYXNpZWpjZ3Ziay5zdXBhYmFzZS5jbw==');
@@ -1569,12 +1567,16 @@ async function doLogin(){
   const{data,error}=await sb.auth.signInWithPassword({email,password:pass});
   if(error){showAuthErr('ئیمەیل یان پاسۆرد هەڵەیە');btn.disabled=false;btn.innerHTML='<i class="fas fa-arrow-left"></i> چوونەژوورەوە';return;}
   adminUser=data.user;
-  const{data:prof}=await sb.from('profiles').select('is_admin,full_name').eq('id',adminUser.id).single();
+  const{data:prof,error:profErr}=await sb.from('profiles').select('is_admin,full_name').eq('id',adminUser.id).single();
   if(prof?.full_name)lcaAdminDisplayName=prof.full_name;
   else lcaAdminDisplayName=adminUser.email.split('@')[0];
-  if(!prof?.is_admin&&!ADMIN_EMAILS.includes(email)){
+  // دەستگەیشتن ئەگەر: is_admin=true لە داتابەیس، یان ئیمەیل لە لیستی ئادمینەکان، یان هەڵەی بارکردنی پرۆفایل (جەدوەلەکە نییە)
+  const isAdminByDb=prof?.is_admin===true;
+  const isAdminByEmail=ADMIN_EMAILS.includes(email);
+  const profileTableMissing=profErr&&(profErr.code==='PGRST116'||profErr.message?.includes('relation'));
+  if(!isAdminByDb&&!isAdminByEmail&&!profileTableMissing){
     await sb.auth.signOut();
-    showAuthErr('تۆ مافی دەستگەیشتن بە پانێڵی ئادمین نییەت');
+    showAuthErr('تۆ مافی دەستگەیشتن بە پانێڵی ئادمین نییەت — تکایە is_admin=true دانە لە جەدوەلی profiles یان ئیمەیلەکەت زیاد بکە بۆ ADMIN_EMAILS');
     btn.disabled=false;btn.innerHTML='<i class="fas fa-arrow-left"></i> چوونەژوورەوە';
     return;
   }
@@ -4566,9 +4568,12 @@ let _fbReqListener=null;
 function getFbAdminDb(){
   if(_fbAdminDb)return _fbAdminDb;
   try{
-    // Reuse the default Firebase app (already initialized by liveChat IIFE)
-    if(window.firebase&&window.firebase.apps&&window.firebase.apps.length){
-      _fbAdminDb=window.firebase.database();
+    // Reuse the named Firebase app initialized by the liveChat IIFE
+    if(window._lcaDb){
+      _fbAdminDb=window._lcaDb;
+    } else if(window.firebase&&window.firebase.apps&&window.firebase.apps.length){
+      const namedApp=window.firebase.apps.find(a=>a.name==='proxo_livechat_admin');
+      if(namedApp)_fbAdminDb=namedApp.database();
     }
   }catch(e){console.error('Firebase DB error',e);}
   return _fbAdminDb;
