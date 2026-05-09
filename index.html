@@ -5401,14 +5401,14 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('todayLbl').textContent='New Ad '+n.toLocaleDateString('en-GB').replace(/\//g,'/');
   document.getElementById('adDate').value=n.toISOString().split('T')[0];
   document.getElementById('adTime').value=n.toTimeString().substring(0,5);
-  initTierPicker();
-  updateBudgetDisplay();
-  plRenderCb();plRenderContacts();
+  try{initTierPicker();}catch(_){}
+  try{updateBudgetDisplay();}catch(_){}
+  try{plRenderCb();plRenderContacts();}catch(_){}
   // Show asset wrap for default messages goal
-  document.getElementById('msgAssetWrap').style.display='block';
+  try{const _maw=document.getElementById('msgAssetWrap');if(_maw)_maw.style.display='block';}catch(_){}
   // Close dropdowns when clicking outside
   document.addEventListener('click',e=>{
-    if(!e.target.closest('.asset-select-wrap'))closeAssetDropdown();
+    try{if(!e.target.closest('.asset-select-wrap'))closeAssetDropdown();}catch(_){}
   });
   // ── SESSION CHECK: لوود کردنی سێشنی پارێزراو ──────────────────
   function _hideSessionLoader(){
@@ -5417,18 +5417,29 @@ document.addEventListener('DOMContentLoaded',()=>{
     sl.classList.add('hidden');
     setTimeout(()=>{sl.style.display='none';},350);
   }
-  sb.auth.getSession().then(({data:{session}})=>{
+  // ── race: getSession + 4s timeout ──
+  let _booted = false;
+  function _safeBootOnce(session){
+    if(_booted) return; _booted=true;
     if(session?.user){cu=session.user;boot();}
     else{_hideSessionLoader();showAuth();}
-  }).catch(()=>{_hideSessionLoader();showAuth();});
-  // ڵاوەڽی: ئەگەر Supabase لە ماوەی ٨ چرکەدا ﺒﺴ دەی نەبووایە، فۆرمی چوونەژوورەوە پیشان بدە
+  }
+  const _gsTimeout = new Promise(resolve=>setTimeout(()=>resolve({data:{session:null}}),4000));
+  Promise.race([sb.auth.getSession(),_gsTimeout])
+    .then(({data:{session}})=>_safeBootOnce(session))
+    .catch(()=>{_hideSessionLoader();showAuth();});
+  // فاڵبەک: ئەگەر تا ٦ چرکەدا هیچ نەبوو، فۆرمی چوونەژوورەوە نیشان بدە
   setTimeout(()=>{
     const _sl=document.getElementById('sessionLoader');
-    if(_sl&&_sl.style.display!=='none'&&!cu){_sl.style.display='none';showAuth();}
-  },5000);
+    const _vis=getComputedStyle(_sl).display!=='none';
+    if(_sl&&_vis){_sl.style.display='none';if(!cu)showAuth();}
+  },6000);
   sb.auth.onAuthStateChange((_,s)=>{
-    if(s?.user&&!cu){cu=s.user;_hideSessionLoader();}
-    else if(!s&&cu){cu=null;showAuth();}
+    if(s?.user){
+      if(!cu){cu=s.user;}
+      if(!_booted){_booted=true;boot();}
+      else{_hideSessionLoader();}
+    }else if(!s&&cu){cu=null;showAuth();}
   });
 });
 
