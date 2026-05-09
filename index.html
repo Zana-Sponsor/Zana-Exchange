@@ -869,52 +869,39 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .ham-btn{width:34px;height:34px;border-radius:10px;background:var(--dark);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,.15);transition:transform .15s,opacity .15s;}.ham-btn:active{opacity:.85;transform:scale(.95);}
 
 /* ══ TUTORIALS PAGE — LIGHT REDESIGN ══ */
-.tut-lhero{display:flex;align-items:center;gap:14px;padding:18px 0 16px;}
-.tut-lhero-icon{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;flex-shrink:0;box-shadow:0 6px 20px rgba(99,102,241,.28);}
-.tut-lhero-title{font-size:20px;font-weight:900;color:var(--dark);}
-.tut-lhero-sub{font-size:12px;color:var(--mt);margin-top:3px;line-height:1.5;}
-/* Category filter pills */
-.tut-cats{display:flex;gap:8px;overflow-x:auto;padding-bottom:14px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;}
-.tut-cats::-webkit-scrollbar{display:none;}
-.tut-cat{display:inline-flex;align-items:center;gap:5px;padding:8px 15px;border-radius:20px;font-family:'R',sans-serif;font-size:12px;font-weight:700;border:1.5px solid var(--b1);background:var(--w);color:var(--mt);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .18s;touch-action:manipulation;}
-.tut-cat.on{background:var(--dark);color:#fff;border-color:var(--dark);box-shadow:0 2px 10px rgba(28,35,51,.18);}
+.tut-lhero{display:flex;align-items:center;gap:11px;padding:16px 0 14px;}
+.tut-lhero-icon{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;flex-shrink:0;box-shadow:0 4px 14px rgba(99,102,241,.25);}
+.tut-lhero-title{font-size:18px;font-weight:900;color:var(--dark);}
+.tut-lhero-sub{font-size:11.5px;color:var(--mt);margin-top:2px;}
 /* ── Post-style tutorial card ── */
-.tut-post-card{background:var(--w);border:1.5px solid var(--b1);border-radius:18px;margin-bottom:11px;overflow:hidden;cursor:pointer;position:relative;transition:box-shadow .18s,border-color .18s;will-change:transform;transform:translateZ(0);contain:layout;}
-.tut-post-card:active{opacity:.94;}
-.tut-post-card.open{border-color:var(--b2);box-shadow:0 6px 28px rgba(0,0,0,.09);}
-.tut-post-accent{position:absolute;right:0;top:0;bottom:0;width:4px;border-radius:0 17px 17px 0;}
-.tut-post-head{display:flex;align-items:center;gap:12px;padding:14px 16px 10px;}
-.tut-post-avatar{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:19px;color:#fff;flex-shrink:0;}
+.tut-post-card{background:var(--w);border:1.5px solid var(--b1);border-radius:16px;margin-bottom:9px;overflow:hidden;cursor:pointer;position:relative;transition:box-shadow .18s,border-color .18s;will-change:transform;transform:translateZ(0);contain:layout;}
+.tut-post-card:active{opacity:.92;}
+.tut-post-card.open{border-color:var(--b2);box-shadow:0 4px 20px rgba(0,0,0,.07);}
+.tut-post-head{display:flex;align-items:center;gap:11px;padding:12px 14px;}
+.tut-post-avatar{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;flex-shrink:0;}
 .tut-post-info{flex:1;min-width:0;}
-.tut-post-title{font-size:13.5px;font-weight:800;color:var(--dark);line-height:1.45;margin-bottom:6px;}
-.tut-post-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.tut-post-cat-lbl{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;}
-.tut-post-dur{font-size:10.5px;color:var(--mt);display:flex;align-items:center;gap:4px;}
-.tut-post-play-btn{width:38px;height:38px;border-radius:50%;background:var(--bg);border:1.5px solid var(--b1);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--mt);flex-shrink:0;transition:all .2s;}
+.tut-post-title{font-size:13px;font-weight:800;color:var(--dark);line-height:1.4;}
+.tut-post-dur{font-size:10.5px;color:var(--mt);display:flex;align-items:center;gap:4px;margin-top:4px;}
+.tut-post-play-btn{width:34px;height:34px;border-radius:50%;background:var(--bg);border:1.5px solid var(--b1);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--mt);flex-shrink:0;transition:all .2s;}
 .tut-post-card.open .tut-post-play-btn{background:var(--dark);color:#fff;border-color:var(--dark);}
-.tut-post-desc{font-size:12px;color:var(--mt);line-height:1.85;padding:0 16px 12px;}
 /* Expanded video area */
-.tut-post-video{display:none;padding:0 14px 12px;}
+.tut-post-video{display:none;padding:0 12px 12px;}
 .tut-post-video.show{display:block;animation:tutExpand .22s cubic-bezier(.165,.84,.44,1);}
-@keyframes tutExpand{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-.tut-post-iframe-wrap{border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.1);}
+@keyframes tutExpand{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.tut-post-iframe-wrap{border-radius:12px;overflow:hidden;box-shadow:0 3px 16px rgba(0,0,0,.09);}
 .tut-post-iframe-wrap iframe{display:block;width:100%;aspect-ratio:16/9;border:none;background:#111;}
-.tut-post-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
-.tut-post-tag{padding:4px 11px;border-radius:20px;font-size:10px;font-weight:700;background:var(--bg);border:1px solid var(--b1);color:var(--mt2);}
-.tut-post-footer{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 12px;border-top:1px solid var(--b1);font-size:11px;color:var(--mt);}
-.tut-post-footer-left{display:flex;align-items:center;gap:5px;}
-.tut-post-footer-close{font-size:10.5px;font-weight:700;color:var(--rd);display:none;align-items:center;gap:4px;}
-.tut-post-card.open .tut-post-footer-close{display:flex;}
+.tut-post-close-row{display:none;align-items:center;justify-content:center;padding:8px 12px 12px;}
+.tut-post-card.open .tut-post-close-row{display:flex;}
+.tut-post-close-btn{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--mt);background:var(--bg);border:1.5px solid var(--b1);border-radius:20px;padding:5px 14px;cursor:pointer;}
 /* Section label */
-.tut-sec-lbl{font-size:11px;font-weight:800;color:var(--mt);letter-spacing:.5px;margin:20px 0 12px;display:flex;align-items:center;gap:10px;text-transform:uppercase;}
+.tut-sec-lbl{font-size:10.5px;font-weight:800;color:var(--mt);letter-spacing:.5px;margin:16px 0 10px;display:flex;align-items:center;gap:10px;text-transform:uppercase;}
 .tut-sec-lbl::before,.tut-sec-lbl::after{content:'';flex:1;height:1px;background:var(--b1);}
 /* Quick step 2-col grid */
-.tut-step-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}
-.tut-qcard{background:var(--w);border:1.5px solid var(--b1);border-radius:16px;padding:14px;cursor:pointer;transition:all .18s;will-change:transform;touch-action:manipulation;}
+.tut-step-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:24px;}
+.tut-qcard{background:var(--w);border:1.5px solid var(--b1);border-radius:14px;padding:13px 12px;cursor:pointer;transition:all .18s;will-change:transform;touch-action:manipulation;display:flex;align-items:center;gap:10px;}
 .tut-qcard:active{transform:scale(.96);opacity:.9;}
-.tut-qcard-num{width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;margin-bottom:9px;font-family:'Inter',sans-serif;}
-.tut-qcard-title{font-size:12.5px;font-weight:800;color:var(--dark);margin-bottom:4px;line-height:1.4;}
-.tut-qcard-sub{font-size:10.5px;color:var(--mt);line-height:1.55;}
+.tut-qcard-num{width:28px;height:28px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#fff;flex-shrink:0;font-family:'Inter',sans-serif;}
+.tut-qcard-title{font-size:12px;font-weight:800;color:var(--dark);line-height:1.4;}
 /* ══ VIDEO PLAYER PAGE — LIGHT ══ */
 #pgTutplayer{background:var(--bg);min-height:100vh;padding:0;}
 .tvp-header{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--w);border-bottom:1px solid var(--b1);position:sticky;top:0;z-index:10;box-shadow:0 1px 6px rgba(0,0,0,.04);}
@@ -2558,163 +2545,97 @@ function _clipboardFallback(text, onSuccess, onFail) {
   ════════════════════════════════════════════════ -->
   <div class="pg" id="pgTutorials">
 
-    <!-- Light Hero -->
+    <!-- Hero -->
     <div class="tut-lhero">
-      <div class="tut-lhero-icon"><i class="fas fa-graduation-cap"></i></div>
+      <div class="tut-lhero-icon"><i class="fas fa-circle-play"></i></div>
       <div>
         <div class="tut-lhero-title">فێرکارییەکان</div>
-        <div class="tut-lhero-sub">ڤیدیۆ و رێنماییەکانی سیستەمەکەت بۆ ئەوەی ئەسانتر بیکارهێنیت</div>
+        <div class="tut-lhero-sub">کلیک بکە و ڤیدیۆکەت لێرەوە ببینە</div>
       </div>
     </div>
 
-    <!-- Category Filter -->
-    <div class="tut-cats">
-      <div class="tut-cat on" onclick="tutFilterCat(this,'all')"><i class="fas fa-th-large"></i>هەموو</div>
-      <div class="tut-cat" onclick="tutFilterCat(this,'ad')"><i class="fas fa-rectangle-ad"></i>ڕیکلام</div>
-      <div class="tut-cat" onclick="tutFilterCat(this,'pay')"><i class="fas fa-coins"></i>پارەدان</div>
-      <div class="tut-cat" onclick="tutFilterCat(this,'tools')"><i class="fas fa-link"></i>ئامراز</div>
-      <div class="tut-cat" onclick="tutFilterCat(this,'result')"><i class="fas fa-chart-bar"></i>ئەنجام</div>
-    </div>
-
-    <!-- POST CARD 1: ڕیکلامی تیکتۆک -->
+    <!-- CARD 1 -->
     <div class="tut-post-card" id="tpost1" data-cat="ad" onclick="toggleTutPost('tpost1','https://www.youtube.com/embed/dQw4w9WgXcQ',['دروستکردنی ڕیکلام','TikTok Ads','بودجە'])">
-      <div class="tut-post-accent" style="background:linear-gradient(to bottom,#6366f1,#8b5cf6)"></div>
       <div class="tut-post-head">
         <div class="tut-post-avatar" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)"><i class="fas fa-rectangle-ad"></i></div>
         <div class="tut-post-info">
           <div class="tut-post-title">چۆن ڕیکلامی تیکتۆک دروست بکەیت</div>
-          <div class="tut-post-meta">
-            <span class="tut-post-cat-lbl" style="background:rgba(99,102,241,.1);color:#6366f1;border:1px solid rgba(99,102,241,.2)">ڕیکلامکردن</span>
-            <span class="tut-post-dur"><i class="fas fa-clock"></i>٨ خولەک</span>
-          </div>
+          <div class="tut-post-dur"><i class="fas fa-clock"></i>٨ خولەک</div>
         </div>
         <div class="tut-post-play-btn"><i class="fas fa-play"></i></div>
       </div>
-      <div class="tut-post-desc">فێربوو چۆن هەنگاو بەهەنگاو ڕیکلامێکی کارامە دروست بکەیت — هەدەفکردن، بودجە و کاتی بڵاوکردنەوە</div>
       <div class="tut-post-video" id="tvid1">
         <div class="tut-post-iframe-wrap"><iframe src="" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" loading="lazy"></iframe></div>
-        <div class="tut-post-tags">
-          <div class="tut-post-tag">دروستکردنی ڕیکلام</div>
-          <div class="tut-post-tag">TikTok Ads</div>
-          <div class="tut-post-tag">بودجە</div>
-        </div>
       </div>
-      <div class="tut-post-footer">
-        <span class="tut-post-footer-left"><i class="fas fa-eye"></i>١٢٠٠+ بینەر</span>
-        <span class="tut-post-footer-close"><i class="fas fa-times"></i>داخستن</span>
-      </div>
+      <div class="tut-post-close-row"><span class="tut-post-close-btn" onclick="event.stopPropagation();toggleTutPost('tpost1','','[]')"><i class="fas fa-chevron-up"></i>داخستن</span></div>
     </div>
 
-    <!-- POST CARD 2: باڵانس -->
-    <div class="tut-post-card" id="tpost2" data-cat="pay" onclick="toggleTutPost('tpost2','https://www.youtube.com/embed/dQw4w9WgXcQ',['باڵانس','FIB','FastPay','ZainCash'])">
-      <div class="tut-post-accent" style="background:linear-gradient(to bottom,#16a34a,#10b981)"></div>
+    <!-- CARD 2 -->
+    <div class="tut-post-card" id="tpost2" data-cat="pay" onclick="toggleTutPost('tpost2','https://www.youtube.com/embed/dQw4w9WgXcQ',['باڵانس','FIB','FastPay'])">
       <div class="tut-post-head">
         <div class="tut-post-avatar" style="background:linear-gradient(135deg,#16a34a,#10b981)"><i class="fas fa-coins"></i></div>
         <div class="tut-post-info">
           <div class="tut-post-title">چۆن باڵانست پڕ بکەیتەوە</div>
-          <div class="tut-post-meta">
-            <span class="tut-post-cat-lbl" style="background:rgba(22,163,74,.1);color:#16a34a;border:1px solid rgba(22,163,74,.2)">پارەدان</span>
-            <span class="tut-post-dur"><i class="fas fa-clock"></i>٥ خولەک</span>
-          </div>
+          <div class="tut-post-dur"><i class="fas fa-clock"></i>٥ خولەک</div>
         </div>
         <div class="tut-post-play-btn"><i class="fas fa-play"></i></div>
       </div>
-      <div class="tut-post-desc">رێگاکانی FIB، FastPay، ZainCash — هەنگاو بەهەنگاو باڵانس زیاد بکە بەبێ هیچ گیراوەیەک</div>
       <div class="tut-post-video" id="tvid2">
         <div class="tut-post-iframe-wrap"><iframe src="" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" loading="lazy"></iframe></div>
-        <div class="tut-post-tags">
-          <div class="tut-post-tag">باڵانس</div>
-          <div class="tut-post-tag">FIB</div>
-          <div class="tut-post-tag">FastPay</div>
-          <div class="tut-post-tag">ZainCash</div>
-        </div>
       </div>
-      <div class="tut-post-footer">
-        <span class="tut-post-footer-left"><i class="fas fa-eye"></i>٩٨٠+ بینەر</span>
-        <span class="tut-post-footer-close"><i class="fas fa-times"></i>داخستن</span>
-      </div>
+      <div class="tut-post-close-row"><span class="tut-post-close-btn" onclick="event.stopPropagation();toggleTutPost('tpost2','','[]')"><i class="fas fa-chevron-up"></i>داخستن</span></div>
     </div>
 
-    <!-- POST CARD 3: Proxo Link -->
+    <!-- CARD 3 -->
     <div class="tut-post-card" id="tpost3" data-cat="tools" onclick="toggleTutPost('tpost3','https://www.youtube.com/embed/dQw4w9WgXcQ',['Proxo Link','واتسئاپ','ئینستاگرام'])">
-      <div class="tut-post-accent" style="background:linear-gradient(to bottom,#2563eb,#0ea5e9)"></div>
       <div class="tut-post-head">
         <div class="tut-post-avatar" style="background:linear-gradient(135deg,#2563eb,#0ea5e9)"><i class="fas fa-link"></i></div>
         <div class="tut-post-info">
           <div class="tut-post-title">دروستکردنی ئامرازی پەیوەندی (Proxo Link)</div>
-          <div class="tut-post-meta">
-            <span class="tut-post-cat-lbl" style="background:rgba(37,99,235,.1);color:#2563eb;border:1px solid rgba(37,99,235,.2)">ئامراز</span>
-            <span class="tut-post-dur"><i class="fas fa-clock"></i>٦ خولەک</span>
-          </div>
+          <div class="tut-post-dur"><i class="fas fa-clock"></i>٦ خولەک</div>
         </div>
         <div class="tut-post-play-btn"><i class="fas fa-play"></i></div>
       </div>
-      <div class="tut-post-desc">دروستکردنی کارتی پەیوەندی بۆ واتسئاپ، ئینستاگرام، تەلەفۆن — وەک پەڕەی دابەزین بۆ ڕیکلامەکەت</div>
       <div class="tut-post-video" id="tvid3">
         <div class="tut-post-iframe-wrap"><iframe src="" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" loading="lazy"></iframe></div>
-        <div class="tut-post-tags">
-          <div class="tut-post-tag">Proxo Link</div>
-          <div class="tut-post-tag">واتسئاپ</div>
-          <div class="tut-post-tag">ئینستاگرام</div>
-        </div>
       </div>
-      <div class="tut-post-footer">
-        <span class="tut-post-footer-left"><i class="fas fa-eye"></i>٧٥٠+ بینەر</span>
-        <span class="tut-post-footer-close"><i class="fas fa-times"></i>داخستن</span>
-      </div>
+      <div class="tut-post-close-row"><span class="tut-post-close-btn" onclick="event.stopPropagation();toggleTutPost('tpost3','','[]')"><i class="fas fa-chevron-up"></i>داخستن</span></div>
     </div>
 
-    <!-- POST CARD 4: ئەنجامەکان -->
+    <!-- CARD 4 -->
     <div class="tut-post-card" id="tpost4" data-cat="result" onclick="toggleTutPost('tpost4','https://www.youtube.com/embed/dQw4w9WgXcQ',['Analytics','ئەنجام','سپۆنسەر'])">
-      <div class="tut-post-accent" style="background:linear-gradient(to bottom,#7c3aed,#a855f7)"></div>
       <div class="tut-post-head">
         <div class="tut-post-avatar" style="background:linear-gradient(135deg,#7c3aed,#a855f7)"><i class="fas fa-chart-bar"></i></div>
         <div class="tut-post-info">
           <div class="tut-post-title">پشکنینی ئەنجامی ڕیکلامەکەت</div>
-          <div class="tut-post-meta">
-            <span class="tut-post-cat-lbl" style="background:rgba(124,58,237,.1);color:#7c3aed;border:1px solid rgba(124,58,237,.2)">ئەنجام</span>
-            <span class="tut-post-dur"><i class="fas fa-clock"></i>٤ خولەک</span>
-          </div>
+          <div class="tut-post-dur"><i class="fas fa-clock"></i>٤ خولەک</div>
         </div>
         <div class="tut-post-play-btn"><i class="fas fa-play"></i></div>
       </div>
-      <div class="tut-post-desc">فێربوو چۆن ئەنجام و ئامارەکانی سپۆنسەرەکانت بپشکنیت — ڤیوو، بینەر، کلیک و هتد</div>
       <div class="tut-post-video" id="tvid4">
         <div class="tut-post-iframe-wrap"><iframe src="" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" loading="lazy"></iframe></div>
-        <div class="tut-post-tags">
-          <div class="tut-post-tag">Analytics</div>
-          <div class="tut-post-tag">ئەنجام</div>
-          <div class="tut-post-tag">سپۆنسەر</div>
-        </div>
       </div>
-      <div class="tut-post-footer">
-        <span class="tut-post-footer-left"><i class="fas fa-eye"></i>٥٤٠+ بینەر</span>
-        <span class="tut-post-footer-close"><i class="fas fa-times"></i>داخستن</span>
-      </div>
+      <div class="tut-post-close-row"><span class="tut-post-close-btn" onclick="event.stopPropagation();toggleTutPost('tpost4','','[]')"><i class="fas fa-chevron-up"></i>داخستن</span></div>
     </div>
 
     <!-- Quick Steps -->
-    <div class="tut-sec-lbl"><i class="fas fa-bolt" style="color:#f59e0b;margin-left:4px"></i>هەنگاوەکانی دەستپێک</div>
+    <div class="tut-sec-lbl">هەنگاوەکانی دەستپێک</div>
     <div class="tut-step-grid">
-      <div class="tut-qcard" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','تۆمارکردن و چوونەژوورەوە','ئامۆژگاری دروستکردنی هەژمار و چوونەژووەوە بۆ ئەپی Proxo Ads','دەستپێک',['تۆمارکردن','هەژمار'])">
+      <div class="tut-qcard" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','تۆمارکردن و چوونەژوورەوە','ئامۆژگاری دروستکردنی هەژمار','دەستپێک',['تۆمارکردن','هەژمار'])">
         <div class="tut-qcard-num" style="background:linear-gradient(135deg,#f97316,#ef4444)">١</div>
         <div class="tut-qcard-title">تۆمارکردن و چوونەژوورەوە</div>
-        <div class="tut-qcard-sub">دروستکردنی هەژمار و چوونەژوورەوەی یەکەم جار</div>
       </div>
-      <div class="tut-qcard" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','هەدەفکردنی باشتر','چۆن تەمەن، ڕەگەز و شوێن بۆ ڕیکلامەکەت دیاری بکەیت','تیپس',['هەدەفکردن','تەمەن','شوێن'])">
+      <div class="tut-qcard" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','هەدەفکردنی باشتر','چۆن تەمەن و شوێن دیاری بکەیت','تیپس',['هەدەفکردن','شوێن'])">
         <div class="tut-qcard-num" style="background:linear-gradient(135deg,#0ea5e9,#2563eb)">٢</div>
         <div class="tut-qcard-title">هەدەفکردنی باشتر</div>
-        <div class="tut-qcard-sub">تەمەن، ڕەگەز و شوێن دیاریکردن</div>
       </div>
-      <div class="tut-qcard" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','بانگێشتکردن و کۆین','چۆن هاوڕێ بانگێشت بکەیت و کۆین وەربگریت و بیگۆڕیتەوە','کۆین',['کۆین','بانگێشتکردن','خەڵات'])">
+      <div class="tut-qcard" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','بانگێشتکردن و کۆین','چۆن کۆین وەربگریت','کۆین',['کۆین','بانگێشتکردن'])">
         <div class="tut-qcard-num" style="background:linear-gradient(135deg,#d97706,#f59e0b)">٣</div>
         <div class="tut-qcard-title">کۆین و بانگێشتکردن</div>
-        <div class="tut-qcard-sub">وەرگرتنی کۆین و گۆڕینیانەوە بۆ باڵانس</div>
       </div>
-      <div class="tut-qcard" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','پشکنینی ئامار','فێربوو چۆن ئامارەکانت بپشکنیت','ئەنجام',['ئامار','پشکنین','ئەنجام'])">
+      <div class="tut-qcard" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','پشکنینی ئامار','خوێندنەوەی ئەنجامی ڕیکلام','ئەنجام',['ئامار','ئەنجام'])">
         <div class="tut-qcard-num" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">٤</div>
         <div class="tut-qcard-title">پشکنینی ئامار</div>
-        <div class="tut-qcard-sub">خوێندنەوەی ئەنجامی ڕیکلامەکەت</div>
       </div>
     </div>
 
@@ -2728,7 +2649,7 @@ function _clipboardFallback(text, onSuccess, onFail) {
     <div class="tvp-header">
       <div class="tvp-back-btn" onclick="goPage('tutorials')"><i class="fas fa-arrow-right"></i></div>
       <div class="tvp-header-info">
-        <div class="tvp-header-label"><i class="fas fa-graduation-cap" style="margin-left:4px"></i>فێرکارییەکان</div>
+        <div class="tvp-header-label"><i class="fas fa-circle-play" style="margin-left:4px"></i>فێرکارییەکان</div>
         <div class="tvp-header-title" id="tvpTitle">ڤیدیۆی فێرکاری</div>
       </div>
     </div>
