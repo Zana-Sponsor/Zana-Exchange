@@ -5744,7 +5744,7 @@ function _tutRenderFiltered(){
       +'<div class="tut-post-play-btn"><i class="fas fa-play"></i></div>'
       +'</div>'
       +'<div class="tut-post-video" id="dbtvid'+i+'">'
-      +'<div class="tut-post-iframe-wrap"><iframe src="" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" loading="lazy"></iframe></div>'
+      +'<div class="tut-post-iframe-wrap"></div>'
       +'</div>'
       +'<div class="tut-post-close-row"><span class="tut-post-close-btn" onclick="event.stopPropagation();toggleTutPost(\''+cid+'\',\'\',[])"><i class="fas fa-chevron-up"></i>داخستن</span></div>'
       +'</div>';
@@ -5828,7 +5828,7 @@ function toggleTutPost(id, url, tags){
   // Build embed URL + extract video ID
   var embedUrl = url;
   var videoId = null;
-  var ytMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  var ytMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
   if(ytMatch){
     videoId = ytMatch[1];
     embedUrl = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0';
@@ -5842,13 +5842,21 @@ function toggleTutPost(id, url, tags){
   if(wrap){
     if(videoId){
       // Show YouTube thumbnail with play button — load iframe only on click
-      var thumbUrl = 'https://img.youtube.com/vi/'+videoId+'/hqdefault.jpg';
+      // Try thumbnail quality chain: maxresdefault → hqdefault → mqdefault → 0
+      var thumbQualities = ['maxresdefault','hqdefault','mqdefault','0'];
+      var thumbIdx = 0;
       wrap.innerHTML = '<div class="tut-ytthumb"><img src="" alt=""><div class="tut-ytthumb-btn"><i class="fas fa-play"></i></div></div>';
       var _thumb = wrap.querySelector('.tut-ytthumb');
       var _timg = _thumb ? _thumb.querySelector('img') : null;
-      if(_timg){ _timg.src = thumbUrl; _timg.onerror = function(){ this.style.display='none'; }; }
+      function _tryThumb(){
+        if(thumbIdx >= thumbQualities.length){ if(_timg) _timg.style.display='none'; return; }
+        var q = thumbQualities[thumbIdx++];
+        _timg.onerror = function(){ _tryThumb(); };
+        _timg.src = 'https://img.youtube.com/vi/'+videoId+'/'+q+'.jpg';
+      }
+      if(_timg) _tryThumb();
       if(_thumb){ (function(eu){ _thumb.onclick = function(e){ e.stopPropagation(); _ytThumbClick(_thumb, eu); }; })(embedUrl); }
-        } else if(url){
+    } else if(url){
       // Non-YouTube URL — load iframe directly
       var fi=document.createElement('iframe');
       fi.allowFullscreen=true;
@@ -5857,6 +5865,9 @@ function toggleTutPost(id, url, tags){
       fi.src=embedUrl;
       wrap.innerHTML='';
       wrap.appendChild(fi);
+    } else {
+      // No URL — show a friendly placeholder
+      wrap.innerHTML = '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f4f6fb;border-radius:12px;gap:8px"><i class="fas fa-video-slash" style="font-size:28px;color:#8b95a8"></i><span style="font-size:12px;color:#8b95a8;font-family:R,sans-serif">ڤیدیۆ بەردەست نییە</span></div>';
     }
   }
 
