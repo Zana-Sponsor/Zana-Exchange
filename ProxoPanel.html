@@ -2342,39 +2342,33 @@ function showDepDetail(d){
 async function approveDeposit(id,userId,amount){
   confirm2('پەسەندکردنی پارەدان',`ئایا دەتەوێت ${Math.round(parseFloat(amount)*1800).toLocaleString()} IQD زیاد بکەیت؟`,
     'fas fa-check-circle','var(--gr)',async()=>{
-      await sb.from('pa_transactions').update({status:'approved'}).eq('id',id);
+      const{error:e1}=await sb.from('pa_transactions').update({status:'approved'}).eq('id',id);
+      if(e1){showToast('هەڵە: '+e1.message,'rd');return;}
       await sb.from('pa_wallets').upsert({user_id:userId,balance:0},{onConflict:'user_id',ignoreDuplicates:true});
-      const{data:w}=await sb.from('pa_wallets').select('balance').eq('user_id',userId).single();
-      await sb.from('pa_wallets').update({balance:parseFloat(w?.balance||0)+parseFloat(amount),updated_at:new Date().toISOString()}).eq('user_id',userId);
+      const{data:w,error:e2}=await sb.from('pa_wallets').select('balance').eq('user_id',userId).single();
+      if(e2){showToast('هەڵەی بارکردنی باڵانس: '+e2.message,'rd');return;}
+      const newBal=parseFloat(w?.balance||0)+parseFloat(amount);
+      const{error:e3}=await sb.from('pa_wallets').update({balance:newBal,updated_at:new Date().toISOString()}).eq('user_id',userId);
+      if(e3){showToast('هەڵەی نوێکردنەوەی باڵانس: '+e3.message,'rd');return;}
       await sb.from('pa_notifications').insert({user_id:userId,type:'deposit_approved',title:'پارەدانت پەسەندکرا ✅',body:`${Math.round(parseFloat(amount)*1800).toLocaleString()} IQD زیادکرا بۆ باڵانسەکەت.`,is_read:false});
       showToast('✅ پارەدان پەسەندکرا','gr');
-
-try {
-  const { data: prof } = await sb.from('profiles')
-    .select('full_name, email')
-    .eq('id', userId)
-    .single();
-
-  const newBal = parseFloat(w?.balance||0) + parseFloat(amount);
-
-  if (prof?.email) {
-    await fetch('https://n8n.proxopages.com/webhook/proxo-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action:     'balance_receipt',
-        email:      prof.email,
-        userName:   prof.full_name || prof.email || 'بەکارهێنەر',
-        amount:     Math.round(parseFloat(amount) * 1800).toLocaleString(),
-        newBalance: Math.round(newBal * 1800).toLocaleString(),
-        note:       'داواکاریەکەت پەسەندکرا',
-        loginUrl:   'https://www.proxopages.com/ProxoApp_v2.25_with_AdCalc'
-      })
-    });
-  }
-} catch(_) {}
-
-loadDeposits(); loadDashboardStats();
+      try{
+        const{data:prof}=await sb.from('profiles').select('full_name,email').eq('id',userId).single();
+        if(prof?.email){
+          await fetch('https://n8n.proxopages.com/webhook/proxo-otp',{
+            method:'POST',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({
+              action:'balance_receipt',email:prof.email,
+              userName:prof.full_name||prof.email||'بەکارهێنەر',
+              amount:Math.round(parseFloat(amount)*1800).toLocaleString(),
+              newBalance:Math.round(newBal*1800).toLocaleString(),
+              note:'داواکاریەکەت پەسەندکرا',
+              loginUrl:'https://www.proxopages.com/ProxoApp_v2.25_with_AdCalc'
+            })
+          });
+        }
+      }catch(_){}
+      loadDeposits();loadDashboardStats();
     });
 }
 
@@ -2459,7 +2453,7 @@ async function showAdDetail(id){
   const locKu={kurdistan:'کوردستان',iraq:'عێراق',all:'کورد و عەرەب'};
 
   // بارکردنی نرخی خزمەتگوزاری لە باکەند
-  let serviceFeeRate=0.08; // 8% default
+  let serviceFeeRate=0.08;
   let serviceFeeFixed=0;
   try{
     const{data:settings}=await sb.from('pa_settings').select('key,value').in('key',['service_fee_percent','service_fee_fixed']);
@@ -2471,28 +2465,31 @@ async function showAdDetail(id){
     }
   }catch(e){}
 
+  // بارکردنی ئامرازی پەیوەندی (Proxo Link) ئەگەر هەبوو
+  let assetHTML='';
+  if(a.asset_id){
+    try{
+      const{data:asset}=await sb.from('proxolink_cards').select('name,card_number,style').eq('id',a.asset_id).single();
+      if(asset){
+        assetHTML=`<div class="detail-row" style="background:rgba(99,102,241,.04);border:1.5px solid rgba(99,102,241,.15);border-radius:10px;padding:10px 12px;margin-bottom:6px">
+          <span class="lbl" style="color:#6366f1"><i class="fas fa-link" style="margin-left:5px"></i>ئامرازی پەیوەندی</span>
+          <span class="val" style="color:#6366f1;font-weight:800">${asset.name||'—'}${asset.card_number?' (#'+asset.card_number+')':''}</span>
+        </div>`;
+      }
+    }catch(e){}
+  }
+
   const adPrice=parseFloat(a.budget||0);
   const serviceFee=serviceFeeFixed>0?serviceFeeFixed:Math.round(adPrice*serviceFeeRate);
   const total=adPrice+serviceFee;
-
-  // IQD formatting
   const fmtIQD=v=>(Math.round(v)).toLocaleString()+' IQD';
 
   const priceBreakdownHTML=`
     <div class="price-breakdown">
       <div class="price-breakdown-title"><i class="fas fa-receipt" style="margin-left:6px;color:var(--mt)"></i>وردەکاری نرخ</div>
-      <div class="price-row">
-        <span class="plbl">نرخی ڕیکلام</span>
-        <span class="pval" style="color:var(--bl)">${fmtIQD(adPrice)}</span>
-      </div>
-      <div class="price-row">
-        <span class="plbl">کرێی خزمەتگوزاری ${serviceFeeFixed>0?'(ثابت)':`(${Math.round(serviceFeeRate*100)}%)`}</span>
-        <span class="pval" style="color:var(--yw)">${fmtIQD(serviceFee)}</span>
-      </div>
-      <div class="price-row total">
-        <span class="plbl">کۆی گشتی</span>
-        <span class="pval" style="color:var(--gr)">${fmtIQD(total)}</span>
-      </div>
+      <div class="price-row"><span class="plbl">نرخی ڕیکلام</span><span class="pval" style="color:var(--bl)">${fmtIQD(adPrice)}</span></div>
+      <div class="price-row"><span class="plbl">کرێی خزمەتگوزاری ${serviceFeeFixed>0?'(ثابت)':`(${Math.round(serviceFeeRate*100)}%)`}</span><span class="pval" style="color:var(--yw)">${fmtIQD(serviceFee)}</span></div>
+      <div class="price-row total"><span class="plbl">کۆی گشتی</span><span class="pval" style="color:var(--gr)">${fmtIQD(total)}</span></div>
     </div>`;
 
   document.getElementById('adDetailContent').innerHTML=`
@@ -2506,7 +2503,9 @@ async function showAdDetail(id){
     <div class="detail-row"><span class="lbl">ڕەگەز</span><span class="val">${genKu[a.gender]||a.gender||'هەموو'}</span></div>
     <div class="detail-row"><span class="lbl">تەمەن</span><span class="val">${ageGroups}</span></div>
     <div class="detail-row"><span class="lbl">شوێن</span><span class="val">${locKu[a.location]||a.location||'—'}</span></div>
-    ${a.video_code?`<div class="detail-row"><span class="lbl">کۆدی ڤیدیۆ</span><span class="val" style="direction:ltr;font-family:'Inter';font-weight:700">${a.video_code}</span></div>`:''}    ${a.video_link?`<div class="detail-row"><span class="lbl">لینکی ڤیدیۆ</span><span class="val" style="direction:ltr;font-size:11px"><a href="${a.video_link}" target="_blank" style="color:var(--bl)">${a.video_link}</a></span></div>`:''}
+    ${a.video_code?`<div class="detail-row"><span class="lbl">کۆدی ڤیدیۆ</span><span class="val" style="direction:ltr;font-family:'Inter';font-weight:700">${a.video_code}</span></div>`:''}
+    ${a.video_link?`<div class="detail-row"><span class="lbl">لینکی ڤیدیۆ</span><span class="val" style="direction:ltr;font-size:11px"><a href="${a.video_link}" target="_blank" style="color:var(--bl)">${a.video_link}</a></span></div>`:''}
+    ${assetHTML}
     ${a.reject_reason?`<div class="reject-reason-box"><i class="fas fa-info-circle" style="margin-left:6px"></i>${a.reject_reason}</div>`:''}
     ${priceBreakdownHTML}
     <div class="sep"></div>
