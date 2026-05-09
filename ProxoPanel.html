@@ -4741,12 +4741,14 @@ function renderTutorials() {
     return;
   }
   const tableHTML = `<div class="tut-tbl-wrap tbl-scroll"><table>
-    <thead><tr><th>#</th><th>ناونیشان</th><th>وەسف</th><th>بەروار</th><th>کردار</th></tr></thead>
+    <thead><tr><th>#</th><th>ناونیشان</th><th>بەش</th><th>کات</th><th>بەروار</th><th>کردار</th></tr></thead>
     <tbody>${_allTutorials.map((t, i) => {
       const vid = extractYouTubeId(t.youtube_url || '');
       const thumb = vid ? `https://img.youtube.com/vi/${vid}/mqdefault.jpg` : '';
       const safeId = (t.id || '').replace(/'/g,'&#39;');
       const safeTitle = (t.title || '').replace(/</g,'&lt;').replace(/'/g,'&#39;');
+      const secColors = {'دەستپێک':'#f97316','ڕیکلام':'#2563eb','ئامراز':'#7c3aed','باڵانس':'#16a34a','کۆین':'#d97706','گشتگیر':'#0ea5e9'};
+      const secColor = secColors[t.section] || '#8b95a8';
       return `<tr>
         <td style="font-family:monospace;font-size:11px">${i + 1}</td>
         <td>
@@ -4754,11 +4756,12 @@ function renderTutorials() {
             ${thumb ? `<img src="${thumb}" style="width:56px;height:32px;border-radius:6px;object-fit:cover;flex-shrink:0;border:1px solid var(--b1)" onerror="this.style.display='none'">` : `<div style="width:56px;height:32px;border-radius:6px;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-play" style="font-size:11px;color:var(--mt)"></i></div>`}
             <div>
               <div style="font-size:13px;font-weight:700;color:var(--dark)">${t.title || '—'}</div>
-              <div style="font-size:10px;color:var(--mt);direction:ltr;font-family:'Inter'">${(t.youtube_url || '').substring(0, 40)}${(t.youtube_url || '').length > 40 ? '...' : ''}</div>
+              <div style="font-size:10px;color:var(--mt);max-width:160px">${(t.description || '').substring(0, 45)}${(t.description || '').length > 45 ? '...' : ''}</div>
             </div>
           </div>
         </td>
-        <td style="font-size:12px;color:var(--mt2);max-width:160px">${(t.description || '—').substring(0, 60)}${(t.description || '').length > 60 ? '...' : ''}</td>
+        <td>${t.section ? `<span style="display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:10.5px;font-weight:700;background:${secColor}18;color:${secColor};border:1px solid ${secColor}33">${t.section}</span>` : '<span style="color:var(--mt);font-size:11px">—</span>'}</td>
+        <td style="font-size:12px;color:var(--mt2);white-space:nowrap">${t.duration ? `<i class="fas fa-clock" style="font-size:9px;opacity:.6;margin-left:3px"></i>${t.duration} خ` : '—'}</td>
         <td style="font-size:11px;color:var(--mt)">${new Date(t.created_at).toLocaleDateString('ku')}</td>
         <td><div class="act-grp">
           <a class="act-btn bl" href="${t.youtube_url || '#'}" target="_blank" style="text-decoration:none"><i class="fas fa-external-link-alt"></i></a>
@@ -4771,12 +4774,17 @@ function renderTutorials() {
     const thumb = vid ? `https://img.youtube.com/vi/${vid}/mqdefault.jpg` : '';
     const safeId = (t.id || '').replace(/'/g,'&#39;');
     const safeTitle = (t.title || '').replace(/</g,'&lt;').replace(/'/g,'&#39;');
+    const secColors = {'دەستپێک':'#f97316','ڕیکلام':'#2563eb','ئامراز':'#7c3aed','باڵانس':'#16a34a','کۆین':'#d97706','گشتگیر':'#0ea5e9'};
+    const secColor = secColors[t.section] || '#8b95a8';
     return `<div class="user-card">
       <div class="user-card-top">
         ${thumb ? `<img src="${thumb}" style="width:48px;height:28px;border-radius:7px;object-fit:cover;flex-shrink:0;border:1px solid var(--b1)" onerror="this.style.display='none'">` : `<div class="mini-av" style="background:#0ea5e9"><i class="fas fa-play" style="font-size:11px"></i></div>`}
         <div class="user-card-info">
           <div class="user-card-name">${t.title || '—'}</div>
-          <div class="user-card-email">${(t.description || '').substring(0, 50)}${(t.description || '').length > 50 ? '...' : ''}</div>
+          <div class="user-card-email" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            ${t.section ? `<span style="padding:1px 7px;border-radius:20px;font-size:9.5px;font-weight:700;background:${secColor}18;color:${secColor};border:1px solid ${secColor}33">${t.section}</span>` : ''}
+            ${t.duration ? `<span style="font-size:10px;color:var(--mt)"><i class="fas fa-clock" style="font-size:8px;margin-left:2px"></i>${t.duration} خولەک</span>` : ''}
+          </div>
         </div>
       </div>
       <div class="user-card-meta">
@@ -4801,13 +4809,16 @@ async function saveTutorial() {
   const title = (document.getElementById('tutTitle').value || '').trim();
   const ytUrl = (document.getElementById('tutYtUrl').value || '').trim();
   const desc = (document.getElementById('tutDesc').value || '').trim();
+  const section = (document.getElementById('tutSection').value || '').trim();
+  const duration = parseInt(document.getElementById('tutDuration').value) || null;
   if (!title) { showToast('ناونیشان بنووسە', 'rd'); return; }
   if (!ytUrl) { showToast('لینکی YouTube بنووسە', 'rd'); return; }
   const vid = extractYouTubeId(ytUrl);
   if (!vid) { showToast('لینکی YouTube دروست نییە', 'rd'); return; }
+  if (!section) { showToast('بەشی فێرکاری هەڵبژێرە', 'rd'); return; }
   const btn = document.getElementById('tutSaveBtn');
   if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> پاشەکەوتکردن...'; }
-  const { error } = await sb.from('pa_tutorials').insert({ title, youtube_url: ytUrl, description: desc || null });
+  const { error } = await sb.from('pa_tutorials').insert({ title, youtube_url: ytUrl, description: desc || null, section: section || null, duration: duration });
   if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-plus"></i> زیادکردن'; }
   if (error) { showToast('هەڵە: ' + error.message, 'rd'); return; }
   showToast('✅ فێرکاری زیادکرا', 'gr');
@@ -4815,6 +4826,8 @@ async function saveTutorial() {
   document.getElementById('tutTitle').value = '';
   document.getElementById('tutYtUrl').value = '';
   document.getElementById('tutDesc').value = '';
+  document.getElementById('tutSection').value = '';
+  document.getElementById('tutDuration').value = '';
   document.getElementById('tutPreviewWrap').style.display = 'none';
   loadTutorials();
 }
@@ -4944,6 +4957,24 @@ async function deleteTutorial(id, title) {
         <div style="width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.15);backdrop-filter:blur(6px);border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center">
           <i class="fas fa-play" style="color:#fff;font-size:17px;margin-right:-2px"></i>
         </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div>
+        <label class="modal-lbl">بەشی فێرکاری <span style="color:var(--rd)">*</span></label>
+        <select class="minp" id="tutSection" style="cursor:pointer">
+          <option value="">هەڵبژێرە...</option>
+          <option value="دەستپێک">🚀 دەستپێک</option>
+          <option value="ڕیکلام">📢 ڕیکلام</option>
+          <option value="ئامراز">🔗 ئامراز</option>
+          <option value="باڵانس">💰 باڵانس</option>
+          <option value="کۆین">🪙 کۆین</option>
+          <option value="گشتگیر">📖 گشتگیر</option>
+        </select>
+      </div>
+      <div>
+        <label class="modal-lbl">کاتی ڤیدیۆ (خولەک)</label>
+        <input class="minp" type="number" id="tutDuration" placeholder="بۆ نموونە: 5" min="1" max="180" dir="ltr" style="font-family:'Inter'">
       </div>
     </div>
     <label class="modal-lbl">وەسف (ئارەزووی)</label>
