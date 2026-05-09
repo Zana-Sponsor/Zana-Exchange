@@ -1519,8 +1519,8 @@ tr:hover td{background:rgba(28,35,51,.015);}
 
 <script>
 // ══ CONFIG ══
-const SB_URL=atob('https://cojchkwssmasiejcgvbk.supabase.co');
-const SB_KEY=atob('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNvamNoa3dzc21hc2llamNndmJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczMTE1MTIsImV4cCI6MjA5Mjg4NzUxMn0.RCALy3wpKHGAkmXWcBqEb_QFEUmh6ErdRbfrBmagvtw');
+const SB_URL='https://cojchkwssmasiejcgvbk.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNvamNoa3dzc21hc2llamNndmJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczMTE1MTIsImV4cCI6MjA5Mjg4NzUxMn0.RCALy3wpKHGAkmXWcBqEb_QFEUmh6ErdRbfrBmagvtw';
 const ADMIN_EMAILS=['admin@proxoads.com','proxo.admin@gmail.com'];
 
 let sb, adminUser=null, lcaAdminDisplayName='ئەدمین';
@@ -1564,20 +1564,25 @@ async function doLogin(){
   const err=document.getElementById('authErr');
   if(!email||!pass){showAuthErr('ئیمەیل و پاسۆرد پڕ بکەرەوە');return;}
   btn.disabled=true;btn.textContent='...';
-  const{data,error}=await sb.auth.signInWithPassword({email,password:pass});
-  if(error){showAuthErr('ئیمەیل یان پاسۆرد هەڵەیە');btn.disabled=false;btn.innerHTML='<i class="fas fa-arrow-left"></i> چوونەژوورەوە';return;}
-  adminUser=data.user;
-  const{data:prof}=await sb.from('profiles').select('is_admin,full_name').eq('id',adminUser.id).single();
-  if(prof?.full_name)lcaAdminDisplayName=prof.full_name;
-  else lcaAdminDisplayName=adminUser.email.split('@')[0];
-  // بلۆک تەنها ئەگەر is_admin بە ئەکسپلیسیت false دانراوێت — null/undefined = ئادمینە
-  if(prof?.is_admin===false&&!ADMIN_EMAILS.includes(email)){
-    await sb.auth.signOut();
-    showAuthErr('تۆ مافی دەستگەیشتن بە پانێڵی ئادمین نییەت');
+  try{
+    const{data,error}=await sb.auth.signInWithPassword({email,password:pass});
+    if(error){showAuthErr('ئیمەیل یان پاسۆرد هەڵەیە');btn.disabled=false;btn.innerHTML='<i class="fas fa-arrow-left"></i> چوونەژوورەوە';return;}
+    adminUser=data.user;
+    const{data:prof}=await sb.from('profiles').select('is_admin,full_name').eq('id',adminUser.id).single();
+    if(prof?.full_name)lcaAdminDisplayName=prof.full_name;
+    else lcaAdminDisplayName=adminUser.email.split('@')[0];
+    // بلۆک تەنها ئەگەر is_admin بە ئەکسپلیسیت false دانراوێت — null/undefined = ئادمینە
+    if(prof?.is_admin===false&&!ADMIN_EMAILS.includes(email)){
+      await sb.auth.signOut();
+      showAuthErr('تۆ مافی دەستگەیشتن بە پانێڵی ئادمین نییەت');
+      btn.disabled=false;btn.innerHTML='<i class="fas fa-arrow-left"></i> چوونەژوورەوە';
+      return;
+    }
+    showApp();
+  }catch(e){
+    showAuthErr('هەڵەی پەیوەندی: '+e.message);
     btn.disabled=false;btn.innerHTML='<i class="fas fa-arrow-left"></i> چوونەژوورەوە';
-    return;
   }
-  showApp();
 }
 
 function showAuthErr(msg){
