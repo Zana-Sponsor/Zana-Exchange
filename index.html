@@ -2554,69 +2554,8 @@ function _clipboardFallback(text, onSuccess, onFail) {
       </div>
     </div>
 
-    <!-- CARD 1 -->
-    <div class="tut-post-card" id="tpost1" data-cat="ad" onclick="toggleTutPost('tpost1','https://www.youtube.com/embed/dQw4w9WgXcQ',['دروستکردنی ڕیکلام','TikTok Ads','بودجە'])">
-      <div class="tut-post-head">
-        <div class="tut-post-avatar" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)"><i class="fas fa-rectangle-ad"></i></div>
-        <div class="tut-post-info">
-          <div class="tut-post-title">چۆن ڕیکلامی تیکتۆک دروست بکەیت</div>
-          <div class="tut-post-dur"><i class="fas fa-clock"></i>٨ خولەک</div>
-        </div>
-        <div class="tut-post-play-btn"><i class="fas fa-play"></i></div>
-      </div>
-      <div class="tut-post-video" id="tvid1">
-        <div class="tut-post-iframe-wrap"><iframe src="" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" loading="lazy"></iframe></div>
-      </div>
-      <div class="tut-post-close-row"><span class="tut-post-close-btn" onclick="event.stopPropagation();toggleTutPost('tpost1','','[]')"><i class="fas fa-chevron-up"></i>داخستن</span></div>
-    </div>
-
-    <!-- CARD 2 -->
-    <div class="tut-post-card" id="tpost2" data-cat="pay" onclick="toggleTutPost('tpost2','https://www.youtube.com/embed/dQw4w9WgXcQ',['باڵانس','FIB','FastPay'])">
-      <div class="tut-post-head">
-        <div class="tut-post-avatar" style="background:linear-gradient(135deg,#16a34a,#10b981)"><i class="fas fa-coins"></i></div>
-        <div class="tut-post-info">
-          <div class="tut-post-title">چۆن باڵانست پڕ بکەیتەوە</div>
-          <div class="tut-post-dur"><i class="fas fa-clock"></i>٥ خولەک</div>
-        </div>
-        <div class="tut-post-play-btn"><i class="fas fa-play"></i></div>
-      </div>
-      <div class="tut-post-video" id="tvid2">
-        <div class="tut-post-iframe-wrap"><iframe src="" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" loading="lazy"></iframe></div>
-      </div>
-      <div class="tut-post-close-row"><span class="tut-post-close-btn" onclick="event.stopPropagation();toggleTutPost('tpost2','','[]')"><i class="fas fa-chevron-up"></i>داخستن</span></div>
-    </div>
-
-    <!-- CARD 3 -->
-    <div class="tut-post-card" id="tpost3" data-cat="tools" onclick="toggleTutPost('tpost3','https://www.youtube.com/embed/dQw4w9WgXcQ',['Proxo Link','واتسئاپ','ئینستاگرام'])">
-      <div class="tut-post-head">
-        <div class="tut-post-avatar" style="background:linear-gradient(135deg,#2563eb,#0ea5e9)"><i class="fas fa-link"></i></div>
-        <div class="tut-post-info">
-          <div class="tut-post-title">دروستکردنی ئامرازی پەیوەندی (Proxo Link)</div>
-          <div class="tut-post-dur"><i class="fas fa-clock"></i>٦ خولەک</div>
-        </div>
-        <div class="tut-post-play-btn"><i class="fas fa-play"></i></div>
-      </div>
-      <div class="tut-post-video" id="tvid3">
-        <div class="tut-post-iframe-wrap"><iframe src="" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" loading="lazy"></iframe></div>
-      </div>
-      <div class="tut-post-close-row"><span class="tut-post-close-btn" onclick="event.stopPropagation();toggleTutPost('tpost3','','[]')"><i class="fas fa-chevron-up"></i>داخستن</span></div>
-    </div>
-
-    <!-- CARD 4 -->
-    <div class="tut-post-card" id="tpost4" data-cat="result" onclick="toggleTutPost('tpost4','https://www.youtube.com/embed/dQw4w9WgXcQ',['Analytics','ئەنجام','سپۆنسەر'])">
-      <div class="tut-post-head">
-        <div class="tut-post-avatar" style="background:linear-gradient(135deg,#7c3aed,#a855f7)"><i class="fas fa-chart-bar"></i></div>
-        <div class="tut-post-info">
-          <div class="tut-post-title">پشکنینی ئەنجامی ڕیکلامەکەت</div>
-          <div class="tut-post-dur"><i class="fas fa-clock"></i>٤ خولەک</div>
-        </div>
-        <div class="tut-post-play-btn"><i class="fas fa-play"></i></div>
-      </div>
-      <div class="tut-post-video" id="tvid4">
-        <div class="tut-post-iframe-wrap"><iframe src="" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" loading="lazy"></iframe></div>
-      </div>
-      <div class="tut-post-close-row"><span class="tut-post-close-btn" onclick="event.stopPropagation();toggleTutPost('tpost4','','[]')"><i class="fas fa-chevron-up"></i>داخستن</span></div>
-    </div>
+    <!-- Dynamic Tutorials loaded from Supabase pa_tutorials -->
+    <div id="tutDynamicList"><div style="text-align:center;padding:30px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin" style="font-size:20px"></i></div></div>
 
     <!-- Quick Steps -->
     <div class="tut-sec-lbl">هەنگاوەکانی دەستپێک</div>
@@ -5288,9 +5227,10 @@ async function submitWalletDeposit() {
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> دەنێردرێت...';
   try {
+    var amtUSD = parseFloat((amt / 1800).toFixed(6));
     var req = {
       type: 'deposit',
-      amount: amt,
+      amount: amtUSD,
       method: meth,
       name: name,
       note: note,
@@ -5346,7 +5286,7 @@ async function submitWalletDeposit() {
     try {
       await sb.from('pa_transactions').insert({
         user_id: cu.id,
-        amount: amt,
+        amount: amtUSD,
         method: meth,
         note: (name ? 'ناو: ' + name : '') + (note ? ' | ' + note : '') || null,
         status: 'pending',
@@ -5767,6 +5707,44 @@ function updateSidebarUser(name,email,avB64Src,bal){
   document.getElementById('sidebarEmail').textContent=email||'—';
   document.getElementById('sidebarBal').textContent=Math.round(parseFloat(String(bal).replace(/,/g,''))||0).toLocaleString()+' IQD';
 }
+/* ── Load tutorials from Supabase pa_tutorials ── */
+function _extractYtId(url){
+  if(!url)return '';
+  var m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/);
+  return m?m[1]:'';
+}
+async function loadTutorials(){
+  var wrap=document.getElementById('tutDynamicList');
+  if(!wrap)return;
+  wrap.innerHTML='<div style="text-align:center;padding:30px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin" style="font-size:20px"></i></div>';
+  try{
+    var res=await sb.from('pa_tutorials').select('*').order('created_at',{ascending:false});
+    var rows=(res.data)||[];
+    if(!rows.length){wrap.innerHTML='';return;}
+    var gradients=['linear-gradient(135deg,#6366f1,#8b5cf6)','linear-gradient(135deg,#16a34a,#10b981)','linear-gradient(135deg,#2563eb,#0ea5e9)','linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#f97316,#ef4444)','linear-gradient(135deg,#0ea5e9,#6366f1)'];
+    wrap.innerHTML=rows.map(function(t,i){
+      var cid='dbtpost'+i;
+      var ytUrl=(t.youtube_url||'').replace(/'/g,"\\'");
+      var grad=gradients[i%gradients.length];
+      var dur=t.description?('<div class="tut-post-dur" style="font-size:11px;color:var(--mt)">'+t.description.substring(0,55)+(t.description.length>55?'...':'')+'</div>'):'';
+      return '<div class="tut-post-card" id="'+cid+'" data-cat="tutorial" onclick="toggleTutPost(\''+cid+'\',\''+ytUrl+'\',[])">'
+        +'<div class="tut-post-head">'
+        +'<div class="tut-post-avatar" style="background:'+grad+'"><i class="fas fa-play"></i></div>'
+        +'<div class="tut-post-info">'
+        +'<div class="tut-post-title">'+(t.title||'—')+'</div>'
+        +dur
+        +'</div>'
+        +'<div class="tut-post-play-btn"><i class="fas fa-play"></i></div>'
+        +'</div>'
+        +'<div class="tut-post-video" id="dbtvid'+i+'">'
+        +'<div class="tut-post-iframe-wrap"><iframe src="" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" loading="lazy"></iframe></div>'
+        +'</div>'
+        +'<div class="tut-post-close-row"><span class="tut-post-close-btn" onclick="event.stopPropagation();toggleTutPost(\''+cid+'\',\'\',[])"><i class="fas fa-chevron-up"></i>داخستن</span></div>'
+        +'</div>';
+    }).join('');
+  }catch(e){wrap.innerHTML='';}
+}
+
 /* ── Tutorial post toggle (inline expand) ── */
 var _openTutId = null;
 function toggleTutPost(id, url, tags){
@@ -6122,6 +6100,7 @@ function goPage(p){
   if(p==='home'){loadCoins();}
   if(p==='create'){selectedAssetId=null;cardId=null;goal='messages';days=1;dailyUSD=10;dailyCost=18500;budget=18500;budgetTier=0;tierIndex=0;document.querySelectorAll('.bud-daily-btn').forEach((b,i)=>{b.classList.toggle('sel',i===0);});clearAssetSel&&clearAssetSel();document.querySelectorAll('.card-pick').forEach(x=>x.classList.remove('sel'));document.querySelectorAll('.goal-tab,.goal-tab-v2').forEach(x=>x.classList.toggle('on',x.dataset.g==='messages'));const _al=document.getElementById('adLink');if(_al)_al.value='';const _ac=document.getElementById('adCode');if(_ac)_ac.value='';const _pi=document.getElementById('promoCodeInp');if(_pi)_pi.value='';if(typeof clearPromoResult==='function')clearPromoResult();updateBudgetDisplay();loadAssetsForDropdown();}
   if(p==='txhistory')loadTxHistory();
+  if(p==='tutorials')loadTutorials();
   if(p==='promocodes')loadPromocodesPage();
   if(p==='giveaway')loadGiveawayPage();
   if(p==='wallet'){startWalletListener();startReqListener();}
