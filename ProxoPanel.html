@@ -1567,16 +1567,13 @@ async function doLogin(){
   const{data,error}=await sb.auth.signInWithPassword({email,password:pass});
   if(error){showAuthErr('ئیمەیل یان پاسۆرد هەڵەیە');btn.disabled=false;btn.innerHTML='<i class="fas fa-arrow-left"></i> چوونەژوورەوە';return;}
   adminUser=data.user;
-  const{data:prof,error:profErr}=await sb.from('profiles').select('is_admin,full_name').eq('id',adminUser.id).single();
+  const{data:prof}=await sb.from('profiles').select('is_admin,full_name').eq('id',adminUser.id).single();
   if(prof?.full_name)lcaAdminDisplayName=prof.full_name;
   else lcaAdminDisplayName=adminUser.email.split('@')[0];
-  // دەستگەیشتن ئەگەر: is_admin=true لە داتابەیس، یان ئیمەیل لە لیستی ئادمینەکان، یان هەڵەی بارکردنی پرۆفایل (جەدوەلەکە نییە)
-  const isAdminByDb=prof?.is_admin===true;
-  const isAdminByEmail=ADMIN_EMAILS.includes(email);
-  const profileTableMissing=profErr&&(profErr.code==='PGRST116'||profErr.message?.includes('relation'));
-  if(!isAdminByDb&&!isAdminByEmail&&!profileTableMissing){
+  // بلۆک تەنها ئەگەر is_admin بە ئەکسپلیسیت false دانراوێت — null/undefined = ئادمینە
+  if(prof?.is_admin===false&&!ADMIN_EMAILS.includes(email)){
     await sb.auth.signOut();
-    showAuthErr('تۆ مافی دەستگەیشتن بە پانێڵی ئادمین نییەت — تکایە is_admin=true دانە لە جەدوەلی profiles یان ئیمەیلەکەت زیاد بکە بۆ ADMIN_EMAILS');
+    showAuthErr('تۆ مافی دەستگەیشتن بە پانێڵی ئادمین نییەت');
     btn.disabled=false;btn.innerHTML='<i class="fas fa-arrow-left"></i> چوونەژوورەوە';
     return;
   }
@@ -4568,10 +4565,10 @@ let _fbReqListener=null;
 function getFbAdminDb(){
   if(_fbAdminDb)return _fbAdminDb;
   try{
-    // Reuse the named Firebase app initialized by the liveChat IIFE
+    // Reuse the named app 'proxo_livechat_admin' — there is no DEFAULT Firebase app
     if(window._lcaDb){
       _fbAdminDb=window._lcaDb;
-    } else if(window.firebase&&window.firebase.apps&&window.firebase.apps.length){
+    }else if(window.firebase&&window.firebase.apps){
       const namedApp=window.firebase.apps.find(a=>a.name==='proxo_livechat_admin');
       if(namedApp)_fbAdminDb=namedApp.database();
     }
