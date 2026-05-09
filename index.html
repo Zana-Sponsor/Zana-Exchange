@@ -5842,12 +5842,12 @@ function toggleTutPost(id, url, tags){
     if(videoId){
       // Show YouTube thumbnail with play button — load iframe only on click
       var thumbUrl = 'https://img.youtube.com/vi/'+videoId+'/hqdefault.jpg';
-      var safeEmbed = embedUrl.replace(/'/g,"\'");
-      wrap.innerHTML = '<div class="tut-ytthumb" onclick="_ytThumbClick(this,''+safeEmbed+'')">'
-        +'<img src="'+thumbUrl+'" alt="" onerror="this.style.display='none'">'
-        +'<div class="tut-ytthumb-btn"><i class="fas fa-play"></i></div>'
-        +'</div>';
-    } else if(url){
+      wrap.innerHTML = '<div class="tut-ytthumb"><img src="" alt=""><div class="tut-ytthumb-btn"><i class="fas fa-play"></i></div></div>';
+      var _thumb = wrap.querySelector('.tut-ytthumb');
+      var _timg = _thumb ? _thumb.querySelector('img') : null;
+      if(_timg){ _timg.src = thumbUrl; _timg.onerror = function(){ this.style.display='none'; }; }
+      if(_thumb){ (function(eu){ _thumb.onclick = function(){ _ytThumbClick(_thumb, eu); }; })(embedUrl); }
+        } else if(url){
       // Non-YouTube URL — load iframe directly
       var fi=document.createElement('iframe');
       fi.allowFullscreen=true;
