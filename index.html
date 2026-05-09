@@ -2510,19 +2510,35 @@ function _clipboardFallback(text, onSuccess, onFail) {
       <h2><i class="fas fa-graduation-cap" style="margin-left:8px"></i>فێرکارییەکان</h2>
       <p>ئامۆژگاری و ڤیدیۆکانی سیستەمەکە لێرەن تا ئەسانتر بتوانی کار بکەیت</p>
     </div>
-
-    <!-- قفڵی فێرکاری -->
-    <div style="background:var(--w);border:1.5px dashed var(--b2);border-radius:20px;padding:40px 24px;text-align:center;margin-bottom:14px">
-      <div style="width:64px;height:64px;border-radius:50%;background:var(--bg);border:1.5px solid var(--b1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:26px;color:var(--mt)">
-        <i class="fas fa-lock"></i>
-      </div>
-      <div style="font-size:16px;font-weight:800;color:var(--dark);margin-bottom:8px">بەشی فێرکاری قفڵدراوە</div>
-      <div style="font-size:13px;color:var(--mt);line-height:1.8;margin-bottom:20px">ئەم بەشە تازەکارییەکانی فێرکاری و ڤیدیۆی رێنماییت پێدەکات.<br>بۆ دەستڕاگەیشتن پەیوەند بە ئەدمین بکە.</div>
-      <div onclick="openWA()" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--dark);color:#fff;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer">
-        <i class="fab fa-whatsapp"></i>پەیوەندی لەگەڵ ئەدمین
+    <div id="tutCardsWrap">
+      <div style="text-align:center;padding:50px 20px;color:var(--mt)">
+        <i class="fas fa-circle-notch fa-spin" style="font-size:28px;display:block;margin-bottom:12px;opacity:.4"></i>
+        <div style="font-size:13px">بارکردن...</div>
       </div>
     </div>
-    <div style="height:14px"></div>
+    <div style="height:80px"></div>
+  </div>
+
+  <!-- ══ YOUTUBE PLAYER MODAL ══ -->
+  <div class="overlay" id="moYouTubePlayer" onclick="closeTutVideo(event)" style="display:none;z-index:9100;background:rgba(0,0,0,.88)">
+    <div style="width:94%;max-width:520px;background:#111;border-radius:18px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.7)" onclick="event.stopPropagation()">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:#1c2333">
+        <div style="font-size:13.5px;font-weight:800;color:#fff;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="ytModalTitle">ڤیدیۆ</div>
+        <div onclick="closeTutVideo()" style="width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;margin-right:10px">
+          <i class="fas fa-xmark"></i>
+        </div>
+      </div>
+      <div style="position:relative;width:100%;aspect-ratio:16/9;background:#000">
+        <iframe id="ytIframe"
+          src=""
+          style="width:100%;height:100%;border:none;display:block"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
+      </div>
+      <div style="padding:12px 16px;background:#1c2333">
+        <div style="font-size:12px;color:rgba(255,255,255,.55)" id="ytModalDesc"></div>
+      </div>
+    </div>
   </div>
 
   <!-- ── خەڵاتی هەفتانە ── -->
@@ -5834,6 +5850,7 @@ function goPage(p){
   if(p==='txhistory')loadTxHistory();
   if(p==='promocodes')loadPromocodesPage();
   if(p==='giveaway')loadGiveawayPage();
+  if(p==='tutorials')loadTutorialsPage();
   if(p==='wallet'){startWalletListener();startReqListener();}
   updateSidebarActive(p);
 
@@ -10350,6 +10367,74 @@ function faqSearch(val, listId, emptyId) {
   const empty = document.getElementById(emptyId);
   if (empty) empty.style.display = visible === 0 ? 'block' : 'none';
 }
+
+// ══ TUTORIALS PAGE ══
+async function loadTutorialsPage() {
+  const wrap = document.getElementById('tutCardsWrap');
+  if (!wrap) return;
+  wrap.innerHTML = '<div style="text-align:center;padding:50px 20px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin" style="font-size:28px;display:block;margin-bottom:12px;opacity:.4"></i><div style="font-size:13px">بارکردن...</div></div>';
+  try {
+    const { data, error } = await sb.from('pa_tutorials').select('*').order('created_at', { ascending: false });
+    if (error) throw error;
+    const list = data || [];
+    if (!list.length) {
+      wrap.innerHTML = '<div style="text-align:center;padding:50px 20px;color:var(--mt)"><i class="fas fa-graduation-cap" style="font-size:36px;display:block;margin-bottom:14px;opacity:.2"></i><div style="font-size:14px;font-weight:700">هیچ فێرکارییەک نییە</div><div style="font-size:12px;margin-top:6px">بەزووی زیاد دەکرێت</div></div>';
+      return;
+    }
+    wrap.innerHTML = list.map(t => {
+      const vid = _ytExtractId(t.youtube_url || '');
+      const thumb = vid ? `https://img.youtube.com/vi/${vid}/mqdefault.jpg` : '';
+      return `<div class="tut-card" onclick="openTutVideo('${t.id}','${(t.title||'').replace(/'/g,"\'").replace(/"/g,'&quot;')}','${vid}','${(t.description||'').replace(/'/g,"\'").replace(/"/g,'&quot;')}')">
+        <div class="tut-thumb">
+          ${thumb ? `<img src="${thumb}" alt="${t.title||''}" loading="lazy" onerror="this.style.display='none'">` : ''}
+          <div class="tut-play"><i class="fas fa-play"></i></div>
+          <div class="tut-badge"><i class="fab fa-youtube" style="margin-left:4px;color:#ff0000"></i>YouTube</div>
+        </div>
+        <div class="tut-info">
+          <div class="tut-title">${t.title || '—'}</div>
+          <div class="tut-meta">
+            <span><i class="fas fa-calendar" style="margin-left:3px"></i>${new Date(t.created_at).toLocaleDateString('ku')}</span>
+            ${t.description ? `<span style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;flex:1">${t.description}</span>` : ''}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  } catch (e) {
+    wrap.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--mt)"><i class="fas fa-exclamation-triangle" style="font-size:28px;display:block;margin-bottom:12px;opacity:.3"></i><div style="font-size:13px">هەڵەیەک ڕوویدا</div><div style="font-size:11px;margin-top:4px;opacity:.7">' + (e.message||'') + '</div></div>';
+  }
+}
+
+function _ytExtractId(url) {
+  if (!url) return '';
+  const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/);
+  return m ? m[1] : '';
+}
+
+function openTutVideo(id, title, vid, desc) {
+  if (!vid) return;
+  const iframe = document.getElementById('ytIframe');
+  const titleEl = document.getElementById('ytModalTitle');
+  const descEl = document.getElementById('ytModalDesc');
+  const mo = document.getElementById('moYouTubePlayer');
+  if (!iframe || !mo) return;
+  iframe.src = 'https://www.youtube.com/embed/' + vid + '?autoplay=1&rel=0';
+  if (titleEl) titleEl.textContent = title || 'ڤیدیۆ';
+  if (descEl) descEl.textContent = desc || '';
+  mo.style.display = 'flex';
+  mo.style.alignItems = 'center';
+  mo.style.justifyContent = 'center';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeTutVideo(e) {
+  if (e && e.target !== document.getElementById('moYouTubePlayer')) return;
+  const mo = document.getElementById('moYouTubePlayer');
+  const iframe = document.getElementById('ytIframe');
+  if (iframe) iframe.src = '';
+  if (mo) mo.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
 </script>
 
   <!-- AD DETAIL BOTTOM SHEET -->
