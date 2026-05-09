@@ -889,6 +889,10 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .tut-post-video.show{display:block;animation:tutExpand .22s cubic-bezier(.165,.84,.44,1);}
 @keyframes tutExpand{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 .tut-post-iframe-wrap{border-radius:12px;overflow:hidden;box-shadow:0 3px 16px rgba(0,0,0,.09);}
+.tut-ytthumb{position:absolute;inset:0;cursor:pointer;background:#000;display:flex;align-items:center;justify-content:center;border-radius:0;}
+.tut-ytthumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.tut-ytthumb-btn{position:absolute;width:58px;height:58px;background:rgba(220,38,38,.92);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;padding-left:4px;box-shadow:0 4px 20px rgba(0,0,0,.45);transition:transform .15s;}
+.tut-ytthumb:active .tut-ytthumb-btn{transform:scale(.9);}
 .tut-post-iframe-wrap{position:relative;padding-top:56.25%;}.tut-post-iframe-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;background:#111;display:block;}
 .tut-post-close-row{display:none;align-items:center;justify-content:center;padding:8px 12px 12px;}
 .tut-post-card.open .tut-post-close-row{display:flex;}
@@ -5775,17 +5779,33 @@ function _tutSetFilter(sec,el){
 
 /* ── Tutorial post toggle (inline expand) ── */
 var _openTutId = null;
+function _ytThumbClick(el, embedUrl){
+  el.style.display='none';
+  var wrap=el.parentNode;
+  var fi=document.createElement('iframe');
+  fi.allowFullscreen=true;
+  fi.setAttribute('allow','autoplay; encrypted-media; picture-in-picture');
+  fi.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%;border:none;background:#111;';
+  fi.src=embedUrl;
+  wrap.appendChild(fi);
+}
+
+function _clearTutWrap(vid){
+  if(!vid) return;
+  vid.classList.remove('show');
+  var wrap=vid.querySelector('.tut-post-iframe-wrap');
+  if(wrap) wrap.innerHTML='';
+}
+
 function toggleTutPost(id, url, tags){
   var card = document.getElementById(id);
   if(!card) return;
   var vid = card.querySelector('.tut-post-video');
-  var iframe = vid ? vid.querySelector('iframe') : null;
 
   // If already open, close it
   if(card.classList.contains('open')){
     card.classList.remove('open');
-    if(vid) vid.classList.remove('show');
-    if(iframe){ iframe.src = ''; }
+    _clearTutWrap(vid);
     _openTutId = null;
     return;
   }
@@ -5795,10 +5815,7 @@ function toggleTutPost(id, url, tags){
     var prev = document.getElementById(_openTutId);
     if(prev){
       prev.classList.remove('open');
-      var pvid = prev.querySelector('.tut-post-video');
-      if(pvid){ pvid.classList.remove('show'); }
-      var pf = pvid ? pvid.querySelector('iframe') : null;
-      if(pf){ pf.src = ''; }
+      _clearTutWrap(prev.querySelector('.tut-post-video'));
     }
   }
 
@@ -5807,15 +5824,39 @@ function toggleTutPost(id, url, tags){
   card.classList.add('open');
   if(vid) vid.classList.add('show');
 
-  // Build embed URL
-  if(iframe){
-    var embedUrl = url;
-    var ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
-    if(ytMatch){ embedUrl = 'https://www.youtube.com/embed/' + ytMatch[1] + '?autoplay=1&rel=0'; }
-    else if(url.indexOf('/embed/') > -1 && url.indexOf('autoplay') === -1){
-      embedUrl = url + (url.indexOf('?') > -1 ? '&' : '?') + 'autoplay=1&rel=0';
+  // Build embed URL + extract video ID
+  var embedUrl = url;
+  var videoId = null;
+  var ytMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  if(ytMatch){
+    videoId = ytMatch[1];
+    embedUrl = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0';
+  } else if(url.indexOf('/embed/') > -1){
+    var emMatch = url.match(/\/embed\/([A-Za-z0-9_-]{11})/);
+    if(emMatch) videoId = emMatch[1];
+    embedUrl = url.indexOf('autoplay') === -1 ? url + (url.indexOf('?')>-1?'&':'?')+'autoplay=1&rel=0' : url;
+  }
+
+  var wrap = vid ? vid.querySelector('.tut-post-iframe-wrap') : null;
+  if(wrap){
+    if(videoId){
+      // Show YouTube thumbnail with play button — load iframe only on click
+      var thumbUrl = 'https://img.youtube.com/vi/'+videoId+'/hqdefault.jpg';
+      var safeEmbed = embedUrl.replace(/'/g,"\'");
+      wrap.innerHTML = '<div class="tut-ytthumb" onclick="_ytThumbClick(this,''+safeEmbed+'')">'
+        +'<img src="'+thumbUrl+'" alt="" onerror="this.style.display='none'">'
+        +'<div class="tut-ytthumb-btn"><i class="fas fa-play"></i></div>'
+        +'</div>';
+    } else if(url){
+      // Non-YouTube URL — load iframe directly
+      var fi=document.createElement('iframe');
+      fi.allowFullscreen=true;
+      fi.setAttribute('allow','autoplay; encrypted-media; picture-in-picture');
+      fi.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%;border:none;background:#111;';
+      fi.src=embedUrl;
+      wrap.innerHTML='';
+      wrap.appendChild(fi);
     }
-    iframe.src = embedUrl;
   }
 
   // Scroll into view
