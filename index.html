@@ -868,16 +868,16 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .sidebar-bal-val{font-size:16px;font-weight:900;color:#fff;direction:ltr;}
 .ham-btn{width:34px;height:34px;border-radius:10px;background:var(--dark);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,.15);transition:transform .15s,opacity .15s;}.ham-btn:active{opacity:.85;transform:scale(.95);}
 
-/* ══ TUTORIALS PAGE — ANIMATED LIGHT ══ */
-.tut-hero{background:linear-gradient(145deg,#eef2ff 0%,#e0e8ff 40%,#ede9fe 100%);border-radius:22px;padding:26px 20px 22px;margin-bottom:16px;position:relative;overflow:hidden;border:1px solid rgba(99,102,241,.12);box-shadow:0 4px 24px rgba(99,102,241,.08);}
+/* ══ TUTORIALS PAGE ══ */
+.tut-hero{background:linear-gradient(145deg,#f0f4ff 0%,#e8eef8 50%,#eef2ff 100%);border-radius:22px;padding:26px 20px 22px;margin-bottom:16px;position:relative;overflow:hidden;border:1px solid rgba(99,102,241,.12);box-shadow:0 4px 24px rgba(99,102,241,.08);}
+.tut-orb{position:absolute;border-radius:50%;filter:blur(36px);pointer-events:none;}
+@keyframes tO1{0%,100%{transform:translate(0,0) scale(1);opacity:.18}40%{transform:translate(26px,-20px) scale(1.2);opacity:.28}70%{transform:translate(-10px,12px) scale(.9);opacity:.14}}
+@keyframes tO2{0%,100%{transform:translate(0,0) scale(1);opacity:.15}35%{transform:translate(-20px,16px) scale(1.15);opacity:.24}68%{transform:translate(14px,-18px) scale(1.1);opacity:.12}}
+@keyframes tO3{0%,100%{transform:translate(0,0) scale(1);opacity:.12}50%{transform:translate(16px,16px) scale(1.25);opacity:.22}}
+
 .tut-hero h2{font-size:19px;font-weight:800;color:#1e2a45;margin-bottom:7px;position:relative;z-index:2;}
 .tut-hero h2 i{color:#6366f1;}
 .tut-hero p{font-size:12.5px;color:#64748b;line-height:1.75;position:relative;z-index:2;}
-.tut-orb{position:absolute;border-radius:50%;filter:blur(38px);pointer-events:none;}
-@keyframes tutO1{0%,100%{transform:translate(0,0) scale(1);opacity:.18}40%{transform:translate(28px,-22px) scale(1.25);opacity:.28}70%{transform:translate(-12px,14px) scale(.9);opacity:.14}}
-@keyframes tutO2{0%,100%{transform:translate(0,0) scale(1);opacity:.15}35%{transform:translate(-22px,18px) scale(1.2);opacity:.25}68%{transform:translate(16px,-20px) scale(1.1);opacity:.12}}
-@keyframes tutO3{0%,100%{transform:translate(0,0) scale(1);opacity:.12}50%{transform:translate(18px,18px) scale(1.3);opacity:.22}}
-@keyframes tutO4{0%,100%{transform:translate(0,0) scale(1);opacity:.1}45%{transform:translate(-20px,-15px) scale(1.15);opacity:.2}}
 .tut-section-title{font-size:13px;font-weight:800;color:var(--dark);margin:18px 0 10px;}
 .tut-card{background:var(--w);border:1px solid var(--b1);border-radius:16px;margin-bottom:10px;overflow:hidden;cursor:pointer;transition:all .18s;}
 .tut-card:active{opacity:.9;}
@@ -2512,13 +2512,11 @@ function _clipboardFallback(text, onSuccess, onFail) {
   ════════════════════════════════════════════════ -->
   <div class="pg" id="pgTutorials">
     <div class="tut-hero">
-      <!-- تۆپەلانی جوڵاو -->
-      <div class="tut-orb" style="width:130px;height:130px;background:#6366f1;top:-35px;left:-25px;animation:tutO1 13s ease-in-out infinite;"></div>
-      <div class="tut-orb" style="width:90px;height:90px;background:#3b82f6;bottom:-15px;right:15px;animation:tutO2 16s ease-in-out infinite;"></div>
-      <div class="tut-orb" style="width:70px;height:70px;background:#06b6d4;top:8px;left:38%;animation:tutO3 11s ease-in-out infinite;"></div>
-      <div class="tut-orb" style="width:55px;height:55px;background:#a78bfa;bottom:8px;right:35%;animation:tutO4 19s ease-in-out infinite reverse;"></div>
-      <div class="tut-orb" style="width:45px;height:45px;background:#818cf8;top:30px;right:12%;animation:tutO2 14s ease-in-out infinite 2s;"></div>
-      <!-- ناوەڕۆک -->
+      <div class="tut-orb" style="width:140px;height:140px;background:#6366f1;top:-40px;left:-30px;animation:tO1 13s ease-in-out infinite;"></div>
+      <div class="tut-orb" style="width:100px;height:100px;background:#3b82f6;bottom:-20px;right:10px;animation:tO2 17s ease-in-out infinite;"></div>
+      <div class="tut-orb" style="width:75px;height:75px;background:#06b6d4;top:5px;left:42%;animation:tO3 11s ease-in-out infinite;"></div>
+      <div class="tut-orb" style="width:60px;height:60px;background:#a78bfa;bottom:5px;right:32%;animation:tO1 20s ease-in-out infinite reverse;"></div>
+      <div class="tut-orb" style="width:48px;height:48px;background:#818cf8;top:28px;right:10%;animation:tO2 15s ease-in-out infinite 2s;"></div>
       <h2><i class="fas fa-graduation-cap" style="margin-left:8px"></i>فێرکارییەکان</h2>
       <p>ئامۆژگاری و ڤیدیۆکانی سیستەمەکە لێرەن تا ئەسانتر بتوانی کار بکەیت</p>
     </div>
