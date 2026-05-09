@@ -325,9 +325,11 @@ tr:hover td{background:rgba(28,35,51,.015);}
   .user-cards{display:flex;}
   .gw-stat-grid{grid-template-columns:1fr 1fr !important;}
   .gw-stat-grid .stat-card:last-child{grid-column:1/-1;}
+  .tut-tbl-wrap{display:none;}
 }
 @media(min-width:901px){
   .user-cards{display:none;}
+  .tut-tbl-wrap{display:block;}
 }
 
 /* ══ SUPPORT ══ */
@@ -4736,11 +4738,13 @@ function renderTutorials() {
     wrap.innerHTML = '<div class="empty"><i class="fas fa-graduation-cap"></i><p>هیچ فێرکارییەک نییە — یەکێکی زیاد بکە</p></div>';
     return;
   }
-  const tableHTML = `<div class="tbl-scroll"><table>
+  const tableHTML = `<div class="tut-tbl-wrap tbl-scroll"><table>
     <thead><tr><th>#</th><th>ناونیشان</th><th>وەسف</th><th>بەروار</th><th>کردار</th></tr></thead>
     <tbody>${_allTutorials.map((t, i) => {
       const vid = extractYouTubeId(t.youtube_url || '');
       const thumb = vid ? `https://img.youtube.com/vi/${vid}/mqdefault.jpg` : '';
+      const safeId = (t.id || '').replace(/'/g,'&#39;');
+      const safeTitle = (t.title || '').replace(/</g,'&lt;').replace(/'/g,'&#39;');
       return `<tr>
         <td style="font-family:monospace;font-size:11px">${i + 1}</td>
         <td>
@@ -4756,13 +4760,15 @@ function renderTutorials() {
         <td style="font-size:11px;color:var(--mt)">${new Date(t.created_at).toLocaleDateString('ku')}</td>
         <td><div class="act-grp">
           <a class="act-btn bl" href="${t.youtube_url || '#'}" target="_blank" style="text-decoration:none"><i class="fas fa-external-link-alt"></i></a>
-          <div class="act-btn rd" onclick="deleteTutorial('${t.id}','${(t.title || '').replace(/'/g,"\'")}')"><i class="fas fa-trash"></i></div>
+          <div class="act-btn rd" onclick="deleteTutorial('${safeId}','${safeTitle}')"><i class="fas fa-trash"></i></div>
         </div></td>
       </tr>`;
     }).join('')}</tbody></table></div>`;
   const cardsHTML = `<div class="user-cards">${_allTutorials.map(t => {
     const vid = extractYouTubeId(t.youtube_url || '');
     const thumb = vid ? `https://img.youtube.com/vi/${vid}/mqdefault.jpg` : '';
+    const safeId = (t.id || '').replace(/'/g,'&#39;');
+    const safeTitle = (t.title || '').replace(/</g,'&lt;').replace(/'/g,'&#39;');
     return `<div class="user-card">
       <div class="user-card-top">
         ${thumb ? `<img src="${thumb}" style="width:48px;height:28px;border-radius:7px;object-fit:cover;flex-shrink:0;border:1px solid var(--b1)" onerror="this.style.display='none'">` : `<div class="mini-av" style="background:#0ea5e9"><i class="fas fa-play" style="font-size:11px"></i></div>`}
@@ -4774,9 +4780,9 @@ function renderTutorials() {
       <div class="user-card-meta">
         <div class="user-card-date"><i class="fas fa-calendar" style="font-size:9px;opacity:.5;margin-left:3px"></i>${new Date(t.created_at).toLocaleDateString('ku')}</div>
       </div>
-      <div class="user-card-actions">
+      <div class="user-card-actions" style="grid-template-columns:repeat(2,1fr)">
         <a class="act-btn bl" href="${t.youtube_url || '#'}" target="_blank" style="flex:1;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px"><i class="fas fa-external-link-alt"></i> بینین</a>
-        <div class="act-btn rd" style="flex:1" onclick="deleteTutorial('${t.id}','${(t.title || '').replace(/'/g,"\'")}')"><i class="fas fa-trash"></i> سڕینەوە</div>
+        <div class="act-btn rd" style="flex:1;justify-content:center" onclick="deleteTutorial('${safeId}','${safeTitle}')"><i class="fas fa-trash"></i> سڕینەوە</div>
       </div>
     </div>`;
   }).join('')}</div>`;
