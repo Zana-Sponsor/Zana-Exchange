@@ -868,80 +868,76 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .sidebar-bal-val{font-size:16px;font-weight:900;color:#fff;direction:ltr;}
 .ham-btn{width:34px;height:34px;border-radius:10px;background:var(--dark);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,.15);transition:transform .15s,opacity .15s;}.ham-btn:active{opacity:.85;transform:scale(.95);}
 
-/* ══ TUTORIALS PAGE — REDESIGNED ══ */
-.tut-hero{background:linear-gradient(135deg,#0f172a 0%,#1e293b 60%,#0f172a 100%);border-radius:22px;padding:24px 20px 20px;margin-bottom:18px;position:relative;overflow:hidden;}
-.tut-hero::before{content:'';position:absolute;top:-30px;right:-30px;width:130px;height:130px;background:radial-gradient(circle,rgba(99,102,241,.25),transparent 70%);border-radius:50%;}
-.tut-hero::after{content:'';position:absolute;bottom:-20px;left:-20px;width:90px;height:90px;background:radial-gradient(circle,rgba(14,120,255,.2),transparent 70%);border-radius:50%;}
-.tut-hero h2{font-size:19px;font-weight:900;color:#fff;margin-bottom:7px;position:relative;z-index:1;}
-.tut-hero p{font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.8;position:relative;z-index:1;}
-.tut-hero-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;font-size:10px;color:rgba(255,255,255,.7);font-weight:700;margin-bottom:12px;position:relative;z-index:1;letter-spacing:.4px;}
-.tut-divider{display:flex;align-items:center;gap:10px;margin:16px 0 12px;}
-.tut-divider-line{flex:1;height:1px;background:var(--b1);}
-.tut-divider-lbl{font-size:10px;font-weight:800;color:var(--mt);letter-spacing:.6px;white-space:nowrap;text-transform:uppercase;}
-/* ── NEW TUTORIAL CARD ── */
-.tut-v2-card{background:var(--w);border:1.5px solid var(--b1);border-radius:20px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:transform .18s cubic-bezier(.165,.84,.44,1),box-shadow .18s;display:flex;flex-direction:column;position:relative;}
-.tut-v2-card:active{transform:scale(.97);box-shadow:0 2px 16px rgba(0,0,0,.08);}
-.tut-v2-thumb{width:100%;height:170px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-.tut-v2-thumb-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-.tut-v2-thumb-overlay{position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.1) 100%);}
-.tut-v2-play-ring{width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.18);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:2px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;position:relative;z-index:2;box-shadow:0 4px 24px rgba(0,0,0,.3);transition:transform .18s;}
-.tut-v2-card:active .tut-v2-play-ring{transform:scale(1.12);}
-.tut-v2-play-ring i{font-size:22px;color:#fff;margin-right:-3px;}
-.tut-v2-cat-badge{position:absolute;top:12px;right:12px;z-index:3;padding:5px 12px;border-radius:20px;font-size:10px;font-weight:800;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);letter-spacing:.3px;}
-.tut-v2-dur-badge{position:absolute;bottom:12px;left:12px;z-index:3;padding:4px 10px;border-radius:10px;font-size:10px;font-weight:700;background:rgba(0,0,0,.6);color:#fff;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}
-.tut-v2-body{padding:14px 16px 16px;}
-.tut-v2-icon-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.tut-v2-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-.tut-v2-title{font-size:14px;font-weight:800;color:var(--dark);line-height:1.4;}
-.tut-v2-desc{font-size:12px;color:var(--mt);line-height:1.7;margin-top:6px;}
-.tut-v2-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:10px;border-top:1px solid var(--b1);}
-.tut-v2-meta{display:flex;align-items:center;gap:14px;font-size:11px;color:var(--mt);}
-.tut-v2-meta span{display:flex;align-items:center;gap:5px;}
-.tut-v2-watch{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:800;color:var(--bl);padding:6px 13px;background:rgba(14,120,255,.08);border:1px solid rgba(14,120,255,.18);border-radius:10px;}
-/* ── STEP GUIDE CARD ── */
-.tut-step-card{background:var(--w);border:1.5px solid var(--b1);border-radius:18px;padding:16px;margin-bottom:10px;cursor:pointer;transition:all .18s;display:flex;align-items:flex-start;gap:14px;}
-.tut-step-card:active{transform:scale(.97);}
-.tut-step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;flex-shrink:0;font-family:'Inter',sans-serif;}
-.tut-step-content{flex:1;}
-.tut-step-title{font-size:13px;font-weight:800;color:var(--dark);margin-bottom:4px;}
-.tut-step-sub{font-size:11.5px;color:var(--mt);line-height:1.6;}
-.tut-step-arr{color:var(--mt);font-size:12px;margin-top:2px;}
-/* ══ VIDEO PLAYER PAGE — BALL GLOW ══ */
-#pgTutplayer{background:#070b14;min-height:100vh;padding:0;position:relative;overflow:hidden;}
-.tvp-bg{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
-.tvp-ball{position:absolute;border-radius:50%;filter:blur(60px);animation:tvpFloat linear infinite;opacity:.55;}
-@keyframes tvpFloat{
-  0%{transform:translate(0,0) scale(1);}
-  25%{transform:translate(30px,-40px) scale(1.08);}
-  50%{transform:translate(-20px,20px) scale(.94);}
-  75%{transform:translate(40px,30px) scale(1.05);}
-  100%{transform:translate(0,0) scale(1);}
-}
-@keyframes tvpPulse{
-  0%,100%{opacity:.45;transform:scale(1);}
-  50%{opacity:.7;transform:scale(1.15);}
-}
-.tvp-header{position:relative;z-index:10;display:flex;align-items:center;gap:12px;padding:16px 18px 12px;}
-.tvp-back-btn{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:15px;transition:background .18s;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);flex-shrink:0;}
-.tvp-back-btn:active{background:rgba(255,255,255,.2);}
-.tvp-header-info{flex:1;}
-.tvp-header-label{font-size:10px;color:rgba(255,255,255,.45);font-weight:700;letter-spacing:.6px;text-transform:uppercase;margin-bottom:2px;}
-.tvp-header-title{font-size:14px;font-weight:800;color:#fff;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.tvp-video-wrap{position:relative;z-index:10;margin:0 16px 16px;border-radius:20px;overflow:hidden;box-shadow:0 8px 48px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.08);}
-.tvp-video-wrap iframe{display:block;width:100%;aspect-ratio:16/9;border:none;background:#000;}
-.tvp-info-card{position:relative;z-index:10;margin:0 16px 14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:14px 16px;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);}
-.tvp-info-title{font-size:15px;font-weight:800;color:#fff;margin-bottom:6px;line-height:1.4;}
-.tvp-info-desc{font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.8;}
+/* ══ TUTORIALS PAGE — LIGHT REDESIGN ══ */
+.tut-lhero{display:flex;align-items:center;gap:14px;padding:18px 0 16px;}
+.tut-lhero-icon{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;flex-shrink:0;box-shadow:0 6px 20px rgba(99,102,241,.28);}
+.tut-lhero-title{font-size:20px;font-weight:900;color:var(--dark);}
+.tut-lhero-sub{font-size:12px;color:var(--mt);margin-top:3px;line-height:1.5;}
+/* Category filter pills */
+.tut-cats{display:flex;gap:8px;overflow-x:auto;padding-bottom:14px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;}
+.tut-cats::-webkit-scrollbar{display:none;}
+.tut-cat{display:inline-flex;align-items:center;gap:5px;padding:8px 15px;border-radius:20px;font-family:'R',sans-serif;font-size:12px;font-weight:700;border:1.5px solid var(--b1);background:var(--w);color:var(--mt);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .18s;touch-action:manipulation;}
+.tut-cat.on{background:var(--dark);color:#fff;border-color:var(--dark);box-shadow:0 2px 10px rgba(28,35,51,.18);}
+/* ── Post-style tutorial card ── */
+.tut-post-card{background:var(--w);border:1.5px solid var(--b1);border-radius:18px;margin-bottom:11px;overflow:hidden;cursor:pointer;position:relative;transition:box-shadow .18s,border-color .18s;will-change:transform;transform:translateZ(0);contain:layout;}
+.tut-post-card:active{opacity:.94;}
+.tut-post-card.open{border-color:var(--b2);box-shadow:0 6px 28px rgba(0,0,0,.09);}
+.tut-post-accent{position:absolute;right:0;top:0;bottom:0;width:4px;border-radius:0 17px 17px 0;}
+.tut-post-head{display:flex;align-items:center;gap:12px;padding:14px 16px 10px;}
+.tut-post-avatar{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:19px;color:#fff;flex-shrink:0;}
+.tut-post-info{flex:1;min-width:0;}
+.tut-post-title{font-size:13.5px;font-weight:800;color:var(--dark);line-height:1.45;margin-bottom:6px;}
+.tut-post-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.tut-post-cat-lbl{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;}
+.tut-post-dur{font-size:10.5px;color:var(--mt);display:flex;align-items:center;gap:4px;}
+.tut-post-play-btn{width:38px;height:38px;border-radius:50%;background:var(--bg);border:1.5px solid var(--b1);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--mt);flex-shrink:0;transition:all .2s;}
+.tut-post-card.open .tut-post-play-btn{background:var(--dark);color:#fff;border-color:var(--dark);}
+.tut-post-desc{font-size:12px;color:var(--mt);line-height:1.85;padding:0 16px 12px;}
+/* Expanded video area */
+.tut-post-video{display:none;padding:0 14px 12px;}
+.tut-post-video.show{display:block;animation:tutExpand .22s cubic-bezier(.165,.84,.44,1);}
+@keyframes tutExpand{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.tut-post-iframe-wrap{border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.1);}
+.tut-post-iframe-wrap iframe{display:block;width:100%;aspect-ratio:16/9;border:none;background:#111;}
+.tut-post-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+.tut-post-tag{padding:4px 11px;border-radius:20px;font-size:10px;font-weight:700;background:var(--bg);border:1px solid var(--b1);color:var(--mt2);}
+.tut-post-footer{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 12px;border-top:1px solid var(--b1);font-size:11px;color:var(--mt);}
+.tut-post-footer-left{display:flex;align-items:center;gap:5px;}
+.tut-post-footer-close{font-size:10.5px;font-weight:700;color:var(--rd);display:none;align-items:center;gap:4px;}
+.tut-post-card.open .tut-post-footer-close{display:flex;}
+/* Section label */
+.tut-sec-lbl{font-size:11px;font-weight:800;color:var(--mt);letter-spacing:.5px;margin:20px 0 12px;display:flex;align-items:center;gap:10px;text-transform:uppercase;}
+.tut-sec-lbl::before,.tut-sec-lbl::after{content:'';flex:1;height:1px;background:var(--b1);}
+/* Quick step 2-col grid */
+.tut-step-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}
+.tut-qcard{background:var(--w);border:1.5px solid var(--b1);border-radius:16px;padding:14px;cursor:pointer;transition:all .18s;will-change:transform;touch-action:manipulation;}
+.tut-qcard:active{transform:scale(.96);opacity:.9;}
+.tut-qcard-num{width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;margin-bottom:9px;font-family:'Inter',sans-serif;}
+.tut-qcard-title{font-size:12.5px;font-weight:800;color:var(--dark);margin-bottom:4px;line-height:1.4;}
+.tut-qcard-sub{font-size:10.5px;color:var(--mt);line-height:1.55;}
+/* ══ VIDEO PLAYER PAGE — LIGHT ══ */
+#pgTutplayer{background:var(--bg);min-height:100vh;padding:0;}
+.tvp-header{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--w);border-bottom:1px solid var(--b1);position:sticky;top:0;z-index:10;box-shadow:0 1px 6px rgba(0,0,0,.04);}
+.tvp-back-btn{width:40px;height:40px;border-radius:12px;background:var(--bg);border:1.5px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--dark);font-size:15px;flex-shrink:0;transition:all .18s;}
+.tvp-back-btn:active{background:var(--dark);color:#fff;border-color:var(--dark);}
+.tvp-header-info{flex:1;min-width:0;}
+.tvp-header-label{font-size:10px;color:var(--mt);font-weight:700;letter-spacing:.6px;text-transform:uppercase;margin-bottom:2px;}
+.tvp-header-title{font-size:14px;font-weight:800;color:var(--dark);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tvp-video-wrap{margin:16px;border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.1);}
+.tvp-video-wrap iframe{display:block;width:100%;aspect-ratio:16/9;border:none;background:#111;}
+.tvp-info-card{margin:0 16px 14px;background:var(--w);border:1.5px solid var(--b1);border-radius:16px;padding:14px 16px;}
+.tvp-info-title{font-size:15px;font-weight:800;color:var(--dark);margin-bottom:6px;line-height:1.4;}
+.tvp-info-desc{font-size:12.5px;color:var(--mt);line-height:1.8;}
 .tvp-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
-.tvp-pill{padding:5px 13px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);}
-.tvp-related-lbl{position:relative;z-index:10;padding:0 18px 10px;font-size:11px;font-weight:800;color:rgba(255,255,255,.5);letter-spacing:.6px;text-transform:uppercase;}
-.tvp-related-card{position:relative;z-index:10;margin:0 16px 10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);transition:background .18s;}
-.tvp-related-card:active{background:rgba(255,255,255,.12);}
+.tvp-pill{padding:5px 13px;border-radius:20px;font-size:10px;font-weight:700;background:var(--bg);border:1px solid var(--b1);color:var(--mt2);}
+.tvp-related-lbl{padding:0 16px 10px;font-size:11px;font-weight:800;color:var(--mt);letter-spacing:.6px;text-transform:uppercase;}
+.tvp-related-card{margin:0 16px 10px;background:var(--w);border:1.5px solid var(--b1);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .18s;}
+.tvp-related-card:active{background:var(--bg);}
 .tvp-related-ico{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
 .tvp-related-info{flex:1;}
-.tvp-related-title{font-size:12.5px;font-weight:700;color:#fff;margin-bottom:3px;}
-.tvp-related-sub{font-size:11px;color:rgba(255,255,255,.45);}
-.tvp-related-play{color:rgba(255,255,255,.4);font-size:13px;}
+.tvp-related-title{font-size:12.5px;font-weight:700;color:var(--dark);margin-bottom:3px;}
+.tvp-related-sub{font-size:11px;color:var(--mt);}
+.tvp-related-play{color:var(--mt);font-size:13px;}
 .tvp-bottom-space{height:80px;}
 
 /* ══ ASSET PREVIEW CARD ENHANCED ══ */
@@ -2562,209 +2558,173 @@ function _clipboardFallback(text, onSuccess, onFail) {
   ════════════════════════════════════════════════ -->
   <div class="pg" id="pgTutorials">
 
-    <!-- Hero -->
-    <div class="tut-hero">
-      <div class="tut-hero-badge"><i class="fas fa-play-circle"></i> ڤیدیۆی فێرکاری</div>
-      <h2><i class="fas fa-graduation-cap" style="margin-left:9px;color:#818cf8"></i>فێرکارییەکان</h2>
-      <p>ڤیدیۆ و رێنماییەکانی سیستەمەکەت بۆ ئەوەی ئەسانتر و خێراتر بیکارهێنیت</p>
+    <!-- Light Hero -->
+    <div class="tut-lhero">
+      <div class="tut-lhero-icon"><i class="fas fa-graduation-cap"></i></div>
+      <div>
+        <div class="tut-lhero-title">فێرکارییەکان</div>
+        <div class="tut-lhero-sub">ڤیدیۆ و رێنماییەکانی سیستەمەکەت بۆ ئەوەی ئەسانتر بیکارهێنیت</div>
+      </div>
     </div>
 
-    <!-- ── DIVIDER: ڤیدیۆکانی سەرەکی ── -->
-    <div class="tut-divider">
-      <div class="tut-divider-line"></div>
-      <div class="tut-divider-lbl"><i class="fas fa-video" style="margin-left:5px;color:#6366f1"></i>ڤیدیۆکانی سەرەکی</div>
-      <div class="tut-divider-line"></div>
+    <!-- Category Filter -->
+    <div class="tut-cats">
+      <div class="tut-cat on" onclick="tutFilterCat(this,'all')"><i class="fas fa-th-large"></i>هەموو</div>
+      <div class="tut-cat" onclick="tutFilterCat(this,'ad')"><i class="fas fa-rectangle-ad"></i>ڕیکلام</div>
+      <div class="tut-cat" onclick="tutFilterCat(this,'pay')"><i class="fas fa-coins"></i>پارەدان</div>
+      <div class="tut-cat" onclick="tutFilterCat(this,'tools')"><i class="fas fa-link"></i>ئامراز</div>
+      <div class="tut-cat" onclick="tutFilterCat(this,'result')"><i class="fas fa-chart-bar"></i>ئەنجام</div>
     </div>
 
-    <!-- ── CARD 1: دروستکردنی ڕیکلام ── -->
-    <div class="tut-v2-card" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','چۆن ڕیکلامی تیکتۆک دروست بکەیت','فێربوو چۆن هەنگاو بەهەنگاو ڕیکلامێکی کارامە دروستبکەیت لەسەر سیستەمی Proxo Ads','ڕیکلامکردن',['دروستکردنی ڕیکلام','TikTok Ads','بودجە'])">
-      <div class="tut-v2-thumb" style="background:linear-gradient(135deg,#1e1b4b,#312e81,#3730a3)">
-        <div class="tut-v2-thumb-overlay"></div>
-        <!-- Unique Icon Design -->
-        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:1">
-          <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
-            <div style="display:flex;gap:10px">
-              <div style="width:36px;height:36px;border-radius:10px;background:rgba(99,102,241,.4);border:1.5px solid rgba(99,102,241,.6);display:flex;align-items:center;justify-content:center;font-size:16px;color:#a5b4fc"><i class="fas fa-bullseye"></i></div>
-              <div style="width:36px;height:36px;border-radius:10px;background:rgba(139,92,246,.4);border:1.5px solid rgba(139,92,246,.6);display:flex;align-items:center;justify-content:center;font-size:16px;color:#c4b5fd"><i class="fas fa-rectangle-ad"></i></div>
-              <div style="width:36px;height:36px;border-radius:10px;background:rgba(99,102,241,.4);border:1.5px solid rgba(99,102,241,.6);display:flex;align-items:center;justify-content:center;font-size:16px;color:#a5b4fc"><i class="fas fa-wallet"></i></div>
-            </div>
-            <div style="width:3px;height:20px;background:linear-gradient(to bottom,rgba(255,255,255,.5),transparent);border-radius:2px"></div>
+    <!-- POST CARD 1: ڕیکلامی تیکتۆک -->
+    <div class="tut-post-card" id="tpost1" data-cat="ad" onclick="toggleTutPost('tpost1','https://www.youtube.com/embed/dQw4w9WgXcQ',['دروستکردنی ڕیکلام','TikTok Ads','بودجە'])">
+      <div class="tut-post-accent" style="background:linear-gradient(to bottom,#6366f1,#8b5cf6)"></div>
+      <div class="tut-post-head">
+        <div class="tut-post-avatar" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)"><i class="fas fa-rectangle-ad"></i></div>
+        <div class="tut-post-info">
+          <div class="tut-post-title">چۆن ڕیکلامی تیکتۆک دروست بکەیت</div>
+          <div class="tut-post-meta">
+            <span class="tut-post-cat-lbl" style="background:rgba(99,102,241,.1);color:#6366f1;border:1px solid rgba(99,102,241,.2)">ڕیکلامکردن</span>
+            <span class="tut-post-dur"><i class="fas fa-clock"></i>٨ خولەک</span>
           </div>
         </div>
-        <div class="tut-v2-play-ring" style="z-index:4"><i class="fas fa-play"></i></div>
-        <div class="tut-v2-cat-badge" style="background:rgba(99,102,241,.85);color:#e0e7ff">ڕیکلامکردن</div>
-        <div class="tut-v2-dur-badge"><i class="fas fa-clock" style="margin-left:4px"></i>٨ خولەک</div>
+        <div class="tut-post-play-btn"><i class="fas fa-play"></i></div>
       </div>
-      <div class="tut-v2-body">
-        <div class="tut-v2-icon-row">
-          <div class="tut-v2-icon" style="background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(139,92,246,.12));border:1.5px solid rgba(99,102,241,.2)"><i class="fas fa-rectangle-ad" style="color:#6366f1"></i></div>
-          <div class="tut-v2-title">چۆن ڕیکلامی تیکتۆک دروست بکەیت</div>
+      <div class="tut-post-desc">فێربوو چۆن هەنگاو بەهەنگاو ڕیکلامێکی کارامە دروست بکەیت — هەدەفکردن، بودجە و کاتی بڵاوکردنەوە</div>
+      <div class="tut-post-video" id="tvid1">
+        <div class="tut-post-iframe-wrap"><iframe src="" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" loading="lazy"></iframe></div>
+        <div class="tut-post-tags">
+          <div class="tut-post-tag">دروستکردنی ڕیکلام</div>
+          <div class="tut-post-tag">TikTok Ads</div>
+          <div class="tut-post-tag">بودجە</div>
         </div>
-        <div class="tut-v2-desc">فێربوو چۆن هەنگاو بەهەنگاو ڕیکلامێکی کارامە دروست بکەیت — هەدەفکردن، بودجە و کاتی بڵاوکردنەوە</div>
-        <div class="tut-v2-footer">
-          <div class="tut-v2-meta">
-            <span><i class="fas fa-clock"></i> ٨ خولەک</span>
-            <span><i class="fas fa-eye"></i> ١٢٠٠+</span>
-          </div>
-          <div class="tut-v2-watch"><i class="fas fa-play"></i> سەیرکردن</div>
-        </div>
+      </div>
+      <div class="tut-post-footer">
+        <span class="tut-post-footer-left"><i class="fas fa-eye"></i>١٢٠٠+ بینەر</span>
+        <span class="tut-post-footer-close"><i class="fas fa-times"></i>داخستن</span>
       </div>
     </div>
 
-    <!-- ── CARD 2: زیادکردنی باڵانس ── -->
-    <div class="tut-v2-card" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','چۆن باڵانست پڕ بکەیتەوە','رێبازەکانی پارەدان و زیادکردنی باڵانس بەشێوەیەکی ئەسان رونکراوەتەوە','پارەدان',['باڵانس','FIB','FastPay','ZainCash'])">
-      <div class="tut-v2-thumb" style="background:linear-gradient(135deg,#052e16,#14532d,#166534)">
-        <div class="tut-v2-thumb-overlay"></div>
-        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:1">
-          <div style="display:flex;align-items:center;gap:12px">
-            <div style="text-align:center">
-              <div style="width:50px;height:50px;border-radius:50%;background:rgba(34,197,94,.25);border:2px solid rgba(34,197,94,.4);display:flex;align-items:center;justify-content:center;font-size:22px;color:#86efac"><i class="fas fa-wallet"></i></div>
-              <div style="height:3px;width:50px;background:linear-gradient(to right,rgba(34,197,94,.5),transparent);margin-top:8px;border-radius:2px"></div>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <div style="padding:4px 10px;background:rgba(34,197,94,.2);border:1px solid rgba(34,197,94,.35);border-radius:8px;font-size:9px;color:#86efac;font-weight:700">FIB Bank</div>
-              <div style="padding:4px 10px;background:rgba(34,197,94,.2);border:1px solid rgba(34,197,94,.35);border-radius:8px;font-size:9px;color:#86efac;font-weight:700">FastPay</div>
-              <div style="padding:4px 10px;background:rgba(34,197,94,.2);border:1px solid rgba(34,197,94,.35);border-radius:8px;font-size:9px;color:#86efac;font-weight:700">ZainCash</div>
-            </div>
+    <!-- POST CARD 2: باڵانس -->
+    <div class="tut-post-card" id="tpost2" data-cat="pay" onclick="toggleTutPost('tpost2','https://www.youtube.com/embed/dQw4w9WgXcQ',['باڵانس','FIB','FastPay','ZainCash'])">
+      <div class="tut-post-accent" style="background:linear-gradient(to bottom,#16a34a,#10b981)"></div>
+      <div class="tut-post-head">
+        <div class="tut-post-avatar" style="background:linear-gradient(135deg,#16a34a,#10b981)"><i class="fas fa-coins"></i></div>
+        <div class="tut-post-info">
+          <div class="tut-post-title">چۆن باڵانست پڕ بکەیتەوە</div>
+          <div class="tut-post-meta">
+            <span class="tut-post-cat-lbl" style="background:rgba(22,163,74,.1);color:#16a34a;border:1px solid rgba(22,163,74,.2)">پارەدان</span>
+            <span class="tut-post-dur"><i class="fas fa-clock"></i>٥ خولەک</span>
           </div>
         </div>
-        <div class="tut-v2-play-ring" style="z-index:4"><i class="fas fa-play"></i></div>
-        <div class="tut-v2-cat-badge" style="background:rgba(22,163,74,.85);color:#dcfce7">پارەدان</div>
-        <div class="tut-v2-dur-badge"><i class="fas fa-clock" style="margin-left:4px"></i>٥ خولەک</div>
+        <div class="tut-post-play-btn"><i class="fas fa-play"></i></div>
       </div>
-      <div class="tut-v2-body">
-        <div class="tut-v2-icon-row">
-          <div class="tut-v2-icon" style="background:linear-gradient(135deg,rgba(22,163,74,.12),rgba(16,185,129,.12));border:1.5px solid rgba(22,163,74,.2)"><i class="fas fa-coins" style="color:#16a34a"></i></div>
-          <div class="tut-v2-title">چۆن باڵانست پڕ بکەیتەوە</div>
+      <div class="tut-post-desc">رێگاکانی FIB، FastPay، ZainCash — هەنگاو بەهەنگاو باڵانس زیاد بکە بەبێ هیچ گیراوەیەک</div>
+      <div class="tut-post-video" id="tvid2">
+        <div class="tut-post-iframe-wrap"><iframe src="" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" loading="lazy"></iframe></div>
+        <div class="tut-post-tags">
+          <div class="tut-post-tag">باڵانس</div>
+          <div class="tut-post-tag">FIB</div>
+          <div class="tut-post-tag">FastPay</div>
+          <div class="tut-post-tag">ZainCash</div>
         </div>
-        <div class="tut-v2-desc">رێگاکانی FIB، FastPay، ZainCash — هەنگاو بەهەنگاو باڵانس زیاد بکە بەبێ هیچ گیراوەیەک</div>
-        <div class="tut-v2-footer">
-          <div class="tut-v2-meta">
-            <span><i class="fas fa-clock"></i> ٥ خولەک</span>
-            <span><i class="fas fa-eye"></i> ٩٨٠+</span>
-          </div>
-          <div class="tut-v2-watch"><i class="fas fa-play"></i> سەیرکردن</div>
-        </div>
+      </div>
+      <div class="tut-post-footer">
+        <span class="tut-post-footer-left"><i class="fas fa-eye"></i>٩٨٠+ بینەر</span>
+        <span class="tut-post-footer-close"><i class="fas fa-times"></i>داخستن</span>
       </div>
     </div>
 
-    <!-- ── CARD 3: ئامرازی پەیوەندی ── -->
-    <div class="tut-v2-card" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','دروستکردنی ئامرازی پەیوەندی (Proxo Link)','فێربوو چۆن کارتی پەیوەندیت دروست بکەیت بۆ واتسئاپ، ئینستاگرام و تەلەفۆن','ئامراز',['Proxo Link','واتسئاپ','ئینستاگرام'])">
-      <div class="tut-v2-thumb" style="background:linear-gradient(135deg,#0c1a2e,#1e3a5f,#1d4ed8)">
-        <div class="tut-v2-thumb-overlay"></div>
-        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:1">
-          <div style="position:relative;width:120px;height:80px">
-            <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:44px;height:44px;border-radius:50%;background:rgba(14,120,255,.3);border:2px solid rgba(14,120,255,.5);display:flex;align-items:center;justify-content:center;font-size:18px;color:#93c5fd"><i class="fas fa-link"></i></div>
-            <div style="position:absolute;bottom:0;left:4px;width:32px;height:32px;border-radius:50%;background:rgba(37,211,102,.3);border:2px solid rgba(37,211,102,.5);display:flex;align-items:center;justify-content:center;font-size:14px;color:#86efac"><i class="fab fa-whatsapp"></i></div>
-            <div style="position:absolute;bottom:0;right:4px;width:32px;height:32px;border-radius:50%;background:rgba(225,48,108,.3);border:2px solid rgba(225,48,108,.5);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fda4af"><i class="fab fa-instagram"></i></div>
+    <!-- POST CARD 3: Proxo Link -->
+    <div class="tut-post-card" id="tpost3" data-cat="tools" onclick="toggleTutPost('tpost3','https://www.youtube.com/embed/dQw4w9WgXcQ',['Proxo Link','واتسئاپ','ئینستاگرام'])">
+      <div class="tut-post-accent" style="background:linear-gradient(to bottom,#2563eb,#0ea5e9)"></div>
+      <div class="tut-post-head">
+        <div class="tut-post-avatar" style="background:linear-gradient(135deg,#2563eb,#0ea5e9)"><i class="fas fa-link"></i></div>
+        <div class="tut-post-info">
+          <div class="tut-post-title">دروستکردنی ئامرازی پەیوەندی (Proxo Link)</div>
+          <div class="tut-post-meta">
+            <span class="tut-post-cat-lbl" style="background:rgba(37,99,235,.1);color:#2563eb;border:1px solid rgba(37,99,235,.2)">ئامراز</span>
+            <span class="tut-post-dur"><i class="fas fa-clock"></i>٦ خولەک</span>
           </div>
         </div>
-        <div class="tut-v2-play-ring" style="z-index:4"><i class="fas fa-play"></i></div>
-        <div class="tut-v2-cat-badge" style="background:rgba(37,99,235,.85);color:#dbeafe">ئامراز</div>
-        <div class="tut-v2-dur-badge"><i class="fas fa-clock" style="margin-left:4px"></i>٦ خولەک</div>
+        <div class="tut-post-play-btn"><i class="fas fa-play"></i></div>
       </div>
-      <div class="tut-v2-body">
-        <div class="tut-v2-icon-row">
-          <div class="tut-v2-icon" style="background:linear-gradient(135deg,rgba(37,99,235,.12),rgba(14,120,255,.12));border:1.5px solid rgba(37,99,235,.2)"><i class="fas fa-link" style="color:#2563eb"></i></div>
-          <div class="tut-v2-title">دروستکردنی ئامرازی پەیوەندی (Proxo Link)</div>
+      <div class="tut-post-desc">دروستکردنی کارتی پەیوەندی بۆ واتسئاپ، ئینستاگرام، تەلەفۆن — وەک پەڕەی دابەزین بۆ ڕیکلامەکەت</div>
+      <div class="tut-post-video" id="tvid3">
+        <div class="tut-post-iframe-wrap"><iframe src="" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" loading="lazy"></iframe></div>
+        <div class="tut-post-tags">
+          <div class="tut-post-tag">Proxo Link</div>
+          <div class="tut-post-tag">واتسئاپ</div>
+          <div class="tut-post-tag">ئینستاگرام</div>
         </div>
-        <div class="tut-v2-desc">دروستکردنی کارتی پەیوەندی بۆ واتسئاپ، ئینستاگرام، تەلەفۆن — وەک پەڕەی دابەزین بۆ ڕیکلامەکەت</div>
-        <div class="tut-v2-footer">
-          <div class="tut-v2-meta">
-            <span><i class="fas fa-clock"></i> ٦ خولەک</span>
-            <span><i class="fas fa-eye"></i> ٧٥٠+</span>
-          </div>
-          <div class="tut-v2-watch"><i class="fas fa-play"></i> سەیرکردن</div>
-        </div>
+      </div>
+      <div class="tut-post-footer">
+        <span class="tut-post-footer-left"><i class="fas fa-eye"></i>٧٥٠+ بینەر</span>
+        <span class="tut-post-footer-close"><i class="fas fa-times"></i>داخستن</span>
       </div>
     </div>
 
-    <!-- ── CARD 4: پشکنینی ئەنجامەکان ── -->
-    <div class="tut-v2-card" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','پشکنینی ئەنجامی ڕیکلامەکەت','ئامۆژگاری تەواو بۆ خوێندنەوەی ئەنجامەکانی سپۆنسەر — ڤیوو، کلیک و هتد','ئەنجام',['Analytics','ئەنجام','سپۆنسەر'])">
-      <div class="tut-v2-thumb" style="background:linear-gradient(135deg,#1c0533,#2d1b69,#7c3aed)">
-        <div class="tut-v2-thumb-overlay"></div>
-        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:1">
-          <div style="display:flex;align-items:flex-end;gap:7px;height:60px">
-            <div style="width:16px;border-radius:4px 4px 0 0;background:rgba(167,139,250,.5);height:35%"></div>
-            <div style="width:16px;border-radius:4px 4px 0 0;background:rgba(167,139,250,.65);height:55%"></div>
-            <div style="width:16px;border-radius:4px 4px 0 0;background:rgba(167,139,250,.8);height:80%"></div>
-            <div style="width:16px;border-radius:4px 4px 0 0;background:rgba(167,139,250,.9);height:65%"></div>
-            <div style="width:16px;border-radius:4px 4px 0 0;background:rgba(167,139,250,1);height:95%"></div>
-            <div style="width:16px;border-radius:4px 4px 0 0;background:rgba(167,139,250,.75);height:50%"></div>
+    <!-- POST CARD 4: ئەنجامەکان -->
+    <div class="tut-post-card" id="tpost4" data-cat="result" onclick="toggleTutPost('tpost4','https://www.youtube.com/embed/dQw4w9WgXcQ',['Analytics','ئەنجام','سپۆنسەر'])">
+      <div class="tut-post-accent" style="background:linear-gradient(to bottom,#7c3aed,#a855f7)"></div>
+      <div class="tut-post-head">
+        <div class="tut-post-avatar" style="background:linear-gradient(135deg,#7c3aed,#a855f7)"><i class="fas fa-chart-bar"></i></div>
+        <div class="tut-post-info">
+          <div class="tut-post-title">پشکنینی ئەنجامی ڕیکلامەکەت</div>
+          <div class="tut-post-meta">
+            <span class="tut-post-cat-lbl" style="background:rgba(124,58,237,.1);color:#7c3aed;border:1px solid rgba(124,58,237,.2)">ئەنجام</span>
+            <span class="tut-post-dur"><i class="fas fa-clock"></i>٤ خولەک</span>
           </div>
         </div>
-        <div class="tut-v2-play-ring" style="z-index:4"><i class="fas fa-play"></i></div>
-        <div class="tut-v2-cat-badge" style="background:rgba(124,58,237,.85);color:#ede9fe">ئەنجام</div>
-        <div class="tut-v2-dur-badge"><i class="fas fa-clock" style="margin-left:4px"></i>٤ خولەک</div>
+        <div class="tut-post-play-btn"><i class="fas fa-play"></i></div>
       </div>
-      <div class="tut-v2-body">
-        <div class="tut-v2-icon-row">
-          <div class="tut-v2-icon" style="background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(139,92,246,.12));border:1.5px solid rgba(124,58,237,.2)"><i class="fas fa-chart-bar" style="color:#7c3aed"></i></div>
-          <div class="tut-v2-title">پشکنینی ئەنجامی ڕیکلامەکەت</div>
-        </div>
-        <div class="tut-v2-desc">فێربوو چۆن ئەنجام و ئامارەکانی سپۆنسەرەکانت بپشکنیت — ڤیوو، بینەر، کلیک و هتد</div>
-        <div class="tut-v2-footer">
-          <div class="tut-v2-meta">
-            <span><i class="fas fa-clock"></i> ٤ خولەک</span>
-            <span><i class="fas fa-eye"></i> ٥٤٠+</span>
-          </div>
-          <div class="tut-v2-watch"><i class="fas fa-play"></i> سەیرکردن</div>
+      <div class="tut-post-desc">فێربوو چۆن ئەنجام و ئامارەکانی سپۆنسەرەکانت بپشکنیت — ڤیوو، بینەر، کلیک و هتد</div>
+      <div class="tut-post-video" id="tvid4">
+        <div class="tut-post-iframe-wrap"><iframe src="" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" loading="lazy"></iframe></div>
+        <div class="tut-post-tags">
+          <div class="tut-post-tag">Analytics</div>
+          <div class="tut-post-tag">ئەنجام</div>
+          <div class="tut-post-tag">سپۆنسەر</div>
         </div>
       </div>
-    </div>
-
-    <!-- ── DIVIDER: رێنماییەکانی خێرا ── -->
-    <div class="tut-divider" style="margin-top:20px">
-      <div class="tut-divider-line"></div>
-      <div class="tut-divider-lbl"><i class="fas fa-bolt" style="margin-left:5px;color:#f59e0b"></i>رێنماییەکانی خێرا</div>
-      <div class="tut-divider-line"></div>
-    </div>
-
-    <!-- Step Guide Cards -->
-    <div class="tut-step-card" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','تۆمارکردن و چوونەژوورەوە','ئامۆژگاری دروستکردنی هەژمار و چوونەژووەوە بۆ ئەپی Proxo Ads','دەستپێک',['تۆمارکردن','هەژمار'])">
-      <div class="tut-step-num" style="background:linear-gradient(135deg,#f97316,#ef4444)">١</div>
-      <div class="tut-step-content">
-        <div class="tut-step-title">تۆمارکردن و چوونەژوورەوە</div>
-        <div class="tut-step-sub">دروستکردنی هەژمار، دڵنیاکردنەوە و چوونەژوورەوەی یەکەم جار</div>
+      <div class="tut-post-footer">
+        <span class="tut-post-footer-left"><i class="fas fa-eye"></i>٥٤٠+ بینەر</span>
+        <span class="tut-post-footer-close"><i class="fas fa-times"></i>داخستن</span>
       </div>
-      <div class="tut-step-arr"><i class="fas fa-play"></i></div>
     </div>
 
-    <div class="tut-step-card" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','هەدەفکردنی باشتر','چۆن تەمەن، ڕەگەز و شوێن بۆ ڕیکلامەکەت دیاری بکەیت','تیپس',['هەدەفکردن','تەمەن','شوێن'])">
-      <div class="tut-step-num" style="background:linear-gradient(135deg,#0ea5e9,#2563eb)">٢</div>
-      <div class="tut-step-content">
-        <div class="tut-step-title">هەدەفکردنی باشتر</div>
-        <div class="tut-step-sub">تەمەن، ڕەگەز و شوێن — چۆن بازارەکەت دیاری بکەیت</div>
+    <!-- Quick Steps -->
+    <div class="tut-sec-lbl"><i class="fas fa-bolt" style="color:#f59e0b;margin-left:4px"></i>هەنگاوەکانی دەستپێک</div>
+    <div class="tut-step-grid">
+      <div class="tut-qcard" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','تۆمارکردن و چوونەژوورەوە','ئامۆژگاری دروستکردنی هەژمار و چوونەژووەوە بۆ ئەپی Proxo Ads','دەستپێک',['تۆمارکردن','هەژمار'])">
+        <div class="tut-qcard-num" style="background:linear-gradient(135deg,#f97316,#ef4444)">١</div>
+        <div class="tut-qcard-title">تۆمارکردن و چوونەژوورەوە</div>
+        <div class="tut-qcard-sub">دروستکردنی هەژمار و چوونەژوورەوەی یەکەم جار</div>
       </div>
-      <div class="tut-step-arr"><i class="fas fa-play"></i></div>
-    </div>
-
-    <div class="tut-step-card" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','بانگێشتکردن و کۆین','چۆن هاوڕێ بانگێشت بکەیت و کۆین وەربگریت و بیگۆڕیتەوە','کۆین',['کۆین','بانگێشتکردن','خەڵات'])">
-      <div class="tut-step-num" style="background:linear-gradient(135deg,#d97706,#f59e0b)">٣</div>
-      <div class="tut-step-content">
-        <div class="tut-step-title">کۆینی پرۆکسۆ و بانگێشتکردن</div>
-        <div class="tut-step-sub">بانگێشتکردنی هاوڕێ، وەرگرتنی کۆین و گۆڕینیانەوە بۆ باڵانس</div>
+      <div class="tut-qcard" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','هەدەفکردنی باشتر','چۆن تەمەن، ڕەگەز و شوێن بۆ ڕیکلامەکەت دیاری بکەیت','تیپس',['هەدەفکردن','تەمەن','شوێن'])">
+        <div class="tut-qcard-num" style="background:linear-gradient(135deg,#0ea5e9,#2563eb)">٢</div>
+        <div class="tut-qcard-title">هەدەفکردنی باشتر</div>
+        <div class="tut-qcard-sub">تەمەن، ڕەگەز و شوێن دیاریکردن</div>
       </div>
-      <div class="tut-step-arr"><i class="fas fa-play"></i></div>
+      <div class="tut-qcard" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','بانگێشتکردن و کۆین','چۆن هاوڕێ بانگێشت بکەیت و کۆین وەربگریت و بیگۆڕیتەوە','کۆین',['کۆین','بانگێشتکردن','خەڵات'])">
+        <div class="tut-qcard-num" style="background:linear-gradient(135deg,#d97706,#f59e0b)">٣</div>
+        <div class="tut-qcard-title">کۆین و بانگێشتکردن</div>
+        <div class="tut-qcard-sub">وەرگرتنی کۆین و گۆڕینیانەوە بۆ باڵانس</div>
+      </div>
+      <div class="tut-qcard" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','پشکنینی ئامار','فێربوو چۆن ئامارەکانت بپشکنیت','ئەنجام',['ئامار','پشکنین','ئەنجام'])">
+        <div class="tut-qcard-num" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">٤</div>
+        <div class="tut-qcard-title">پشکنینی ئامار</div>
+        <div class="tut-qcard-sub">خوێندنەوەی ئەنجامی ڕیکلامەکەت</div>
+      </div>
     </div>
 
     <div style="height:24px"></div>
   </div>
 
-  <!-- ══ VIDEO PLAYER PAGE ══ -->
+  <!-- ══ VIDEO PLAYER PAGE — LIGHT ══ -->
   <div class="pg" id="pgTutplayer">
 
-    <!-- Ball Glow Animated Background -->
-    <div class="tvp-bg" id="tvpBg">
-      <div class="tvp-ball" style="width:220px;height:220px;background:radial-gradient(circle,#6366f1,#4338ca);top:-60px;right:-50px;animation-duration:14s;animation-name:tvpFloat;"></div>
-      <div class="tvp-ball" style="width:180px;height:180px;background:radial-gradient(circle,#8b5cf6,#7c3aed);top:30%;left:-70px;animation-duration:18s;animation-name:tvpFloat;animation-delay:-6s;"></div>
-      <div class="tvp-ball" style="width:150px;height:150px;background:radial-gradient(circle,#0ea5e9,#0284c7);bottom:25%;right:-40px;animation-duration:22s;animation-name:tvpFloat;animation-delay:-3s;"></div>
-      <div class="tvp-ball" style="width:200px;height:200px;background:radial-gradient(circle,#ec4899,#be185d);bottom:-60px;left:20%;animation-duration:16s;animation-name:tvpFloat;animation-delay:-9s;"></div>
-      <div class="tvp-ball" style="width:120px;height:120px;background:radial-gradient(circle,#f59e0b,#d97706);top:55%;left:55%;animation-duration:20s;animation-name:tvpFloat;animation-delay:-4s;opacity:.35;"></div>
-      <div class="tvp-ball" style="width:90px;height:90px;background:radial-gradient(circle,#10b981,#059669);top:20%;left:40%;animation-duration:25s;animation-name:tvpFloat;animation-delay:-12s;opacity:.3;"></div>
-    </div>
-
-    <!-- Header -->
+    <!-- Light Header -->
     <div class="tvp-header">
       <div class="tvp-back-btn" onclick="goPage('tutorials')"><i class="fas fa-arrow-right"></i></div>
       <div class="tvp-header-info">
@@ -2785,11 +2745,11 @@ function _clipboardFallback(text, onSuccess, onFail) {
       <div class="tvp-pills" id="tvpPills"></div>
     </div>
 
-    <!-- Related Videos Label -->
+    <!-- Related Videos -->
     <div class="tvp-related-lbl"><i class="fas fa-layer-group" style="margin-left:6px"></i>ڤیدیۆکانی تر</div>
 
     <div class="tvp-related-card" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','دروستکردنی ئامرازی پەیوەندی (Proxo Link)','دروستکردنی کارتی پەیوەندی بۆ واتسئاپ و ئینستاگرام','ئامراز',['Proxo Link','واتسئاپ'])">
-      <div class="tvp-related-ico" style="background:linear-gradient(135deg,rgba(37,99,235,.3),rgba(14,120,255,.3));border:1px solid rgba(37,99,235,.35)"><i class="fas fa-link" style="color:#93c5fd"></i></div>
+      <div class="tvp-related-ico" style="background:linear-gradient(135deg,rgba(37,99,235,.1),rgba(14,120,255,.1));border:1px solid rgba(37,99,235,.2)"><i class="fas fa-link" style="color:#2563eb"></i></div>
       <div class="tvp-related-info">
         <div class="tvp-related-title">دروستکردنی ئامرازی پەیوەندی</div>
         <div class="tvp-related-sub"><i class="fas fa-clock" style="margin-left:4px"></i>٦ خولەک · ئامراز</div>
@@ -2798,7 +2758,7 @@ function _clipboardFallback(text, onSuccess, onFail) {
     </div>
 
     <div class="tvp-related-card" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','پشکنینی ئەنجامی ڕیکلامەکەت','فێربوو چۆن ئەنجام و ئامارەکانی سپۆنسەرەکانت بپشکنیت','ئەنجام',['Analytics','ئەنجام'])">
-      <div class="tvp-related-ico" style="background:linear-gradient(135deg,rgba(124,58,237,.3),rgba(139,92,246,.3));border:1px solid rgba(124,58,237,.35)"><i class="fas fa-chart-bar" style="color:#c4b5fd"></i></div>
+      <div class="tvp-related-ico" style="background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(139,92,246,.1));border:1px solid rgba(124,58,237,.2)"><i class="fas fa-chart-bar" style="color:#7c3aed"></i></div>
       <div class="tvp-related-info">
         <div class="tvp-related-title">پشکنینی ئەنجامی ڕیکلامەکەت</div>
         <div class="tvp-related-sub"><i class="fas fa-clock" style="margin-left:4px"></i>٤ خولەک · ئەنجام</div>
@@ -2807,7 +2767,7 @@ function _clipboardFallback(text, onSuccess, onFail) {
     </div>
 
     <div class="tvp-related-card" onclick="openTutVideo('https://www.youtube.com/embed/dQw4w9WgXcQ','چۆن باڵانست پڕ بکەیتەوە','رێبازەکانی پارەدان بەشێوەیەکی ئەسان','پارەدان',['باڵانس','FIB','FastPay'])">
-      <div class="tvp-related-ico" style="background:linear-gradient(135deg,rgba(22,163,74,.3),rgba(16,185,129,.3));border:1px solid rgba(22,163,74,.35)"><i class="fas fa-coins" style="color:#86efac"></i></div>
+      <div class="tvp-related-ico" style="background:linear-gradient(135deg,rgba(22,163,74,.1),rgba(16,185,129,.1));border:1px solid rgba(22,163,74,.2)"><i class="fas fa-coins" style="color:#16a34a"></i></div>
       <div class="tvp-related-info">
         <div class="tvp-related-title">چۆن باڵانست پڕ بکەیتەوە</div>
         <div class="tvp-related-sub"><i class="fas fa-clock" style="margin-left:4px"></i>٥ خولەک · پارەدان</div>
@@ -5886,12 +5846,88 @@ function updateSidebarUser(name,email,avB64Src,bal){
   document.getElementById('sidebarEmail').textContent=email||'—';
   document.getElementById('sidebarBal').textContent=Math.round(parseFloat(String(bal).replace(/,/g,''))||0).toLocaleString()+' IQD';
 }
-function openTutVideo(url, title, desc, cat, tags){
-  // Stop any playing video first
-  var fr = document.getElementById('tvpIframe');
-  if(fr){ fr.src=''; }
+/* ── Tutorial post toggle (inline expand) ── */
+var _openTutId = null;
+function toggleTutPost(id, url, tags){
+  var card = document.getElementById(id);
+  if(!card) return;
+  var vid = card.querySelector('.tut-post-video');
+  var iframe = vid ? vid.querySelector('iframe') : null;
 
-  // Extract embed URL — support both youtube.com/watch?v= and /embed/ forms
+  // If already open, close it
+  if(card.classList.contains('open')){
+    card.classList.remove('open');
+    if(vid) vid.classList.remove('show');
+    if(iframe){ iframe.src = ''; }
+    _openTutId = null;
+    return;
+  }
+
+  // Close previously open card
+  if(_openTutId && _openTutId !== id){
+    var prev = document.getElementById(_openTutId);
+    if(prev){
+      prev.classList.remove('open');
+      var pvid = prev.querySelector('.tut-post-video');
+      if(pvid){ pvid.classList.remove('show'); }
+      var pf = pvid ? pvid.querySelector('iframe') : null;
+      if(pf){ pf.src = ''; }
+    }
+  }
+
+  // Open this card
+  _openTutId = id;
+  card.classList.add('open');
+  if(vid) vid.classList.add('show');
+
+  // Build embed URL
+  if(iframe){
+    var embedUrl = url;
+    var ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+    if(ytMatch){ embedUrl = 'https://www.youtube.com/embed/' + ytMatch[1] + '?autoplay=1&rel=0'; }
+    else if(url.indexOf('/embed/') > -1 && url.indexOf('autoplay') === -1){
+      embedUrl = url + (url.indexOf('?') > -1 ? '&' : '?') + 'autoplay=1&rel=0';
+    }
+    iframe.src = embedUrl;
+  }
+
+  // Scroll into view
+  setTimeout(function(){
+    _safeScrollIntoView(card, {behavior:'smooth', block:'start'});
+  }, 80);
+}
+
+/* ── Tutorial category filter ── */
+function tutFilterCat(el, cat){
+  document.querySelectorAll('.tut-cat').forEach(function(c){ c.classList.remove('on'); });
+  el.classList.add('on');
+  document.querySelectorAll('.tut-post-card[data-cat]').forEach(function(c){
+    c.style.display = (cat === 'all' || c.getAttribute('data-cat') === cat) ? '' : 'none';
+  });
+  // Close open video when filtering
+  if(_openTutId){
+    var prev = document.getElementById(_openTutId);
+    if(prev){
+      prev.classList.remove('open');
+      var pvid = prev.querySelector('.tut-post-video');
+      if(pvid){ pvid.classList.remove('show'); var pf = pvid.querySelector('iframe'); if(pf) pf.src=''; }
+    }
+    _openTutId = null;
+  }
+}
+
+function openTutVideo(url, title, desc, cat, tags){
+  // Stop any inline playing video
+  if(_openTutId){
+    var prev = document.getElementById(_openTutId);
+    if(prev){
+      prev.classList.remove('open');
+      var pvid = prev.querySelector('.tut-post-video');
+      if(pvid){ pvid.classList.remove('show'); var pf = pvid.querySelector('iframe'); if(pf) pf.src=''; }
+    }
+    _openTutId = null;
+  }
+
   var embedUrl = url;
   var ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
   if(ytMatch){ embedUrl = 'https://www.youtube.com/embed/' + ytMatch[1] + '?autoplay=1&rel=0'; }
@@ -5899,14 +5935,12 @@ function openTutVideo(url, title, desc, cat, tags){
     embedUrl = url + (url.indexOf('?') > -1 ? '&' : '?') + 'autoplay=1&rel=0';
   }
 
-  // Set iframe src
+  var fr = document.getElementById('tvpIframe');
   if(fr){ fr.src = embedUrl; }
 
-  // Update header title
   var hTitle = document.getElementById('tvpTitle');
   if(hTitle) hTitle.textContent = title || 'ڤیدیۆی فێرکاری';
 
-  // Update info card
   var infoTitle = document.getElementById('tvpInfoTitle');
   var infoDesc  = document.getElementById('tvpInfoDesc');
   var pillsEl   = document.getElementById('tvpPills');
@@ -5923,7 +5957,6 @@ function openTutVideo(url, title, desc, cat, tags){
     });
   }
 
-  // Navigate to player page (scroll to top)
   goPage('tutplayer');
   setTimeout(function(){
     var pg = document.getElementById('pgTutplayer');
