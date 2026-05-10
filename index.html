@@ -406,8 +406,8 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .goal-tab-v2:last-child{margin-bottom:0;}
 .goal-tab-v2.on{border-color:#0E78FF;background:rgba(14,120,255,.05);box-shadow:0 2px 10px rgba(14,120,255,.12);}
 .goal-tab-v2-ico{width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;transition:all .22s;}
-.goal-tab-v2-ico.msg{background:rgba(16,185,129,.1);color:#10b981;}
-.goal-tab-v2.on .goal-tab-v2-ico.msg{background:#10b981;color:#fff;box-shadow:0 3px 10px rgba(16,185,129,.3);}
+.goal-tab-v2-ico.msg{background:rgba(28,35,51,.07);color:var(--dark2);}
+.goal-tab-v2.on .goal-tab-v2-ico.msg{background:rgba(255,255,255,.15);color:#fff;box-shadow:none;}
 .goal-tab-v2-ico.views{background:rgba(14,120,255,.1);color:#0E78FF;}
 .goal-tab-v2.on .goal-tab-v2-ico.views{background:#0E78FF;color:#fff;box-shadow:0 3px 10px rgba(14,120,255,.3);}
 .goal-tab-v2-info{flex:1;}
@@ -1288,7 +1288,7 @@ textarea.lc-inp{resize:none;}
 .bud-chips-row{display:flex;gap:7px;overflow-x:auto;padding-bottom:3px;margin-bottom:12px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
 .bud-chips-row::-webkit-scrollbar{display:none;}
 .bud-chip{flex-shrink:0;padding:8px 16px;border-radius:22px;border:2px solid var(--b1);background:var(--w);font-size:13px;font-weight:800;color:var(--mt2);cursor:pointer;transition:all .18s cubic-bezier(.165,.84,.44,1);font-family:'Inter',sans-serif;touch-action:manipulation;}
-.bud-chip.sel{border-color:#6366f1;background:rgba(99,102,241,.09);color:#6366f1;}
+.bud-chip.sel{border-color:var(--dark);background:var(--dark);color:#fff;}
 .bud-chip:active{transform:scale(.9);}
 /* ── Budget Control Boxes (new style) ── */
 .bud-amount-ctrl{display:flex;align-items:center;justify-content:space-between;background:#f1f5f9;padding:12px 16px;border-radius:18px;margin-bottom:10px;}
@@ -1305,8 +1305,8 @@ textarea.lc-inp{resize:none;}
 .bud-days-num-wrap{display:flex;flex-direction:column;}
 /* Circle buttons */
 .bud-day-btn{width:38px;height:38px;border-radius:50%;background:transparent;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;transition:.2s;touch-action:manipulation;font-family:'Inter',sans-serif;font-weight:400;line-height:1;flex-shrink:0;}
-.bud-day-plus{border:2px solid #6366f1;color:#6366f1;}
-.bud-day-plus:active{background:#6366f1;color:#fff;transform:scale(.9);}
+.bud-day-plus{border:1.5px solid var(--dark);color:var(--dark);}
+.bud-day-plus:active{background:var(--dark);color:#fff;transform:scale(.9);}
 .bud-day-minus{border:2px solid #cbd5e1;color:#64748b;}
 .bud-day-minus:active{background:#64748b;color:#fff;transform:scale(.9);}
 /* btn-group wrapper */
@@ -2227,8 +2227,9 @@ function _toWebP(dataUrl,quality){
     <!-- ── 1. Goal Selection ── -->
     <div class="create-sec">
       <div class="create-sec-hdr">
-        <div class="create-sec-ico" style="background:rgba(124,58,237,.1);color:#7c3aed"><i class="fas fa-bullseye"></i></div>
+        <div class="create-sec-ico"><i class="fas fa-bullseye"></i></div>
         <div class="create-sec-lbl">ئامانجی ڕیکلام</div>
+        <span class="create-step-num">١</span>
       </div>
       <button class="goal-tab-v2 on" data-g="messages" onclick="pickGoal(this)">
         <div class="goal-tab-v2-ico msg"><i class="fas fa-comment-dots"></i></div>
@@ -2251,7 +2252,7 @@ function _toWebP(dataUrl,quality){
     <div id="cardSelWrap" style="display:none">
       <div class="create-sec">
         <div class="create-sec-hdr">
-          <div class="create-sec-ico" style="background:rgba(14,120,255,.1);color:#0E78FF"><i class="fas fa-image"></i></div>
+          <div class="create-sec-ico"><i class="fas fa-image"></i></div>
           <div class="create-sec-lbl">پەڕەی دابەزین <span style="color:var(--rd);font-size:10px;font-weight:400">پێویستە</span></div>
         </div>
         <div id="cardList"><div style="font-size:12px;color:var(--mt);padding:8px">هیچ کەرەستەیەک نییە</div></div>
@@ -2261,9 +2262,9 @@ function _toWebP(dataUrl,quality){
     <!-- ══ MESSAGES GOAL: ASSET DROPDOWN ══ -->
     <div id="msgAssetWrap" class="create-sec">
       <div class="create-sec-hdr">
-        <div class="create-sec-ico" style="background:rgba(14,120,255,.1);color:#0E78FF"><i class="fas fa-layer-group"></i></div>
-        <div class="create-sec-lbl" style="flex:1">ئامرازی پەیوەندی <span style="color:var(--rd);font-size:10px;font-weight:400">پێویستە</span></div>
-        <span onclick="goPage('proxolink')" style="font-size:11px;color:#0E78FF;cursor:pointer;font-weight:700"><i class="fas fa-plus" style="margin-left:3px"></i>نوێ</span>
+        <div class="create-sec-ico"><i class="fas fa-layer-group"></i></div>
+        <div class="create-sec-lbl">ئامرازی پەیوەندی <span style="color:var(--rd);font-size:10px;font-weight:400">پێویستە</span></div>
+        <span onclick="goPage('proxolink')" style="font-size:11px;color:var(--dark);cursor:pointer;font-weight:700;background:var(--bg);border:1px solid var(--b1);border-radius:8px;padding:3px 9px"><i class="fas fa-plus" style="margin-left:3px;font-size:10px"></i>نوێ</span>
       </div>
       <div class="asset-select-wrap">
         <div class="asset-select" id="assetSelectBtn" onclick="toggleAssetDropdown()">
@@ -2287,12 +2288,13 @@ function _toWebP(dataUrl,quality){
     <!-- ── 2. Targeting ── -->
     <div class="create-sec">
       <div class="create-sec-hdr">
-        <div class="create-sec-ico" style="background:rgba(16,185,129,.1);color:#10b981"><i class="fas fa-users"></i></div>
+        <div class="create-sec-ico"><i class="fas fa-users"></i></div>
         <div class="create-sec-lbl">هەدەفکردن</div>
+        <span class="create-step-num">٢</span>
       </div>
 
       <!-- Age -->
-      <div style="font-size:11px;color:var(--mt);font-weight:700;margin-bottom:8px;letter-spacing:.5px">تەمەن</div>
+      <div class="csub" style="margin-top:12px">تەمەن</div>
       <div class="age-groups-wrap" id="ageGroupsWrap">
         <div class="age-grp age-grp-all on" data-age="all" onclick="pickAge(this)">
           <i class="fas fa-users"></i> هەموو
@@ -2304,11 +2306,11 @@ function _toWebP(dataUrl,quality){
         <div class="age-grp" data-age="45-54" onclick="pickAge(this)">45-54</div>
         <div class="age-grp" data-age="55+" onclick="pickAge(this)">55+</div>
       </div>
-      <div id="ageSelectedDisplay" style="font-size:11px;color:var(--mt2);margin-bottom:12px;margin-top:4px"></div>
+      <div id="ageSelectedDisplay" style="font-size:11px;color:var(--mt2);margin-top:4px;margin-bottom:8px"></div>
 
       <!-- Gender -->
-      <div style="font-size:11px;color:var(--mt);font-weight:700;margin-bottom:8px;letter-spacing:.5px">ڕەگەز</div>
-      <div class="gender-wrap" style="margin-bottom:14px">
+      <div class="csub">ڕەگەز</div>
+      <div class="gender-wrap">
         <button class="gender-btn on" data-gen="all" onclick="pickGen(this)">
           <i class="fas fa-users"></i>هەموو
         </button>
@@ -2321,7 +2323,7 @@ function _toWebP(dataUrl,quality){
       </div>
 
       <!-- Location -->
-      <div style="font-size:11px;color:var(--mt);font-weight:700;margin-bottom:8px;letter-spacing:.5px">شوێن <span style="color:var(--rd)">*</span></div>
+      <div class="csub">شوێن <span style="color:var(--rd)">*</span></div>
       <div style="display:flex;gap:7px;flex-wrap:wrap">
         <div class="fchip on" data-loc="kurdistan" onclick="pickLoc(this)">کوردستان</div>
         <div class="fchip" data-loc="iraq" onclick="pickLoc(this)">عێراق</div>
@@ -2332,12 +2334,13 @@ function _toWebP(dataUrl,quality){
     <!-- ── 3. Budget & Duration ── -->
     <div class="create-sec">
       <div class="create-sec-hdr">
-        <div class="create-sec-ico" style="background:rgba(99,102,241,.1);color:#6366f1"><i class="fas fa-wallet"></i></div>
+        <div class="create-sec-ico"><i class="fas fa-wallet"></i></div>
         <div class="create-sec-lbl">بودجە و ماوە</div>
+        <span class="create-step-num">٣</span>
       </div>
 
       <!-- Daily USD amount -->
-      <div class="bud-sec-sublbl">بودجەی ڕۆژانە</div>
+      <div class="csub" style="margin-top:12px">بودجەی ڕۆژانە</div>
       <div class="bud-amount-ctrl">
         <div class="bud-amount-center">
           <div class="bud-amount-usd" id="dailyUSDDisp">$10</div>
@@ -2359,7 +2362,7 @@ function _toWebP(dataUrl,quality){
       </div>
 
       <!-- Days counter -->
-      <div class="bud-sec-sublbl">ماوەی ڕیکلام</div>
+      <div class="csub">ماوەی ڕیکلام</div>
       <div class="bud-days-row">
         <div class="bud-days-info">
           <span class="bud-days-num" id="daysDisp">1</span>
@@ -2384,18 +2387,18 @@ function _toWebP(dataUrl,quality){
     </div>
 
     <!-- ── 4. Expected Results ── -->
-    <div class="create-sec" style="padding:14px 16px">
-      <div class="create-sec-hdr" style="margin-bottom:10px">
-        <div class="create-sec-ico" style="background:rgba(79,110,247,.1);color:#4f6ef7"><i class="fas fa-chart-line"></i></div>
-        <div class="create-sec-lbl">ئەنجامی چاوەڕوانکراو <span style="font-size:10px;color:var(--mt);font-weight:400">(CPM)</span></div>
+    <div class="create-sec">
+      <div class="create-sec-hdr">
+        <div class="create-sec-ico"><i class="fas fa-chart-line"></i></div>
+        <div class="create-sec-lbl">ئەنجامی چاوەڕوانکراو</div>
       </div>
-      <div class="est-box" style="margin-bottom:0">
+      <div class="est-box">
         <div id="estViewsRow" class="est-row">
           <div style="display:flex;align-items:center;gap:10px;flex:1">
             <div class="est-ico-wrap est-ico-views"><i class="fas fa-eye"></i></div>
             <div>
               <div class="est-lbl">بینەری چاوەڕوانکراو</div>
-              <div id="estViewsCpm" style="font-size:10px;color:var(--mt);margin-top:1px">CPM: $0.12–$0.15</div>
+              <div id="estViewsCpm" style="font-size:9.5px;color:var(--mt);margin-top:1px">CPM: $0.12–$0.15</div>
             </div>
           </div>
           <div style="text-align:left">
@@ -2422,15 +2425,16 @@ function _toWebP(dataUrl,quality){
     <!-- ── 5. TikTok Content ── -->
     <div class="create-sec">
       <div class="create-sec-hdr">
-        <div class="create-sec-ico" style="background:rgba(0,0,0,.07);color:#000"><i class="fab fa-tiktok"></i></div>
+        <div class="create-sec-ico"><i class="fab fa-tiktok"></i></div>
         <div class="create-sec-lbl">ناوەڕۆکی تیکتۆک</div>
+        <span class="create-step-num">٤</span>
       </div>
-      <div style="font-size:11px;color:var(--mt);font-weight:700;margin-bottom:7px;letter-spacing:.5px">لینکی ڤیدیۆ</div>
+      <div class="csub">لینکی ڤیدیۆ</div>
       <div style="position:relative;display:flex;align-items:center;margin-bottom:12px">
         <i class="fas fa-link" style="position:absolute;right:14px;color:var(--mt);font-size:13px;pointer-events:none"></i>
         <input class="create-inp" style="padding-right:42px" type="url" id="adLink" placeholder="لینکی ڤیدیۆی تیک تۆک دابنێ" dir="ltr">
       </div>
-      <div style="font-size:11px;color:var(--mt);font-weight:700;margin-bottom:7px;letter-spacing:.5px">کۆدی پۆست</div>
+      <div class="csub">کۆدی پۆست</div>
       <div style="position:relative;display:flex;align-items:center;margin-bottom:12px">
         <i class="fas fa-code" style="position:absolute;right:14px;color:var(--mt);font-size:13px;pointer-events:none"></i>
         <input class="create-inp" style="padding-right:42px" type="text" id="adCode" placeholder="کۆدی پۆستی تیکتۆکەکەت لێرە دابنێ" dir="ltr">
@@ -2444,10 +2448,11 @@ function _toWebP(dataUrl,quality){
     <!-- ── 6. Schedule ── -->
     <div class="create-sec">
       <div class="create-sec-hdr">
-        <div class="create-sec-ico" style="background:rgba(99,102,241,.1);color:#6366f1"><i class="fas fa-calendar-days"></i></div>
+        <div class="create-sec-ico"><i class="fas fa-calendar-days"></i></div>
         <div class="create-sec-lbl">بەروار و کات</div>
+        <span class="create-step-num">٥</span>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
         <input class="create-inp" type="date" id="adDate">
         <input class="create-inp" type="time" id="adTime">
       </div>
@@ -2456,7 +2461,7 @@ function _toWebP(dataUrl,quality){
     <!-- ── 7. Promo Code ── -->
     <div class="create-sec">
       <div class="create-sec-hdr">
-        <div class="create-sec-ico" style="background:rgba(220,38,38,.08);color:#dc2626"><i class="fas fa-tag"></i></div>
+        <div class="create-sec-ico"><i class="fas fa-tag"></i></div>
         <div class="create-sec-lbl">کۆدی داشکاندن <span style="font-size:10px;color:var(--mt);font-weight:400">(ئیختیاری)</span></div>
       </div>
       <div class="promo-wrap">
@@ -2472,8 +2477,9 @@ function _toWebP(dataUrl,quality){
     <!-- ── 8. Price Breakdown + Submit ── -->
     <div class="create-sec">
       <div class="create-sec-hdr">
-        <div class="create-sec-ico" style="background:rgba(22,163,74,.1);color:#16a34a"><i class="fas fa-receipt"></i></div>
+        <div class="create-sec-ico"><i class="fas fa-receipt"></i></div>
         <div class="create-sec-lbl">وردەکاری نرخ</div>
+        <span class="create-step-num">٦</span>
       </div>
       <div class="create-price-box">
         <div class="create-price-row">
@@ -2490,7 +2496,7 @@ function _toWebP(dataUrl,quality){
         </div>
         <div class="create-price-total">
           <span id="bdTotalLbl" style="font-size:13px;font-weight:800;color:var(--dark)">کۆی گشتی (1 ڕۆژ)</span>
-          <span id="bdTotal" style="font-size:15px;font-weight:900;color:#16a34a;font-family:'Inter',sans-serif">18,500 IQD</span>
+          <span id="bdTotal" style="font-size:15px;font-weight:900;color:var(--dark);font-family:'Inter',sans-serif">18,500 IQD</span>
         </div>
       </div>
       <button class="create-submit" id="submitBtn" onclick="submitAd()" style="margin-top:16px">
@@ -2499,7 +2505,7 @@ function _toWebP(dataUrl,quality){
       </button>
     </div>
 
-    <div style="height:14px"></div>
+    <div style="height:24px"></div>
   </div>
 
   <!-- MY ADS -->
@@ -8948,7 +8954,145 @@ function buildPageClassic(name,bio,tt,ttUrl,avatar,activeBtns,handlers,theme){
   parts.push(".shine-active::after { content:''; position:absolute; top:0; left:-100%; width:60%; height:100%; background:linear-gradient(to right,transparent,rgba(255,255,255,0.12),transparent); transform:skewX(-25deg); animation: shine 2.5s ease-in-out infinite; pointer-events:none; border-radius:inherit; }");
   parts.push(".no-shine::after { animation: none !important; display:none; }");
 
-  parts.push('</style>');
+  parts.push('
+/* ── CREATE PAGE FULL REDESIGN ── */
+
+/* Hero */
+.create-hero{background:var(--dark);border-radius:20px;padding:18px 16px 20px;margin-bottom:10px;position:relative;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.14);}
+.create-hero::before{content:'';position:absolute;top:-60px;right:-50px;width:160px;height:160px;background:rgba(255,255,255,.03);border-radius:50%;pointer-events:none;}
+.create-hero::after{content:'';position:absolute;bottom:-40px;left:10px;width:110px;height:110px;background:rgba(255,255,255,.025);border-radius:50%;pointer-events:none;}
+.create-hero-inner{display:flex;align-items:center;gap:13px;position:relative;}
+.create-hero-icon{width:46px;height:46px;border-radius:13px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:19px;color:#fff;flex-shrink:0;}
+.create-hero-title{font-size:18px;font-weight:900;color:#fff;letter-spacing:-.3px;}
+.create-hero-sub{font-size:11px;color:rgba(255,255,255,.55);margin-top:3px;font-family:'Inter',sans-serif;}
+
+/* Section cards */
+.create-sec{background:var(--w);border:1px solid var(--b1);border-radius:18px;padding:14px 14px;margin-bottom:8px;}
+.create-sec-hdr{display:flex;align-items:center;gap:10px;padding:0;margin-bottom:12px;}
+.create-sec-body{padding:10px 14px 14px;}
+.create-sec-ico{width:30px;height:30px;border-radius:9px;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--dark2);flex-shrink:0;}
+.create-sec-lbl{font-size:13px;font-weight:800;color:var(--dark);flex:1;}
+.create-step-num{margin-right:auto;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;color:var(--mt);background:var(--bg);border:1px solid var(--b1);border-radius:20px;padding:2px 8px;}
+
+/* Sub-labels inside sections */
+.csub{font-size:10.5px;font-weight:700;color:var(--mt2);margin:10px 0 7px;letter-spacing:.3px;}
+
+/* Goal tabs */
+.goal-tab-v2{width:100%;padding:11px 12px;border-radius:12px;border:1.5px solid var(--b1);background:var(--bg);display:flex;align-items:center;gap:11px;cursor:pointer;transition:all .18s ease;text-align:right;margin-bottom:7px;font-family:'R',sans-serif;box-shadow:none;}
+.goal-tab-v2:last-child{margin-bottom:0;}
+.goal-tab-v2.on{border-color:var(--dark);background:var(--dark);box-shadow:0 3px 12px rgba(28,35,51,.18);}
+.goal-tab-v2-ico{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;transition:all .18s;}
+.goal-tab-v2-ico.msg{background:rgba(28,35,51,.07);color:var(--dark);}
+.goal-tab-v2.on .goal-tab-v2-ico.msg{background:rgba(255,255,255,.15);color:#fff;}
+.goal-tab-v2-ico.views{background:rgba(28,35,51,.07);color:var(--dark);}
+.goal-tab-v2.on .goal-tab-v2-ico.views{background:rgba(255,255,255,.15);color:#fff;}
+.goal-tab-v2-info{flex:1;}
+.goal-tab-v2-title{font-size:13px;font-weight:800;color:var(--dark);transition:color .18s;}
+.goal-tab-v2.on .goal-tab-v2-title{color:#fff;}
+.goal-tab-v2-sub{font-size:10.5px;color:var(--mt);margin-top:2px;transition:color .18s;}
+.goal-tab-v2.on .goal-tab-v2-sub{color:rgba(255,255,255,.6);}
+.goal-tab-v2-chk{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:8px;color:transparent;flex-shrink:0;transition:all .18s;}
+.goal-tab-v2.on .goal-tab-v2-chk{border-color:#fff;background:#fff;color:var(--dark);}
+
+/* Age chips */
+.age-groups-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px;}
+.age-grp{padding:7px 13px;border-radius:20px;font-family:'R',sans-serif;font-size:12px;cursor:pointer;border:1.5px solid var(--b1);background:var(--bg);color:var(--mt2);transition:all .18s;font-weight:700;display:flex;align-items:center;gap:5px;-webkit-user-select:none;user-select:none;}
+.age-grp.on{background:var(--dark);color:#fff;border-color:var(--dark);}
+.age-grp-all{background:var(--dark);color:#fff;border-color:var(--dark);}
+.age-grp-all.deselect{background:var(--bg);color:var(--mt2);border-color:var(--b1);}
+
+/* Gender */
+.gender-wrap{display:flex;gap:7px;margin-bottom:4px;}
+.gender-btn{flex:1;padding:10px 6px;border-radius:12px;border:1.5px solid var(--b1);background:var(--bg);color:var(--mt2);font-family:'R',sans-serif;font-size:12px;cursor:pointer;text-align:center;font-weight:700;transition:all .18s;}
+.gender-btn i{display:block;font-size:17px;margin-bottom:4px;}
+.gender-btn.on{background:var(--dark);color:#fff;border-color:var(--dark);}
+
+/* Location chips */
+.fchip{padding:7px 13px;border-radius:20px;font-family:'R',sans-serif;font-size:12px;cursor:pointer;border:1.5px solid var(--b1);background:var(--bg);color:var(--mt2);white-space:nowrap;transition:all .18s;font-weight:700;}
+.fchip.on{background:var(--dark);color:#fff;border-color:var(--dark);}
+
+/* Budget sub-label */
+.bud-sec-sublbl{font-size:10px;font-weight:700;color:var(--mt2);letter-spacing:.5px;margin-bottom:8px;}
+
+/* Budget control row */
+.bud-amount-ctrl{display:flex;align-items:center;justify-content:space-between;background:var(--bg);border:1px solid var(--b1);padding:12px 14px;border-radius:14px;margin-bottom:8px;}
+.bud-amount-center{display:flex;flex-direction:column;}
+.bud-amount-usd{font-size:22px;font-weight:800;color:var(--dark);line-height:1.2;font-family:'Inter',sans-serif;}
+.bud-amount-sub{font-size:10.5px;color:var(--mt);margin-top:1px;}
+
+/* Days row */
+.bud-days-row{display:flex;align-items:center;justify-content:space-between;background:var(--bg);border:1px solid var(--b1);padding:12px 14px;border-radius:14px;margin-bottom:8px;}
+.bud-days-info{display:flex;flex-direction:column;}
+.bud-days-num{font-size:22px;font-weight:800;color:var(--dark);line-height:1.2;display:block;font-family:'Inter',sans-serif;}
+.bud-days-unit{font-size:10.5px;color:var(--mt);margin-top:1px;}
+
+/* +/- buttons */
+.bud-day-btn{width:36px;height:36px;border-radius:50%;background:var(--bg);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .18s;touch-action:manipulation;font-family:'Inter',sans-serif;font-weight:400;line-height:1;flex-shrink:0;}
+.bud-day-plus{border:1.5px solid var(--dark);color:var(--dark);}
+.bud-day-plus:active{background:var(--dark);color:#fff;transform:scale(.9);}
+.bud-day-minus{border:1.5px solid var(--b2);color:var(--mt);}
+.bud-day-minus:active{background:var(--bg);transform:scale(.9);}
+.bud-btn-group{display:flex;gap:7px;align-items:center;}
+
+/* Budget chips */
+.bud-chips-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;margin-bottom:10px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.bud-chips-row::-webkit-scrollbar{display:none;}
+.bud-chip{flex-shrink:0;padding:7px 14px;border-radius:20px;border:1.5px solid var(--b1);background:var(--bg);font-size:12.5px;font-weight:800;color:var(--mt2);cursor:pointer;transition:all .18s;font-family:'Inter',sans-serif;touch-action:manipulation;}
+.bud-chip.sel{border-color:var(--dark);background:var(--dark);color:#fff;}
+.bud-chip:active{transform:scale(.92);}
+
+/* Total bar */
+.bud-total-box{background:var(--dark);color:#fff;padding:12px 16px;border-radius:14px;display:flex;justify-content:space-between;align-items:center;margin-top:2px;}
+.bud-total-left{display:flex;align-items:baseline;gap:6px;}
+.bud-total-left .bud-total-lbl{font-size:11.5px;opacity:.65;font-weight:400;}
+.bud-total-left .bud-total-usd{font-size:20px;font-weight:800;font-family:'Inter',sans-serif;}
+.bud-total-right{display:flex;align-items:center;}
+.bud-total-days-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);padding:3px 10px;border-radius:8px;font-size:11px;color:rgba(255,255,255,.85);font-weight:600;}
+
+/* Estimated results */
+.est-box{background:var(--bg);border:1px solid var(--b1);border-radius:14px;overflow:hidden;margin-bottom:0;}
+.est-row{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;gap:10px;}
+.est-row:not(:last-child){border-bottom:1px solid var(--b1);}
+.est-ico-wrap{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;}
+.est-ico-views{background:rgba(28,35,51,.07);color:var(--dark2);}
+.est-ico-clicks{background:rgba(28,35,51,.07);color:var(--dark2);}
+.est-lbl{font-size:11.5px;color:var(--mt2);font-weight:600;}
+.est-val{font-size:12.5px;font-weight:900;color:var(--dark);font-family:'Inter',sans-serif;transition:transform .2s,opacity .2s;text-align:left;}
+
+/* Inputs */
+.create-inp{width:100%;padding:12px 14px;background:var(--bg);border:1.5px solid var(--b1);border-radius:12px;color:var(--dark);font-family:'R',sans-serif;font-size:15px;outline:none;transition:all .2s ease;box-sizing:border-box;}
+.create-inp:focus{border-color:var(--dark);background:var(--w);box-shadow:0 0 0 3px rgba(28,35,51,.07);}
+.create-inp::placeholder{color:var(--mt);}
+.create-inp[dir=ltr]{text-align:left;}
+
+/* Warning box */
+.create-warning{background:rgba(217,119,6,.06);border:1px solid rgba(217,119,6,.18);border-radius:11px;padding:10px 13px;display:flex;align-items:flex-start;gap:8px;margin-top:2px;}
+.create-warning i{color:#d97706;margin-top:2px;font-size:13px;flex-shrink:0;}
+.create-warning-txt{font-size:11.5px;color:var(--dark);line-height:1.75;}
+
+/* Price box */
+.create-price-box{background:var(--bg);border:1px solid var(--b1);border-radius:14px;padding:13px 15px;}
+.create-price-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:12px;}
+.create-price-lbl{color:var(--mt2);}
+.create-price-val{font-weight:700;color:var(--dark);font-family:'Inter',sans-serif;}
+.create-price-total{border-top:1px solid var(--b1);padding-top:9px;margin-top:4px;display:flex;justify-content:space-between;align-items:center;}
+
+/* Submit */
+.create-submit{width:100%;padding:16px;background:var(--dark);color:#fff;border:none;border-radius:14px;font-family:'R',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;margin-top:4px;box-shadow:0 4px 14px rgba(28,35,51,.18);transition:opacity .2s,transform .18s ease;}
+.create-submit:active{opacity:.88;transform:scale(.99);}
+.create-submit:disabled{opacity:.35;pointer-events:none;}
+
+/* Asset select */
+.asset-select{width:100%;padding:11px 14px;background:var(--bg);border:1.5px solid var(--b1);border-radius:12px;color:var(--tx);font-family:'R',sans-serif;font-size:14px;outline:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .18s;}
+.asset-select.open{border-color:var(--dark);background:var(--w);}
+
+/* Promo */
+.promo-wrap{display:flex;gap:8px;align-items:stretch;}
+.promo-inp{flex:1;margin:0 !important;}
+.promo-apply-btn{padding:0 18px;background:var(--dark);color:#fff;border:none;border-radius:12px;font-family:'R',sans-serif;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:opacity .18s;}
+.promo-apply-btn:active{opacity:.88;}
+.promo-apply-btn:disabled{opacity:.35;pointer-events:none;}
+</style>');
   parts.push('</head>');
   parts.push('<body>');
   parts.push('');
