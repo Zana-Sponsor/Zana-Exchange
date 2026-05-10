@@ -1307,36 +1307,67 @@ textarea.lc-inp{resize:none;}
 .bud-total-days-badge{background:rgba(255,255,255,.15);padding:4px 10px;border-radius:8px;font-size:11px;color:#fff;font-weight:500;}
 .bud-total-rate-badge{display:none;}
 
-/* ══ TERMS MODAL ══ */
-#termsOverlay{position:fixed;inset:0;z-index:99996;background:rgba(15,23,42,.65);display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);}
+/* ══ TERMS MODAL — PREMIUM ══ */
+#termsOverlay{position:fixed;inset:0;z-index:99996;background:rgba(10,14,28,.72);display:none;align-items:flex-end;justify-content:center;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}
 #termsOverlay.show{display:flex;}
-#termsBox{background:#fff;border-radius:28px 28px 0 0;width:100%;max-width:480px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 -14px 50px rgba(0,0,0,.2);animation:tmsUp .3s cubic-bezier(.22,.61,.36,1);}
-@keyframes tmsUp{from{transform:translateY(100%);opacity:.5}to{transform:translateY(0);opacity:1}}
-.tms-handle{width:38px;height:4px;border-radius:3px;background:var(--b2);margin:13px auto 0;}
-.tms-hdr{padding:16px 20px 13px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:11px;}
-.tms-hdr-ico{width:40px;height:40px;border-radius:12px;background:var(--dark);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.tms-hdr-title{font-size:15px;font-weight:900;color:var(--dark);}
-.tms-hdr-sub{font-size:11px;color:var(--mt);margin-top:2px;}
-.tms-body{overflow-y:auto;padding:16px 18px 20px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
-.tms-sec{background:var(--bg);border:1px solid var(--b1);border-radius:16px;padding:14px 15px;margin-bottom:10px;}
-.tms-sec-hd{display:flex;align-items:center;gap:9px;margin-bottom:9px;}
-.tms-sec-ico{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.tms-sec-title{font-size:13px;font-weight:900;color:var(--dark);}
-.tms-sec-body{font-size:12px;color:var(--dark2);line-height:1.85;}
-.tms-sec-body p{margin-bottom:5px;}
-.tms-sec-body p:last-child{margin-bottom:0;}
-.tms-foot{padding:13px 18px 28px;border-top:1px solid var(--b1);}
-.tms-close-btn{width:100%;padding:15px;background:var(--dark);color:#fff;border:none;border-radius:14px;font-family:'R',sans-serif;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(28,35,51,.18);}
+#termsBox{background:#fff;border-radius:32px 32px 0 0;width:100%;max-width:480px;max-height:92vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 -20px 60px rgba(0,0,0,.25);animation:tmsUp .35s cubic-bezier(.22,.61,.36,1);}
+@keyframes tmsUp{from{transform:translateY(110%)}to{transform:translateY(0)}}
+.tms-handle{width:40px;height:4px;border-radius:4px;background:rgba(255,255,255,.4);margin:14px auto 0;position:relative;z-index:2;}
+/* Gradient header */
+.tms-hdr{position:relative;background:linear-gradient(145deg,#0f172a 0%,#1e3a5f 55%,#1a2d4e 100%);overflow:hidden;flex-shrink:0;padding-bottom:22px;}
+.tms-hdr-deco{position:absolute;pointer-events:none;}
+.tms-hdr-inner{position:relative;z-index:1;padding:18px 22px 0;}
+.tms-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 12px;font-size:11px;font-weight:700;color:rgba(255,255,255,.9);margin-bottom:12px;}
+.tms-hdr-title{font-size:17px;font-weight:900;color:#fff;line-height:1.4;letter-spacing:-.2px;margin-bottom:5px;}
+.tms-hdr-sub{font-size:11.5px;color:rgba(255,255,255,.5);}
+/* Body */
+.tms-body{overflow-y:auto;padding:16px 16px 4px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;flex:1;}
+.tms-intro{font-size:12px;color:var(--mt2);line-height:1.8;padding:4px 2px 14px;border-bottom:1px solid var(--b1);margin-bottom:14px;}
+/* Section cards */
+.tms-sec{border-radius:18px;padding:15px 15px 13px;margin-bottom:11px;border:1px solid transparent;}
+.tms-sec.blue{background:linear-gradient(135deg,rgba(59,130,246,.07),rgba(37,99,235,.03));border-color:rgba(59,130,246,.2);}
+.tms-sec.green{background:linear-gradient(135deg,rgba(34,197,94,.07),rgba(22,163,74,.03));border-color:rgba(34,197,94,.2);}
+.tms-sec.amber{background:linear-gradient(135deg,rgba(245,158,11,.07),rgba(217,119,6,.03));border-color:rgba(245,158,11,.2);}
+.tms-sec.purple{background:linear-gradient(135deg,rgba(167,139,250,.07),rgba(124,58,237,.03));border-color:rgba(167,139,250,.2);}
+.tms-sec-hd{display:flex;align-items:center;gap:11px;margin-bottom:11px;}
+.tms-sec-ico{width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,.15);}
+.tms-sec.blue .tms-sec-ico{background:linear-gradient(135deg,#3b82f6,#1d4ed8);}
+.tms-sec.green .tms-sec-ico{background:linear-gradient(135deg,#22c55e,#15803d);}
+.tms-sec.amber .tms-sec-ico{background:linear-gradient(135deg,#f59e0b,#b45309);}
+.tms-sec.purple .tms-sec-ico{background:linear-gradient(135deg,#a78bfa,#6d28d9);}
+.tms-sec-meta{display:flex;flex-direction:column;}
+.tms-sec-num{font-size:10px;font-weight:700;color:var(--mt);font-family:'Inter',sans-serif;letter-spacing:.6px;margin-bottom:2px;}
+.tms-sec-title{font-size:13.5px;font-weight:900;color:var(--dark);}
+.tms-rule{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--dark2);line-height:1.8;margin-bottom:7px;}
+.tms-rule:last-child{margin-bottom:0;}
+.tms-rule-dot{width:7px;height:7px;border-radius:50%;margin-top:7px;flex-shrink:0;}
+.tms-sec.blue .tms-rule-dot{background:#3b82f6;}
+.tms-sec.green .tms-rule-dot{background:#22c55e;}
+.tms-sec.amber .tms-rule-dot{background:#f59e0b;}
+.tms-sec.purple .tms-rule-dot{background:#a78bfa;}
+.tms-rule b{font-weight:800;color:var(--dark);}
+/* Contact */
+.tms-contact{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--bg);border:1px solid var(--b1);border-radius:13px;padding:11px 14px;margin-bottom:14px;}
+.tms-contact-txt{font-size:12px;color:var(--mt2);font-family:'Inter',sans-serif;direction:ltr;}
+/* Footer */
+.tms-foot{padding:13px 16px 32px;border-top:1px solid var(--b1);background:#fff;flex-shrink:0;}
+.tms-close-btn{width:100%;padding:16px;background:linear-gradient(135deg,#0f172a,#1e3a5f);color:#fff;border:none;border-radius:16px;font-family:'R',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 6px 20px rgba(15,23,42,.25);}
 .tms-close-btn:active{opacity:.88;}
 /* ── Agree checkbox ── */
 .terms-agree-wrap{margin-bottom:14px;}
-.terms-agree-row{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--bg);border:1.5px solid var(--b1);border-radius:14px;cursor:pointer;transition:border-color .2s,background .2s;user-select:none;}
-.terms-agree-row.checked{border-color:var(--dark);background:rgba(28,35,51,.04);}
-.terms-agree-box{width:22px;height:22px;min-width:22px;border-radius:7px;border:2px solid var(--b2);background:#fff;display:flex;align-items:center;justify-content:center;transition:all .18s;}
-.terms-agree-box.checked{background:var(--dark);border-color:var(--dark);}
-.terms-agree-text{font-size:12.5px;color:var(--dark);line-height:1.55;}
-.terms-agree-text a{color:var(--dark);font-weight:800;text-decoration:underline;text-underline-offset:2px;}
-@keyframes termsShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.terms-agree-row{display:flex;align-items:center;gap:11px;padding:13px 15px;background:var(--bg);border:1.5px solid var(--b1);border-radius:15px;cursor:pointer;transition:border-color .22s,background .22s,box-shadow .22s;user-select:none;}
+.terms-agree-row:active{opacity:.88;}
+.terms-agree-row.checked{border-color:#0f172a;background:rgba(15,23,42,.04);box-shadow:0 2px 12px rgba(15,23,42,.1);}
+.terms-agree-box{width:24px;height:24px;min-width:24px;border-radius:8px;border:2px solid var(--b2);background:#fff;display:flex;align-items:center;justify-content:center;transition:all .22s cubic-bezier(.34,1.56,.64,1);}
+.terms-agree-box.checked{background:linear-gradient(135deg,#0f172a,#1e3a5f);border-color:transparent;box-shadow:0 3px 10px rgba(15,23,42,.3);}
+.terms-agree-text{font-size:12.5px;color:var(--dark);line-height:1.55;flex:1;}
+.terms-agree-text a{color:#1e3a5f;font-weight:800;text-decoration:underline;text-underline-offset:2px;}
+@keyframes checkDraw{from{stroke-dashoffset:20}to{stroke-dashoffset:0}}
+.tms-tick-path{stroke-dasharray:20;stroke-dashoffset:20;animation:checkDraw .25s ease forwards .05s;}
+@keyframes termsShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+/* ── Sidebar terms item style ── */
+.sidebar-item.terms .sidebar-item-ico{background:linear-gradient(135deg,rgba(15,23,42,.08),rgba(30,58,95,.05));border-color:rgba(15,23,42,.15);}
+.sidebar-item.terms .sidebar-item-ico svg{flex-shrink:0;}
 
 </style>
 <script>
@@ -1534,12 +1565,14 @@ function _clipboardFallback(text, onSuccess, onFail) {
           <div class="str-bar"><div class="str-fill" id="authStrFill"></div></div>
           <div class="str-txt" id="authStrTxt"></div>
         </div>
-                <div class="terms-agree-wrap" id="termsAgreeWrap">
+                <div class="terms-agree-wrap">
           <div class="terms-agree-row" id="termsAgreeRow" onclick="toggleTermsAgree()">
             <div class="terms-agree-box" id="termsAgreeBox">
-              <svg id="termsAgreeTick" width="12" height="12" viewBox="0 0 12 12" fill="none" style="display:none"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg id="termsAgreeTick" width="14" height="14" viewBox="0 0 14 14" fill="none" style="display:none">
+                <path class="tms-tick-path" d="M2.5 7L5.5 10L11.5 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
             </div>
-            <div class="terms-agree-text">ڕازیم بە <a onclick="event.stopPropagation();openTermsModal()">مەرجەکانی بەکارهێنان و سیاسەتی مافەکان</a></div>
+            <div class="terms-agree-text">ڕازیم بە <a onclick="event.stopPropagation();openTermsModal()">مەرجەکانی بەکارهێنان</a> — تکایە بیخوێنەرەوە</div>
           </div>
         </div>
         <button class="abtn" id="authBtn" onclick="nextAuthStep('pass')">
@@ -1748,6 +1781,17 @@ function _clipboardFallback(text, onSuccess, onFail) {
           <span id="lcSideNavDot" style="display:none;position:absolute;top:5px;right:5px;width:8px;height:8px;border-radius:50%;background:#4ade80;border:2px solid #fff"></span>
         </div>
         <div class="sidebar-item-txt">پشتگیری ڕاستەوخۆ</div>
+      </div>
+      <div class="sidebar-item terms" onclick="openTermsModal();closeSidebar()">
+        <div class="sidebar-item-ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="var(--dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="14 2 14 8 20 8" stroke="var(--dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="16" y1="13" x2="8" y2="13" stroke="var(--dark)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="16" y1="17" x2="8" y2="17" stroke="var(--dark)" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="sidebar-item-txt">مەرجەکانی بەکارهێنان</div>
       </div>
       <div class="sidebar-div"></div>
       <div class="sidebar-item red" onclick="doLogout()">
@@ -10789,7 +10833,7 @@ function faqSearch(val, listId, emptyId) {
   if (empty) empty.style.display = visible === 0 ? 'block' : 'none';
 }
 
-// ══ TERMS OF USE JS ══
+// ══ TERMS JS ══
 let _termsAgreed = false;
 function openTermsModal() {
   document.getElementById('termsOverlay').classList.add('show');
@@ -10806,7 +10850,13 @@ function toggleTermsAgree() {
   const tick = document.getElementById('termsAgreeTick');
   if (row) row.classList.toggle('checked', _termsAgreed);
   if (box) box.classList.toggle('checked', _termsAgreed);
-  if (tick) tick.style.display = _termsAgreed ? 'block' : 'none';
+  if (tick) {
+    tick.style.display = _termsAgreed ? 'block' : 'none';
+    if (_termsAgreed) {
+      const p = tick.querySelector('.tms-tick-path');
+      if (p) { p.style.animation = 'none'; void p.offsetWidth; p.style.animation = ''; }
+    }
+  }
 }
 function _resetTermsAgree() {
   _termsAgreed = false;
@@ -10835,79 +10885,90 @@ function _resetTermsAgree() {
 <!-- ══ TERMS MODAL ══ -->
 <div id="termsOverlay" onclick="if(event.target===this)closeTermsModal()">
   <div id="termsBox">
-    <div class="tms-handle"></div>
     <div class="tms-hdr">
-      <div class="tms-hdr-ico">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <polyline points="14 2 14 8 20 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <line x1="16" y1="13" x2="8" y2="13" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-          <line x1="16" y1="17" x2="8" y2="17" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </div>
-      <div>
-        <div class="tms-hdr-title">مەرجەکانی بەکارهێنان و پاراستنی مافەکان</div>
+      <div class="tms-handle"></div>
+      <svg class="tms-hdr-deco" style="top:-25px;right:-35px;opacity:.1" width="200" height="200" viewBox="0 0 200 200"><circle cx="100" cy="100" r="100" fill="white"/></svg>
+      <svg class="tms-hdr-deco" style="bottom:-50px;left:-25px;opacity:.07" width="160" height="160" viewBox="0 0 160 160"><circle cx="80" cy="80" r="80" fill="white"/></svg>
+      <svg class="tms-hdr-deco" style="top:8px;left:42%;opacity:.05" width="70" height="70" viewBox="0 0 70 70"><circle cx="35" cy="35" r="35" fill="white"/></svg>
+      <div class="tms-hdr-inner">
+        <div class="tms-badge">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          پڕۆکسۆ ئەپ
+        </div>
+        <div class="tms-hdr-title">مەرجەکانی بەکارهێنان<br>و پاراستنی مافەکان</div>
         <div class="tms-hdr-sub">تکایە بەباشی بیخوێنەرەوە پێش بەکارهێنانی ئەپەکە</div>
       </div>
     </div>
+
     <div class="tms-body">
-      <div class="tms-sec">
+      <div class="tms-intro">بەخێرهاتی بۆ ئەپی پڕۆکسۆ، بۆ ئەوەی ئەزموونێکی پارێزراو و شەفافیەتت هەبێت، تکایە ئەم خاڵانە بەباشی بخوێنەرەوە:</div>
+
+      <div class="tms-sec blue">
         <div class="tms-sec-hd">
-          <div class="tms-sec-ico" style="background:linear-gradient(135deg,#2563eb,#1d4ed8)">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="tms-sec-ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="16" r="1.5" fill="#fff"/></svg>
           </div>
-          <div class="tms-sec-title">١. پاراستنی هەژمار و سیکیوریتی</div>
+          <div class="tms-sec-meta">
+            <div class="tms-sec-num">SECTION 01</div>
+            <div class="tms-sec-title">پاراستنی هەژمار و سیکیوریتی</div>
+          </div>
         </div>
-        <div class="tms-sec-body">
-          <p><b>چوونەژوورەوەی پارێزراو:</b> بۆ زیاتر پاراستنی باڵانس و زانیارییەکانت، چوونەژوورەوە تەنها لە ڕێگەی ئیمێڵ و پاسۆرد و کۆدی دڵنیایی (OTP) دەبێت کە بۆ ئیمێڵەکەت دێت.</p>
-          <p><b>نهێنیبوونی زانیاری:</b> زانیارییەکانی تۆ بە تەواوی پارێزراون. هیچ کەسێک، تەنانەت کارمەندانی ئێمەش، ناتوانن بچنە ناو هەژمارەکەت یان دەستیان بە زانیارییە تایبەتییەکانت بگات.</p>
-        </div>
+        <div class="tms-rule"><div class="tms-rule-dot"></div><div><b>چوونەژوورەوەی پارێزراو:</b> بۆ زیاتر پاراستنی باڵانس و زانیارییەکانت، چوونەژوورەوە تەنها لە ڕێگەی ئیمێڵ و پاسۆرد و کۆدی دڵنیایی (OTP) دەبێت کە بۆ ئیمێڵەکەت دێت.</div></div>
+        <div class="tms-rule"><div class="tms-rule-dot"></div><div><b>نهێنیبوونی زانیاری:</b> زانیارییەکانی تۆ بە تەواوی پارێزراون. هیچ کەسێک، تەنانەت کارمەندانی ئێمەش، ناتوانن بچنە ناو هەژمارەکەت یان دەستیان بە زانیارییە تایبەتییەکانت بگات.</div></div>
       </div>
-      <div class="tms-sec">
+
+      <div class="tms-sec green">
         <div class="tms-sec-hd">
-          <div class="tms-sec-ico" style="background:linear-gradient(135deg,#16a34a,#15803d)">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><line x1="12" y1="1" x2="12" y2="23" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="tms-sec-ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><line x1="12" y1="2" x2="12" y2="22" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
-          <div class="tms-sec-title">٢. سیستەمی باڵانس و ڕیفاوند</div>
+          <div class="tms-sec-meta">
+            <div class="tms-sec-num">SECTION 02</div>
+            <div class="tms-sec-title">سیستەمی باڵانس و ڕیفاوند</div>
+          </div>
         </div>
-        <div class="tms-sec-body">
-          <p><b>گەڕانەوەی باڵانس:</b> ئەگەر ڕیکلامەکەت لەلایەن تیکتۆکەوە ڕەتکرایەوە، بڕی تێچووی ئەو ڕیکلامە ڕاستەوخۆ و بەبێ کەمکردنەوە دەگەڕێتەوە بۆ سەر باڵانسی هەژمارەکەت.</p>
-          <p><b>گۆڕینەوەی باڵانس:</b> ئەو باڵانسەی لەناو هەژمارەکەتدا ماوە، تەنها بۆ خزمەتگوزارییەکانی ناو ئەپەکە بەکاردێت و بە هیچ شێوەیەک ناتوانرێت بکرێتەوە بە پارەی کاش.</p>
-          <p><b>زیادکردنی باڵانس:</b> لە کاتی بارگاوی کردنی هەژمارەکەت، هیچ بڕە پارەیەک وەک لێبڕین یان زیادە وەرناگیرێت؛ چەند بڕە پارە بنێریت، بەتەواوی دەبێتە باڵانس.</p>
-        </div>
+        <div class="tms-rule"><div class="tms-rule-dot"></div><div><b>گەڕانەوەی باڵانس:</b> ئەگەر ڕیکلامەکەت لەلایەن تیکتۆکەوە ڕەتکرایەوە، بڕی تێچووی ئەو ڕیکلامە ڕاستەوخۆ و بەبێ کەمکردنەوە دەگەڕێتەوە بۆ سەر باڵانسی هەژمارەکەت لەناو ئەپەکەدا.</div></div>
+        <div class="tms-rule"><div class="tms-rule-dot"></div><div><b>گۆڕینەوەی باڵانس:</b> ئەو باڵانسەی لەناو هەژمارەکەتدا ماوە، تەنها بۆ خزمەتگوزارییەکانی ناو ئەپەکە بەکاردێت و بە هیچ شێوەیەک ناتوانرێت بکرێتەوە بە پارەی کاش.</div></div>
+        <div class="tms-rule"><div class="tms-rule-dot"></div><div><b>زیادکردنی باڵانس:</b> لە کاتی بارگاوی کردنی هەژمارەکەت، هیچ بڕە پارەیەک وەک لێبڕین یان زیادە وەرناگیرێت؛ چەند بڕە پارە بنێریت، بەتەواوی دەبێتە باڵانس لە هەژمارەکەتدا.</div></div>
       </div>
-      <div class="tms-sec">
+
+      <div class="tms-sec amber">
         <div class="tms-sec-hd">
-          <div class="tms-sec-ico" style="background:linear-gradient(135deg,#d97706,#b45309)">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="tms-sec-ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="9" y1="9" x2="15" y2="9" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><line x1="9" y1="12" x2="13" y2="12" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
           </div>
-          <div class="tms-sec-title">٣. ناردنی ڕیکلام و زانیارییەکان</div>
+          <div class="tms-sec-meta">
+            <div class="tms-sec-num">SECTION 03</div>
+            <div class="tms-sec-title">ناردنی ڕیکلام و زانیارییەکان</div>
+          </div>
         </div>
-        <div class="tms-sec-body">
-          <p><b>دروستی زانیاری:</b> تکایە دڵنیابەرەوە لە ناردنی زانیاری دروست. لە حاڵەتی ناردنی زانیاری هەڵە، ڕیکلامەکەت ڕەتدەکرێتەوە.</p>
-          <p><b>ئاگادارکردنەوە:</b> لە کاتی هەر کێشەیەک یان ڕەتکردنەوەیەک، ئێمە لە ڕێگەی ئیمێڵ و بەشی ئاگادارییەکانی ناو ئەپەکە ئاگادارت دەکەینەوە تاوەکو زانیارییەکان ڕاست بکەیتەوە و دووبارە ڕیکلامەکە بنێریتەوە.</p>
-        </div>
+        <div class="tms-rule"><div class="tms-rule-dot"></div><div><b>دروستی زانیاری:</b> تکایە دڵنیابەرەوە لە ناردنی زانیاری دروست. لە حاڵەتی ناردنی زانیاری هەڵە، ڕیکلامەکەت ڕەتدەکرێتەوە.</div></div>
+        <div class="tms-rule"><div class="tms-rule-dot"></div><div><b>ئاگادارکردنەوە:</b> لە کاتی هەر کێشەیەک یان ڕەتکردنەوەیەک، ئێمە لە ڕێگەی ئیمێڵ و بەشی ئاگادارییەکانی ناو ئەپەکە ئاگادارت دەکەینەوە تاوەکو زانیارییەکان ڕاست بکەیتەوە و دووبارە ڕیکلامەکە بنێریتەوە.</div></div>
       </div>
-      <div class="tms-sec">
+
+      <div class="tms-sec purple">
         <div class="tms-sec-hd">
-          <div class="tms-sec-ico" style="background:linear-gradient(135deg,#7c3aed,#6d28d9)">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="7" r="4" stroke="#fff" stroke-width="2"/></svg>
+          <div class="tms-sec-ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="7" r="4" stroke="#fff" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
-          <div class="tms-sec-title">٤. پشتگیری بەکارهێنەر</div>
+          <div class="tms-sec-meta">
+            <div class="tms-sec-num">SECTION 04</div>
+            <div class="tms-sec-title">پشتگیری بەکارهێنەر</div>
+          </div>
         </div>
-        <div class="tms-sec-body">
-          <p>ئەگەر تووشی هەر گرفتێکی تەکنیکی بوویت، دەتوانیت لە ڕێگەی پشتگیری ڕاستەوخۆ (Live Support) لەناو ئەپەکەدا، ڕاستەوخۆ لەگەڵ کارمەندەکانمان گفتوگۆ بکەیت بۆ چارەسەرکردنی کێشەکەت.</p>
-        </div>
+        <div class="tms-rule"><div class="tms-rule-dot"></div><div>ئەگەر تووشی هەر گرفتێکی تەکنیکی بوویت، دەتوانیت لە ڕێگەی پشتگیری ڕاستەوخۆ <b>(Live Support)</b> لەناو ئەپەکەدا، ڕاستەوخۆ لەگەڵ کارمەندەکانمان گفتوگۆ بکەیت بۆ چارەسەرکردنی کێشەکەت.</div></div>
       </div>
-      <div style="text-align:center;padding:8px 0 2px;font-size:11.5px;color:var(--mt)">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;margin-left:4px"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="#8b95a8" stroke-width="2" stroke-linecap="round"/><polyline points="22,6 12,13 2,6" stroke="#8b95a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span style="font-family:'Inter',sans-serif;direction:ltr;display:inline-block">info@proxopages.com</span>
+
+      <div class="tms-contact">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="#8b95a8" stroke-width="1.8" stroke-linecap="round"/><polyline points="22,6 12,13 2,6" stroke="#8b95a8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="tms-contact-txt">info@proxopages.com</span>
       </div>
     </div>
+
     <div class="tms-foot">
       <button class="tms-close-btn" onclick="closeTermsModal()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;margin-left:6px"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        خوێندمەوە و ڕازیم
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        خوێندمەوە — ڕازیم بە هەموو مرجەکان
       </button>
     </div>
   </div>
