@@ -391,18 +391,18 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .dep-rcpt-prev{width:100%;max-height:160px;object-fit:cover;border-radius:11px;display:none;margin-bottom:14px;border:1.5px solid rgba(16,185,129,.3);}
 
 /* ══ CREATE AD v2 ══ */
-.create-hero{background:linear-gradient(135deg,#0848c0,#1278f5 45%,#3aa6ff);border-radius:24px;padding:22px 20px 24px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 8px 28px rgba(14,120,255,.28);}
-.create-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;background:rgba(255,255,255,.08);border-radius:50%;pointer-events:none;}
-.create-hero::after{content:'';position:absolute;bottom:-30px;left:20px;width:90px;height:90px;background:rgba(255,255,255,.05);border-radius:50%;pointer-events:none;}
+.create-hero{background:var(--dark);border-radius:22px;padding:20px 18px 22px;margin-bottom:12px;position:relative;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.14);}
+.create-hero::before{content:'';position:absolute;top:-50px;right:-50px;width:150px;height:150px;background:rgba(255,255,255,.04);border-radius:50%;pointer-events:none;}
+.create-hero::after{content:'';position:absolute;bottom:-35px;left:15px;width:100px;height:100px;background:rgba(255,255,255,.03);border-radius:50%;pointer-events:none;}
 .create-hero-inner{display:flex;align-items:center;gap:14px;position:relative;}
-.create-hero-icon{width:52px;height:52px;border-radius:16px;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;flex-shrink:0;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
-.create-hero-title{font-size:20px;font-weight:900;color:#fff;letter-spacing:-.3px;}
-.create-hero-sub{font-size:12px;color:rgba(255,255,255,.75);margin-top:4px;font-family:'Inter',sans-serif;}
-.create-sec{background:#fff;border:1px solid rgba(232,234,240,.85);border-radius:22px;padding:18px 16px;margin-bottom:12px;box-shadow:0 2px 14px rgba(0,0,0,.05),0 0 0 0 transparent;}
+.create-hero-icon{width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0;}
+.create-hero-title{font-size:19px;font-weight:900;color:#fff;letter-spacing:-.3px;}
+.create-hero-sub{font-size:11.5px;color:rgba(255,255,255,.6);margin-top:4px;font-family:'Inter',sans-serif;}
+.create-sec{background:var(--w);border:1px solid var(--b1);border-radius:18px;padding:15px 14px;margin-bottom:10px;box-shadow:0 1px 6px rgba(0,0,0,.04);}
 .create-sec-hdr{display:flex;align-items:center;gap:9px;margin-bottom:14px;}
 .create-sec-ico{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
 .create-sec-lbl{font-size:13px;font-weight:800;color:var(--dark);}
-.goal-tab-v2{width:100%;padding:13px 14px;border-radius:16px;border:1.5px solid rgba(232,234,240,.85);background:#fff;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .25s ease;text-align:right;margin-bottom:8px;font-family:'R',sans-serif;box-shadow:0 1px 6px rgba(0,0,0,.03);}
+.goal-tab-v2{width:100%;padding:12px 13px;border-radius:14px;border:1.5px solid var(--b1);background:var(--w);display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .2s ease;text-align:right;margin-bottom:8px;font-family:'R',sans-serif;}
 .goal-tab-v2:last-child{margin-bottom:0;}
 .goal-tab-v2.on{border-color:#0E78FF;background:rgba(14,120,255,.05);box-shadow:0 2px 10px rgba(14,120,255,.12);}
 .goal-tab-v2-ico{width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;transition:all .22s;}
@@ -459,7 +459,7 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .create-price-lbl{color:var(--mt2);}
 .create-price-val{font-weight:700;color:var(--dark);font-family:'Inter',sans-serif;}
 .create-price-total{border-top:1px solid rgba(22,163,74,.2);padding-top:9px;margin-top:2px;display:flex;justify-content:space-between;align-items:center;}
-.create-submit{width:100%;padding:18px;background:linear-gradient(135deg,#0848c0,#1278f5);color:#fff;border:none;border-radius:18px;font-family:'R',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;margin-top:4px;box-shadow:0 6px 24px rgba(14,120,255,.3);transition:opacity .2s,transform .18s ease;}
+.create-submit{width:100%;padding:17px;background:var(--dark);color:#fff;border:none;border-radius:16px;font-family:'R',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;margin-top:4px;box-shadow:0 4px 14px rgba(28,35,51,.18);transition:opacity .2s,transform .18s ease;}
 .create-submit:active{opacity:.9;transform:scale(.99);}
 .create-submit:disabled{opacity:.4;pointer-events:none;}
 
@@ -853,7 +853,7 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .sec-div{height:1px;background:var(--b1);margin:16px 0;}
 
 /* ══ SIDEBAR / DRAWER ══ */
-.sidebar-overlay{position:fixed;top:0;left:0;right:0;bottom:0;inset:0;background:rgba(0,0,0,.45);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);z-index:8000;display:none;opacity:0;transition:opacity .15s;}
+.sidebar-overlay{position:fixed;top:0;left:0;right:0;bottom:0;inset:0;background:rgba(0,0,0,.42);z-index:8000;display:none;opacity:0;transition:opacity .15s;}
 .sidebar-overlay.on{display:block;opacity:1;}
 .sidebar{position:fixed;top:0;right:-300px;width:280px;height:100vh;background:var(--w);z-index:8100;transition:right .18s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-8px 0 40px rgba(0,0,0,.12);}
 .sidebar.on{right:0;}
@@ -864,7 +864,7 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .sidebar-name{font-size:15px;font-weight:800;color:var(--dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .sidebar-email{font-size:11px;color:var(--mt);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:ltr;text-align:right;}
 .sidebar-close{width:32px;height:32px;border-radius:50%;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mt);font-size:14px;flex-shrink:0;}
-.sidebar-body{flex:1;overflow-y:auto;padding:12px 12px;}
+.sidebar-body{flex:1;overflow-y:auto;padding:12px 12px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scroll-behavior:smooth;}
 .sidebar-item{display:flex;align-items:center;gap:13px;padding:13px 14px;border-radius:14px;cursor:pointer;transition:all .18s;margin-bottom:4px;}
 .sidebar-item:active,.sidebar-item:hover{background:var(--bg);}
 .sidebar-item.active{background:rgba(28,35,51,.06);}
@@ -1872,7 +1872,7 @@ function _toWebP(dataUrl,quality){
         <div class="sidebar-item-txt">سەرەکی</div>
       </div>
       <div class="sidebar-item" onclick="goPage('profile');closeSidebar()">
-        <div class="sidebar-item-ico"><i class="fas fa-user"></i></div>
+        <div class="sidebar-item-ico"><i class="fas fa-circle-user"></i></div>
         <div class="sidebar-item-txt">پرۆفایل</div>
       </div>
       <div class="sidebar-item" onclick="goPage('myads');closeSidebar()">
@@ -1880,7 +1880,7 @@ function _toWebP(dataUrl,quality){
         <div class="sidebar-item-txt">ڕیکلامەکانم</div>
       </div>
       <div class="sidebar-item" onclick="goPage('proxolink');closeSidebar()">
-        <div class="sidebar-item-ico"><i class="fas fa-link"></i></div>
+        <div class="sidebar-item-ico"><i class="fas fa-layer-group"></i></div>
         <div class="sidebar-item-txt">ئامرازەکان</div>
       </div>
       <div class="sidebar-item" onclick="goPage('tutorials');closeSidebar()">
@@ -1890,6 +1890,10 @@ function _toWebP(dataUrl,quality){
       <div class="sidebar-item" onclick="goPage('txhistory');closeSidebar()">
         <div class="sidebar-item-ico"><i class="fas fa-clock-rotate-left"></i></div>
         <div class="sidebar-item-txt">مێژووی مامەڵەکان</div>
+      </div>
+      <div class="sidebar-item" onclick="goPage('adcalc');closeSidebar()">
+        <div class="sidebar-item-ico"><i class="fas fa-calculator"></i></div>
+        <div class="sidebar-item-txt">ژمێرکاری گەیشتن</div>
       </div>
       <div class="sidebar-item" onclick="goPage('promocodes');closeSidebar()">
         <div class="sidebar-item-ico" style="background:rgba(234,179,8,.08);border-color:rgba(234,179,8,.2)"><i class="fas fa-tags" style="color:#ca8a04"></i></div>
@@ -1908,14 +1912,7 @@ function _toWebP(dataUrl,quality){
         <div class="sidebar-item-txt">پشتگیری ڕاستەوخۆ</div>
       </div>
       <div class="sidebar-item terms" onclick="openTermsModal();closeSidebar()">
-        <div class="sidebar-item-ico">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="var(--dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <polyline points="14 2 14 8 20 8" stroke="var(--dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <line x1="16" y1="13" x2="8" y2="13" stroke="var(--dark)" stroke-width="2" stroke-linecap="round"/>
-            <line x1="16" y1="17" x2="8" y2="17" stroke="var(--dark)" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </div>
+        <div class="sidebar-item-ico"><i class="fas fa-file-lines"></i></div>
         <div class="sidebar-item-txt">مەرجەکانی بەکارهێنان</div>
       </div>
       <div class="sidebar-div"></div>
@@ -1959,8 +1956,8 @@ function _toWebP(dataUrl,quality){
       </div>
       <i class="fas fa-chevron-left home-card-arr"></i>
     </div>
-    <div class="home-card" onclick="goPage('adcalc')" style="background:linear-gradient(135deg,rgba(79,110,247,.07),rgba(124,92,252,.05));border-color:rgba(79,110,247,.18)">
-      <div class="home-card-ico" style="background:linear-gradient(135deg,#4f6ef7,#7c5cfc);box-shadow:0 4px 12px rgba(79,110,247,.35)"><i class="fas fa-calculator" style="color:#fff"></i></div>
+    <div class="home-card" onclick="goPage('adcalc')">
+      <div class="home-card-ico"><i class="fas fa-calculator"></i></div>
       <div class="home-card-info">
         <div class="home-card-title">ژمێرکاری گەیشتن</div>
         <div class="home-card-sub">خەمڵاندنی گەیشتنی ڕیکلامەکەت</div>
@@ -3051,7 +3048,7 @@ function _toWebP(dataUrl,quality){
     <!-- ══ AD REACH CALCULATOR PAGE ══ -->
     <div class="pg" id="pgAdcalc">
       <div class="pg-hdr">
-        <div class="pg-title" style="font-size:20px"><i class="fas fa-calculator" style="margin-left:9px;color:#4f6ef7"></i>ژمێرکاری گەیشتن</div>
+        <div class="pg-title" style="font-size:20px"><i class="fas fa-calculator" style="margin-left:9px;opacity:.7"></i>ژمێرکاری گەیشتن</div>
       </div>
 
       <!-- INPUT CARD -->
@@ -3217,8 +3214,8 @@ function _toWebP(dataUrl,quality){
     <button class="bn" id="bn_tutorials" onclick="goPage('tutorials')">
       <i class="fas fa-play"></i>فێرکارییەکان
     </button>
-    <button class="bn" id="bn_adcalc" onclick="goPage('adcalc')">
-      <i class="fas fa-calculator"></i>ژمێرکاری
+    <button class="bn" id="bn_proxolink2" onclick="goPage('proxolink')">
+      <i class="fas fa-layer-group"></i>ئامرازەکان
     </button>
   </div>
 </nav>
