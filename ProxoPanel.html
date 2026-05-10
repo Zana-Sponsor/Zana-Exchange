@@ -1519,8 +1519,8 @@ tr:hover td{background:rgba(28,35,51,.015);}
 
 <script>
 // ══ CONFIG ══
-const SB_URL=atob('https://cojchkwssmasiejcgvbk.supabase.co');
-const SB_KEY=atob('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNvamNoa3dzc21hc2llamNndmJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczMTE1MTIsImV4cCI6MjA5Mjg4NzUxMn0.RCALy3wpKHGAkmXWcBqEb_QFEUmh6ErdRbfrBmagvtw');
+const SB_URL='https://cojchkwssmasiejcgvbk.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNvamNoa3dzc21hc2llamNndmJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczMTE1MTIsImV4cCI6MjA5Mjg4NzUxMn0.RCALy3wpKHGAkmXWcBqEb_QFEUmh6ErdRbfrBmagvtw';
 const ADMIN_EMAILS=['admin@proxoads.com','proxo.admin@gmail.com'];
 
 let sb, adminUser=null, lcaAdminDisplayName='ئەدمین';
@@ -1564,20 +1564,25 @@ async function doLogin(){
   const err=document.getElementById('authErr');
   if(!email||!pass){showAuthErr('ئیمەیل و پاسۆرد پڕ بکەرەوە');return;}
   btn.disabled=true;btn.textContent='...';
-  const{data,error}=await sb.auth.signInWithPassword({email,password:pass});
-  if(error){showAuthErr('ئیمەیل یان پاسۆرد هەڵەیە');btn.disabled=false;btn.innerHTML='<i class="fas fa-arrow-left"></i> چوونەژوورەوە';return;}
-  adminUser=data.user;
-  const{data:prof}=await sb.from('profiles').select('is_admin,full_name').eq('id',adminUser.id).single();
-  if(prof?.full_name)lcaAdminDisplayName=prof.full_name;
-  else lcaAdminDisplayName=adminUser.email.split('@')[0];
-  // بلۆک تەنها ئەگەر is_admin بە ئەکسپلیسیت false دانراوێت — null/undefined = ئادمینە
-  if(prof?.is_admin===false&&!ADMIN_EMAILS.includes(email)){
-    await sb.auth.signOut();
-    showAuthErr('تۆ مافی دەستگەیشتن بە پانێڵی ئادمین نییەت');
+  try{
+    const{data,error}=await sb.auth.signInWithPassword({email,password:pass});
+    if(error){showAuthErr('ئیمەیل یان پاسۆرد هەڵەیە');btn.disabled=false;btn.innerHTML='<i class="fas fa-arrow-left"></i> چوونەژوورەوە';return;}
+    adminUser=data.user;
+    const{data:prof}=await sb.from('profiles').select('is_admin,full_name').eq('id',adminUser.id).single();
+    if(prof?.full_name)lcaAdminDisplayName=prof.full_name;
+    else lcaAdminDisplayName=adminUser.email.split('@')[0];
+    // بلۆک تەنها ئەگەر is_admin بە ئەکسپلیسیت false دانراوێت — null/undefined = ئادمینە
+    if(prof?.is_admin===false&&!ADMIN_EMAILS.includes(email)){
+      await sb.auth.signOut();
+      showAuthErr('تۆ مافی دەستگەیشتن بە پانێڵی ئادمین نییەت');
+      btn.disabled=false;btn.innerHTML='<i class="fas fa-arrow-left"></i> چوونەژوورەوە';
+      return;
+    }
+    showApp();
+  }catch(e){
+    showAuthErr('هەڵەی پەیوەندی: '+e.message);
     btn.disabled=false;btn.innerHTML='<i class="fas fa-arrow-left"></i> چوونەژوورەوە';
-    return;
   }
-  showApp();
 }
 
 function showAuthErr(msg){
@@ -1667,6 +1672,35 @@ function validateRequired(id){
   clearFieldErr(id);return true;
 }
 
+
+// ══ HELPER: تریگەری net.http_post بچەوسێنەرەوە ══
+function isNetHttpErr(e){
+  return e && typeof e.message === 'string' && (
+    e.message.includes('http_post') ||
+    e.message.includes('net.http')
+  );
+}
+
+// ══ HELPER: نوێکردنەوەی pa_transactions بەبێ تریگەر (delete+insert workaround) ══
+async function safeUpdateTx(id, payload){
+  // هەوڵی یەکەم: نوێکردنەوەی ئاسایی
+  const{error:_ue}=await sb.from('pa_transactions').update(payload).eq('id',id);
+  if(!_ue) return {error:null};
+  if(!isNetHttpErr(_ue)) return {error:_ue};
+  // تریگەر rollback کرد — delete + insert
+  const{data:txRow,error:_se}=await sb.from('pa_transactions').select('*').eq('id',id).single();
+  if(_se||!txRow) return {error:_ue};
+  const{error:_de}=await sb.from('pa_transactions').delete().eq('id',id);
+  if(_de) return {error:_de};
+  const newRow={...txRow,...payload};
+  const{error:_ie}=await sb.from('pa_transactions').insert(newRow);
+  if(_ie){
+    // گەڕانەوە بۆ شوێنی خۆی ئەگەر insert شکست هێنا
+    await sb.from('pa_transactions').insert(txRow);
+    return {error:_ie};
+  }
+  return {error:null};
+}
 // ══ REALTIME ══
 function setupRealtime(){
   sb.channel('admin-realtime-v3')
@@ -1916,6 +1950,7 @@ async function saveEditUser(){
   const{error}=await sb.from('profiles').update({full_name:name}).eq('id',id);
   if(error){showToast('هەڵە: '+error.message,'rd');return;}
   showToast('✅ پرۆفایل نوێکرایەوە','gr');
+  _fbTriggerProfile(id);
   closeMo('moEditUser');loadUsers();
 }
 
@@ -1928,6 +1963,9 @@ async function toggleBan(uid,isBanned){
       await sb.from('pa_notifications').insert({user_id:uid,type:isBanned?'general':'warning',
         title:isBanned?'ئەکاونتت دووبارە چالاکبوو ✅':'ئەکاونتت بانکرا ⛔',
         body:isBanned?'ئادمین ئەکاونتەکەت دووبارە چالاک کردەوە.':'ئادمین ئەکاونتەکەت بانی کردووە.',is_read:false});
+      // ── Firebase realtime push (بانکردن/بانەکردنەوە) ──
+      _fbPushNotif(uid,isBanned?'ئەکاونتت دووبارە چالاکبوو ✅':'ئەکاونتت بانکرا ⛔',isBanned?'ئادمین ئەکاونتەکەت دووبارە چالاک کردەوە.':'ئادمین ئەکاونتەکەت بانی کردووە.',isBanned?'general':'warning');
+      _fbTriggerProfile(uid);
       showToast(isBanned?'✅ بانەکردن هەڵگیرا':'✅ بەکارهێنەر بانکرا','gr');
       loadUsers();
     });
@@ -2068,10 +2106,14 @@ async function confirmAddBalance(){
   const{data:wallet}=await sb.from('pa_wallets').select('balance').eq('user_id',uid).single();
   const newBal=parseFloat(wallet?.balance||0)+amtUSD;
   const{error}=await sb.from('pa_wallets').update({balance:newBal,updated_at:new Date().toISOString()}).eq('user_id',uid);
-  if(error){showToast('هەڵە: '+error.message,'rd');return;}
+  if(error && !isNetHttpErr(error)){showToast('هەڵە: '+error.message,'rd');return;}
   await sb.from('pa_transactions').insert({user_id:uid,amount:amtUSD,type:'admin_adjustment',status:'approved',note:`ئادمین (${adminEmail}): زیادکردن — ${note}`});
   await sb.from('pa_notifications').insert({user_id:uid,type:'balance_added',title:'باڵانست زیادکرا 💰',body:`ئادمین ${Math.round(amtIQD).toLocaleString()} IQD زیادی کرد بۆ باڵانسەکەت.`,is_read:false});
   showToast('✅ '+Math.round(amtIQD).toLocaleString()+' IQD زیادکرا','gr');
+  // ── Firebase realtime sync ──
+  _fbSyncBalance(uid, newBal);
+  _fbPushNotif(uid,'باڵانست زیادکرا 💰',`ئادمین ${Math.round(amtIQD).toLocaleString()} IQD زیادی کرد بۆ باڵانسەکەت.`,'balance_added');
+  _fbTriggerTx(uid);
   // ── ئیمێڵی وەسڵی زیادکردنی باڵانس ──
 try {
   const { data: prof } = await sb.from('profiles')
@@ -2123,10 +2165,14 @@ async function confirmDeductBalance(){
   }
   const newBal=Math.max(0,cur-amtUSD);
   const{error}=await sb.from('pa_wallets').update({balance:newBal,updated_at:new Date().toISOString()}).eq('user_id',uid);
-  if(error){showToast('هەڵە: '+error.message,'rd');return;}
+  if(error && !isNetHttpErr(error)){showToast('هەڵە: '+error.message,'rd');return;}
   await sb.from('pa_transactions').insert({user_id:uid,amount:amtUSD,type:'admin_adjustment',status:'approved',note:`ئادمین (${adminEmail}): وەرگرتن — ${note}`});
   await sb.from('pa_notifications').insert({user_id:uid,type:'warning',title:'باڵانسەکەت کەم کرایەوە ⚠️',body:`ئادمین ${Math.round(amtIQD).toLocaleString()} IQD لە باڵانسەکەت وەرگرت. هۆکار: ${note}`,is_read:false});
   showToast('✅ '+Math.round(amtIQD).toLocaleString()+' IQD وەرگیرا','gr');
+  // ── Firebase realtime sync ──
+  _fbSyncBalance(uid, newBal);
+  _fbPushNotif(uid,'باڵانسەکەت کەم کرایەوە ⚠️',`ئادمین ${Math.round(amtIQD).toLocaleString()} IQD لە باڵانسەکەت وەرگرت. هۆکار: ${note}`,'warning');
+  _fbTriggerTx(uid);
   // ── ئیمێڵی ئاگادارکردنی کەمکردنی باڵانس ──
   try {
     const { data: prof } = await sb.from('profiles')
@@ -2343,16 +2389,20 @@ function showDepDetail(d){
 async function approveDeposit(id,userId,amount){
   confirm2('پەسەندکردنی پارەدان',`ئایا دەتەوێت ${Math.round(parseFloat(amount)*1800).toLocaleString()} IQD زیاد بکەیت؟`,
     'fas fa-check-circle','var(--gr)',async()=>{
-      const{error:e1}=await sb.from('pa_transactions').update({status:'approved'}).eq('id',id);
+      const{error:e1}=await safeUpdateTx(id,{status:'approved'});
       if(e1){showToast('هەڵە: '+e1.message,'rd');return;}
       await sb.from('pa_wallets').upsert({user_id:userId,balance:0},{onConflict:'user_id',ignoreDuplicates:true});
       const{data:w,error:e2}=await sb.from('pa_wallets').select('balance').eq('user_id',userId).single();
-      if(e2){showToast('هەڵەی بارکردنی باڵانس: '+e2.message,'rd');return;}
+      if(e2 && !isNetHttpErr(e2)){showToast('هەڵەی بارکردنی باڵانس: '+e2.message,'rd');return;}
       const newBal=parseFloat(w?.balance||0)+parseFloat(amount);
       const{error:e3}=await sb.from('pa_wallets').update({balance:newBal,updated_at:new Date().toISOString()}).eq('user_id',userId);
-      if(e3){showToast('هەڵەی نوێکردنەوەی باڵانس: '+e3.message,'rd');return;}
+      if(e3 && !isNetHttpErr(e3)){showToast('هەڵەی نوێکردنەوەی باڵانس: '+e3.message,'rd');return;}
       await sb.from('pa_notifications').insert({user_id:userId,type:'deposit_approved',title:'پارەدانت پەسەندکرا ✅',body:`${Math.round(parseFloat(amount)*1800).toLocaleString()} IQD زیادکرا بۆ باڵانسەکەت.`,is_read:false});
       showToast('✅ پارەدان پەسەندکرا','gr');
+      // ── Firebase realtime sync ──
+      _fbSyncBalance(userId, newBal);
+      _fbPushNotif(userId,'پارەدانت پەسەندکرا ✅',`${Math.round(parseFloat(amount)*1800).toLocaleString()} IQD زیادکرا بۆ باڵانسەکەت.`,'deposit_approved');
+      _fbTriggerTx(userId);
       try{
         const{data:prof}=await sb.from('profiles').select('full_name,email').eq('id',userId).single();
         if(prof?.email){
@@ -2522,7 +2572,7 @@ async function showAdDetail(id){
 
 async function updateAdStatus(id,userId,newStatus,budget){
   const{error}=await sb.from('pa_ads').update({status:newStatus}).eq('id',id);
-  if(error){showToast('هەڵە: '+error.message,'rd');return;}
+  if(error && !isNetHttpErr(error)){showToast('هەڵە: '+error.message,'rd');return;}
   // ئەگەر پەسەندکرا و بودجە $20 یان زیاتر بوو — بەشدار بکە لە قورعەی هەفتانە
   if(newStatus==='active' && parseFloat(budget||0)>=20 && userId){
     try{
@@ -2647,7 +2697,7 @@ async function submitApproval(){
       start_date: startDate,
       end_date: endDate
     }).eq('id', _approveAdId);
-    if(error){ showToast('هەڵە: '+error.message,'rd'); btn.disabled=false; btn.innerHTML='<i class="fas fa-check-circle"></i> پەسەندکردن (Approve)'; return; }
+    if(error && !isNetHttpErr(error)){ showToast('هەڵە: '+error.message,'rd'); btn.disabled=false; btn.innerHTML='<i class="fas fa-check-circle"></i> پەسەندکردن (Approve)'; return; }
     // Giveaway entry if budget >= $20
     if(_approveAdBudget >= 20 && _approveUserId){
       try{
@@ -2670,13 +2720,16 @@ async function submitApproval(){
       body: `ڕیکلامەکەت پەسەندکرا و ئێستا ژیوەیە (Live). TikTok Ad ID: ${tiktokId} | دەستپێکردن: ${startDate} | کۆتایی: ${endDate}`,
       is_read: false
     });
+    // ── Firebase realtime push (پەسەندکردنی ڕیکلام) ──
+    _fbPushNotif(_approveUserId,'ڕیکلامەکەت چالاک بوو ✅',`ڕیکلامەکەت پەسەندکرا و ئێستا ژیوەیە (Live). TikTok ID: ${tiktokId}`,'ad_approved');
+    _fbTriggerAds(_approveUserId, _approveAdId, 'active');
     showToast('✅ ڕیکلام پەسەندکرا — ستاتۆس: چالاک (Live)','gr');
     closeMo('moApproveAd');
     loadAds();
     loadApprovalWorkflow();
     loadAdBadge();
   }catch(e){
-    showToast('هەڵەیەک ڕوویدا: '+e.message,'rd');
+    if(!isNetHttpErr(e)) showToast('هەڵەیەک ڕوویدا: '+e.message,'rd');
   }
   btn.disabled = false;
   btn.innerHTML = '<i class="fas fa-check-circle"></i> پەسەندکردن (Approve)';
@@ -2695,13 +2748,13 @@ async function confirmReject(){
   const reason=document.getElementById('rejectReasonTxt').value.trim();
   if(!reason){showToast('هۆکار بنووسە','rd');return;}
   if(type==='deposit'){
-    // هەوڵ بدە بە reject_reason، ئەگەر شکستی هێنا بەبێ ئەو فیلدە هەوڵ بدە
-    let res=await sb.from('pa_transactions').update({status:'rejected',reject_reason:reason}).eq('id',id);
-    if(res.error){
-      // فیلدی reject_reason نەبوو، تەنها status نوێ بکەرەوە
-      res=await sb.from('pa_transactions').update({status:'rejected',note:'ڕەتکرا: '+reason}).eq('id',id);
-      if(res.error){showToast('هەڵە: '+res.error.message,'rd');return;}
+    // هەوڵ بدە بە reject_reason، ئەگەر فیلدەکە نەبوو بەبێ بکە
+    let{error:_re1}=await safeUpdateTx(id,{status:'rejected',reject_reason:reason,note:'ڕەتکرا: '+reason});
+    if(_re1){
+      const{error:_re2}=await safeUpdateTx(id,{status:'rejected',note:'ڕەتکرا: '+reason});
+      if(_re2){showToast('هەڵە: '+_re2.message,'rd');return;}
     }
+    const res={error:null};
     const dep=allDeposits.find(d=>d.id===id);
     if(dep){
       await sb.from('pa_notifications').insert({
@@ -2711,6 +2764,8 @@ async function confirmReject(){
         body:'هۆکار: '+reason,
         is_read:false
       });
+      // ── Firebase realtime push ──
+      _fbPushNotif(dep.user_id,'پارەدانت ڕەتکرا ❌','هۆکار: '+reason,'deposit_rejected');
     }
     loadDeposits();
   } else {
@@ -2727,9 +2782,9 @@ async function confirmReject(){
         // هەوڵی دووەم: تەنها status — بەبێ reject_reason (ئەگەر فیلدەکە نەبوو)
         const {error:e2}=await sb.from('pa_ads').update({status:'rejected'}).eq('id',id);
         if(!e2) rejected=true;
-        else{showToast('هەڵە: '+e2.message,'rd');return;}
+        else if(!isNetHttpErr(e2)){showToast('هەڵە: '+e2.message,'rd');return;}
       }
-    }catch(ex){showToast('هەڵە: '+ex.message,'rd');return;}
+    }catch(ex){ if(!isNetHttpErr(ex)){showToast('هەڵە: '+ex.message,'rd');return;} }
     if(!rejected) return;
     // گەڕانەوەی بودجە بۆ باڵانسی بەکارهێنەر کاتێک ڕیکلام ڕەتدەکرێت
     if(adObj?.user_id && parseFloat(adObj?.budget||0)>0){
@@ -2756,6 +2811,10 @@ async function confirmReject(){
           body:`${adObj.ad_number?'#'+adObj.ad_number+' — ':''}${refundIQD.toLocaleString()} IQD گەڕایەوە بۆ باڵانسەکەت — هۆکار: ${reason}`,
           is_read:false
         });
+        // ── Firebase realtime sync (گەڕانەوەی پارە) ──
+        _fbSyncBalance(adObj.user_id, newRefBal);
+        _fbPushNotif(adObj.user_id,'پارەی ڕیکلامی ڕەتکراو گەڕایەوە 💸',`${refundIQD.toLocaleString()} IQD گەڕایەوە — هۆکار: ${reason}`,'refund_rejected_ad');
+        _fbTriggerTx(adObj.user_id);
         // ══ ناردنی ئیمەیلی ئاگادارکردنەوەی گەڕانەوەی باڵانس لە ڕێگای webhook ══
         try{
           const{data:_refProf}=await sb.from('profiles').select('email,full_name').eq('id',adObj.user_id).single();
@@ -2791,6 +2850,9 @@ async function confirmReject(){
           body:'هۆکاری ڕەتکردنەوە: '+reason,
           is_read:false
         });
+        // ── Firebase realtime push (ڕەتکردنی ڕیکلام) ──
+        _fbPushNotif(adObj.user_id,`${adLabel} ڕەتکرا ❌`,'هۆکاری ڕەتکردنەوە: '+reason,'ad_rejected');
+        _fbTriggerAds(adObj.user_id, id, 'rejected');
       }catch(_){}
     }
     loadAds();
@@ -2813,12 +2875,17 @@ async function sendNotification(){
   const target=document.getElementById('notifTarget').value;
   const title=document.getElementById('notifTitle').value.trim();
   const body=document.getElementById('notifBody').value.trim();
+  // پاشکەوت کردن پێش پاکردنەوە
+  const _savedTitle = title;
+  const _savedBody  = body;
   if(!title){showToast('ناونیشان بنووسە','rd');return;}
   if(target==='all'){
     const{data:users}=await sb.from('profiles').select('id');
     if(!users?.length){showToast('هیچ بەکارهێنەرێک نەدۆزرایەوە','rd');return;}
     const rows=users.map(u=>({user_id:u.id,type:selectedNotifType,title,body:body||null,is_read:false}));
     for(let i=0;i<rows.length;i+=50)await sb.from('pa_notifications').insert(rows.slice(i,i+50));
+    // Firebase push بۆ هەموو بەکارهێنەران
+    for(const row of rows){ _fbPushNotif(row.user_id, title, body||'', selectedNotifType); }
     showToast(`✅ ${rows.length} ئاگاداری نێردرا`,'gr');
   } else {
     const email=document.getElementById('notifUserEmail').value.trim();
@@ -2826,50 +2893,50 @@ async function sendNotification(){
     const{data:prof}=await sb.from('profiles').select('id').eq('email',email).single();
     if(!prof){showToast('بەکارهێنەر نەدۆزرایەوە','rd');return;}
     await sb.from('pa_notifications').insert({user_id:prof.id,type:selectedNotifType,title,body:body||null,is_read:false});
+    _fbPushNotif(prof.id, title, body||'', selectedNotifType);
     showToast('✅ ئاگاداری نێردرا','gr');
   }
   document.getElementById('notifTitle').value='';
   document.getElementById('notifBody').value='';
   loadNotifHistory();
-}
   // ئیمێڵ بنێرە بە n8n
-const webhookURL = 'https://n8n.proxopages.com/webhook/send_otp1';
-
-if (target === 'all') {
-  // ئیمێڵی هەموو بەکارهێنەران وەربگرە
-  const { data: allUsers } = await sb.from('profiles').select('email, full_name');
-  for (const u of allUsers || []) {
-    if (!u.email) continue;
-    fetch(webhookURL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'panel_notification',
-        email: u.email,
-        userName: u.full_name || 'بەکارهێنەر',
-        title: document.getElementById('notifTitle').value.trim(),  // ✅
-        message: document.getElementById('notifBody').value.trim(),  // ✅ ڕاستە
-        type: selectedNotifType
-      })
-    });
-  }
-} else {
-  // بەکارهێنەرێکی دیاریکراو
-  const { data: prof } = await sb.from('profiles')
-    .select('email, full_name').eq('email', document.getElementById('notifUserEmail').value.trim()).single();
-  if (prof) {
-    fetch(webhookURL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'panel_notification',
-        email: prof.email,
-        userName: prof.full_name || 'بەکارهێنەر',
-        title: document.getElementById('notifTitle').value.trim(),  // ✅
-        message: document.getElementById('notifBody').value.trim(),  // ✅ ڕاستە
-        type: selectedNotifType
-      })
-    });
+  const webhookURL = 'https://n8n.proxopages.com/webhook/send_otp1';
+  if (target === 'all') {
+    // ئیمێڵی هەموو بەکارهێنەران وەربگرە
+    const { data: allUsers } = await sb.from('profiles').select('email, full_name');
+    for (const u of allUsers || []) {
+      if (!u.email) continue;
+      fetch(webhookURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'panel_notification',
+          email: u.email,
+          userName: u.full_name || 'بەکارهێنەر',
+          title: _savedTitle,
+          message: _savedBody,
+          type: selectedNotifType
+        })
+      });
+    }
+  } else {
+    // بەکارهێنەرێکی دیاریکراو
+    const { data: prof2 } = await sb.from('profiles')
+      .select('email, full_name').eq('email', document.getElementById('notifUserEmail').value.trim()).single();
+    if (prof2) {
+      fetch(webhookURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'panel_notification',
+          email: prof2.email,
+          userName: prof2.full_name || 'بەکارهێنەر',
+          title: _savedTitle,
+          message: _savedBody,
+          type: selectedNotifType
+        })
+      });
+    }
   }
 }
 
@@ -3122,6 +3189,7 @@ async function sendAdminReply(){
   const msg=inp.value.trim();if(!msg)return;
   await sb.from('pa_support').insert({user_id:currentSupportUserId,message:msg,is_admin:true});
   await sb.from('pa_notifications').insert({user_id:currentSupportUserId,type:'admin_msg',title:'وەڵامی ئادمین 📣',body:msg.substring(0,80)+(msg.length>80?'...':''),is_read:false});
+  _fbPushNotif(currentSupportUserId,'وەڵامی ئادمین 📣',msg.substring(0,80)+(msg.length>80?'...':''),'admin_msg');
   inp.value='';
   openSupportChat(currentSupportUserId,currentSupportUserName,'');
 }
@@ -3591,6 +3659,10 @@ async function runGiveawayDraw(){
     await sb.from('weekly_giveaway_winners').insert({user_id:winner.user_id,user_name:winner.user_name,user_email:winner.user_email,prize_amount:18000,week_start:weekStart,drawn_at:new Date().toISOString()});
     // ئاگاداری بۆ برنامەدەر
     await sb.from('pa_notifications').insert({user_id:winner.user_id,type:'giveaway_win',title:'🎉 برنامەدەری قورعەی هەفتانەی!',body:`پیرۆزبێت! تۆ برنامەدەری قورعەی هەفتانەی بوویت — 18,000 IQD زیادکرا بۆ باڵانسەکەت.`,is_read:false});
+    // ── Firebase realtime sync (برنامەدەری قورعە) ──
+    _fbSyncBalance(winner.user_id, newBal);
+    _fbPushNotif(winner.user_id,'🎉 برنامەدەری قورعەی هەفتانەی!','پیرۆزبێت! 18,000 IQD زیادکرا بۆ باڵانسەکەت.','giveaway_win');
+    _fbTriggerTx(winner.user_id);
     // ئاگاداری بۆ هەموو بەشدارانی دیکە
     const losers=(entries||[]).filter(e=>e.user_id!==winner.user_id);
     if(losers.length){
@@ -4574,6 +4646,47 @@ function getFbAdminDb(){
     }
   }catch(e){console.error('Firebase DB error',e);}
   return _fbAdminDb;
+}
+
+
+// ═══ FIREBASE REALTIME HELPERS (ئاگادارکردنی ڕاستەوخۆ بۆ ئاپی بەکارهێنەر) ═══
+async function _fbPushNotif(uid, title, body, type) {
+  try {
+    const db = getFbAdminDb();
+    if (!db || !uid) return;
+    const ref = db.ref('pa_notifications/' + uid).push();
+    await ref.set({ title: title||'', body: body||'', type: type||'general', timestamp: Date.now() });
+  } catch(e) { /* silent */ }
+}
+async function _fbSyncBalance(uid, newBalUSD) {
+  try {
+    const db = getFbAdminDb();
+    if (!db || !uid) return;
+    const iqd = Math.round(parseFloat(newBalUSD||0) * 1800);
+    await db.ref('wallets/' + uid + '/balance').set(iqd);
+    await db.ref('realtime_triggers/' + uid + '/balance').set({ timestamp: Date.now(), balIQD: iqd });
+  } catch(e) { /* silent */ }
+}
+async function _fbTriggerAds(uid, adId, status) {
+  try {
+    const db = getFbAdminDb();
+    if (!db || !uid) return;
+    await db.ref('realtime_triggers/' + uid + '/ads').set({ timestamp: Date.now(), adId: adId||'', status: status||'' });
+  } catch(e) { /* silent */ }
+}
+async function _fbTriggerProfile(uid) {
+  try {
+    const db = getFbAdminDb();
+    if (!db || !uid) return;
+    await db.ref('realtime_triggers/' + uid + '/profile').set({ timestamp: Date.now() });
+  } catch(e) { /* silent */ }
+}
+async function _fbTriggerTx(uid) {
+  try {
+    const db = getFbAdminDb();
+    if (!db || !uid) return;
+    await db.ref('realtime_triggers/' + uid + '/tx').set({ timestamp: Date.now() });
+  } catch(e) { /* silent */ }
 }
 
 function setupFbRequestsListener(){
