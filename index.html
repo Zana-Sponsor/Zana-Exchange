@@ -192,6 +192,8 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 @keyframes fu{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+@keyframes notifPop{0%{transform:scale(0);opacity:0}70%{transform:scale(1.25)}100%{transform:scale(1);opacity:1}}
+@keyframes notifPulse{0%,100%{box-shadow:0 2px 10px rgba(225,29,72,.55)}50%{box-shadow:0 2px 20px rgba(225,29,72,.9)}}
 /* ══ RULES ══ */
 .rule-item{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;color:var(--dark);padding:5px 0;line-height:1.6;}
 .rule-item i{color:var(--bl);font-size:10px;margin-top:4px;flex-shrink:0;}
@@ -349,8 +351,8 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .notif-btn{position:relative;width:34px;height:34px;border-radius:50%;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--dark);overflow:visible;}
 .notif-dot{position:absolute;top:6px;left:6px;width:9px;height:9px;border-radius:50%;background:var(--rd);border:2px solid var(--w);display:none;animation:pulse 1.5s infinite;}
 .notif-dot.show{display:block;}
-.notif-count{position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;border-radius:9px;background:#dc2626;border:2px solid var(--w);display:none;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;padding:0 4px;font-family:'Inter',sans-serif;box-shadow:0 2px 8px rgba(220,38,38,.5);z-index:10;line-height:1;}
-.notif-count.show{display:flex;animation:pulse 1.5s ease-in-out infinite;}
+.notif-count{position:absolute;top:-8px;right:-8px;min-width:19px;height:19px;border-radius:10px;background:#e11d48;border:2.5px solid var(--w);display:none;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff;padding:0 4px;font-family:'Inter',sans-serif;box-shadow:0 2px 10px rgba(225,29,72,.55);z-index:20;line-height:1;letter-spacing:-.3px;}
+.notif-count.show{display:flex;animation:notifPop .25s cubic-bezier(.175,.885,.32,1.275) forwards,notifPulse 2.5s 0.3s ease-in-out infinite;}
 
 /* ══ DEPOSIT FLOW v2 ══ */
 .dep-pm-btn{width:46px;height:46px;border-radius:14px;border:1.5px solid var(--b1);background:var(--bg);color:var(--dark);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;font-family:'Inter',sans-serif;font-weight:300;}
@@ -5258,9 +5260,9 @@ function startNotifListener() {
     const ts = n.timestamp || 0;
     if (ts <= _notifLastSeen) return;
 
-    // نوێکردنەوەی بەڵی ئاگاداری — Firebase notifications (not in Supabase)
-    _pushNotifUnread++;
-    checkNotifBell();
+    // نوێکردنەوەی بەڵی ئاگاداری — نوێکردنەوە لە Supabase (چاوەڕوانیەک بۆ propagation)
+    setTimeout(checkNotifBell, 500);
+    setTimeout(checkNotifBell, 1500);
 
     // ئەگەر بەشی ئاگاداریەکان کراوەیە، دووبارە بارکە
     const pgNotif = document.getElementById('pgNotifications');
@@ -5926,8 +5928,8 @@ async function boot(){
   // ══ REALTIME: pa_notifications INSERT ══ (نوێکردنەوەی خۆکاری بەشی ئاگاداریەکان)
   sb.channel('notif_full_rt_'+cu.id)
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'pa_notifications',filter:`user_id=eq.${cu.id}`},(payload)=>{
-      checkNotifBell();
-      setTimeout(checkNotifBell, 800);
+      setTimeout(checkNotifBell, 300);
+      setTimeout(checkNotifBell, 1200);
       const pgNotif = document.getElementById('pgNotifications');
       if(pgNotif && pgNotif.classList.contains('on')) loadNotifications();
       if(payload.new?.title){
@@ -9164,7 +9166,7 @@ async function checkNotifBell(){
       if(!error)cnt=count||0;
     }catch(_){}
   }
-  const total=cnt+_lcUnreadCount+_pushNotifUnread;
+  const total=cnt+_lcUnreadCount; // _pushNotifUnread removed — Supabase is source of truth
   if(total>0){dot.textContent=total>99?'99+':String(total);dot.classList.add('show');}
   else{dot.textContent='';dot.classList.remove('show');}
 }
@@ -9286,6 +9288,7 @@ async function markAllRead(){
   });
   const nd=document.getElementById('notifDot');
   if(nd){nd.textContent='';nd.classList.remove('show');}
+  setTimeout(checkNotifBell, 400); // تأکیدی سڕینەوەی badge لە Supabase
 }
 
 function getTimeAgo(dateStr){
