@@ -351,8 +351,8 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .notif-btn{position:relative;width:34px;height:34px;border-radius:50%;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--dark);overflow:visible;}
 .notif-dot{position:absolute;top:6px;left:6px;width:9px;height:9px;border-radius:50%;background:var(--rd);border:2px solid var(--w);display:none;animation:pulse 1.5s infinite;}
 .notif-dot.show{display:block;}
-.notif-count{position:absolute;top:-8px;right:-8px;min-width:19px;height:19px;border-radius:10px;background:#e11d48;border:2.5px solid var(--w);display:none;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff;padding:0 4px;font-family:'Inter',sans-serif;box-shadow:0 2px 10px rgba(225,29,72,.55);z-index:20;line-height:1;letter-spacing:-.3px;}
-.notif-count.show{display:flex;animation:notifPop .25s cubic-bezier(.175,.885,.32,1.275) forwards,notifPulse 2.5s 0.3s ease-in-out infinite;}
+.notif-count{position:absolute;top:-4px;right:-4px;width:10px;height:10px;border-radius:50%;background:#e11d48;border:2px solid var(--w);display:none;z-index:20;box-shadow:0 1px 6px rgba(225,29,72,.6);}
+.notif-count.show{display:block;animation:notifPulse 2s ease-in-out infinite;}
 
 /* ══ DEPOSIT FLOW v2 ══ */
 .dep-pm-btn{width:46px;height:46px;border-radius:14px;border:1.5px solid var(--b1);background:var(--bg);color:var(--dark);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;font-family:'Inter',sans-serif;font-weight:300;}
@@ -5260,9 +5260,9 @@ function startNotifListener() {
     const ts = n.timestamp || 0;
     if (ts <= _notifLastSeen) return;
 
-    // نوێکردنەوەی بەڵی ئاگاداری — نوێکردنەوە لە Supabase (چاوەڕوانیەک بۆ propagation)
-    setTimeout(checkNotifBell, 500);
-    setTimeout(checkNotifBell, 1500);
+    // یەکسەر خاڵی سوور پیشان بدە — بەبێ چاوەڕوانی Supabase
+    _showNotifDot();
+    setTimeout(checkNotifBell, 1000);
 
     // ئەگەر بەشی ئاگاداریەکان کراوەیە، دووبارە بارکە
     const pgNotif = document.getElementById('pgNotifications');
@@ -5928,8 +5928,8 @@ async function boot(){
   // ══ REALTIME: pa_notifications INSERT ══ (نوێکردنەوەی خۆکاری بەشی ئاگاداریەکان)
   sb.channel('notif_full_rt_'+cu.id)
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'pa_notifications',filter:`user_id=eq.${cu.id}`},(payload)=>{
-      setTimeout(checkNotifBell, 300);
-      setTimeout(checkNotifBell, 1200);
+      _showNotifDot();
+      setTimeout(checkNotifBell, 800);
       const pgNotif = document.getElementById('pgNotifications');
       if(pgNotif && pgNotif.classList.contains('on')) loadNotifications();
       if(payload.new?.title){
@@ -9156,6 +9156,15 @@ async function deleteCard(id){
 }
 
 // ═══ ٥. NOTIFICATIONS ═══
+// ── یەکسەر پیشاندان / شاردنەوەی خاڵی ئاگاداری ──
+function _showNotifDot(){
+  const d=document.getElementById('notifDot');
+  if(d)d.classList.add('show');
+}
+function _hideNotifDot(){
+  const d=document.getElementById('notifDot');
+  if(d)d.classList.remove('show');
+}
 async function checkNotifBell(){
   const dot=document.getElementById('notifDot');
   if(!dot)return;
@@ -9166,9 +9175,9 @@ async function checkNotifBell(){
       if(!error)cnt=count||0;
     }catch(_){}
   }
-  const total=cnt+_lcUnreadCount; // _pushNotifUnread removed — Supabase is source of truth
-  if(total>0){dot.textContent=total>99?'99+':String(total);dot.classList.add('show');}
-  else{dot.textContent='';dot.classList.remove('show');}
+  const total=cnt+_lcUnreadCount; // تەنها خاڵی سوور — بێ ژمارە
+  if(total>0){dot.classList.add('show');}
+  else{dot.classList.remove('show');}
 }
 
 async function loadNotifications(){
@@ -9286,9 +9295,8 @@ async function markAllRead(){
     const dot=el.querySelector('.unread-dot');
     if(dot)dot.remove();
   });
-  const nd=document.getElementById('notifDot');
-  if(nd){nd.textContent='';nd.classList.remove('show');}
-  setTimeout(checkNotifBell, 400); // تأکیدی سڕینەوەی badge لە Supabase
+  _hideNotifDot();
+  setTimeout(checkNotifBell, 400);
 }
 
 function getTimeAgo(dateStr){
