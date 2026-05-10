@@ -467,11 +467,11 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid rgba(232,234,240,.6);display:none;z-index:300;padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 -2px 12px rgba(0,0,0,.06);will-change:transform;contain:layout style;}
 .bnav-inner{display:flex;max-width:500px;margin:0 auto;}
 .bn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:10px 4px 8px;border:none;background:transparent;color:var(--mt);font-family:'R',sans-serif;font-size:10px;cursor:pointer;transition:color .2s;}
-.bn.on{color:#0E78FF;}
+.bn.on{color:#111;}
 .bn i{font-size:20px;}
 .bn-fab-col{flex:1;display:flex;justify-content:center;align-items:flex-start;padding-top:6px;}
-.bn-fab{background:#0E78FF;border-radius:18px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;margin-top:-22px;border:3px solid var(--bg);box-shadow:0 6px 22px rgba(14,120,255,.4);cursor:pointer;transition:transform .2s,box-shadow .2s;}
-.bn-fab:active{transform:scale(.92);box-shadow:0 3px 12px rgba(14,120,255,.3);}
+.bn-fab{background:#111;border-radius:18px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;margin-top:-22px;border:3px solid var(--bg);box-shadow:0 6px 22px rgba(0,0,0,.22);cursor:pointer;transition:transform .2s,box-shadow .2s;}
+.bn-fab:active{transform:scale(.92);box-shadow:0 3px 12px rgba(0,0,0,.2);}
 .bn-fab i{font-size:20px;color:#fff;}
 
 /* ══ PAGES ══ */
@@ -1385,7 +1385,7 @@ html{scroll-behavior:smooth;}
 .bn{position:relative;transition:color .22s cubic-bezier(.22,.61,.36,1);}
 .bn i{display:block;transition:transform .25s cubic-bezier(.34,1.56,.64,1),color .2s ease;}
 .bn.on i{transform:translateY(-2px);}
-.bn.on::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:18px;height:3px;background:#0E78FF;border-radius:3px 3px 0 0;animation:navPip .3s cubic-bezier(.34,1.56,.64,1);}
+.bn.on::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:18px;height:3px;background:#111;border-radius:3px 3px 0 0;animation:navPip .3s cubic-bezier(.34,1.56,.64,1);}
 @keyframes navPip{from{width:0;opacity:0}to{width:18px;opacity:1}}
 /* Scroll containers — smooth + no scrollbar */
 .sidebar-body,.mbox,.tms-body,.ad-sheet-body,.lc-msgs-area,.chat-body,.pg{
@@ -3206,19 +3206,19 @@ function _toWebP(dataUrl,quality){
 <nav class="bnav" id="bnav">
   <div class="bnav-inner">
     <button class="bn on" id="bn_home" onclick="goPage('home')" ondblclick="location.reload()">
-      <i class="fas fa-house-chimney"></i>سەرەکی
+      <i class="fas fa-house"></i>سەرەکی
     </button>
     <button class="bn" id="bn_myads" onclick="goPage('myads')">
-      <i class="fas fa-rectangle-ad"></i>سپۆنسەرەکان
+      <i class="fas fa-bullhorn"></i>سپۆنسەرەکان
     </button>
     <div class="bn-fab-col">
-      <div class="bn-fab" onclick="goPage('create')"><i class="fas fa-pen-to-square"></i></div>
+      <div class="bn-fab" onclick="goPage('create')"><i class="fas fa-plus"></i></div>
     </div>
     <button class="bn" id="bn_tutorials" onclick="goPage('tutorials')">
-      <i class="fas fa-circle-play"></i>فێرکارییەکان
+      <i class="fas fa-play"></i>فێرکارییەکان
     </button>
-    <button class="bn" id="bn_proxolink" onclick="goPage('proxolink')">
-      <i class="fas fa-layer-group"></i>ئامرازەکان
+    <button class="bn" id="bn_adcalc" onclick="goPage('adcalc')">
+      <i class="fas fa-calculator"></i>ژمێرکاری
     </button>
   </div>
 </nav>
