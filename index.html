@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 .topbar-brand{font-weight:700 !important;}
 :root{
   --bg:#f4f6fb;--w:#fff;--card:#fff;
-  scroll-behavior:smooth;
+  scroll-behavior:auto;
   --b1:#e8eaf0;--b2:#d0d4de;
   --dark:#1c2333;--dark2:#2e3a50;
   --pri:#1c2333;--acc:#1c2333;
@@ -178,6 +178,17 @@ body{font-family:'R',sans-serif;background:var(--bg);color:var(--tx);min-height:
 .ads-filter{-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;}
 /* دووگمەکان — touch-action بۆ کەمکردنی delay */
 button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-action:manipulation;}
+/* ══ MENU SCROLL EXTRA PERFORMANCE ══ */
+.bn{will-change:color;-webkit-tap-highlight-color:transparent;}
+.bn-fab{will-change:transform;}
+.home-card{will-change:background;}
+.pg.on{contain:layout;}
+/* پاشکانی CPU لە هۆم پەیج */
+#pgHome{contain:layout;}
+/* Reduce composite layers on scroll */
+.bnav-inner{contain:layout style;}
+/* Touch scroll acceleration */
+#app{will-change:scroll-position;}
 @keyframes fu{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
@@ -338,7 +349,7 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .notif-btn{position:relative;width:34px;height:34px;border-radius:50%;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--dark);overflow:visible;}
 .notif-dot{position:absolute;top:6px;left:6px;width:9px;height:9px;border-radius:50%;background:var(--rd);border:2px solid var(--w);display:none;animation:pulse 1.5s infinite;}
 .notif-dot.show{display:block;}
-.notif-count{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;border-radius:9px;background:#dc2626;border:2px solid var(--w);display:none;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;padding:0 4px;font-family:'Inter',sans-serif;box-shadow:0 2px 6px rgba(220,38,38,.4);z-index:10;}
+.notif-count{position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;border-radius:9px;background:#dc2626;border:2px solid var(--w);display:none;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;padding:0 4px;font-family:'Inter',sans-serif;box-shadow:0 2px 8px rgba(220,38,38,.5);z-index:10;line-height:1;}
 .notif-count.show{display:flex;animation:pulse 1.5s ease-in-out infinite;}
 
 /* ══ DEPOSIT FLOW v2 ══ */
@@ -451,7 +462,7 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .create-submit:disabled{opacity:.4;pointer-events:none;}
 
 /* ══ BOTTOM NAV ══ */
-.bnav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.96);border-top:1px solid rgba(232,234,240,.6);display:none;z-index:300;padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 -4px 24px rgba(0,0,0,.07);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);}
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid rgba(232,234,240,.6);display:none;z-index:300;padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 -2px 12px rgba(0,0,0,.06);will-change:transform;contain:layout style;}
 .bnav-inner{display:flex;max-width:500px;margin:0 auto;}
 .bn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:10px 4px 8px;border:none;background:transparent;color:var(--mt);font-family:'R',sans-serif;font-size:10px;cursor:pointer;transition:color .2s;}
 .bn.on{color:#0E78FF;}
@@ -462,7 +473,7 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .bn-fab i{font-size:20px;color:#fff;}
 
 /* ══ PAGES ══ */
-.pg{display:none;padding:20px;animation:fu .12s ease;}
+.pg{display:none;padding:20px;animation:fu .08s ease;}
 .pg.on{display:block;}
 .pg-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
 .pg-title{font-size:24px;font-weight:900;color:var(--dark);}
@@ -5332,29 +5343,8 @@ function startNotifListener() {
 }
 
 function _showNotifToast(title, body) {
-  // دروستکردنی toast ئاگاداری
-  let nt = document.getElementById('_fbNotifToast');
-  if (!nt) {
-    nt = document.createElement('div');
-    nt.id = '_fbNotifToast';
-    nt.style.cssText = 'position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-10px);background:var(--dark);color:#fff;border-radius:16px;padding:12px 18px;max-width:88vw;z-index:29999;display:none;opacity:0;transition:all .3s;box-shadow:0 6px 24px rgba(0,0,0,.3);min-width:240px;';
-    document.body.appendChild(nt);
-  }
-  nt.innerHTML = '<div style="display:flex;align-items:flex-start;gap:10px">'
-    + '<div style="width:30px;height:30px;border-radius:9px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px"><i class="fas fa-bell"></i></div>'
-    + '<div style="flex:1"><div style="font-size:13px;font-weight:700;margin-bottom:2px">' + title + '</div>'
-    + (body ? '<div style="font-size:11.5px;opacity:.75;line-height:1.5">' + body + '</div>' : '')
-    + '</div></div>';
-  nt.style.display = 'block';
-  void nt.offsetWidth;
-  nt.style.opacity = '1';
-  nt.style.transform = 'translateX(-50%) translateY(0)';
-  clearTimeout(nt._timer);
-  nt._timer = setTimeout(function() {
-    nt.style.opacity = '0';
-    nt.style.transform = 'translateX(-50%) translateY(-10px)';
-    setTimeout(function() { nt.style.display = 'none'; }, 300);
-  }, 4000);
+  // popup لایدراوەتەوە — تەنها badge لەسەر ئایکۆنی زەنگۆڵە پیشان دەدرێت
+  checkNotifBell();
 }
 
 function _renderWalletReqs(reqs) {
