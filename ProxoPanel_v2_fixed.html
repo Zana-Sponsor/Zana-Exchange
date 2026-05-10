@@ -1680,6 +1680,27 @@ function isNetHttpErr(e){
     e.message.includes('net.http')
   );
 }
+
+// ══ HELPER: نوێکردنەوەی pa_transactions بەبێ تریگەر (delete+insert workaround) ══
+async function safeUpdateTx(id, payload){
+  // هەوڵی یەکەم: نوێکردنەوەی ئاسایی
+  const{error:_ue}=await sb.from('pa_transactions').update(payload).eq('id',id);
+  if(!_ue) return {error:null};
+  if(!isNetHttpErr(_ue)) return {error:_ue};
+  // تریگەر rollback کرد — delete + insert
+  const{data:txRow,error:_se}=await sb.from('pa_transactions').select('*').eq('id',id).single();
+  if(_se||!txRow) return {error:_ue};
+  const{error:_de}=await sb.from('pa_transactions').delete().eq('id',id);
+  if(_de) return {error:_de};
+  const newRow={...txRow,...payload};
+  const{error:_ie}=await sb.from('pa_transactions').insert(newRow);
+  if(_ie){
+    // گەڕانەوە بۆ شوێنی خۆی ئەگەر insert شکست هێنا
+    await sb.from('pa_transactions').insert(txRow);
+    return {error:_ie};
+  }
+  return {error:null};
+}
 // ══ REALTIME ══
 function setupRealtime(){
   sb.channel('admin-realtime-v3')
@@ -2356,8 +2377,8 @@ function showDepDetail(d){
 async function approveDeposit(id,userId,amount){
   confirm2('پەسەندکردنی پارەدان',`ئایا دەتەوێت ${Math.round(parseFloat(amount)*1800).toLocaleString()} IQD زیاد بکەیت؟`,
     'fas fa-check-circle','var(--gr)',async()=>{
-      const{error:e1}=await sb.from('pa_transactions').update({status:'approved'}).eq('id',id);
-      if(e1 && !isNetHttpErr(e1)){showToast('هەڵە: '+e1.message,'rd');return;}
+      const{error:e1}=await safeUpdateTx(id,{status:'approved'});
+      if(e1){showToast('هەڵە: '+e1.message,'rd');return;}
       await sb.from('pa_wallets').upsert({user_id:userId,balance:0},{onConflict:'user_id',ignoreDuplicates:true});
       const{data:w,error:e2}=await sb.from('pa_wallets').select('balance').eq('user_id',userId).single();
       if(e2 && !isNetHttpErr(e2)){showToast('هەڵەی بارکردنی باڵانس: '+e2.message,'rd');return;}
@@ -2708,13 +2729,13 @@ async function confirmReject(){
   const reason=document.getElementById('rejectReasonTxt').value.trim();
   if(!reason){showToast('هۆکار بنووسە','rd');return;}
   if(type==='deposit'){
-    // هەوڵ بدە بە reject_reason، ئەگەر شکستی هێنا بەبێ ئەو فیلدە هەوڵ بدە
-    let res=await sb.from('pa_transactions').update({status:'rejected',reject_reason:reason}).eq('id',id);
-    if(res.error){
-      // فیلدی reject_reason نەبوو، تەنها status نوێ بکەرەوە
-      res=await sb.from('pa_transactions').update({status:'rejected',note:'ڕەتکرا: '+reason}).eq('id',id);
-      if(res.error && !isNetHttpErr(res.error)){showToast('هەڵە: '+res.error.message,'rd');return;}
+    // هەوڵ بدە بە reject_reason، ئەگەر فیلدەکە نەبوو بەبێ بکە
+    let{error:_re1}=await safeUpdateTx(id,{status:'rejected',reject_reason:reason,note:'ڕەتکرا: '+reason});
+    if(_re1){
+      const{error:_re2}=await safeUpdateTx(id,{status:'rejected',note:'ڕەتکرا: '+reason});
+      if(_re2){showToast('هەڵە: '+_re2.message,'rd');return;}
     }
+    const res={error:null};
     const dep=allDeposits.find(d=>d.id===id);
     if(dep){
       await sb.from('pa_notifications').insert({
