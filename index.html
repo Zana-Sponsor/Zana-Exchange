@@ -268,7 +268,7 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .topbar-brand-text{font-size:17px;font-weight:900;letter-spacing:-0.5px;font-family:'Inter',sans-serif;}
 .topbar-brand-proxo{color:var(--dark);}
 .topbar-brand-app{color:#0E78FF;}
-.topbar-right-col{display:flex;align-items:center;justify-content:flex-end;gap:5px;}
+.topbar-right-col{display:flex;align-items:center;justify-content:flex-end;gap:5px;overflow:visible;}
 .ham-btn-v2{width:34px;height:34px;border-radius:10px;background:var(--dark);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:13px;box-shadow:0 2px 10px rgba(28,35,51,.2);transition:transform .15s,opacity .15s;}
 .ham-btn-v2:active{opacity:.85;transform:scale(.94);}
 .ham-line{width:14px;height:2px;border-radius:2px;background:#fff;transition:all .2s;}
@@ -335,10 +335,10 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .coins-need-more{width:100%;padding:13px;background:var(--bg);border:1.5px dashed var(--b2);border-radius:14px;color:var(--mt);font-family:'R',sans-serif;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;cursor:default;}
 
 /* ══ NOTIFICATION BELL ══ */
-.notif-btn{position:relative;width:34px;height:34px;border-radius:50%;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--dark);}
+.notif-btn{position:relative;width:34px;height:34px;border-radius:50%;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--dark);overflow:visible;}
 .notif-dot{position:absolute;top:6px;left:6px;width:9px;height:9px;border-radius:50%;background:var(--rd);border:2px solid var(--w);display:none;animation:pulse 1.5s infinite;}
 .notif-dot.show{display:block;}
-.notif-count{position:absolute;top:-5px;left:-5px;min-width:18px;height:18px;border-radius:9px;background:#dc2626;border:2px solid var(--w);display:none;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;padding:0 4px;font-family:'Inter',sans-serif;box-shadow:0 2px 6px rgba(220,38,38,.4);}
+.notif-count{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;border-radius:9px;background:#dc2626;border:2px solid var(--w);display:none;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;padding:0 4px;font-family:'Inter',sans-serif;box-shadow:0 2px 6px rgba(220,38,38,.4);z-index:10;}
 .notif-count.show{display:flex;animation:pulse 1.5s ease-in-out infinite;}
 
 /* ══ DEPOSIT FLOW v2 ══ */
@@ -5268,12 +5268,66 @@ function startNotifListener() {
   adsRef.on('child_changed', function(snap) {
     const a = snap.val();
     if (!a) return;
-    // ئەگەر بەشی ڕیکلامەکانم کراوەیە، نوێ بکەرەوە
     const pgAds = document.getElementById('pgMyads');
-    if (pgAds && pgAds.classList.contains('on')) {
-      loadMyAds();
-    }
+    if (pgAds && pgAds.classList.contains('on')) loadMyAds();
     checkNotifBell();
+  });
+
+  // ════════════════════════════════════════════════════════════════
+  // FIREBASE REALTIME TRIGGERS — هەموو گۆڕانکارییەکانی ئادمین
+  // ════════════════════════════════════════════════════════════════
+  let _balTrigSeen = 0, _adsTrigSeen = 0, _profileTrigSeen = 0, _txTrigSeen = 0;
+
+  // ── 1. باڵانس: کاتێک ئادمین پارە زیاد/کەم دەکات ──
+  db.ref('realtime_triggers/' + uid + '/balance').on('value', function(snap) {
+    const d = snap.val();
+    if (!d || !d.timestamp || d.timestamp <= _balTrigSeen) return;
+    _balTrigSeen = d.timestamp;
+    // نوێکردنەوەی باڵانسی topbar و profil و sidebar یەکسەر
+    loadBal();
+    checkNotifBell();
+    // نوێکردنەوەی مێژووی مامەڵەکان ئەگەر کراوەیە
+    const pgTx = document.getElementById('pgTxhistory');
+    if (pgTx && pgTx.classList.contains('on')) loadTxHistory();
+    // نوێکردنەوەی پرۆفایل ئەگەر کراوەیە
+    const pgPr = document.getElementById('pgProfile');
+    if (pgPr && pgPr.classList.contains('on')) loadBal();
+  });
+
+  // ── 2. ڕیکلامەکان: کاتێک ئادمین ڕیکلام پەسەند/ڕەتدەکات ──
+  db.ref('realtime_triggers/' + uid + '/ads').on('value', function(snap) {
+    const d = snap.val();
+    if (!d || !d.timestamp || d.timestamp <= _adsTrigSeen) return;
+    _adsTrigSeen = d.timestamp;
+    // نوێکردنەوەی بەشی ڕیکلامەکانم
+    loadMyAds();
+    checkNotifBell();
+    // Toast بۆ گۆڕانی باری ڕیکلام
+    if (d.status === 'active') {
+      _showNotifToast('✅ ڕیکلامەکەت چالاک بوو', 'ئادمین ڕیکلامەکەت پەسەندکرد — ئێستا ژیوەیە!');
+    } else if (d.status === 'rejected') {
+      _showNotifToast('❌ ڕیکلامەکەت ڕەتکرا', 'بچۆ بۆ ئاگاداریەکان بۆ زیاتر زانیاری.');
+    }
+  });
+
+  // ── 3. پرۆفایل: کاتێک ئادمین پرۆفایل گۆڕی (بان/دەرکردن) ──
+  db.ref('realtime_triggers/' + uid + '/profile').on('value', function(snap) {
+    const d = snap.val();
+    if (!d || !d.timestamp || d.timestamp <= _profileTrigSeen) return;
+    _profileTrigSeen = d.timestamp;
+    // دووبارە بارکردنی پرۆفایل
+    loadProfile();
+    checkNotifBell();
+  });
+
+  // ── 4. مامەڵەکان: کاتێک ئادمین مامەڵەیەک پەسەند/ڕەتدەکات ──
+  db.ref('realtime_triggers/' + uid + '/tx').on('value', function(snap) {
+    const d = snap.val();
+    if (!d || !d.timestamp || d.timestamp <= _txTrigSeen) return;
+    _txTrigSeen = d.timestamp;
+    checkNotifBell();
+    const pgTx2 = document.getElementById('pgTxhistory');
+    if (pgTx2 && pgTx2.classList.contains('on')) loadTxHistory();
   });
 }
 
@@ -5698,6 +5752,8 @@ async function boot(){
   goPage('home');
   loadHomeBanner();
   startNotifListener(); // ── Firebase realtime notifications ──
+  startWalletListener(); // ── Firebase balance realtime ──
+  startReqListener();    // ── Firebase wallet requests realtime ──
   // ═══ MAINTENANCE MODE CHECK ═══
   checkMaintenanceMode();
   // Real-time maintenance listener
@@ -5733,7 +5789,11 @@ async function boot(){
   // ═══ ٥. CHECK NOTIFICATIONS ═══
   checkNotifBell();
   setTimeout(checkNotifBell, 2000);
-  setInterval(checkNotifBell, 30000);
+  setInterval(checkNotifBell, 10000);
+  // نوێکردنەوەی badge کاتێک بەکارهێنەر دێتەوە بۆ ئاپ
+  document.addEventListener('visibilitychange', function(){
+    if(!document.hidden) checkNotifBell();
+  });
 
   // ══ چێکی بانکردنی خۆکار — هەر ٣ خولەک جارێک ══
   setInterval(async()=>{
@@ -5876,7 +5936,8 @@ async function boot(){
   // ══ REALTIME: pa_notifications INSERT ══ (نوێکردنەوەی خۆکاری بەشی ئاگاداریەکان)
   sb.channel('notif_full_rt_'+cu.id)
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'pa_notifications',filter:`user_id=eq.${cu.id}`},(payload)=>{
-      setTimeout(checkNotifBell, 300);
+      checkNotifBell();
+      setTimeout(checkNotifBell, 800);
       const pgNotif = document.getElementById('pgNotifications');
       if(pgNotif && pgNotif.classList.contains('on')) loadNotifications();
       if(payload.new?.title){
@@ -5895,6 +5956,40 @@ async function boot(){
         const _reason=(_body.split('هۆکار:')[1]||'').trim()||'';
         sendRefundEmailNotif(cu?.email,_iqd,_adNum,_reason||_body);
       }
+    })
+    .subscribe();
+
+  // ══ REALTIME: pa_notifications UPDATE (is_read تازەکرایەوە) ══
+  sb.channel('notif_upd_rt_'+cu.id)
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'pa_notifications',filter:`user_id=eq.${cu.id}`},()=>{
+      checkNotifBell();
+    })
+    .subscribe();
+
+  // ══ REALTIME: pa_ads (Supabase backup — ئەگەر Firebase trigger نەکارکرد) ══
+  sb.channel('ads_rt_'+cu.id)
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'pa_ads',filter:`user_id=eq.${cu.id}`},()=>{
+      loadMyAds();
+      checkNotifBell();
+    })
+    .subscribe();
+
+  // ══ REALTIME: pa_wallets (Supabase backup — ئەگەر Firebase trigger نەکارکرد) ══
+  sb.channel('wallet_rt_'+cu.id)
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'pa_wallets',filter:`user_id=eq.${cu.id}`},()=>{
+      loadBal();
+      checkNotifBell();
+      const pgTx = document.getElementById('pgTxhistory');
+      if(pgTx && pgTx.classList.contains('on')) loadTxHistory();
+    })
+    .subscribe();
+
+  // ══ REALTIME: pa_transactions (Supabase backup) ══
+  sb.channel('tx_rt_'+cu.id)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'pa_transactions',filter:`user_id=eq.${cu.id}`},()=>{
+      checkNotifBell();
+      const pgTx2 = document.getElementById('pgTxhistory');
+      if(pgTx2 && pgTx2.classList.contains('on')) loadTxHistory();
     })
     .subscribe();
 }
@@ -6198,13 +6293,13 @@ async function loadBal(){
   if(error&&error.code!=='PGRST116')return 0;
   const bUSD=parseFloat(data?.balance||0);
   const bIQD=Math.floor(bUSD*1800);
+  _runningBalIQD=bIQD;
   const b=bIQD.toLocaleString();
   const hBalEl=document.getElementById('hBal');
-  hBalEl.textContent=b+' IQD';
-  const len=(b+' IQD').length;
-  hBalEl.style.fontSize=len>15?'8px':len>12?'9px':len>9?'10px':'11px';
-  document.getElementById('profBal').textContent=b;
-  document.getElementById('sidebarBal').textContent=b+' IQD';
+  if(hBalEl){hBalEl.textContent=b+' IQD';const len=(b+' IQD').length;hBalEl.style.fontSize=len>15?'8px':len>12?'9px':len>9?'10px':'11px';}
+  const profBalEl=document.getElementById('profBal');if(profBalEl)profBalEl.textContent=b;
+  const sidebarBalEl=document.getElementById('sidebarBal');if(sidebarBalEl)sidebarBalEl.textContent=b+' IQD';
+  const wBalEl=document.getElementById('wBal');if(wBalEl)wBalEl.textContent=b;
   return bIQD;
 }
 
