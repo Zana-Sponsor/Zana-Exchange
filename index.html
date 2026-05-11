@@ -2009,6 +2009,113 @@ function _clipboardFallback(text, onSuccess, onFail) {
 .est2-lbl{font-size:10.5px;color:var(--mt2);font-weight:600;}
 .est2-sub{font-size:9.5px;color:var(--mt);font-family:'Inter',sans-serif;}
 </style>
+<style>
+/* ── FIX 1: Budget compact ── */
+.bud-compact-row{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--bg);border-radius:14px;
+  padding:12px 14px;margin-bottom:8px;
+}
+.bud-compact-info{display:flex;flex-direction:column;gap:2px;}
+.bud-amount-usd{
+  font-size:20px !important;font-weight:900;
+  color:var(--dark);font-family:'Inter',sans-serif;line-height:1.1;
+}
+.bud-days-num{
+  font-size:20px !important;font-weight:900;
+  color:var(--dark);font-family:'Inter',sans-serif;
+  display:block;line-height:1.1;
+}
+.bud-amount-sub,.bud-days-unit{font-size:10.5px;color:var(--mt);margin-top:2px;}
+.bud-compact-btns{display:flex;align-items:center;gap:7px;}
+.bud-cbtns{
+  width:34px;height:34px;border-radius:50%;
+  cursor:pointer;font-size:18px;font-family:'Inter',sans-serif;
+  display:flex;align-items:center;justify-content:center;
+  transition:.15s;touch-action:manipulation;font-weight:300;line-height:1;
+}
+.bud-day-plus{background:var(--dark);color:#fff;border:none;box-shadow:0 3px 8px rgba(28,35,51,.18);}
+.bud-day-plus:active{transform:scale(.85);opacity:.85;}
+.bud-day-minus{background:var(--w);color:var(--mt2);border:1.5px solid var(--b2);}
+.bud-day-minus:active{background:var(--bg);}
+/* Chips — single-row scroll */
+.bud-chips-row{
+  display:flex;gap:6px;
+  overflow-x:auto;padding-bottom:4px;margin-bottom:10px;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+.bud-chips-row::-webkit-scrollbar{display:none;}
+.bud-chip{
+  flex-shrink:0;
+  padding:7px 13px;border-radius:20px;
+  border:1.5px solid var(--b1);background:var(--w);
+  font-size:12.5px;font-weight:800;color:var(--mt2);
+  cursor:pointer;transition:all .15s;
+  font-family:'Inter',sans-serif;touch-action:manipulation;
+}
+.bud-chip.sel{background:var(--dark);color:#fff;border-color:var(--dark);}
+.bud-chip:active{transform:scale(.9);}
+/* Total box compact */
+.bud-total-box{
+  background:var(--dark);color:#fff;
+  padding:12px 15px;border-radius:14px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.bud-total-lbl{font-size:11.5px;font-weight:600;color:rgba(255,255,255,.6);}
+.bud-total-usd{font-size:16px;font-weight:900;font-family:'Inter',sans-serif;color:#fff;}
+.bud-total-days-badge{
+  font-size:11px;padding:3px 10px;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);
+  border-radius:20px;color:rgba(255,255,255,.85);font-weight:700;
+}
+
+/* ── FIX 2: Gender pill compact ── */
+.gender-wrap{display:flex;gap:7px;margin-bottom:4px;}
+.gender-pill{
+  flex:1;
+  display:flex;align-items:center;justify-content:center;
+  gap:6px;padding:9px 8px;
+  border-radius:22px;border:1.5px solid var(--b1);
+  background:var(--w);color:var(--mt2);
+  font-family:'R',sans-serif;font-size:12px;
+  cursor:pointer;text-align:center;font-weight:700;
+  transition:all .18s;white-space:nowrap;
+}
+.gender-pill i{font-size:13px;flex-shrink:0;}
+.gender-pill.on{
+  background:var(--dark);color:#fff;
+  border-color:var(--dark);
+  box-shadow:0 2px 10px rgba(28,35,51,.18);
+}
+.gender-pill:active{opacity:.8;}
+
+/* ── FIX 3: TikTok input ── */
+.tt-inp-wrap{
+  display:flex;align-items:center;gap:0;
+  background:var(--bg);border:1.5px solid var(--b1);
+  border-radius:14px;overflow:hidden;
+  transition:border-color .2s,box-shadow .2s;
+}
+.tt-inp-wrap:focus-within{
+  border-color:var(--dark);background:var(--w);
+  box-shadow:0 0 0 3px rgba(28,35,51,.07);
+}
+.tt-inp-ico{
+  width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+  font-size:13px;color:var(--mt);flex-shrink:0;
+  border-left:1px solid var(--b1);
+}
+.tt-inp{
+  flex:1;padding:12px 13px 12px 4px;
+  background:transparent;border:none;outline:none;
+  color:var(--dark);font-family:'R',sans-serif;font-size:14px;
+  direction:rtl;text-align:right;width:100%;
+}
+.tt-inp::placeholder{color:var(--mt);direction:rtl;text-align:right;}
+.tt-inp:focus{outline:none;}
+/* When user types a URL it auto-detects LTR — override */
+.tt-inp[type=url]{unicode-bidi:plaintext;}
+</style>
 </head>
 
 <script>
@@ -2768,14 +2875,14 @@ function _toWebP(dataUrl,quality){
       <!-- Gender -->
       <div class="csub">ڕەگەز</div>
       <div class="gender-wrap">
-        <button class="gender-btn on" data-gen="all" onclick="pickGen(this)">
-          <i class="fas fa-users"></i>هەموو
+        <button class="gender-pill on" data-gen="all" onclick="pickGen(this)">
+          <i class="fas fa-users"></i><span>هەموو</span>
         </button>
-        <button class="gender-btn" data-gen="female" onclick="pickGen(this)">
-          <i class="fas fa-venus"></i>ژن
+        <button class="gender-pill" data-gen="female" onclick="pickGen(this)">
+          <i class="fas fa-venus"></i><span>ژن</span>
         </button>
-        <button class="gender-btn" data-gen="male" onclick="pickGen(this)">
-          <i class="fas fa-mars"></i>پیاو
+        <button class="gender-pill" data-gen="male" onclick="pickGen(this)">
+          <i class="fas fa-mars"></i><span>پیاو</span>
         </button>
       </div>
 
@@ -2798,14 +2905,14 @@ function _toWebP(dataUrl,quality){
 
       <!-- Daily USD amount -->
       <div class="csub" style="margin-top:12px">بودجەی ڕۆژانە</div>
-      <div class="bud-amount-ctrl">
-        <div class="bud-amount-center">
+      <div class="bud-compact-row">
+        <div class="bud-compact-info">
           <div class="bud-amount-usd" id="dailyUSDDisp">$10</div>
           <div class="bud-amount-sub">بۆ هەر ڕۆژێک</div>
         </div>
-        <div class="bud-btn-group">
-          <button class="bud-day-btn bud-day-plus" onclick="chgBudAmt(1)">+</button>
-          <button class="bud-day-btn bud-day-minus" onclick="chgBudAmt(-1)">−</button>
+        <div class="bud-compact-btns">
+          <button class="bud-cbtns bud-day-minus" onclick="chgBudAmt(-1)">−</button>
+          <button class="bud-cbtns bud-day-plus" onclick="chgBudAmt(1)">+</button>
         </div>
       </div>
       <div class="bud-chips-row" id="budChipsRow">
@@ -2815,19 +2922,19 @@ function _toWebP(dataUrl,quality){
         <div class="bud-chip" onclick="pickDailyUSD(100,this)">$100</div>
         <div class="bud-chip" onclick="pickDailyUSD(200,this)">$200</div>
         <div class="bud-chip" onclick="pickDailyUSD(500,this)">$500</div>
-        <div class="bud-chip" onclick="pickDailyUSD(1000,this)">$1000</div>
+        <div class="bud-chip" onclick="pickDailyUSD(1000,this)">$1K</div>
       </div>
 
       <!-- Days counter -->
       <div class="csub">ماوەی ڕیکلام</div>
-      <div class="bud-days-row">
-        <div class="bud-days-info">
-          <span class="bud-days-num" id="daysDisp">1</span>
-          <span class="bud-days-unit">ژمارەی ڕۆژ</span>
+      <div class="bud-compact-row">
+        <div class="bud-compact-info">
+          <div class="bud-days-num" id="daysDisp">1</div>
+          <div class="bud-days-unit">ژمارەی ڕۆژ</div>
         </div>
-        <div class="bud-btn-group">
-          <button class="bud-day-btn bud-day-plus" onclick="chgDays(1)">+</button>
-          <button class="bud-day-btn bud-day-minus" onclick="chgDays(-1)">−</button>
+        <div class="bud-compact-btns">
+          <button class="bud-cbtns bud-day-minus" onclick="chgDays(-1)">−</button>
+          <button class="bud-cbtns bud-day-plus" onclick="chgDays(1)">+</button>
         </div>
       </div>
 
@@ -2877,14 +2984,14 @@ function _toWebP(dataUrl,quality){
         <span class="cstep">٤</span>
       </div>
       <div class="csub">لینکی ڤیدیۆ</div>
-      <div style="position:relative;display:flex;align-items:center;margin-bottom:12px">
-        <i class="fas fa-link" style="position:absolute;right:14px;color:var(--mt);font-size:13px;pointer-events:none"></i>
-        <input class="create-inp" style="padding-right:42px" type="url" id="adLink" placeholder="لینکی ڤیدیۆی تیک تۆک دابنێ" dir="ltr">
+      <div class="tt-inp-wrap" style="margin-bottom:10px">
+        <div class="tt-inp-ico"><i class="fas fa-link"></i></div>
+        <input class="tt-inp" type="url" id="adLink" placeholder="لینکی ڤیدیۆی تیک تۆک دابنێ" autocomplete="off" spellcheck="false">
       </div>
       <div class="csub">کۆدی پۆست</div>
-      <div style="position:relative;display:flex;align-items:center;margin-bottom:12px">
-        <i class="fas fa-code" style="position:absolute;right:14px;color:var(--mt);font-size:13px;pointer-events:none"></i>
-        <input class="create-inp" style="padding-right:42px" type="text" id="adCode" placeholder="کۆدی پۆستی تیکتۆکەکەت لێرە دابنێ" dir="ltr">
+      <div class="tt-inp-wrap" style="margin-bottom:10px">
+        <div class="tt-inp-ico"><i class="fas fa-code"></i></div>
+        <input class="tt-inp" type="text" id="adCode" placeholder="کۆدی پۆستی تیکتۆکەکەت لێرە دابنێ" autocomplete="off" spellcheck="false">
       </div>
       <div class="create-warning">
         <i class="fas fa-triangle-exclamation"></i>
