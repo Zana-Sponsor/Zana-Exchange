@@ -1557,6 +1557,458 @@ function _clipboardFallback(text, onSuccess, onFail) {
 .gender-wrap{display:flex;gap:7px;margin-bottom:4px;}
 .bud-sec-sublbl{display:none;}
 </style>
+<style>
+/* ═══════════════════════════════════════════
+   PROFILE REDESIGN — pcard2 system
+═══════════════════════════════════════════ */
+.prof-hero{
+  background:var(--w);
+  border-radius:26px;
+  padding:32px 20px 24px;
+  margin-bottom:10px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  box-shadow:0 2px 20px rgba(28,35,51,.07);
+}
+.pav{
+  width:80px;height:80px;border-radius:50%;
+  background:var(--dark);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;font-weight:800;color:#fff;
+  overflow:hidden;flex-shrink:0;cursor:pointer;position:relative;
+  box-shadow:0 4px 20px rgba(28,35,51,.22);
+  border:3px solid var(--w);
+  outline:3px solid var(--b1);
+}
+.pav img{width:100%;height:100%;object-fit:cover;}
+.pav-cam{
+  position:absolute;bottom:0;right:0;
+  width:24px;height:24px;border-radius:50%;
+  background:var(--dark);border:2.5px solid var(--w);
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;color:#fff;
+}
+.prof-hero-name{
+  font-size:18px;font-weight:900;color:var(--dark);
+  margin-top:14px;letter-spacing:-.2px;
+}
+.prof-hero-email{
+  font-size:12px;color:var(--mt);margin-top:4px;
+  direction:ltr;font-family:'Inter',sans-serif;
+}
+
+/* pcard2 — new smooth card system */
+.pcard2{
+  background:var(--w);
+  border-radius:22px;
+  padding:20px 18px;
+  margin-bottom:10px;
+  box-shadow:0 2px 16px rgba(28,35,51,.06);
+}
+.pcard2-label{
+  font-size:11px;font-weight:700;color:var(--mt);
+  letter-spacing:.3px;margin-bottom:4px;
+  display:flex;align-items:center;
+}
+.pcard2-bal-row{
+  display:flex;align-items:baseline;gap:7px;
+  margin-top:2px;margin-bottom:14px;
+}
+.pcard2-cur{font-size:13px;color:var(--mt);font-weight:600;}
+.pcard2-actions{display:flex;gap:8px;}
+.pcard2-btn-main{
+  flex:1;padding:13px;
+  background:var(--dark);color:#fff;
+  border:none;border-radius:14px;
+  font-family:'R',sans-serif;font-size:13px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;
+  justify-content:center;gap:7px;
+  box-shadow:0 3px 12px rgba(28,35,51,.2);
+  transition:opacity .18s,transform .18s;
+}
+.pcard2-btn-main:active{opacity:.85;transform:scale(.98);}
+.pcard2-btn-sec{
+  padding:13px 16px;
+  background:var(--bg);color:var(--dark2);
+  border:1.5px solid var(--b1);border-radius:14px;
+  font-family:'R',sans-serif;font-size:12px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;
+  justify-content:center;gap:6px;
+  transition:background .18s;
+  white-space:nowrap;
+}
+.pcard2-btn-sec:active{background:var(--b1);}
+
+/* Coins card */
+.pcard2-coins{
+  background:linear-gradient(135deg,rgba(254,243,199,.8),rgba(255,237,167,.4));
+  box-shadow:0 2px 16px rgba(217,119,6,.1);
+}
+.pcard2-coins-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.pcard2-coins-exch{
+  padding:9px 14px;
+  background:#d97706;color:#fff;
+  border:none;border-radius:12px;
+  font-family:'R',sans-serif;font-size:12px;font-weight:700;
+  cursor:pointer;white-space:nowrap;flex-shrink:0;
+  box-shadow:0 3px 10px rgba(217,119,6,.28);
+  transition:opacity .18s;
+}
+.pcard2-coins-exch:active{opacity:.85;}
+.pcard2-coins-info{
+  font-size:11.5px;color:#92400e;
+  margin-top:10px;
+  background:rgba(245,158,11,.12);
+  border-radius:11px;padding:9px 12px;
+  display:flex;align-items:center;gap:7px;
+  line-height:1.6;
+}
+
+/* Referral card */
+.pcard2-ref-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.pcard2-ref-earn{font-size:11px;color:var(--gr);font-weight:700;}
+.pcard2-ref-desc{
+  font-size:12.5px;color:var(--mt);
+  line-height:1.85;margin-bottom:14px;
+}
+.pcard2-ref-link{
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg);border:1.5px solid var(--b1);
+  border-radius:14px;padding:11px 12px;
+  margin-bottom:10px;
+}
+.pcard2-ref-url{
+  flex:1;font-size:12px;font-weight:700;color:var(--dark);
+  direction:ltr;text-align:left;font-family:'Inter',sans-serif;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.pcard2-ref-copy{
+  width:34px;height:34px;border-radius:10px;
+  background:var(--dark);color:#fff;
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;flex-shrink:0;
+  transition:opacity .18s;
+}
+.pcard2-ref-copy:active{opacity:.8;}
+.pcard2-share-btn{
+  width:100%;padding:12px;
+  background:var(--bg);border:1.5px solid var(--b2);
+  border-radius:13px;color:var(--dark);
+  font-family:'R',sans-serif;font-size:13px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;
+  justify-content:center;gap:7px;
+  transition:background .18s;
+}
+.pcard2-share-btn:active{background:var(--b1);}
+
+/* Section title inside pcard2 */
+.pcard2-sec-title{
+  font-size:12px;font-weight:700;color:var(--mt);
+  letter-spacing:.3px;margin-bottom:14px;
+  display:flex;align-items:center;gap:7px;
+}
+.pcard2-sec-title::before{
+  content:'';width:3px;height:14px;
+  background:var(--dark);border-radius:2px;display:block;
+}
+
+/* plist-item improvements */
+.plist-item{
+  display:flex;align-items:center;gap:13px;
+  padding:13px 2px;
+  border-bottom:1px solid var(--b1);
+  cursor:pointer;
+  transition:opacity .15s;
+}
+.plist-item:active{opacity:.6;}
+.plist-item:last-child{border-bottom:none;}
+.plist-ico{
+  width:40px;height:40px;border-radius:13px;
+  background:var(--bg);border:1px solid var(--b1);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.plist-ico i{font-size:16px;color:var(--dark2);}
+.plist-txt{flex:1;font-size:14px;color:var(--dark);font-weight:600;}
+.plist-arr{color:var(--b2);font-size:12px;}
+
+/* ═══════════════════════════════════════════
+   CREATE PAGE REDESIGN extras
+═══════════════════════════════════════════ */
+
+/* Hero badge */
+.create-hero-badge{
+  display:inline-flex;align-items:center;
+  margin-top:8px;padding:3px 10px;
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:20px;font-size:10px;
+  color:rgba(255,255,255,.7);font-weight:600;
+  font-family:'Inter',sans-serif;
+}
+
+/* Hero improvements */
+.create-hero{
+  background:var(--dark);
+  border-radius:24px;
+  padding:22px 20px 24px;
+  margin-bottom:12px;
+  position:relative;overflow:hidden;
+  box-shadow:0 6px 24px rgba(28,35,51,.18);
+}
+.create-hero::before{
+  content:'';position:absolute;
+  top:-60px;right:-40px;
+  width:180px;height:180px;
+  background:rgba(255,255,255,.03);
+  border-radius:50%;pointer-events:none;
+}
+.create-hero::after{
+  content:'';position:absolute;
+  bottom:-40px;left:-20px;
+  width:130px;height:130px;
+  background:rgba(255,255,255,.02);
+  border-radius:50%;pointer-events:none;
+}
+.create-hero-inner{display:flex;align-items:flex-start;gap:14px;position:relative;}
+.create-hero-icon{
+  width:50px;height:50px;border-radius:15px;
+  background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.12);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;color:#fff;flex-shrink:0;
+  margin-top:2px;
+}
+.create-hero-title{font-size:20px;font-weight:900;color:#fff;letter-spacing:-.3px;}
+.create-hero-sub{font-size:11.5px;color:rgba(255,255,255,.5);margin-top:4px;font-family:'Inter',sans-serif;}
+
+/* Section cards */
+.create-sec{
+  background:var(--w);
+  border-radius:22px;
+  padding:18px 16px;
+  margin-bottom:10px;
+  box-shadow:0 2px 14px rgba(28,35,51,.05);
+}
+.create-sec-hdr{
+  display:flex;align-items:center;gap:11px;
+  margin-bottom:14px;
+  padding-bottom:12px;
+  border-bottom:1px solid var(--b1);
+}
+.create-sec-ico{
+  width:34px;height:34px;border-radius:11px;
+  background:var(--dark);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:#fff;flex-shrink:0;
+}
+.create-sec-lbl{font-size:14px;font-weight:800;color:var(--dark);flex:1;}
+.cstep{
+  font-family:'Inter',sans-serif;font-size:10px;
+  font-weight:700;color:var(--mt);
+  background:var(--bg);border:1px solid var(--b1);
+  border-radius:20px;padding:2px 9px;flex-shrink:0;
+}
+
+/* Goal tabs */
+.goal-tab-v2{
+  width:100%;padding:14px 14px;
+  border-radius:16px;border:1.5px solid var(--b1);
+  background:var(--bg);
+  display:flex;align-items:center;gap:13px;
+  cursor:pointer;transition:all .2s ease;
+  text-align:right;margin-bottom:9px;
+  font-family:'R',sans-serif;
+}
+.goal-tab-v2:last-child{margin-bottom:0;}
+.goal-tab-v2.on{
+  border-color:var(--dark);background:var(--dark);
+  box-shadow:0 4px 16px rgba(28,35,51,.2);
+}
+.goal-tab-v2-ico{
+  width:40px;height:40px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;flex-shrink:0;
+}
+.goal-tab-v2-ico.msg{background:rgba(28,35,51,.07);color:var(--dark2);}
+.goal-tab-v2.on .goal-tab-v2-ico.msg{background:rgba(255,255,255,.13);color:#fff;}
+.goal-tab-v2-ico.views{background:rgba(28,35,51,.07);color:var(--dark2);}
+.goal-tab-v2.on .goal-tab-v2-ico.views{background:rgba(255,255,255,.13);color:#fff;}
+.goal-tab-v2-title{font-size:14px;font-weight:800;color:var(--dark);}
+.goal-tab-v2.on .goal-tab-v2-title{color:#fff;}
+.goal-tab-v2-sub{font-size:11px;color:var(--mt);margin-top:3px;}
+.goal-tab-v2.on .goal-tab-v2-sub{color:rgba(255,255,255,.55);}
+.goal-tab-v2-chk{
+  width:22px;height:22px;border-radius:50%;
+  border:1.5px solid var(--b2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;color:transparent;flex-shrink:0;
+  transition:all .2s;
+}
+.goal-tab-v2.on .goal-tab-v2-chk{border-color:#fff;background:#fff;color:var(--dark);}
+
+/* Age chips */
+.age-grp{
+  padding:8px 15px;border-radius:22px;
+  font-family:'R',sans-serif;font-size:12px;
+  cursor:pointer;border:1.5px solid var(--b1);
+  background:var(--w);color:var(--mt2);
+  transition:all .18s;font-weight:700;
+  display:flex;align-items:center;gap:5px;
+}
+.age-grp.on,.age-grp-all{background:var(--dark);color:#fff;border-color:var(--dark);}
+.age-grp-all.deselect{background:var(--bg);color:var(--mt);border-color:var(--b1);}
+
+/* Gender buttons */
+.gender-btn{
+  flex:1;padding:12px 8px;border-radius:14px;
+  border:1.5px solid var(--b1);background:var(--w);
+  color:var(--mt2);font-family:'R',sans-serif;
+  font-size:12px;cursor:pointer;text-align:center;
+  font-weight:700;transition:all .2s;
+}
+.gender-btn i{display:block;font-size:20px;margin-bottom:6px;}
+.gender-btn.on{background:var(--dark);color:#fff;border-color:var(--dark);box-shadow:0 3px 12px rgba(28,35,51,.18);}
+
+/* Budget controls */
+.bud-amount-ctrl{
+  background:var(--bg);border-radius:16px;
+  padding:14px 16px;margin-bottom:8px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.bud-amount-usd{font-size:28px;font-weight:900;color:var(--dark);font-family:'Inter',sans-serif;line-height:1;}
+.bud-amount-sub{font-size:11px;color:var(--mt);margin-top:3px;}
+.bud-days-row{
+  background:var(--bg);border-radius:16px;
+  padding:14px 16px;margin-bottom:8px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.bud-days-num{font-size:28px;font-weight:900;color:var(--dark);font-family:'Inter',sans-serif;display:block;line-height:1;}
+.bud-days-unit{font-size:11px;color:var(--mt);margin-top:3px;}
+.bud-btn-group{display:flex;gap:8px;align-items:center;}
+.bud-day-btn{
+  width:40px;height:40px;border-radius:50%;
+  cursor:pointer;font-size:22px;font-family:'Inter',sans-serif;
+  display:flex;align-items:center;justify-content:center;
+  transition:.18s;touch-action:manipulation;font-weight:300;line-height:1;
+}
+.bud-day-plus{background:var(--dark);color:#fff;border:none;box-shadow:0 3px 10px rgba(28,35,51,.2);}
+.bud-day-plus:active{transform:scale(.88);}
+.bud-day-minus{background:var(--bg);color:var(--mt2);border:1.5px solid var(--b2);}
+.bud-day-minus:active{background:var(--b1);}
+.bud-chips-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;}
+.bud-chip{
+  padding:8px 15px;border-radius:22px;
+  border:1.5px solid var(--b1);background:var(--w);
+  font-size:13px;font-weight:800;color:var(--mt2);
+  cursor:pointer;transition:all .18s;
+  font-family:'Inter',sans-serif;touch-action:manipulation;
+  white-space:nowrap;
+}
+.bud-chip.sel{background:var(--dark);color:#fff;border-color:var(--dark);box-shadow:0 2px 8px rgba(28,35,51,.18);}
+.bud-chip:active{transform:scale(.92);}
+.bud-total-box{
+  background:var(--dark);color:#fff;
+  padding:14px 18px;border-radius:16px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.bud-total-lbl{font-size:12px;font-weight:600;color:rgba(255,255,255,.65);}
+.bud-total-usd{font-size:18px;font-weight:900;font-family:'Inter',sans-serif;color:#fff;}
+.bud-total-days-badge{
+  font-size:11px;padding:4px 12px;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);
+  border-radius:20px;color:rgba(255,255,255,.85);font-weight:700;
+}
+
+/* Sub-label */
+.csub{font-size:11px;font-weight:700;color:var(--mt2);margin:12px 0 8px;letter-spacing:.2px;}
+
+/* Location chips (fchip in create) */
+.fchip{
+  padding:8px 15px;border-radius:22px;
+  font-family:'R',sans-serif;font-size:12px;
+  cursor:pointer;border:1.5px solid var(--b1);
+  background:var(--w);color:var(--mt2);
+  white-space:nowrap;transition:all .18s;font-weight:700;
+}
+.fchip.on{background:var(--dark);color:#fff;border-color:var(--dark);}
+
+/* Inputs */
+.create-inp{
+  width:100%;padding:13px 15px;
+  background:var(--bg);border:1.5px solid var(--b1);
+  border-radius:14px;color:var(--dark);
+  font-family:'R',sans-serif;font-size:15px;
+  outline:none;transition:all .2s ease;box-sizing:border-box;
+}
+.create-inp:focus{border-color:var(--dark);background:var(--w);box-shadow:0 0 0 4px rgba(28,35,51,.06);}
+.create-inp::placeholder{color:var(--mt);}
+
+/* Warning */
+.create-warning{
+  background:rgba(217,119,6,.05);
+  border:1px solid rgba(217,119,6,.18);
+  border-radius:13px;padding:12px 14px;
+  display:flex;align-items:flex-start;gap:9px;margin-top:10px;
+}
+.create-warning i{color:#d97706;font-size:14px;flex-shrink:0;margin-top:1px;}
+.create-warning-txt{font-size:12px;color:var(--dark);line-height:1.8;}
+
+/* Price box */
+.create-price-box{
+  background:var(--bg);border-radius:16px;padding:14px 16px;
+}
+.create-price-row{
+  display:flex;justify-content:space-between;
+  align-items:center;margin-bottom:8px;font-size:12.5px;
+}
+.create-price-lbl{color:var(--mt2);}
+.create-price-val{font-weight:700;color:var(--dark);font-family:'Inter',sans-serif;}
+.create-price-total{
+  border-top:1px solid var(--b1);padding-top:11px;margin-top:4px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+
+/* Submit */
+.create-submit{
+  width:100%;padding:17px;
+  background:var(--dark);color:#fff;
+  border:none;border-radius:16px;
+  font-family:'R',sans-serif;font-size:15px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;
+  justify-content:center;gap:9px;margin-top:14px;
+  box-shadow:0 5px 18px rgba(28,35,51,.22);
+  transition:opacity .2s,transform .18s ease;
+}
+.create-submit:active{opacity:.88;transform:scale(.99);}
+.create-submit-note{
+  text-align:center;font-size:11px;color:var(--mt);
+  margin-top:8px;line-height:1.7;
+}
+
+/* Expected results grid */
+.est2-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.est2-card{
+  background:var(--bg);border-radius:16px;
+  padding:14px 12px;display:flex;
+  flex-direction:column;align-items:center;
+  text-align:center;gap:8px;
+}
+.est2-ico{
+  width:38px;height:38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;flex-shrink:0;
+}
+.est2-ico-views{background:rgba(28,35,51,.08);color:var(--dark2);}
+.est2-ico-clicks{background:rgba(28,35,51,.08);color:var(--dark2);}
+.est2-val{font-size:12px;font-weight:900;color:var(--dark);font-family:'Inter',sans-serif;text-align:center;}
+.est2-val-wrap{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.est2-lbl{font-size:10.5px;color:var(--mt2);font-weight:600;}
+.est2-sub{font-size:9.5px;color:var(--mt);font-family:'Inter',sans-serif;}
+</style>
 </head>
 
 <script>
@@ -2107,70 +2559,79 @@ function _toWebP(dataUrl,quality){
 
   <!-- PROFILE -->
   <div class="pg" id="pgProfile">
-    <div class="prof-top">
+
+    <!-- ── Profile Hero ── -->
+    <div class="prof-hero">
       <div class="pav" id="profAv" onclick="document.getElementById('avFile').click()">P
         <div class="pav-cam"><i class="fas fa-camera"></i></div>
       </div>
       <input type="file" id="avFile" accept="image/*" style="display:none" onchange="loadAv(this)">
-      <div class="prof-info">
-        <div class="prof-name" id="profName">—</div>
-        <div class="prof-email" id="profEmail">—</div>
-      </div>
+      <div class="prof-hero-name" id="profName">—</div>
+      <div class="prof-hero-email" id="profEmail">—</div>
     </div>
-    <div class="pcard">
-      <div class="pcard-hdr">
-        <div class="pcard-hdr-left"><i class="fas fa-wallet"></i> باڵانسەکەت</div>
-        <span style="font-size:11px;cursor:pointer;color:var(--mt)" onclick="goPage('txhistory')">
-          <i class="fas fa-clock-rotate-left"></i> ئالوگۆڕەکان
-        </span>
-      </div>
-      <div class="bal-row">
+
+    <!-- ── Balance Card ── -->
+    <div class="pcard2">
+      <div class="pcard2-label"><i class="fas fa-wallet" style="margin-left:6px;opacity:.6"></i>باڵانسەکەت</div>
+      <div class="pcard2-bal-row">
         <div class="bal-num" id="profBal">0.00</div>
-        <div class="bal-cur">دینار عێراقی</div>
+        <div class="pcard2-cur">IQD</div>
       </div>
-      <button class="add-bal-btn" onclick="openDeposit()">
-        <i class="fas fa-plus"></i> زیادکردنی باڵانس
-      </button>
-    </div>
-    <!-- Proxo Coins Card in Profile -->
-    <div class="pcard" id="profileCoinsCard" style="background:linear-gradient(135deg,rgba(251,191,36,.06),rgba(217,119,6,.04));border-color:rgba(245,158,11,.2)">
-      <div class="pcard-hdr">
-        <div class="pcard-hdr-left" style="color:#b45309"><span style="margin-left:5px"><i class="fas fa-coins"></i></span> کۆینی پرۆکسۆ</div>
-        <span style="font-size:11px;cursor:pointer;color:#d97706;font-weight:700" onclick="openCoinsModal()">
-          <i class="fas fa-arrow-right-arrow-left"></i> گۆڕینەوە
-        </span>
-      </div>
-      <div class="bal-row">
-        <div class="bal-num" id="profCoins" style="color:#d97706">0</div>
-        <div class="bal-cur">کۆین</div>
-      </div>
-      <div style="font-size:12px;color:#b45309;margin-top:6px;background:rgba(245,158,11,.08);border-radius:10px;padding:8px 12px">
-        <i class="fas fa-info-circle" style="margin-left:5px"></i>
-        هەر <span style="font-family:'R',sans-serif;direction:ltr;unicode-bidi:embed">50</span> کۆین = <span style="font-family:'R',sans-serif;direction:ltr;unicode-bidi:embed">500</span> IQD · کەمترین <span style="font-family:'R',sans-serif;direction:ltr;unicode-bidi:embed">500</span> کۆین بۆ گۆڕینەوە
-      </div>
-    </div>
-    <!-- بانگێشتکردن -->
-    <div class="pcard" id="referralCard">
-      <div class="pcard-hdr">
-        <div class="pcard-hdr-left"><i class="fas fa-gift" style="color:#d97706"></i> بانگێشتکردنی هاوڕێ</div>
-        <span style="font-size:11px;color:var(--gr);font-weight:700" id="refEarnedLbl"></span>
-      </div>
-      <div style="font-size:12.5px;color:var(--mt);margin-bottom:14px;line-height:1.8">
-        هاوڕێیەکت بانگێشت بکە — کاتێک خۆی تۆمار کرد <b style="color:var(--dark)">+50 <i class="fas fa-coins" style="color:#d97706"></i> کۆین</b> وەردەگریت، ئەوەش <b style="color:var(--dark)">+50 <i class="fas fa-coins" style="color:#d97706"></i> کۆین</b> وەردەگرێت
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;background:var(--bg);border:1.5px solid var(--b1);border-radius:13px;padding:12px 14px;margin-bottom:12px">
-        <div style="flex:1;font-size:13px;font-weight:700;color:var(--dark);direction:ltr;text-align:left;font-family:'R',sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="refLinkDisp">چوارچێوەکردن...</div>
-        <button onclick="copyRefLink()" style="padding:7px 13px;background:var(--dark);color:#fff;border:none;border-radius:10px;font-family:'R',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0" id="refCopyBtn">
-          <i class="fas fa-copy" style="margin-left:4px"></i>کۆپی
+      <div class="pcard2-actions">
+        <button class="pcard2-btn-main" onclick="openDeposit()">
+          <i class="fas fa-plus"></i> شارژکردن
+        </button>
+        <button class="pcard2-btn-sec" onclick="goPage('txhistory')">
+          <i class="fas fa-clock-rotate-left"></i> مامەڵەکان
         </button>
       </div>
-      <button onclick="shareRefLink()" style="width:100%;padding:12px;background:var(--bg);border:1.5px solid var(--b2);border-radius:12px;color:var(--dark);font-family:'R',sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px">
-        <i class="fas fa-share-nodes"></i>هاوبەشکردن
+    </div>
+
+    <!-- ── Coins Card ── -->
+    <div class="pcard2 pcard2-coins" id="profileCoinsCard">
+      <div class="pcard2-coins-top">
+        <div>
+          <div class="pcard2-label" style="color:#92400e"><i class="fas fa-coins" style="margin-left:6px"></i>کۆینی پرۆکسۆ</div>
+          <div class="pcard2-bal-row" style="margin-top:6px">
+            <div class="bal-num" id="profCoins" style="color:#b45309;font-size:28px">0</div>
+            <div class="pcard2-cur" style="color:#b45309">کۆین</div>
+          </div>
+        </div>
+        <button class="pcard2-coins-exch" onclick="openCoinsModal()">
+          <i class="fas fa-arrow-right-arrow-left"></i> گۆڕینەوە
+        </button>
+      </div>
+      <div class="pcard2-coins-info">
+        <i class="fas fa-circle-info" style="flex-shrink:0;font-size:11px"></i>
+        هەر ٥٠ کۆین = ٥٠٠ IQD &nbsp;·&nbsp; کەمترین ٥٠٠ کۆین بۆ گۆڕینەوە
+      </div>
+    </div>
+
+    <!-- ── Referral Card ── -->
+    <div class="pcard2" id="referralCard">
+      <div class="pcard2-ref-top">
+        <div class="pcard2-label"><i class="fas fa-gift" style="margin-left:6px;color:#d97706"></i>بانگێشتکردنی هاوڕێ</div>
+        <span class="pcard2-ref-earn" id="refEarnedLbl"></span>
+      </div>
+      <div class="pcard2-ref-desc">
+        هاوڕێیەکت بانگێشت بکە — کاتێک خۆی تۆمار کرد
+        <b style="color:var(--dark)">+٥٠ <i class="fas fa-coins" style="color:#d97706"></i></b> وەردەگریت،
+        ئەوەش <b style="color:var(--dark)">+٥٠ <i class="fas fa-coins" style="color:#d97706"></i></b> وەردەگرێت
+      </div>
+      <div class="pcard2-ref-link">
+        <div class="pcard2-ref-url" id="refLinkDisp">چوارچێوەکردن...</div>
+        <button onclick="copyRefLink()" class="pcard2-ref-copy" id="refCopyBtn">
+          <i class="fas fa-copy"></i>
+        </button>
+      </div>
+      <button onclick="shareRefLink()" class="pcard2-share-btn">
+        <i class="fas fa-share-nodes"></i> هاوبەشکردن
       </button>
     </div>
 
-    <div class="pcard">
-      <div class="pcard-hdr"><div class="pcard-hdr-left"><i class="fas fa-gear"></i> ڕێکخستنەکان</div></div>
+    <!-- ── Settings Card ── -->
+    <div class="pcard2">
+      <div class="pcard2-sec-title">ڕێکخستنەکان</div>
       <button id="setupDbBtn" onclick="setupDatabase()" style="display:none;width:100%;padding:13px;background:rgba(37,99,235,.08);border:1.5px solid rgba(37,99,235,.2);border-radius:13px;color:var(--bl);font-family:'R',sans-serif;font-size:13px;font-weight:700;cursor:pointer;align-items:center;justify-content:center;gap:7px;margin-bottom:10px">
         <i class="fas fa-database"></i> دانانی فەنکشنی داتابەیس
       </button>
@@ -2195,15 +2656,14 @@ function _toWebP(dataUrl,quality){
         <i class="fas fa-chevron-left plist-arr" style="color:var(--rd)"></i>
       </div>
     </div>
-    <div class="pcard" id="txPanel" style="display:none">
-      <div class="pcard-hdr"><div class="pcard-hdr-left"><i class="fas fa-list"></i> مێژووی مامەڵەکان</div></div>
+
+    <!-- ── TX History (hidden, shown by JS) ── -->
+    <div class="pcard2" id="txPanel" style="display:none">
+      <div class="pcard2-sec-title">مێژووی مامەڵەکان</div>
       <div id="txList"><div style="text-align:center;padding:16px;color:var(--mt);font-size:12px"><i class="fas fa-circle-notch fa-spin"></i></div></div>
     </div>
 
-    <!-- ══ FAQ CARD ══ -->
-
-
-    <div style="height:14px"></div>
+    <div style="height:20px"></div>
   </div>
 
   <!-- CREATE AD -->
@@ -2216,6 +2676,7 @@ function _toWebP(dataUrl,quality){
         <div>
           <div class="create-hero-title">سپۆنسەری نوێ</div>
           <div class="create-hero-sub" id="todayLbl"></div>
+          <div class="create-hero-badge"><i class="fas fa-circle-check" style="margin-left:4px;font-size:9px"></i>پڕۆکسۆ ئەدز</div>
         </div>
       </div>
     </div>
@@ -2388,31 +2849,21 @@ function _toWebP(dataUrl,quality){
         <div class="create-sec-ico"><i class="fas fa-chart-line"></i></div>
         <div class="create-sec-lbl">ئەنجامی چاوەڕوانکراو</div>
       </div>
-      <div class="est-box">
-        <div id="estViewsRow" class="est-row">
-          <div style="display:flex;align-items:center;gap:10px;flex:1">
-            <div class="est-ico-wrap est-ico-views"><i class="fas fa-eye"></i></div>
-            <div>
-              <div class="est-lbl">بینەری چاوەڕوانکراو</div>
-              <div id="estViewsCpm" style="font-size:10px;color:var(--mt);margin-top:1px">CPM: $0.12–$0.15</div>
-            </div>
-          </div>
-          <div style="text-align:left">
-            <span id="estViewsVal" class="est-val">133,000 – 167,000</span>
-            <div style="font-size:9px;color:var(--mt);text-align:left;margin-top:2px">ئەمپرێسیۆن</div>
+      <div class="est2-grid">
+        <div class="est2-card" id="estViewsRow">
+          <div class="est2-ico est2-ico-views"><i class="fas fa-eye"></i></div>
+          <div class="est2-val-wrap">
+            <div id="estViewsVal" class="est-val est2-val">133,000 – 167,000</div>
+            <div class="est2-lbl">بینەری چاوەڕوانکراو</div>
+            <div id="estViewsCpm" class="est2-sub">CPM: $0.12–$0.15</div>
           </div>
         </div>
-        <div id="estClicksRow" class="est-row">
-          <div style="display:flex;align-items:center;gap:10px;flex:1">
-            <div class="est-ico-wrap est-ico-clicks"><i class="fas fa-hand-pointer"></i></div>
-            <div>
-              <div class="est-lbl">کلیک / نامەی چاوەڕوانکراو</div>
-              <div id="estClicksCtr" style="font-size:10px;color:var(--mt);margin-top:1px">CTR: 0.5%–2%</div>
-            </div>
-          </div>
-          <div style="text-align:left">
-            <span id="estClicksVal" class="est-val">665 – 3,340</span>
-            <div style="font-size:9px;color:var(--mt);text-align:left;margin-top:2px">کلیک / نامە</div>
+        <div class="est2-card" id="estClicksRow">
+          <div class="est2-ico est2-ico-clicks"><i class="fas fa-hand-pointer"></i></div>
+          <div class="est2-val-wrap">
+            <div id="estClicksVal" class="est-val est2-val">665 – 3,340</div>
+            <div class="est2-lbl">کلیک / نامەی چاوەڕوانکراو</div>
+            <div id="estClicksCtr" class="est2-sub">CTR: 0.5%–2%</div>
           </div>
         </div>
       </div>
@@ -2499,6 +2950,7 @@ function _toWebP(dataUrl,quality){
         <i class="fas fa-paper-plane"></i>
         ناردنی داواکاری
       </button>
+      <div class="create-submit-note">پشتی ناردن، ئەدمین ئەی بڕوانێت و ئاگاداری دەکەیتەوە</div>
     </div>
 
     <div style="height:14px"></div>
