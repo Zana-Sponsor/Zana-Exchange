@@ -7053,7 +7053,7 @@ function goPage(p){
   });
   if(p==='myads')loadMyAds();
   if(p==='proxolink'){loadProxoCards();hidePLForm();}
-  if(p==='notifications'){loadNotifications();markAllRead();}
+  if(p==='notifications'){loadNotifications();setTimeout(markAllRead,2500);}
   if(p==='support')loadChat();
   if(p==='profile'){loadBal();loadReferralSection();}
   if(p==='home'){loadCoins();}
@@ -9707,13 +9707,19 @@ async function checkNotifBell(){
   const dot=document.getElementById('notifDot');
   if(!dot)return;
   let cnt=0;
-  if(cu){
+  if(cu&&sb){
     try{
-      const{count,error}=await sb.from('pa_notifications').select('*',{count:'exact',head:true}).eq('user_id',cu.id).eq('is_read',false);
-      if(!error)cnt=count||0;
+      const{count,error}=await sb
+        .from('pa_notifications')
+        .select('*',{count:'exact',head:true})
+        .eq('user_id',cu.id)
+        .eq('is_read',false);
+      if(!error&&count!==null)cnt=count;
     }catch(_){}
   }
-  const total=cnt+_lcUnreadCount+_pushNotifUnread;
+  const lc=typeof _lcUnreadCount!=='undefined'?(_lcUnreadCount||0):0;
+  const pu=typeof _pushNotifUnread!=='undefined'?(_pushNotifUnread||0):0;
+  const total=cnt+lc+pu;
   if(total>0){
     dot.textContent=total>99?'99+':String(total);
     dot.classList.add('show');
@@ -9839,7 +9845,7 @@ async function markAllRead(){
     if(dot)dot.remove();
   });
   const nd=document.getElementById('notifDot');
-  if(nd){nd.classList.remove('show');}
+  if(nd){nd.classList.remove('show');nd.textContent='';}
 }
 
 function getTimeAgo(dateStr){
