@@ -180,7 +180,7 @@ body{font-family:'R',sans-serif;background:var(--bg);color:var(--tx);min-height:
 button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-action:manipulation;}
 @keyframes fu{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}@keyframes notifPulse{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(220,38,38,.6)}60%{transform:scale(1.15);box-shadow:0 0 0 4px rgba(220,38,38,0)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(220,38,38,0)}}
 /* ══ RULES ══ */
 .rule-item{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;color:var(--dark);padding:5px 0;line-height:1.6;}
 .rule-item i{color:var(--bl);font-size:10px;margin-top:4px;flex-shrink:0;}
@@ -335,9 +335,9 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .coins-need-more{width:100%;padding:13px;background:var(--bg);border:1.5px dashed var(--b2);border-radius:14px;color:var(--mt);font-family:'R',sans-serif;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;cursor:default;}
 
 /* ══ NOTIFICATION BELL ══ */
-.notif-btn{position:relative;width:34px;height:34px;border-radius:50%;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--dark);overflow:visible;}
-.notif-dot{position:absolute;top:-3px;left:-3px;width:11px;height:11px;border-radius:50%;background:#dc2626;border:2px solid var(--w);display:none;box-shadow:0 1px 4px rgba(220,38,38,.5);}
-.notif-dot.show{display:block;animation:pulse 2s ease-in-out infinite;}
+.notif-btn{position:relative;width:34px;height:34px;border-radius:50%;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--dark);overflow:visible;isolation:isolate;}
+.notif-dot{position:absolute;top:-4px;right:-4px;width:12px;height:12px;border-radius:50%;background:#dc2626;border:2.5px solid var(--w);display:none;box-shadow:0 2px 6px rgba(220,38,38,.6);z-index:20;}
+.notif-dot.show{display:block;animation:notifPulse 1.8s ease-in-out infinite;}
 .notif-count{position:absolute;top:-5px;left:-5px;min-width:18px;height:18px;border-radius:9px;background:#dc2626;border:2px solid var(--w);display:none;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;padding:0 4px;font-family:'Inter',sans-serif;box-shadow:0 2px 6px rgba(220,38,38,.4);z-index:10;}
 .notif-count.show{display:flex;animation:pulse 1.5s ease-in-out infinite;}
 
@@ -11104,23 +11104,43 @@ window.lcSubmitForm=async function(){
 window.lcCancelWaiting=async function(){
   if(!lcSessionId)return;
   const _cancelId=lcSessionId;
-  await lcDb.ref('sessions/'+_cancelId).remove();
-  // ── سڕینەوەی سێشنەکە لە مێژووی چاتەکان ──
+  // ── یەکەم: UI دەگوێزینەوە و listener دادەکشینین ──
+  lcDetachListeners();          // پێش null کردنی lcSessionId هەلدەگرین
+  lcSessionId=null;
+  localStorage.removeItem(LC_KEY);
   try{
     const _h=JSON.parse(localStorage.getItem(LC_HIST_KEY)||'[]');
     localStorage.setItem(LC_HIST_KEY,JSON.stringify(_h.filter(x=>x.id!==_cancelId)));
   }catch(_){}
-  localStorage.removeItem(LC_KEY);
-  lcSessionId=null;
-  lcDetachListeners();
   lcShowStage('lcStageForm');
+  // ── دووەم: لە Firebase دەسڕینەوە (ئەگەر شکستی هێنا گرنگ نییە) ──
+  try{ lcDb.ref('sessions/'+_cancelId).remove(); }catch(_){}
 };
 
 function lcAttachListeners(){
   if(lcUnsubSession)lcDb.ref('sessions/'+lcSessionId).off('value',lcUnsubSession);
   lcUnsubSession=lcDb.ref('sessions/'+lcSessionId).on('value',snap=>{
     const d=snap.val();
-    if(!d)return;
+    if(!d){
+      // سێشن سڕایەوە (ڕەتکرا یان تەواوبوو) — کڕیار ئاگادار بکەوە
+      const _curStage=document.querySelector('.lc-stage.on');
+      const _isWaiting=_curStage&&_curStage.id==='lcStageWaiting';
+      lcDetachListeners();
+      localStorage.removeItem(LC_KEY);
+      lcSessionId=null;
+      if(_isWaiting){
+        // نیشاندانی پەیامی ڕەتکردنەوە بۆ کڕیار
+        lcShowStage('lcStageForm');
+        const _rejNote=document.createElement('div');
+        _rejNote.id='lcRejNote';
+        _rejNote.style.cssText='margin:10px 0 6px;padding:10px 14px;background:#fef2f2;border:1px solid #fecaca;border-radius:12px;color:#991b1b;font-size:12.5px;font-weight:700;text-align:center;';
+        _rejNote.innerHTML='<i class="fas fa-info-circle" style="margin-left:5px"></i>داواکاریەکەت ڕەتکرایەوە یان کاتی دوایی تێپەڕی. تکایە دووبارە ئەرسەڵێنە.';
+        const _form=document.getElementById('lcStageForm');
+        if(_form&&!document.getElementById('lcRejNote'))_form.insertBefore(_rejNote,_form.firstChild);
+        setTimeout(()=>{const n=document.getElementById('lcRejNote');if(n)n.remove();},5000);
+      }
+      return;
+    }
     if(d.status==='active'){
       lcShowStage('lcStageChat');
       lcSaveToHistory(lcSessionId,d.name,d.problem,d.adminName,'active');
