@@ -336,8 +336,8 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 
 /* ══ NOTIFICATION BELL ══ */
 .notif-btn{position:relative;width:34px;height:34px;border-radius:50%;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--dark);overflow:visible;isolation:isolate;}
-.notif-dot{position:absolute;top:-4px;right:-4px;width:12px;height:12px;border-radius:50%;background:#dc2626;border:2.5px solid var(--w);display:none;box-shadow:0 2px 6px rgba(220,38,38,.6);z-index:20;}
-.notif-dot.show{display:block;animation:notifPulse 1.8s ease-in-out infinite;}
+.notif-dot{position:absolute;top:-7px;right:-7px;min-width:19px;height:19px;border-radius:10px;background:#dc2626;border:2px solid var(--w);display:none;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff;font-family:'Inter',sans-serif;letter-spacing:-.3px;padding:0 4px;box-shadow:0 2px 8px rgba(220,38,38,.55);z-index:20;}
+.notif-dot.show{display:flex;animation:notifPulse 1.8s ease-in-out infinite;}
 .notif-count{position:absolute;top:-5px;left:-5px;min-width:18px;height:18px;border-radius:9px;background:#dc2626;border:2px solid var(--w);display:none;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;padding:0 4px;font-family:'Inter',sans-serif;box-shadow:0 2px 6px rgba(220,38,38,.4);z-index:10;}
 .notif-count.show{display:flex;animation:pulse 1.5s ease-in-out infinite;}
 
@@ -9717,8 +9717,13 @@ async function checkNotifBell(){
     }catch(_){}
   }
   const total=cnt+_lcUnreadCount+_pushNotifUnread;
-  if(total>0){dot.classList.add('show');}
-  else{dot.classList.remove('show');}
+  if(total>0){
+    dot.textContent=total>9?'9+':String(total);
+    dot.classList.add('show');
+  }else{
+    dot.textContent='';
+    dot.classList.remove('show');
+  }
 }
 
 async function loadNotifications(){
