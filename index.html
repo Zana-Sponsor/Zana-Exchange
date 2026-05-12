@@ -336,8 +336,8 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 
 /* ══ NOTIFICATION BELL ══ */
 .notif-btn{position:relative;width:34px;height:34px;border-radius:50%;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--dark);overflow:visible;}
-.notif-dot{position:absolute;top:6px;left:6px;width:9px;height:9px;border-radius:50%;background:var(--rd);border:2px solid var(--w);display:none;animation:pulse 1.5s infinite;}
-.notif-dot.show{display:block;}
+.notif-dot{position:absolute;top:-3px;left:-3px;width:11px;height:11px;border-radius:50%;background:#dc2626;border:2px solid var(--w);display:none;box-shadow:0 1px 4px rgba(220,38,38,.5);}
+.notif-dot.show{display:block;animation:pulse 2s ease-in-out infinite;}
 .notif-count{position:absolute;top:-5px;left:-5px;min-width:18px;height:18px;border-radius:9px;background:#dc2626;border:2px solid var(--w);display:none;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;padding:0 4px;font-family:'Inter',sans-serif;box-shadow:0 2px 6px rgba(220,38,38,.4);z-index:10;}
 .notif-count.show{display:flex;animation:pulse 1.5s ease-in-out infinite;}
 
@@ -2395,7 +2395,7 @@ function _toWebP(dataUrl,quality){
     <div class="topbar-right-col">
       <div class="notif-btn" onclick="goPage('notifications')" id="notifBtn">
         <i class="fas fa-bell" style="font-size:16px"></i>
-        <div class="notif-count" id="notifDot"></div>
+        <div class="notif-dot" id="notifDot"></div>
       </div>
       <!-- PROXO COINS BADGE (hidden) -->
       <div id="hCoinsBtn" style="display:none"><span id="hCoins">0</span><span id="hCoinsExchangeTag" style="display:none"></span></div>
@@ -6480,12 +6480,7 @@ async function boot(){
       // ── badge ڕاستەوخۆ نیشان بدە ──
       _pushNotifUnread++;
       const _nd=document.getElementById('notifDot');
-      if(_nd){
-        const _cur=parseInt(_nd.textContent||'0',10)||0;
-        const _tot=_cur+1;
-        _nd.textContent=_tot>99?'99+':String(_tot);
-        _nd.classList.add('show');
-      }
+      if(_nd){_nd.classList.add('show');}
       checkNotifBell();
       setTimeout(checkNotifBell, 800);
       const pgNotif = document.getElementById('pgNotifications');
@@ -9722,8 +9717,8 @@ async function checkNotifBell(){
     }catch(_){}
   }
   const total=cnt+_lcUnreadCount+_pushNotifUnread;
-  if(total>0){dot.textContent=total>99?'99+':String(total);dot.classList.add('show');}
-  else{dot.textContent='';dot.classList.remove('show');}
+  if(total>0){dot.classList.add('show');}
+  else{dot.classList.remove('show');}
 }
 
 async function loadNotifications(){
@@ -9842,7 +9837,7 @@ async function markAllRead(){
     if(dot)dot.remove();
   });
   const nd=document.getElementById('notifDot');
-  if(nd){nd.textContent='';nd.classList.remove('show');}
+  if(nd){nd.classList.remove('show');}
 }
 
 function getTimeAgo(dateStr){
