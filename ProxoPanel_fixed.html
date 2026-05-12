@@ -525,6 +525,36 @@ tr:hover td{background:rgba(28,35,51,.015);}
 /* fix: image/video in existing normal chat bubbles */
 .lca-bubble img{max-width:100%;max-height:250px;border-radius:10px;display:block;cursor:pointer;object-fit:contain;margin-top:4px;}
 .lca-bubble video{max-width:100%;max-height:220px;border-radius:10px;display:block;outline:none;margin-top:4px;}
+
+/* ══ ADMIN SUPPORT CHAT — REALTIME ══ */
+.sup-user-item{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;border-bottom:1px solid var(--b1);transition:background .15s;position:relative;}
+.sup-user-item:hover{background:rgba(28,35,51,.03);}
+.sup-user-item.active{background:rgba(37,99,235,.05);border-right:3px solid var(--bl);}
+.sup-user-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--bl),#1d4ed8);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex-shrink:0;overflow:hidden;}
+.sup-user-av img{width:100%;height:100%;object-fit:cover;}
+.sup-user-info{flex:1;min-width:0;}
+.sup-user-name{font-size:13px;font-weight:700;color:var(--dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sup-user-last{font-size:11px;color:var(--mt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
+.sup-unread-badge{min-width:18px;height:18px;border-radius:9px;background:#dc2626;color:#fff;font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;padding:0 4px;font-family:'Inter',sans-serif;flex-shrink:0;}
+.sup-bubble-wrap{display:flex;margin-bottom:6px;}
+.sup-bubble-wrap.admin{justify-content:flex-end;}
+.sup-bubble-wrap.user{justify-content:flex-start;}
+.sup-bubble{max-width:75%;padding:10px 14px;border-radius:18px;font-size:13px;line-height:1.6;position:relative;}
+.sup-bubble.admin{background:var(--dark);color:#fff;border-radius:18px 18px 4px 18px;}
+.sup-bubble.user{background:var(--w);color:var(--dark);border:1px solid var(--b1);border-radius:18px 18px 18px 4px;}
+.sup-bubble-meta{font-size:9.5px;opacity:.5;margin-top:5px;text-align:left;direction:ltr;}
+.sup-bubble.admin .sup-bubble-meta{text-align:right;}
+.sup-chat-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;color:var(--mt);padding:40px;}
+.sup-chat-empty i{font-size:36px;margin-bottom:12px;opacity:.25;}
+.sup-chat-empty p{font-size:13px;}
+.sup-typing{font-size:11px;color:var(--mt);padding:4px 16px;font-style:italic;}
+#supportChatBody{scroll-behavior:smooth;}
+
+/* ── ADMIN NOTIF BADGE ── */
+.sb-item{position:relative;}
+.sb-notif-badge{position:absolute;top:50%;right:12px;transform:translateY(-50%);min-width:19px;height:19px;border-radius:10px;background:#dc2626;color:#fff;font-size:10px;font-weight:900;font-family:'Inter',sans-serif;display:none;align-items:center;justify-content:center;padding:0 4px;letter-spacing:-.3px;box-shadow:0 2px 6px rgba(220,38,38,.4);}
+.sb-notif-badge.show{display:flex;animation:sbBadgePop .3s cubic-bezier(.175,.885,.32,1.275);}
+@keyframes sbBadgePop{0%{transform:translateY(-50%) scale(0)}100%{transform:translateY(-50%) scale(1)}}
 </style>
 </head>
 <body>
@@ -573,7 +603,7 @@ tr:hover td{background:rgba(28,35,51,.015);}
     <div class="sb-item" onclick="goPage('approval')"><i class="fas fa-shield-check" style="color:#10b981"></i> Approval Workflow <span class="sb-badge yw" id="sbApprovalCount" style="display:none">0</span></div>
     <div class="sb-item" onclick="goPage('txlog')"><i class="fas fa-list-check" style="color:#38bdf8"></i> مێژووی مامەڵەکان</div>
     <div class="sb-section">ئامرازەکان</div>
-    <div class="sb-item" onclick="goPage('notifications')"><i class="fas fa-bell"></i> ناردنی ئاگاداری</div>
+    <div class="sb-item" onclick="goPage('notifications')"><i class="fas fa-bell"></i> ناردنی ئاگاداری<span class="sb-notif-badge" id="adminNotifBadge"></span></div>
     <div class="sb-item" onclick="goPage('banners')"><i class="fas fa-ad"></i> بانەری ڕیکلام</div>
     <div class="sb-item" onclick="goPage('promo')"><i class="fas fa-tag" style="color:#f472b6"></i> کۆدی داشکاندن</div>
     <div class="sb-item" onclick="goPage('version')"><i class="fas fa-rocket"></i> بەڕێوەبردنی ڤێرژن</div>
@@ -982,22 +1012,53 @@ tr:hover td{background:rgba(28,35,51,.015);}
 
     <!-- ══ SUPPORT ══ -->
     <div class="pg" id="pgSupport">
-      <div class="sec-hdr"><h3>پشتیوانی بەکارهێنەران</h3></div>
-      <div class="support-grid">
-        <div class="tbl-wrap" style="overflow-y:auto;max-height:600px;">
-          <div style="padding:12px;font-size:11px;font-weight:700;color:var(--mt);border-bottom:1px solid var(--b1)">گفتوگۆکان</div>
-          <div id="supportUserList"><div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div></div>
+      <div class="sec-hdr">
+        <h3><i class="fas fa-headset" style="margin-left:8px;color:var(--bl)"></i>چاتی پشتیوانی</h3>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div style="width:8px;height:8px;border-radius:50%;background:#16a34a" id="supRtDot" title="ڕیاڵ-تایم"></div>
+          <span style="font-size:11px;color:var(--mt)">ژیوە</span>
         </div>
-        <div class="tbl-wrap" style="display:flex;flex-direction:column;">
-          <div style="padding:14px 16px;border-bottom:1px solid var(--b1)">
-            <div id="supportChatTitle" style="font-size:14px;font-weight:700;color:var(--dark)">بەکارهێنەرێک هەڵبژێرە</div>
+      </div>
+      <div class="support-grid">
+        <!-- ── لیستی بەکارهێنەران ── -->
+        <div class="tbl-wrap" style="overflow-y:auto;max-height:640px;display:flex;flex-direction:column;">
+          <div style="padding:12px 14px;font-size:11px;font-weight:700;color:var(--mt);border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;">
+            گفتوگۆکان
+            <span id="supUnreadTotal" style="display:none;background:#dc2626;color:#fff;font-size:9px;font-weight:900;padding:2px 7px;border-radius:20px;font-family:'Inter',sans-serif"></span>
           </div>
-          <div id="supportChatBody" style="flex:1;padding:16px;overflow-y:auto;max-height:400px;display:flex;flex-direction:column;gap:10px">
-            <div class="empty"><i class="fas fa-headset"></i><p>بەکارهێنەرێک هەڵبژێرە</p></div>
+          <div id="supportUserList" style="flex:1;overflow-y:auto;"><div style="padding:24px;text-align:center;color:var(--mt)"><i class="fas fa-circle-notch fa-spin"></i></div></div>
+        </div>
+        <!-- ── پەنجەرەی چات ── -->
+        <div class="tbl-wrap" style="display:flex;flex-direction:column;min-height:500px;">
+          <!-- سەرووی چات -->
+          <div style="padding:12px 16px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:10px;" id="supChatHdr">
+            <div id="supChatHdrAv" style="width:36px;height:36px;border-radius:50%;background:var(--bg);border:1.5px solid var(--b1);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--mt);flex-shrink:0;">?</div>
+            <div style="flex:1;min-width:0;">
+              <div id="supportChatTitle" style="font-size:14px;font-weight:800;color:var(--dark);">بەکارهێنەرێک هەڵبژێرە</div>
+              <div id="supChatHdrEmail" style="font-size:11px;color:var(--mt);direction:ltr;text-align:right;"></div>
+            </div>
+            <div id="supChatHdrStatus" style="display:none;font-size:11px;color:var(--gr);display:flex;align-items:center;gap:4px"><div style="width:7px;height:7px;border-radius:50%;background:var(--gr)"></div>ئۆنلاین</div>
           </div>
-          <div style="padding:14px 16px;border-top:1px solid var(--b1);display:flex;gap:8px" id="supportChatFoot">
-            <textarea class="minp" id="adminReplyInp" placeholder="وەڵامی ئادمین..." style="flex:1;resize:none;min-height:44px;margin:0"></textarea>
-            <button class="act-btn dark" onclick="sendAdminReply()" style="align-self:flex-end;padding:10px 16px"><i class="fas fa-paper-plane"></i></button>
+          <!-- بەشی پەیامەکان -->
+          <div id="supportChatBody" style="flex:1;padding:16px;overflow-y:auto;max-height:440px;display:flex;flex-direction:column;gap:2px;min-height:300px;">
+            <div class="sup-chat-empty">
+              <i class="fas fa-headset"></i>
+              <p>بەکارهێنەرێک هەڵبژێرە تا چاتەکەی ببینیت</p>
+            </div>
+          </div>
+          <!-- بەشی نووسین -->
+          <div style="padding:12px 14px;border-top:1px solid var(--b1);display:flex;gap:8px;align-items:flex-end;" id="supportChatFoot">
+            <textarea
+              class="minp"
+              id="adminReplyInp"
+              placeholder="وەڵام بنووسە..."
+              style="flex:1;resize:none;min-height:44px;max-height:120px;margin:0;overflow-y:auto;line-height:1.5;"
+              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAdminReply();}"
+              oninput="this.style.height='44px';this.style.height=Math.min(this.scrollHeight,120)+'px';"
+            ></textarea>
+            <button onclick="sendAdminReply()" style="min-width:44px;height:44px;border-radius:12px;background:var(--dark);color:#fff;border:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .15s;" onmousedown="this.style.opacity='.7'" onmouseup="this.style.opacity='1'">
+              <i class="fas fa-paper-plane"></i>
+            </button>
           </div>
         </div>
       </div>
@@ -1527,7 +1588,9 @@ let sb, adminUser=null, lcaAdminDisplayName='ئەدمین';
 let allUsers=[], allDeposits=[], allAds=[];
 let _depMap={}, _adMap={};
 let depFilter='all', adFilter='all', userFilter='all';
-let currentSupportUserId=null, currentSupportUserName='';
+let currentSupportUserId=null, currentSupportUserName='', currentSupportUserEmail='';
+let _supRtChannel=null;
+let _supUnreadMap={}; // {uid: count}
 let selectedNotifType='general';
 
 // ══ SIDEBAR TOGGLE ══
@@ -1548,7 +1611,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   updateClock();
   setInterval(updateClock,60000);
   sb.auth.getSession().then(({data:{session}})=>{
-    if(session?.user){adminUser=session.user;showApp();}
+    if(session?.user){adminUser=session.user;showApp();setTimeout(updateAdminNotifBadge,500);}
   });
 });
 
@@ -1579,6 +1642,7 @@ async function doLogin(){
       return;
     }
     showApp();
+  updateAdminNotifBadge();
   }catch(e){
     showAuthErr('هەڵەی پەیوەندی: '+e.message);
     btn.disabled=false;btn.innerHTML='<i class="fas fa-arrow-left"></i> چوونەژوورەوە';
@@ -1672,6 +1736,35 @@ function validateRequired(id){
   clearFieldErr(id);return true;
 }
 
+
+// ══ HELPER: تریگەری net.http_post بچەوسێنەرەوە ══
+function isNetHttpErr(e){
+  return e && typeof e.message === 'string' && (
+    e.message.includes('http_post') ||
+    e.message.includes('net.http')
+  );
+}
+
+// ══ HELPER: نوێکردنەوەی pa_transactions بەبێ تریگەر (delete+insert workaround) ══
+async function safeUpdateTx(id, payload){
+  // هەوڵی یەکەم: نوێکردنەوەی ئاسایی
+  const{error:_ue}=await sb.from('pa_transactions').update(payload).eq('id',id);
+  if(!_ue) return {error:null};
+  if(!isNetHttpErr(_ue)) return {error:_ue};
+  // تریگەر rollback کرد — delete + insert
+  const{data:txRow,error:_se}=await sb.from('pa_transactions').select('*').eq('id',id).single();
+  if(_se||!txRow) return {error:_ue};
+  const{error:_de}=await sb.from('pa_transactions').delete().eq('id',id);
+  if(_de) return {error:_de};
+  const newRow={...txRow,...payload};
+  const{error:_ie}=await sb.from('pa_transactions').insert(newRow);
+  if(_ie){
+    // گەڕانەوە بۆ شوێنی خۆی ئەگەر insert شکست هێنا
+    await sb.from('pa_transactions').insert(txRow);
+    return {error:_ie};
+  }
+  return {error:null};
+}
 // ══ REALTIME ══
 function setupRealtime(){
   sb.channel('admin-realtime-v3')
@@ -1706,13 +1799,14 @@ function setupRealtime(){
     })
     .on('postgres_changes',{event:'*',schema:'public',table:'pa_banners'},()=>{})
     .on('postgres_changes',{event:'*',schema:'public',table:'pa_notifications'},()=>{
+      updateAdminNotifBadge();
       if(_curPage==='notifications')loadNotifHistory();
     })
     .on('postgres_changes',{event:'*',schema:'public',table:'pa_settings'},()=>{
       if(_curPage==='version')loadVersion();
     })
     .on('postgres_changes',{event:'*',schema:'public',table:'pa_support'},()=>{
-      if(_curPage==='support')loadSupportUsers();
+      if(_curPage==='support'){loadSupportUsers();}
     })
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'weekly_giveaway_entries'},()=>{
       if(_curPage==='giveaway')loadGiveaway();
@@ -1921,6 +2015,7 @@ async function saveEditUser(){
   const{error}=await sb.from('profiles').update({full_name:name}).eq('id',id);
   if(error){showToast('هەڵە: '+error.message,'rd');return;}
   showToast('✅ پرۆفایل نوێکرایەوە','gr');
+  _fbTriggerProfile(id);
   closeMo('moEditUser');loadUsers();
 }
 
@@ -1933,6 +2028,9 @@ async function toggleBan(uid,isBanned){
       await sb.from('pa_notifications').insert({user_id:uid,type:isBanned?'general':'warning',
         title:isBanned?'ئەکاونتت دووبارە چالاکبوو ✅':'ئەکاونتت بانکرا ⛔',
         body:isBanned?'ئادمین ئەکاونتەکەت دووبارە چالاک کردەوە.':'ئادمین ئەکاونتەکەت بانی کردووە.',is_read:false});
+      // ── Firebase realtime push (بانکردن/بانەکردنەوە) ──
+      _fbPushNotif(uid,isBanned?'ئەکاونتت دووبارە چالاکبوو ✅':'ئەکاونتت بانکرا ⛔',isBanned?'ئادمین ئەکاونتەکەت دووبارە چالاک کردەوە.':'ئادمین ئەکاونتەکەت بانی کردووە.',isBanned?'general':'warning');
+      _fbTriggerProfile(uid);
       showToast(isBanned?'✅ بانەکردن هەڵگیرا':'✅ بەکارهێنەر بانکرا','gr');
       loadUsers();
     });
@@ -2073,35 +2171,44 @@ async function confirmAddBalance(){
   const{data:wallet}=await sb.from('pa_wallets').select('balance').eq('user_id',uid).single();
   const newBal=parseFloat(wallet?.balance||0)+amtUSD;
   const{error}=await sb.from('pa_wallets').update({balance:newBal,updated_at:new Date().toISOString()}).eq('user_id',uid);
-  if(error){showToast('هەڵە: '+error.message,'rd');return;}
+  if(error && !isNetHttpErr(error)){showToast('هەڵە: '+error.message,'rd');return;}
   await sb.from('pa_transactions').insert({user_id:uid,amount:amtUSD,type:'admin_adjustment',status:'approved',note:`ئادمین (${adminEmail}): زیادکردن — ${note}`});
   await sb.from('pa_notifications').insert({user_id:uid,type:'balance_added',title:'باڵانست زیادکرا 💰',body:`ئادمین ${Math.round(amtIQD).toLocaleString()} IQD زیادی کرد بۆ باڵانسەکەت.`,is_read:false});
   showToast('✅ '+Math.round(amtIQD).toLocaleString()+' IQD زیادکرا','gr');
+  // ── Firebase realtime sync ──
+  _fbSyncBalance(uid, newBal);
+  _fbPushNotif(uid,'باڵانست زیادکرا 💰',`ئادمین ${Math.round(amtIQD).toLocaleString()} IQD زیادی کرد بۆ باڵانسەکەت.`,'balance_added');
+  _fbTriggerTx(uid);
   // ── ئیمێڵی وەسڵی زیادکردنی باڵانس ──
-try {
-  const { data: prof } = await sb.from('profiles')
-  .select('full_name, email')
-  .eq('id', uid)
-  .single();
-
-  const userEmail = prof?.email;
-  const userName  = prof?.full_name || prof?.email || 'بەکارهێنەر';
-
-  if (userEmail) {
-    await fetch('https://n8n.proxopages.com/webhook/proxo-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action:     'balance_receipt',
-        email:      userEmail,
-        userName:   userName,
-        amount:     Math.round(amtIQD).toLocaleString(),
-        newBalance: Math.round(newBal * 1800).toLocaleString(),
-        note:       note
-      })
-    });
+  try {
+    const { data: prof, error: profErr } = await sb.from('profiles')
+      .select('full_name, email')
+      .eq('id', uid)
+      .single();
+    if (profErr) throw new Error('profile fetch: ' + profErr.message);
+    const userEmail = prof?.email || '';
+    const userName  = prof?.full_name || prof?.email || 'بەکارهێنەر';
+    if (userEmail) {
+      const _emailRes = await fetch('https://n8n.proxopages.com/webhook/proxo-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action:     'balance_receipt',
+          email:      userEmail,
+          userName:   userName,
+          amount:     String(Math.round(amtIQD)),
+          newBalance: String(Math.round(newBal * 1800)),
+          note:       note || 'زیادکردنی ئادمین'
+        })
+      });
+      if (!_emailRes.ok) console.warn('[balance_receipt] webhook status:', _emailRes.status);
+    } else {
+      console.warn('[balance_receipt] no email found for uid:', uid);
+    }
+  } catch(_emailErr) {
+    console.warn('[balance_receipt] email send failed:', _emailErr?.message);
+    showToast('ئیمێڵ نەنێردرا — ' + (_emailErr?.message||'هەڵەی نەزانراو'), 'yw');
   }
-} catch(_) {}
   closeMo('moAddBalance');loadUsers();loadDashboardStats();
   if(_curPage==='txlog')loadTxLog();
 }
@@ -2128,10 +2235,14 @@ async function confirmDeductBalance(){
   }
   const newBal=Math.max(0,cur-amtUSD);
   const{error}=await sb.from('pa_wallets').update({balance:newBal,updated_at:new Date().toISOString()}).eq('user_id',uid);
-  if(error){showToast('هەڵە: '+error.message,'rd');return;}
+  if(error && !isNetHttpErr(error)){showToast('هەڵە: '+error.message,'rd');return;}
   await sb.from('pa_transactions').insert({user_id:uid,amount:amtUSD,type:'admin_adjustment',status:'approved',note:`ئادمین (${adminEmail}): وەرگرتن — ${note}`});
   await sb.from('pa_notifications').insert({user_id:uid,type:'warning',title:'باڵانسەکەت کەم کرایەوە ⚠️',body:`ئادمین ${Math.round(amtIQD).toLocaleString()} IQD لە باڵانسەکەت وەرگرت. هۆکار: ${note}`,is_read:false});
   showToast('✅ '+Math.round(amtIQD).toLocaleString()+' IQD وەرگیرا','gr');
+  // ── Firebase realtime sync ──
+  _fbSyncBalance(uid, newBal);
+  _fbPushNotif(uid,'باڵانسەکەت کەم کرایەوە ⚠️',`ئادمین ${Math.round(amtIQD).toLocaleString()} IQD لە باڵانسەکەت وەرگرت. هۆکار: ${note}`,'warning');
+  _fbTriggerTx(uid);
   // ── ئیمێڵی ئاگادارکردنی کەمکردنی باڵانس ──
   try {
     const { data: prof } = await sb.from('profiles')
@@ -2145,21 +2256,24 @@ async function confirmDeductBalance(){
     const dateStr   = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
 
     if (userEmail) {
-      await fetch('https://n8n.proxopages.com/webhook/proxo-otp', {
+      const _deductRes = await fetch('https://n8n.proxopages.com/webhook/proxo-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action:     'balance_deducted',
           email:      userEmail,
           userName:   userName,
-          amount:     Math.round(amtIQD).toLocaleString(),
-          newBalance: Math.round(newBal * 1800).toLocaleString(),
-          note:       note,
+          amount:     String(Math.round(amtIQD)),
+          newBalance: String(Math.round(newBal * 1800)),
+          note:       note || 'وەرگرتنی ئادمین',
           date:       dateStr
         })
       });
+      if (!_deductRes.ok) console.warn('[balance_deducted] webhook status:', _deductRes.status);
     }
-  } catch(_) {}
+  } catch(_deductErr) {
+    console.warn('[balance_deducted] email send failed:', _deductErr?.message);
+  }
   closeMo('moDeductBalance');loadUsers();loadDashboardStats();
   if(_curPage==='txlog')loadTxLog();
 }
@@ -2348,32 +2462,38 @@ function showDepDetail(d){
 async function approveDeposit(id,userId,amount){
   confirm2('پەسەندکردنی پارەدان',`ئایا دەتەوێت ${Math.round(parseFloat(amount)*1800).toLocaleString()} IQD زیاد بکەیت؟`,
     'fas fa-check-circle','var(--gr)',async()=>{
-      const{error:e1}=await sb.from('pa_transactions').update({status:'approved'}).eq('id',id);
+      const{error:e1}=await safeUpdateTx(id,{status:'approved'});
       if(e1){showToast('هەڵە: '+e1.message,'rd');return;}
       await sb.from('pa_wallets').upsert({user_id:userId,balance:0},{onConflict:'user_id',ignoreDuplicates:true});
       const{data:w,error:e2}=await sb.from('pa_wallets').select('balance').eq('user_id',userId).single();
-      if(e2){showToast('هەڵەی بارکردنی باڵانس: '+e2.message,'rd');return;}
+      if(e2 && !isNetHttpErr(e2)){showToast('هەڵەی بارکردنی باڵانس: '+e2.message,'rd');return;}
       const newBal=parseFloat(w?.balance||0)+parseFloat(amount);
       const{error:e3}=await sb.from('pa_wallets').update({balance:newBal,updated_at:new Date().toISOString()}).eq('user_id',userId);
-      if(e3){showToast('هەڵەی نوێکردنەوەی باڵانس: '+e3.message,'rd');return;}
+      if(e3 && !isNetHttpErr(e3)){showToast('هەڵەی نوێکردنەوەی باڵانس: '+e3.message,'rd');return;}
       await sb.from('pa_notifications').insert({user_id:userId,type:'deposit_approved',title:'پارەدانت پەسەندکرا ✅',body:`${Math.round(parseFloat(amount)*1800).toLocaleString()} IQD زیادکرا بۆ باڵانسەکەت.`,is_read:false});
       showToast('✅ پارەدان پەسەندکرا','gr');
+      // ── Firebase realtime sync ──
+      _fbSyncBalance(userId, newBal);
+      _fbPushNotif(userId,'پارەدانت پەسەندکرا ✅',`${Math.round(parseFloat(amount)*1800).toLocaleString()} IQD زیادکرا بۆ باڵانسەکەت.`,'deposit_approved');
+      _fbTriggerTx(userId);
       try{
-        const{data:prof}=await sb.from('profiles').select('full_name,email').eq('id',userId).single();
+        const{data:prof,error:_pe}=await sb.from('profiles').select('full_name,email').eq('id',userId).single();
+        if(_pe) throw new Error('profile: '+_pe.message);
         if(prof?.email){
-          await fetch('https://n8n.proxopages.com/webhook/proxo-otp',{
+          const _depRes=await fetch('https://n8n.proxopages.com/webhook/proxo-otp',{
             method:'POST',headers:{'Content-Type':'application/json'},
             body:JSON.stringify({
-              action:'balance_receipt',email:prof.email,
+              action:'balance_receipt',
+              email:prof.email,
               userName:prof.full_name||prof.email||'بەکارهێنەر',
-              amount:Math.round(parseFloat(amount)*1800).toLocaleString(),
-              newBalance:Math.round(newBal*1800).toLocaleString(),
-              note:'داواکاریەکەت پەسەندکرا',
-              loginUrl:'https://www.proxopages.com/ProxoApp_v2.25_with_AdCalc'
+              amount:String(Math.round(parseFloat(amount)*1800)),
+              newBalance:String(Math.round(newBal*1800)),
+              note:'داواکاریەکەت پەسەندکرا'
             })
           });
+          if(!_depRes.ok)console.warn('[deposit balance_receipt] status:',_depRes.status);
         }
-      }catch(_){}
+      }catch(_depErr){console.warn('[deposit balance_receipt]',_depErr?.message);}
       loadDeposits();loadDashboardStats();
     });
 }
@@ -2527,7 +2647,7 @@ async function showAdDetail(id){
 
 async function updateAdStatus(id,userId,newStatus,budget){
   const{error}=await sb.from('pa_ads').update({status:newStatus}).eq('id',id);
-  if(error){showToast('هەڵە: '+error.message,'rd');return;}
+  if(error && !isNetHttpErr(error)){showToast('هەڵە: '+error.message,'rd');return;}
   // ئەگەر پەسەندکرا و بودجە $20 یان زیاتر بوو — بەشدار بکە لە قورعەی هەفتانە
   if(newStatus==='active' && parseFloat(budget||0)>=20 && userId){
     try{
@@ -2652,7 +2772,7 @@ async function submitApproval(){
       start_date: startDate,
       end_date: endDate
     }).eq('id', _approveAdId);
-    if(error){ showToast('هەڵە: '+error.message,'rd'); btn.disabled=false; btn.innerHTML='<i class="fas fa-check-circle"></i> پەسەندکردن (Approve)'; return; }
+    if(error && !isNetHttpErr(error)){ showToast('هەڵە: '+error.message,'rd'); btn.disabled=false; btn.innerHTML='<i class="fas fa-check-circle"></i> پەسەندکردن (Approve)'; return; }
     // Giveaway entry if budget >= $20
     if(_approveAdBudget >= 20 && _approveUserId){
       try{
@@ -2675,13 +2795,16 @@ async function submitApproval(){
       body: `ڕیکلامەکەت پەسەندکرا و ئێستا ژیوەیە (Live). TikTok Ad ID: ${tiktokId} | دەستپێکردن: ${startDate} | کۆتایی: ${endDate}`,
       is_read: false
     });
+    // ── Firebase realtime push (پەسەندکردنی ڕیکلام) ──
+    _fbPushNotif(_approveUserId,'ڕیکلامەکەت چالاک بوو ✅',`ڕیکلامەکەت پەسەندکرا و ئێستا ژیوەیە (Live). TikTok ID: ${tiktokId}`,'ad_approved');
+    _fbTriggerAds(_approveUserId, _approveAdId, 'active');
     showToast('✅ ڕیکلام پەسەندکرا — ستاتۆس: چالاک (Live)','gr');
     closeMo('moApproveAd');
     loadAds();
     loadApprovalWorkflow();
     loadAdBadge();
   }catch(e){
-    showToast('هەڵەیەک ڕوویدا: '+e.message,'rd');
+    if(!isNetHttpErr(e)) showToast('هەڵەیەک ڕوویدا: '+e.message,'rd');
   }
   btn.disabled = false;
   btn.innerHTML = '<i class="fas fa-check-circle"></i> پەسەندکردن (Approve)';
@@ -2700,13 +2823,13 @@ async function confirmReject(){
   const reason=document.getElementById('rejectReasonTxt').value.trim();
   if(!reason){showToast('هۆکار بنووسە','rd');return;}
   if(type==='deposit'){
-    // هەوڵ بدە بە reject_reason، ئەگەر شکستی هێنا بەبێ ئەو فیلدە هەوڵ بدە
-    let res=await sb.from('pa_transactions').update({status:'rejected',reject_reason:reason}).eq('id',id);
-    if(res.error){
-      // فیلدی reject_reason نەبوو، تەنها status نوێ بکەرەوە
-      res=await sb.from('pa_transactions').update({status:'rejected',note:'ڕەتکرا: '+reason}).eq('id',id);
-      if(res.error){showToast('هەڵە: '+res.error.message,'rd');return;}
+    // هەوڵ بدە بە reject_reason، ئەگەر فیلدەکە نەبوو بەبێ بکە
+    let{error:_re1}=await safeUpdateTx(id,{status:'rejected',reject_reason:reason,note:'ڕەتکرا: '+reason});
+    if(_re1){
+      const{error:_re2}=await safeUpdateTx(id,{status:'rejected',note:'ڕەتکرا: '+reason});
+      if(_re2){showToast('هەڵە: '+_re2.message,'rd');return;}
     }
+    const res={error:null};
     const dep=allDeposits.find(d=>d.id===id);
     if(dep){
       await sb.from('pa_notifications').insert({
@@ -2716,6 +2839,8 @@ async function confirmReject(){
         body:'هۆکار: '+reason,
         is_read:false
       });
+      // ── Firebase realtime push ──
+      _fbPushNotif(dep.user_id,'پارەدانت ڕەتکرا ❌','هۆکار: '+reason,'deposit_rejected');
     }
     loadDeposits();
   } else {
@@ -2732,9 +2857,9 @@ async function confirmReject(){
         // هەوڵی دووەم: تەنها status — بەبێ reject_reason (ئەگەر فیلدەکە نەبوو)
         const {error:e2}=await sb.from('pa_ads').update({status:'rejected'}).eq('id',id);
         if(!e2) rejected=true;
-        else{showToast('هەڵە: '+e2.message,'rd');return;}
+        else if(!isNetHttpErr(e2)){showToast('هەڵە: '+e2.message,'rd');return;}
       }
-    }catch(ex){showToast('هەڵە: '+ex.message,'rd');return;}
+    }catch(ex){ if(!isNetHttpErr(ex)){showToast('هەڵە: '+ex.message,'rd');return;} }
     if(!rejected) return;
     // گەڕانەوەی بودجە بۆ باڵانسی بەکارهێنەر کاتێک ڕیکلام ڕەتدەکرێت
     if(adObj?.user_id && parseFloat(adObj?.budget||0)>0){
@@ -2761,6 +2886,10 @@ async function confirmReject(){
           body:`${adObj.ad_number?'#'+adObj.ad_number+' — ':''}${refundIQD.toLocaleString()} IQD گەڕایەوە بۆ باڵانسەکەت — هۆکار: ${reason}`,
           is_read:false
         });
+        // ── Firebase realtime sync (گەڕانەوەی پارە) ──
+        _fbSyncBalance(adObj.user_id, newRefBal);
+        _fbPushNotif(adObj.user_id,'پارەی ڕیکلامی ڕەتکراو گەڕایەوە 💸',`${refundIQD.toLocaleString()} IQD گەڕایەوە — هۆکار: ${reason}`,'refund_rejected_ad');
+        _fbTriggerTx(adObj.user_id);
         // ══ ناردنی ئیمەیلی ئاگادارکردنەوەی گەڕانەوەی باڵانس لە ڕێگای webhook ══
         try{
           const{data:_refProf}=await sb.from('profiles').select('email,full_name').eq('id',adObj.user_id).single();
@@ -2796,6 +2925,9 @@ async function confirmReject(){
           body:'هۆکاری ڕەتکردنەوە: '+reason,
           is_read:false
         });
+        // ── Firebase realtime push (ڕەتکردنی ڕیکلام) ──
+        _fbPushNotif(adObj.user_id,`${adLabel} ڕەتکرا ❌`,'هۆکاری ڕەتکردنەوە: '+reason,'ad_rejected');
+        _fbTriggerAds(adObj.user_id, id, 'rejected');
       }catch(_){}
     }
     loadAds();
@@ -2818,12 +2950,17 @@ async function sendNotification(){
   const target=document.getElementById('notifTarget').value;
   const title=document.getElementById('notifTitle').value.trim();
   const body=document.getElementById('notifBody').value.trim();
+  // پاشکەوت کردن پێش پاکردنەوە
+  const _savedTitle = title;
+  const _savedBody  = body;
   if(!title){showToast('ناونیشان بنووسە','rd');return;}
   if(target==='all'){
     const{data:users}=await sb.from('profiles').select('id');
     if(!users?.length){showToast('هیچ بەکارهێنەرێک نەدۆزرایەوە','rd');return;}
     const rows=users.map(u=>({user_id:u.id,type:selectedNotifType,title,body:body||null,is_read:false}));
     for(let i=0;i<rows.length;i+=50)await sb.from('pa_notifications').insert(rows.slice(i,i+50));
+    // Firebase push بۆ هەموو بەکارهێنەران
+    for(const row of rows){ _fbPushNotif(row.user_id, title, body||'', selectedNotifType); }
     showToast(`✅ ${rows.length} ئاگاداری نێردرا`,'gr');
   } else {
     const email=document.getElementById('notifUserEmail').value.trim();
@@ -2831,11 +2968,13 @@ async function sendNotification(){
     const{data:prof}=await sb.from('profiles').select('id').eq('email',email).single();
     if(!prof){showToast('بەکارهێنەر نەدۆزرایەوە','rd');return;}
     await sb.from('pa_notifications').insert({user_id:prof.id,type:selectedNotifType,title,body:body||null,is_read:false});
+    _fbPushNotif(prof.id, title, body||'', selectedNotifType);
     showToast('✅ ئاگاداری نێردرا','gr');
   }
   document.getElementById('notifTitle').value='';
   document.getElementById('notifBody').value='';
   loadNotifHistory();
+  updateAdminNotifBadge();
   // ئیمێڵ بنێرە بە n8n
   const webhookURL = 'https://n8n.proxopages.com/webhook/send_otp1';
   if (target === 'all') {
@@ -2850,8 +2989,8 @@ async function sendNotification(){
           action: 'panel_notification',
           email: u.email,
           userName: u.full_name || 'بەکارهێنەر',
-          title: document.getElementById('notifTitle').value.trim(),
-          message: document.getElementById('notifBody').value.trim(),
+          title: _savedTitle,
+          message: _savedBody,
           type: selectedNotifType
         })
       });
@@ -2868,13 +3007,31 @@ async function sendNotification(){
           action: 'panel_notification',
           email: prof2.email,
           userName: prof2.full_name || 'بەکارهێنەر',
-          title: document.getElementById('notifTitle').value.trim(),
-          message: document.getElementById('notifBody').value.trim(),
+          title: _savedTitle,
+          message: _savedBody,
           type: selectedNotifType
         })
       });
     }
   }
+}
+
+
+// ── بادجی ئاگاداری سایدبار (ئادمین) ──
+async function updateAdminNotifBadge(){
+  try{
+    const{count}=await sb.from('pa_notifications').select('*',{count:'exact',head:true}).eq('is_read',false);
+    const badge=document.getElementById('adminNotifBadge');
+    if(!badge)return;
+    const n=count||0;
+    if(n>0){
+      badge.textContent=n>99?'99+':String(n);
+      badge.classList.add('show');
+    }else{
+      badge.textContent='';
+      badge.classList.remove('show');
+    }
+  }catch(_){}
 }
 
 async function loadNotifHistory(){
@@ -3079,55 +3236,203 @@ async function sendVersionNotif(){
   showToast(`✅ ئاگاداری بۆ ${users.length} بەکارهێنەر نەردرا`,'gr');
 }
 
-// ══ SUPPORT ══
+// ══ SUPPORT — REALTIME CHAT ══
+
+function _supBubble(m){
+  const isAdmin=m.is_admin;
+  const t=m.created_at?new Date(m.created_at).toLocaleTimeString('ku',{hour:'2-digit',minute:'2-digit'}):'';
+  return `<div class="sup-bubble-wrap ${isAdmin?'admin':'user'}" data-msg-id="${m.id||''}">
+    <div class="sup-bubble ${isAdmin?'admin':'user'}">
+      ${isAdmin?'<div style="font-size:9px;opacity:.45;margin-bottom:4px;letter-spacing:.3px">ئادمین ▾</div>':''}
+      <div>${(m.message||'').replace(/\n/g,'<br>')}</div>
+      <div class="sup-bubble-meta">${t}</div>
+    </div>
+  </div>`;
+}
+
+function _supScrollBottom(smooth){
+  const b=document.getElementById('supportChatBody');
+  if(!b)return;
+  setTimeout(()=>{b.scrollTo({top:b.scrollHeight,behavior:smooth?'smooth':'auto'});},40);
+}
+
+function _supUpdateTotalUnread(){
+  const total=Object.values(_supUnreadMap).reduce((a,b)=>a+b,0);
+  const el=document.getElementById('supUnreadTotal');
+  if(!el)return;
+  if(total>0){el.textContent=total;el.style.display='flex';}
+  else{el.style.display='none';}
+}
+
 async function loadSupportUsers(){
-  const{data:_supmsgs}=await sb.from('pa_support').select('user_id,message,created_at,is_admin').order('created_at',{ascending:false});
-  const _supuids=[...new Set((_supmsgs||[]).map(m=>m.user_id).filter(Boolean))];
-  const{data:_supprofs}=await _supuids.length?sb.from('profiles').select('id,full_name,email,avatar_b64').in('id',_supuids):{data:[]};
-  const _supmap={};(_supprofs||[]).forEach(p=>{_supmap[p.id]=p;});
-  const data=(_supmsgs||[]).map(m=>({...m,profiles:_supmap[m.user_id]||null}));
+  // هەموو پەیامەکان بخوێنەوە — هەر کڕیار یەک ئایتەم
+  const{data:msgs}=await sb.from('pa_support')
+    .select('user_id,message,created_at,is_admin')
+    .order('created_at',{ascending:false});
+  if(!msgs?.length){
+    document.getElementById('supportUserList').innerHTML=
+      '<div style="padding:30px;text-align:center;color:var(--mt)"><i class="fas fa-headset" style="font-size:28px;display:block;margin-bottom:10px;opacity:.25"></i><span style="font-size:13px">هیچ گفتوگۆیەک نییە</span></div>';
+    return;
+  }
+  // ناسنامەی کڕیاران
+  const uids=[...new Set(msgs.map(m=>m.user_id).filter(Boolean))];
+  const{data:profs}=await sb.from('profiles').select('id,full_name,email,avatar_b64').in('id',uids);
+  const profMap={};(profs||[]).forEach(p=>{profMap[p.id]=p;});
+
+  // ئامادەکردنی لیستی کڕیاران (کۆتا پەیام بۆ هەر کڕیار)
   const userMap={};
-  (data||[]).forEach(m=>{
-    if(!userMap[m.user_id])userMap[m.user_id]={user_id:m.user_id,name:m.profiles?.full_name||m.profiles?.email||'—',avatar:m.profiles?.avatar_b64||null,lastMsg:m.message};
+  msgs.forEach(m=>{
+    if(!userMap[m.user_id]){
+      const p=profMap[m.user_id]||{};
+      userMap[m.user_id]={
+        uid:m.user_id,
+        name:p.full_name||p.email||'کڕیار',
+        email:p.email||'',
+        avatar:p.avatar_b64||null,
+        lastMsg:m.message||'',
+        lastTime:m.created_at,
+        lastIsAdmin:m.is_admin,
+      };
+    }
   });
+
+  // ژمارەی نەخوێندراوی هەر کڕیار (پەیامی کڕیار کە ئادمین نەیخوێندووەتەوە)
+  const{data:unread}=await sb.from('pa_support')
+    .select('user_id')
+    .eq('is_admin',false)
+    .eq('is_read_admin',true);
+  // is_read_admin field ممکنه نەبێت — بەس بەکارهێنەرانی دوواتر چاکیان بکە
+  // ئێستا تەنها نیشانەی پەیامی کڕیار پیشان دەدەین
   const users=Object.values(userMap);
   const wrap=document.getElementById('supportUserList');
-  if(!users.length){wrap.innerHTML='<div class="empty"><i class="fas fa-headset"></i><p>هیچ گفتوگۆیەک نییە</p></div>';return;}
-  wrap.innerHTML=users.map(u=>`
-    <div onclick="openSupportChat('${u.user_id}','${(u.name||'').replace(/'/g,"\\'")}','')" style="display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;border-bottom:1px solid var(--b1)">
-      <div class="mini-av">${u.avatar?`<img src="${u.avatar}">`:(u.name||'?')[0].toUpperCase()}</div>
-      <div style="flex:1;overflow:hidden">
-        <div style="font-size:13px;font-weight:700;color:var(--dark)">${u.name}</div>
-        <div style="font-size:11px;color:var(--mt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${u.lastMsg||'—'}</div>
+  wrap.innerHTML=users.map(u=>{
+    const initials=(u.name||'?')[0].toUpperCase();
+    const unreadCnt=_supUnreadMap[u.uid]||0;
+    const isActive=u.uid===currentSupportUserId;
+    const lastPreview=u.lastMsg.length>40?u.lastMsg.substring(0,40)+'...':u.lastMsg;
+    const timeStr=u.lastTime?new Date(u.lastTime).toLocaleTimeString('ku',{hour:'2-digit',minute:'2-digit'}):'';
+    return `<div class="sup-user-item${isActive?' active':''}" onclick="openSupportChat('${u.uid}','${(u.name||'').replace(/'/g,"\'").replace(/"/g,'\"')}','${(u.email||'').replace(/'/g,"\'")}')">
+      <div class="sup-user-av">${u.avatar?`<img src="${u.avatar}">`:`<span>${initials}</span>`}</div>
+      <div class="sup-user-info">
+        <div class="sup-user-name">${u.name}</div>
+        <div class="sup-user-last" style="${!u.lastIsAdmin?'color:var(--dark);font-weight:600':''}">${!u.lastIsAdmin?'<i class="fas fa-arrow-left" style="font-size:9px;margin-left:3px;color:var(--bl)"></i>':''} ${lastPreview}</div>
       </div>
-    </div>`).join('');
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
+        <div style="font-size:9.5px;color:var(--mt)">${timeStr}</div>
+        ${unreadCnt>0?`<div class="sup-unread-badge">${unreadCnt}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  _supUpdateTotalUnread();
+
+  // ── ستارتکردنی ڕیاڵ-تایم ئەگەر پێشتر نەکراوە ──
+  _startSupRealtime();
+}
+
+function _startSupRealtime(){
+  if(_supRtChannel)return; // تەنها یەک جار
+  _supRtChannel=sb.channel('sup_rt_admin')
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'pa_support'},(payload)=>{
+      const m=payload.new;
+      if(!m)return;
+      const uid=m.user_id;
+
+      // ئەگەر پەنجەرەی ئەم کڕیارە کراوەیە → پەیام زیاد بکە
+      if(uid===currentSupportUserId){
+        const body=document.getElementById('supportChatBody');
+        if(body){
+          // سڕینەوەی empty state
+          const emp=body.querySelector('.sup-chat-empty');
+          if(emp)emp.remove();
+          body.insertAdjacentHTML('beforeend',_supBubble(m));
+          _supScrollBottom(true);
+        }
+      } else if(!m.is_admin){
+        // پەیامی کڕیاری تری — زیادکردنی ژمارەی نەخوێندراو
+        _supUnreadMap[uid]=(_supUnreadMap[uid]||0)+1;
+        _supUpdateTotalUnread();
+      }
+      // نوێکردنەوەی لیستی کڕیاران
+      loadSupportUsers();
+    })
+    .subscribe((status)=>{
+      const dot=document.getElementById('supRtDot');
+      if(dot)dot.style.background=status==='SUBSCRIBED'?'#16a34a':'#f59e0b';
+    });
 }
 
 async function openSupportChat(uid,name,email){
-  currentSupportUserId=uid;currentSupportUserName=name;
+  currentSupportUserId=uid;
+  currentSupportUserName=name;
+  currentSupportUserEmail=email||'';
+
+  // سڕینەوەی ژمارەی نەخوێندراو بۆ ئەم کڕیارە
+  _supUnreadMap[uid]=0;
+  _supUpdateTotalUnread();
+
+  // نوێکردنەوەی active state لە لیست
+  document.querySelectorAll('.sup-user-item').forEach(el=>el.classList.remove('active'));
+  const activeItem=document.querySelector(`.sup-user-item[onclick*="${uid}"]`);
+  if(activeItem)activeItem.classList.add('active');
+
+  // نوێکردنەوەی سەرووی چات
   document.getElementById('supportChatTitle').textContent=name;
-  const{data}=await sb.from('pa_support').select('*').eq('user_id',uid).order('created_at',{ascending:true});
+  const hdrEmail=document.getElementById('supChatHdrEmail');
+  if(hdrEmail)hdrEmail.textContent=email||'';
+  const hdrAv=document.getElementById('supChatHdrAv');
+  if(hdrAv){hdrAv.textContent=(name||'?')[0].toUpperCase();hdrAv.style.background='linear-gradient(135deg,#2563eb,#1d4ed8)';hdrAv.style.color='#fff';}
+
+  // بارکردنی پەیامەکان
   const body=document.getElementById('supportChatBody');
-  if(!data?.length){body.innerHTML='<div class="empty"><i class="fas fa-comment-slash"></i><p>هیچ نامەیەک نییە</p></div>';return;}
-  body.innerHTML=data.map(m=>`
-    <div style="display:flex;justify-content:${m.is_admin?'flex-end':'flex-start'}">
-      <div style="max-width:80%;padding:10px 14px;border-radius:${m.is_admin?'18px 18px 4px 18px':'18px 18px 18px 4px'};background:${m.is_admin?'var(--dark)':'var(--w)'};border:1px solid ${m.is_admin?'transparent':'var(--b1)'};color:${m.is_admin?'#fff':'var(--dark)'};font-size:13px;line-height:1.6">
-        ${m.is_admin?'<div style="font-size:9px;opacity:.5;margin-bottom:4px">ئادمین</div>':''}
-        ${m.message}
-        <div style="font-size:9px;opacity:.45;margin-top:4px">${new Date(m.created_at).toLocaleTimeString('ku',{hour:'2-digit',minute:'2-digit'})}</div>
-      </div>
-    </div>`).join('');
-  setTimeout(()=>{body.scrollTop=body.scrollHeight;},50);
+  body.innerHTML='<div style="display:flex;justify-content:center;padding:20px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin"></i></div>';
+
+  const{data,error}=await sb.from('pa_support')
+    .select('*').eq('user_id',uid).order('created_at',{ascending:true});
+
+  if(!data?.length){
+    body.innerHTML='<div class="sup-chat-empty"><i class="fas fa-comment-slash"></i><p>هیچ نامەیەک نییە</p></div>';
+    return;
+  }
+  body.innerHTML=data.map(m=>_supBubble(m)).join('');
+  _supScrollBottom(false);
+  // Focus input
+  const inp=document.getElementById('adminReplyInp');
+  if(inp)setTimeout(()=>inp.focus(),100);
 }
 
 async function sendAdminReply(){
-  if(!currentSupportUserId){showToast('بەکارهێنەرێک هەڵبژێرە','rd');return;}
+  if(!currentSupportUserId){showToast('کڕیارێک هەڵبژێرە','rd');return;}
   const inp=document.getElementById('adminReplyInp');
-  const msg=inp.value.trim();if(!msg)return;
-  await sb.from('pa_support').insert({user_id:currentSupportUserId,message:msg,is_admin:true});
-  await sb.from('pa_notifications').insert({user_id:currentSupportUserId,type:'admin_msg',title:'وەڵامی ئادمین 📣',body:msg.substring(0,80)+(msg.length>80?'...':''),is_read:false});
+  const msg=(inp.value||'').trim();
+  if(!msg)return;
+  // disable
   inp.value='';
-  openSupportChat(currentSupportUserId,currentSupportUserName,'');
+  inp.style.height='44px';
+  const{error}=await sb.from('pa_support').insert({
+    user_id:currentSupportUserId,
+    message:msg,
+    is_admin:true
+  });
+  if(error){showToast('هەڵە: '+error.message,'rd');inp.value=msg;return;}
+  // ئاگاداری بنێرە بۆ کڕیار
+  await sb.from('pa_notifications').insert({
+    user_id:currentSupportUserId,
+    type:'admin_msg',
+    title:'وەڵامی ئادمین 📣',
+    body:msg.substring(0,80)+(msg.length>80?'...':''),
+    is_read:false
+  });
+  // Firebase push
+  try{_fbPushNotif(currentSupportUserId,'وەڵامی ئادمین 📣',msg.substring(0,80)+(msg.length>80?'...':''),'admin_msg');}catch(_){}
+  // پەیام ڕاستەوخۆ زیاد بکە (Supabase realtime تأخیر هەیە)
+  const body=document.getElementById('supportChatBody');
+  if(body){
+    const emp=body.querySelector('.sup-chat-empty');
+    if(emp)emp.remove();
+    const fakeMsg={message:msg,is_admin:true,created_at:new Date().toISOString()};
+    body.insertAdjacentHTML('beforeend',_supBubble(fakeMsg));
+    _supScrollBottom(true);
+  }
 }
 
 // ══ PASSWORD & ACCOUNT TOOLS ══
@@ -3595,6 +3900,10 @@ async function runGiveawayDraw(){
     await sb.from('weekly_giveaway_winners').insert({user_id:winner.user_id,user_name:winner.user_name,user_email:winner.user_email,prize_amount:18000,week_start:weekStart,drawn_at:new Date().toISOString()});
     // ئاگاداری بۆ برنامەدەر
     await sb.from('pa_notifications').insert({user_id:winner.user_id,type:'giveaway_win',title:'🎉 برنامەدەری قورعەی هەفتانەی!',body:`پیرۆزبێت! تۆ برنامەدەری قورعەی هەفتانەی بوویت — 18,000 IQD زیادکرا بۆ باڵانسەکەت.`,is_read:false});
+    // ── Firebase realtime sync (برنامەدەری قورعە) ──
+    _fbSyncBalance(winner.user_id, newBal);
+    _fbPushNotif(winner.user_id,'🎉 برنامەدەری قورعەی هەفتانەی!','پیرۆزبێت! 18,000 IQD زیادکرا بۆ باڵانسەکەت.','giveaway_win');
+    _fbTriggerTx(winner.user_id);
     // ئاگاداری بۆ هەموو بەشدارانی دیکە
     const losers=(entries||[]).filter(e=>e.user_id!==winner.user_id);
     if(losers.length){
@@ -4578,6 +4887,47 @@ function getFbAdminDb(){
     }
   }catch(e){console.error('Firebase DB error',e);}
   return _fbAdminDb;
+}
+
+
+// ═══ FIREBASE REALTIME HELPERS (ئاگادارکردنی ڕاستەوخۆ بۆ ئاپی بەکارهێنەر) ═══
+async function _fbPushNotif(uid, title, body, type) {
+  try {
+    const db = getFbAdminDb();
+    if (!db || !uid) return;
+    const ref = db.ref('pa_notifications/' + uid).push();
+    await ref.set({ title: title||'', body: body||'', type: type||'general', timestamp: Date.now() });
+  } catch(e) { /* silent */ }
+}
+async function _fbSyncBalance(uid, newBalUSD) {
+  try {
+    const db = getFbAdminDb();
+    if (!db || !uid) return;
+    const iqd = Math.round(parseFloat(newBalUSD||0) * 1800);
+    await db.ref('wallets/' + uid + '/balance').set(iqd);
+    await db.ref('realtime_triggers/' + uid + '/balance').set({ timestamp: Date.now(), balIQD: iqd });
+  } catch(e) { /* silent */ }
+}
+async function _fbTriggerAds(uid, adId, status) {
+  try {
+    const db = getFbAdminDb();
+    if (!db || !uid) return;
+    await db.ref('realtime_triggers/' + uid + '/ads').set({ timestamp: Date.now(), adId: adId||'', status: status||'' });
+  } catch(e) { /* silent */ }
+}
+async function _fbTriggerProfile(uid) {
+  try {
+    const db = getFbAdminDb();
+    if (!db || !uid) return;
+    await db.ref('realtime_triggers/' + uid + '/profile').set({ timestamp: Date.now() });
+  } catch(e) { /* silent */ }
+}
+async function _fbTriggerTx(uid) {
+  try {
+    const db = getFbAdminDb();
+    if (!db || !uid) return;
+    await db.ref('realtime_triggers/' + uid + '/tx').set({ timestamp: Date.now() });
+  } catch(e) { /* silent */ }
 }
 
 function setupFbRequestsListener(){
