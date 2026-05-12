@@ -6477,12 +6477,9 @@ async function boot(){
   // ══ REALTIME: pa_notifications INSERT ══ (نوێکردنەوەی خۆکاری بەشی ئاگاداریەکان)
   sb.channel('notif_full_rt_'+cu.id)
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'pa_notifications',filter:`user_id=eq.${cu.id}`},(payload)=>{
-      // ── badge ڕاستەوخۆ نیشان بدە ──
-      _pushNotifUnread++;
-      const _nd=document.getElementById('notifDot');
-      if(_nd){_nd.classList.add('show');}
+      // ── بادجی بژمارەدار ڕاستەوخۆ نوێبکەرەوە ──
       checkNotifBell();
-      setTimeout(checkNotifBell, 800);
+      setTimeout(checkNotifBell, 600);
       const pgNotif = document.getElementById('pgNotifications');
       if(pgNotif && pgNotif.classList.contains('on')) loadNotifications();
       // ══ گەڕانەوەی باڵانسی خۆکارانە — تریگەری ناردنی ئیمەیل ══
