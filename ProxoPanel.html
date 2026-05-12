@@ -3207,8 +3207,7 @@ function _supBubble(m){
   return `<div class="sup-bubble-wrap ${isAdmin?'admin':'user'}" data-msg-id="${m.id||''}">
     <div class="sup-bubble ${isAdmin?'admin':'user'}">
       ${isAdmin?'<div style="font-size:9px;opacity:.45;margin-bottom:4px;letter-spacing:.3px">ئادمین ▾</div>':''}
-      <div>${(m.message||'').replace(/
-/g,'<br>')}</div>
+      <div>${(m.message||'').replace(/\n/g,'<br>')}</div>
       <div class="sup-bubble-meta">${t}</div>
     </div>
   </div>`;
