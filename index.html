@@ -9718,8 +9718,9 @@ async function checkNotifBell(){
     }catch(_){}
   }
   const lc=typeof _lcUnreadCount!=='undefined'?(_lcUnreadCount||0):0;
-  const pu=typeof _pushNotifUnread!=='undefined'?(_pushNotifUnread||0):0;
-  const total=cnt+lc+pu;
+  // _pushNotifUnread not counted — Supabase cnt already includes all DB notifications
+  // adding it caused double-counting when admin sends 1 notification
+  const total=cnt+lc;
   if(total>0){
     dot.textContent=total>99?'99+':String(total);
     dot.classList.add('show');
