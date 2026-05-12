@@ -338,7 +338,7 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .notif-btn{position:relative;width:34px;height:34px;border-radius:50%;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--dark);overflow:visible;}
 .notif-dot{position:absolute;top:6px;left:6px;width:9px;height:9px;border-radius:50%;background:var(--rd);border:2px solid var(--w);display:none;animation:pulse 1.5s infinite;}
 .notif-dot.show{display:block;}
-.notif-count{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;border-radius:9px;background:#dc2626;border:2px solid var(--w);display:none;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;padding:0 4px;font-family:'Inter',sans-serif;box-shadow:0 2px 6px rgba(220,38,38,.4);z-index:10;}
+.notif-count{position:absolute;top:-5px;left:-5px;min-width:18px;height:18px;border-radius:9px;background:#dc2626;border:2px solid var(--w);display:none;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;padding:0 4px;font-family:'Inter',sans-serif;box-shadow:0 2px 6px rgba(220,38,38,.4);z-index:10;}
 .notif-count.show{display:flex;animation:pulse 1.5s ease-in-out infinite;}
 
 /* ══ DEPOSIT FLOW v2 ══ */
@@ -5780,10 +5780,7 @@ function startReqListener() {
           var pgTx = document.getElementById('pgTxhistory');
           if (pgTx && pgTx.classList.contains('on')) loadTxHistory();
         } else if (r.status === 'rejected') {
-          _showNotifToast(
-            '❌ داواکارییەکەت ڕەتکرا',
-            isDep ? 'داواکاری بارکردنت ڕەتکرا' : 'داواکاری کەمکردنت ڕەتکرا'
-          );
+          // toast disabled
           checkNotifBell();
           var pgTx2 = document.getElementById('pgTxhistory');
           if (pgTx2 && pgTx2.classList.contains('on')) loadTxHistory();
@@ -5828,10 +5825,7 @@ function startNotifListener() {
       loadNotifications();
     }
 
-    // Toast notification
-    const title = n.title || 'ئاگاداری نوێ';
-    const body  = n.body  || '';
-    _showNotifToast(title, body);
+    // toast disabled — badge only
   });
 
   // گوێگرتن بۆ گۆڕانکاری لە باڵانس و داواکاریەکان
@@ -5875,9 +5869,9 @@ function startNotifListener() {
     checkNotifBell();
     // Toast بۆ گۆڕانی باری ڕیکلام
     if (d.status === 'active') {
-      _showNotifToast('✅ ڕیکلامەکەت چالاک بوو', 'ئادمین ڕیکلامەکەت پەسەندکرد — ئێستا ژیوەیە!');
+      // toast disabled
     } else if (d.status === 'rejected') {
-      _showNotifToast('❌ ڕیکلامەکەت ڕەتکرا', 'بچۆ بۆ ئاگاداریەکان بۆ زیاتر زانیاری.');
+      // toast disabled
     }
   });
 
@@ -5902,31 +5896,7 @@ function startNotifListener() {
   });
 }
 
-function _showNotifToast(title, body) {
-  // دروستکردنی toast ئاگاداری
-  let nt = document.getElementById('_fbNotifToast');
-  if (!nt) {
-    nt = document.createElement('div');
-    nt.id = '_fbNotifToast';
-    nt.style.cssText = 'position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-10px);background:var(--dark);color:#fff;border-radius:16px;padding:12px 18px;max-width:88vw;z-index:29999;display:none;opacity:0;transition:all .3s;box-shadow:0 6px 24px rgba(0,0,0,.3);min-width:240px;';
-    document.body.appendChild(nt);
-  }
-  nt.innerHTML = '<div style="display:flex;align-items:flex-start;gap:10px">'
-    + '<div style="width:30px;height:30px;border-radius:9px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px"><i class="fas fa-bell"></i></div>'
-    + '<div style="flex:1"><div style="font-size:13px;font-weight:700;margin-bottom:2px">' + title + '</div>'
-    + (body ? '<div style="font-size:11.5px;opacity:.75;line-height:1.5">' + body + '</div>' : '')
-    + '</div></div>';
-  nt.style.display = 'block';
-  void nt.offsetWidth;
-  nt.style.opacity = '1';
-  nt.style.transform = 'translateX(-50%) translateY(0)';
-  clearTimeout(nt._timer);
-  nt._timer = setTimeout(function() {
-    nt.style.opacity = '0';
-    nt.style.transform = 'translateX(-50%) translateY(-10px)';
-    setTimeout(function() { nt.style.display = 'none'; }, 300);
-  }, 4000);
-}
+function _showNotifToast(title, body) { /* disabled — badge only */ }
 
 function _renderWalletReqs(reqs) {
   const list = document.getElementById('wReqList');
@@ -6460,7 +6430,7 @@ async function boot(){
           paused:   ['⏸ ڕیکلامەکەت وەستاندرا',    'ڕیکلام #'+adNum+' وەستاندرا']
         };
         const m = msgs[newSt];
-        if(m) _showNotifToast(m[0], m[1]);
+        // toast disabled
         checkNotifBell();
       }
       // نوێکردنەوەی لیستی ڕیکلامەکان ئەگەر بەشەکە کراوەیە
@@ -6507,13 +6477,19 @@ async function boot(){
   // ══ REALTIME: pa_notifications INSERT ══ (نوێکردنەوەی خۆکاری بەشی ئاگاداریەکان)
   sb.channel('notif_full_rt_'+cu.id)
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'pa_notifications',filter:`user_id=eq.${cu.id}`},(payload)=>{
+      // ── badge ڕاستەوخۆ نیشان بدە ──
+      _pushNotifUnread++;
+      const _nd=document.getElementById('notifDot');
+      if(_nd){
+        const _cur=parseInt(_nd.textContent||'0',10)||0;
+        const _tot=_cur+1;
+        _nd.textContent=_tot>99?'99+':String(_tot);
+        _nd.classList.add('show');
+      }
       checkNotifBell();
       setTimeout(checkNotifBell, 800);
       const pgNotif = document.getElementById('pgNotifications');
       if(pgNotif && pgNotif.classList.contains('on')) loadNotifications();
-      if(payload.new?.title){
-        _showNotifToast(payload.new.title, payload.new.body || payload.new.message || '');
-      }
       // ══ گەڕانەوەی باڵانسی خۆکارانە — تریگەری ناردنی ئیمەیل ══
       const _nType=payload.new?.type||'';
       if(_nType==='refund'||_nType==='refund_rejected_ad'){
