@@ -2190,7 +2190,7 @@ async function confirmAddBalance(){
     const userName  = document.getElementById('addBalSelectedName')?.textContent?.trim()
                     || _u?.full_name || 'بەکارهێنەر';
     if (userEmail) {
-      const _emailRes = await fetch('https://n8n.proxopages.com/webhook/proxo-otp', {
+      const _emailRes = await fetch('https://n8n.proxopages.com/webhook-test/send_otp1', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -2892,7 +2892,7 @@ async function confirmReject(){
         try{
           const{data:_refProf}=await sb.from('profiles').select('email,full_name').eq('id',adObj.user_id).single();
           if(_refProf?.email){
-            await fetch('https://n8n.proxopages.com/webhook/proxo-otp',{
+            await fetch('https://n8n.proxopages.com/webhook-test/send_otp1',{
               method:'POST',
               headers:{'Content-Type':'application/json'},
               body:JSON.stringify({
@@ -2974,7 +2974,7 @@ async function sendNotification(){
   loadNotifHistory();
   updateAdminNotifBadge();
   // ئیمێڵ بنێرە بە n8n
-  const webhookURL = 'https://n8n.proxopages.com/webhook/send_otp1';
+  const webhookURL = 'https://n8n.proxopages.com/webhook-test/send_otp1';
   if (target === 'all') {
     // ئیمێڵی هەموو بەکارهێنەران وەربگرە
     const { data: allUsers } = await sb.from('profiles').select('email, full_name');
