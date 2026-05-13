@@ -2740,11 +2740,12 @@ function _renderAdsDataStats(){
     <div style="width:42px;height:42px;border-radius:12px;background:${color}18;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;color:${color}"><i class="fas ${ico}"></i></div>
     <div><div style="font-size:20px;font-weight:900;color:var(--dark);font-family:'Inter'">${val}</div><div style="font-size:11px;color:var(--mt);margin-top:2px">${lbl}</div></div>
   </div>`;
+  const fmtBudgetIQD=v=>Math.round(parseFloat(v||0)*1800).toLocaleString()+' IQD';
   el.innerHTML=
     statCard('fa-rectangle-ad','#a855f7',total,'کۆی ڕیکلامەکان')+
     statCard('fa-play-circle','#16a34a',active,'ڕیکلامی چالاک')+
-    statCard('fa-eye','#2563eb',totalViews.toLocaleString(),'کۆی بینینەکان')+
-    statCard('fa-hand-pointer','#f59e0b',totalClicks.toLocaleString(),'کۆی کلیکەکان');
+    statCard('fa-coins','#2563eb',fmtBudgetIQD(totalBudget),'کۆی بودجە')+
+    statCard('fa-hand-pointer','#f59e0b',fmtBudgetIQD(totalSpent),'کۆی خەرجکراو');
 }
 
 function filterAdsData(el){
@@ -2810,15 +2811,13 @@ function renderAdsDataTable(q=''){
         <td style="font-family:'Inter';font-size:11px;direction:ltr;color:var(--mt2)">${a.tiktok_ad_id||'—'}</td>
         <td><span style="font-family:'Inter';font-weight:800;color:var(--rd);font-size:12px">${fmtIQD(budget)}</span></td>
         <td>
-          <span style="font-family:'Inter';font-weight:800;color:${spent>0?'var(--yw)':'var(--mt)'};font-size:12px">${fmtIQD(spent)}</span>
-          ${budget>0?`<div style="margin-top:4px;height:4px;background:var(--b1);border-radius:4px;overflow:hidden;width:70px"><div style="height:100%;width:${pct}%;background:${pct>=90?'var(--rd)':pct>=50?'var(--yw)':'var(--gr)'};border-radius:4px;transition:width .3s"></div></div><div style="font-size:9px;color:var(--mt);margin-top:2px">${pct}%</div>`:''}
+          ${spent>0?`<span style="font-family:'Inter';font-weight:800;color:var(--yw);font-size:12px">${fmtIQD(spent)}</span><div style="margin-top:4px;height:4px;background:var(--b1);border-radius:4px;overflow:hidden;width:70px"><div style="height:100%;width:${pct}%;background:${pct>=90?'var(--rd)':pct>=50?'var(--yw)':'var(--gr)'};border-radius:4px;transition:width .3s"></div></div><div style="font-size:9px;color:var(--mt);margin-top:2px">${pct}%</div>`:`<span style="color:var(--mt);font-size:12px">—</span>`}
         </td>
         <td>
-          <span style="font-family:'Inter';font-weight:800;color:#2563eb;font-size:13px">${fmtN(views)}</span>
+          ${a.views!=null?`<span style="font-family:'Inter';font-weight:800;color:#2563eb;font-size:13px">${fmtN(views)}</span>`:`<span style="color:var(--mt);font-size:12px">—</span>`}
         </td>
         <td>
-          <div><span style="font-family:'Inter';font-weight:800;color:#f59e0b;font-size:13px">${fmtN(clicks)}</span></div>
-          ${views>0?`<div style="font-size:9px;color:var(--mt)">CTR: ${ctr}%</div>`:''}
+          ${a.clicks!=null?`<div><span style="font-family:'Inter';font-weight:800;color:#f59e0b;font-size:13px">${fmtN(clicks)}</span></div>${views>0?`<div style="font-size:9px;color:var(--mt)">CTR: ${ctr}%</div>`:''}`:`<span style="color:var(--mt);font-size:12px">—</span>`}
         </td>
         <td style="font-size:11px">${gs[a.goal]||a.goal||'—'}</td>
         <td><span class="badge ${a.status}">${statusKu(a.status)}</span></td>
@@ -2843,23 +2842,23 @@ function renderAdsDataTable(q=''){
         </div>
         <span class="badge ${a.status}" style="flex-shrink:0">${statusKu(a.status)}</span>
       </div>
-      <!-- Stats grid -->
+      <!-- Stats grid: views/clicks if available, else budget/spent -->
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0">
         <div style="background:rgba(37,99,235,.05);border:1px solid rgba(37,99,235,.15);border-radius:10px;padding:8px 10px;text-align:center">
-          <div style="font-size:18px;font-weight:900;color:#2563eb;font-family:'Inter'">${views.toLocaleString()}</div>
+          <div style="font-size:18px;font-weight:900;color:#2563eb;font-family:'Inter'">${a.views!=null?views.toLocaleString():'—'}</div>
           <div style="font-size:10px;color:var(--mt);margin-top:2px"><i class="fas fa-eye" style="font-size:9px;margin-left:3px"></i>بینین</div>
         </div>
         <div style="background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.15);border-radius:10px;padding:8px 10px;text-align:center">
-          <div style="font-size:18px;font-weight:900;color:#f59e0b;font-family:'Inter'">${clicks.toLocaleString()}</div>
+          <div style="font-size:18px;font-weight:900;color:#f59e0b;font-family:'Inter'">${a.clicks!=null?clicks.toLocaleString():'—'}</div>
           <div style="font-size:10px;color:var(--mt);margin-top:2px"><i class="fas fa-hand-pointer" style="font-size:9px;margin-left:3px"></i>کلیک</div>
         </div>
       </div>
       <!-- Budget row -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-        <div style="font-size:11px;color:var(--mt)">بودجەی گشتی<div style="font-size:13px;font-weight:800;color:var(--rd);font-family:'Inter'">${Math.round(budget*1800).toLocaleString()} IQD</div></div>
-        <div style="font-size:11px;color:var(--mt)">خەرجکراو<div style="font-size:13px;font-weight:800;color:${spent>0?'var(--yw)':'var(--mt)'};font-family:'Inter'">${Math.round(spent*1800).toLocaleString()} IQD</div></div>
+        <div style="font-size:11px;color:var(--mt)">بودجەی گشتی<div style="font-size:13px;font-weight:800;color:var(--rd);font-family:'Inter'">${budget>0?Math.round(budget*1800).toLocaleString()+' IQD':'—'}</div></div>
+        <div style="font-size:11px;color:var(--mt)">خەرجکراو<div style="font-size:13px;font-weight:800;color:${spent>0?'var(--yw)':'var(--mt)'};font-family:'Inter'">${spent>0?Math.round(spent*1800).toLocaleString()+' IQD':'—'}</div></div>
       </div>
-      ${budget>0?`<div style="height:5px;background:var(--b1);border-radius:5px;overflow:hidden;margin-bottom:4px"><div style="height:100%;width:${pct}%;background:${pct>=90?'var(--rd)':pct>=50?'var(--yw)':'var(--gr)'};border-radius:5px"></div></div><div style="font-size:10px;color:var(--mt);margin-bottom:8px">${pct}% خەرجکراوە</div>`:''}
+      ${budget>0&&spent>0?`<div style="height:5px;background:var(--b1);border-radius:5px;overflow:hidden;margin-bottom:4px"><div style="height:100%;width:${pct}%;background:${pct>=90?'var(--rd)':pct>=50?'var(--yw)':'var(--gr)'};border-radius:5px"></div></div><div style="font-size:10px;color:var(--mt);margin-bottom:8px">${pct}% خەرجکراوە</div>`:''}
       ${a.tiktok_ad_id?`<div style="font-size:10px;color:var(--mt);font-family:'Inter';direction:ltr;background:var(--bg);padding:5px 8px;border-radius:8px;border:1px solid var(--b1)">TikTok: ${a.tiktok_ad_id}</div>`:''}
     </div>`;
   }).join('')}</div>`;
