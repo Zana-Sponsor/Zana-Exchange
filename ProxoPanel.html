@@ -749,11 +749,8 @@ tr:hover td{background:rgba(28,35,51,.015);}
         <div class="tbl-filter" style="flex-wrap:wrap">
           <input class="tbl-search" id="adsDataSearch" placeholder="گەڕان بەپێی ناو، ئیمەیل، ناونیشان..." oninput="filterAdsData()" style="min-width:200px">
           <div class="chip on" data-adf="all" onclick="filterAdsData(this)">هەموو</div>
-          <div class="chip yw" data-adf="pending" onclick="filterAdsData(this)">چاوەڕوان</div>
           <div class="chip gr" data-adf="active" onclick="filterAdsData(this)">چالاک</div>
-          <div class="chip rd" data-adf="rejected" onclick="filterAdsData(this)">ڕەتکراو</div>
           <div class="chip bl" data-adf="completed" onclick="filterAdsData(this)">تەواوبوو</div>
-          <div class="chip" data-adf="paused" onclick="filterAdsData(this)" style="background:rgba(245,158,11,.1);color:#b45309;border-color:rgba(245,158,11,.3)">وەستاو</div>
         </div>
         <div id="adsDataWrap" class="tbl-scroll">
           <div class="loading"><i class="fas fa-circle-notch fa-spin"></i> بارکردن...</div>
@@ -2713,6 +2710,7 @@ async function loadAdsData(){
   if(wrap)wrap.innerHTML='<div class="loading"><i class="fas fa-circle-notch fa-spin"></i> بارکردن...</div>';
   const{data:adsRaw,error}=await sb.from('pa_ads')
     .select('*')
+    .in('status',['active','completed'])
     .order('created_at',{ascending:false})
     .limit(500);
   if(error){
