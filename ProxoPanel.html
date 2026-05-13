@@ -2712,7 +2712,7 @@ async function loadAdsData(){
   const wrap=document.getElementById('adsDataWrap');
   if(wrap)wrap.innerHTML='<div class="loading"><i class="fas fa-circle-notch fa-spin"></i> بارکردن...</div>';
   const{data:adsRaw,error}=await sb.from('pa_ads')
-    .select('id,ad_number,title,status,user_id,budget,spent_budget,views,clicks,goal,reject_reason,tiktok_ad_id,start_date,end_date,created_at')
+    .select('*')
     .order('created_at',{ascending:false})
     .limit(500);
   if(error){
