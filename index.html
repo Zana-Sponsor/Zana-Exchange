@@ -740,6 +740,22 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .sc-gradient-inner{text-align:center;}
 .sc-gradient-av{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.3);margin:0 auto 4px;}
 .sc-gradient-line{height:3px;border-radius:2px;background:rgba(255,255,255,.4);width:40px;margin:2px auto;}
+/* ══ SOFT 5 STYLES ══ */
+.sc-peach{background:linear-gradient(135deg,#fff5ee,#ffdcc8);border:1px solid rgba(255,130,70,.2);border-radius:12px;padding:10px;min-height:60px;display:flex;align-items:center;justify-content:center;}
+.sc-peach-inner{text-align:center;}.sc-peach-av{width:28px;height:28px;border-radius:50%;background:rgba(255,120,60,.18);margin:0 auto 4px;border:2px solid rgba(255,120,60,.3);}
+.sc-peach-line{height:3px;border-radius:2px;background:rgba(255,120,60,.3);width:40px;margin:2px auto;}
+.sc-mint{background:linear-gradient(135deg,#edfcf4,#c8f0de);border:1px solid rgba(34,180,120,.2);border-radius:12px;padding:10px;min-height:60px;display:flex;align-items:center;justify-content:center;}
+.sc-mint-inner{text-align:center;}.sc-mint-av{width:28px;height:28px;border-radius:50%;background:rgba(34,180,120,.18);margin:0 auto 4px;border:2px solid rgba(34,180,120,.3);}
+.sc-mint-line{height:3px;border-radius:2px;background:rgba(34,180,120,.32);width:40px;margin:2px auto;}
+.sc-lavender{background:linear-gradient(135deg,#f5f0ff,#e2d0ff);border:1px solid rgba(130,80,220,.2);border-radius:12px;padding:10px;min-height:60px;display:flex;align-items:center;justify-content:center;}
+.sc-lavender-inner{text-align:center;}.sc-lavender-av{width:28px;height:28px;border-radius:50%;background:rgba(130,80,220,.18);margin:0 auto 4px;border:2px solid rgba(130,80,220,.3);}
+.sc-lavender-line{height:3px;border-radius:2px;background:rgba(130,80,220,.32);width:40px;margin:2px auto;}
+.sc-blush{background:linear-gradient(135deg,#fff0f6,#ffd6ea);border:1px solid rgba(220,80,140,.2);border-radius:12px;padding:10px;min-height:60px;display:flex;align-items:center;justify-content:center;}
+.sc-blush-inner{text-align:center;}.sc-blush-av{width:28px;height:28px;border-radius:50%;background:rgba(220,80,140,.18);margin:0 auto 4px;border:2px solid rgba(220,80,140,.3);}
+.sc-blush-line{height:3px;border-radius:2px;background:rgba(220,80,140,.32);width:40px;margin:2px auto;}
+.sc-cloud{background:linear-gradient(135deg,#f0f4ff,#d8e4ff);border:1px solid rgba(80,120,230,.2);border-radius:12px;padding:10px;min-height:60px;display:flex;align-items:center;justify-content:center;}
+.sc-cloud-inner{text-align:center;}.sc-cloud-av{width:28px;height:28px;border-radius:50%;background:rgba(80,120,230,.18);margin:0 auto 4px;border:2px solid rgba(80,120,230,.3);}
+.sc-cloud-line{height:3px;border-radius:2px;background:rgba(80,120,230,.32);width:40px;margin:2px auto;}
 .theme-wrap{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
 .theme-dot{width:34px;height:34px;border-radius:50%;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;border:3px solid transparent;}
 .theme-dot.on{border-color:var(--dark);transform:scale(1.1);}
@@ -3113,12 +3129,22 @@ function _toWebP(dataUrl,quality){
           <div class="plform-close" onclick="hidePLForm()"><i class="fas fa-xmark"></i></div>
         </div>
 
-        <!-- ناو -->
-        <div class="plform-lbl">ناو <span style="color:var(--rd)">*</span></div>
+        <!-- وێنەی پرۆفایل — یەکەم -->
+        <div class="plform-lbl">وێنەی پرۆفایل <span style="color:var(--rd)">*</span> <span style="font-size:10px;color:var(--mt)">(پێویستە بۆ ستایلەکان)</span></div>
+        <div class="logo-upload" id="logoUploadZone" onclick="document.getElementById('plLogoFile').click()" style="cursor:pointer">
+          <input type="file" id="plLogoFile" accept="image/*" onchange="loadPlLogo(this)" style="display:none">
+          <img id="plLogoPrev" class="logo-preview" alt="وێنە" style="display:none">
+          <div class="logo-upload-ico" id="plLogoIco"><i class="fas fa-camera"></i></div>
+          <b id="plLogoTxt">وێنە بارکە</b>
+          <span>کرتە بکە تا هەڵبژێریت</span>
+        </div>
+
+        <!-- ناو — دووەم -->
+        <div class="plform-lbl" style="margin-top:8px">ناو <span style="color:var(--rd)">*</span></div>
         <input class="pl-inp" type="text" id="plBrandName" placeholder="ناوت یان ناوی براند" oninput="updatePLPreview()">
         <div class="pl-field-err" id="plErrName" style="display:none"><i class="fas fa-circle-exclamation"></i><span>تکایە ناوت بنووسە</span></div>
 
-        <!-- بیۆ -->
+        <!-- بیۆ — سێیەم -->
         <div class="plform-lbl">بیۆ / دەربارەت <span style="font-size:10px;color:var(--mt)">(کەمتر لە 150 پیت)</span></div>
         <textarea class="pl-inp pl-ta" id="plDesc" placeholder="لەرێگەی دووگمەکانەوە پەیوەندیمان پێوە بکە" maxlength="150" oninput="plUpdateBioCount();updatePLPreview()"></textarea>
         <div class="pl-field-err" id="plErrBio" style="display:none"><i class="fas fa-circle-exclamation"></i><span id="plErrBioMsg"></span></div>
@@ -3127,16 +3153,6 @@ function _toWebP(dataUrl,quality){
           <span id="plBioCount">0 / 150</span>
         </div>
         <div class="pl-bio-chips" id="plBioChips"></div>
-
-        <!-- وێنە -->
-        <div class="plform-lbl" style="margin-top:8px">وێنەی پرۆفایل <span style="color:var(--rd)">*</span> <span style="font-size:10px;color:var(--mt)">(پێویستە بۆ Dark/Light)</span></div>
-        <div class="logo-upload" id="logoUploadZone" onclick="document.getElementById('plLogoFile').click()" style="cursor:pointer">
-          <input type="file" id="plLogoFile" accept="image/*" onchange="loadPlLogo(this)" style="display:none">
-          <img id="plLogoPrev" class="logo-preview" alt="وێنە" style="display:none">
-          <div class="logo-upload-ico" id="plLogoIco"><i class="fas fa-camera"></i></div>
-          <b id="plLogoTxt">وێنە بارکە</b>
-          <span>کرتە بکە تا هەڵبژێریت</span>
-        </div>
 
         <!-- تیکتۆک -->
         <div class="plform-lbl"><i class="fab fa-tiktok" style="margin-left:5px"></i>ناوی ئەکاونتی تیکتۆک <span style="color:var(--rd)">*</span></div>
@@ -3175,6 +3191,31 @@ function _toWebP(dataUrl,quality){
             <div class="sc-chk"><i class="fas fa-check"></i></div>
             <div class="sc-gradient"><div class="sc-gradient-inner"><div class="sc-gradient-av"></div><div class="sc-gradient-line"></div><div class="sc-gradient-line" style="width:28px;opacity:.6"></div></div></div>
             <div class="sc-name">Classic</div><div class="sc-sub">کلاسیک</div>
+          </div>
+          <div class="style-card" data-style="peach" onclick="pickStyle(this)">
+            <div class="sc-chk"><i class="fas fa-check"></i></div>
+            <div class="sc-peach"><div class="sc-peach-inner"><div class="sc-peach-av"></div><div class="sc-peach-line"></div><div class="sc-peach-line" style="width:28px;opacity:.7"></div></div></div>
+            <div class="sc-name">Peach</div><div class="sc-sub">شیری</div>
+          </div>
+          <div class="style-card" data-style="mint" onclick="pickStyle(this)">
+            <div class="sc-chk"><i class="fas fa-check"></i></div>
+            <div class="sc-mint"><div class="sc-mint-inner"><div class="sc-mint-av"></div><div class="sc-mint-line"></div><div class="sc-mint-line" style="width:28px;opacity:.7"></div></div></div>
+            <div class="sc-name">Mint</div><div class="sc-sub">مینت</div>
+          </div>
+          <div class="style-card" data-style="lavender" onclick="pickStyle(this)">
+            <div class="sc-chk"><i class="fas fa-check"></i></div>
+            <div class="sc-lavender"><div class="sc-lavender-inner"><div class="sc-lavender-av"></div><div class="sc-lavender-line"></div><div class="sc-lavender-line" style="width:28px;opacity:.7"></div></div></div>
+            <div class="sc-name">Lavender</div><div class="sc-sub">ئەڤەندی</div>
+          </div>
+          <div class="style-card" data-style="blush" onclick="pickStyle(this)">
+            <div class="sc-chk"><i class="fas fa-check"></i></div>
+            <div class="sc-blush"><div class="sc-blush-inner"><div class="sc-blush-av"></div><div class="sc-blush-line"></div><div class="sc-blush-line" style="width:28px;opacity:.7"></div></div></div>
+            <div class="sc-name">Blush</div><div class="sc-sub">گوڵاڵ</div>
+          </div>
+          <div class="style-card" data-style="cloud" onclick="pickStyle(this)">
+            <div class="sc-chk"><i class="fas fa-check"></i></div>
+            <div class="sc-cloud"><div class="sc-cloud-inner"><div class="sc-cloud-av"></div><div class="sc-cloud-line"></div><div class="sc-cloud-line" style="width:28px;opacity:.7"></div></div></div>
+            <div class="sc-name">Cloud</div><div class="sc-sub">ئەور</div>
           </div>
         </div>
 
@@ -8726,7 +8767,7 @@ function updatePLPreview(){
         </div>
       </div>
     </div>`;
-  } else { // classic
+  } else if(plStyle==='classic'){
     wrap.innerHTML=`<div style="padding:12px">
       <div style="background:#f0f1f5;border-radius:14px;overflow:hidden;font-family:'R',sans-serif">
         <div style="padding:18px 14px;text-align:center;background:linear-gradient(to left,${tc.dark},${tc.main});position:relative;padding-bottom:36px">
@@ -8736,6 +8777,34 @@ function updatePLPreview(){
         <div style="margin:-22px 14px 12px;background:#fff;border-radius:14px;padding:14px;box-shadow:0 4px 14px rgba(0,0,0,.08)">
           <div style="display:flex;flex-wrap:wrap;gap:8px">${activePlats.map(p=>{const pi=platIcons[p]||{c:'#888',i:'fas fa-link',l:p};return`<a style="flex:1;min-width:calc(50% - 4px);padding:12px 8px;border-radius:50px;background:${pi.c.startsWith('linear')?pi.c:pi.c};display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px;font-weight:700;color:#fff;text-decoration:none"><i class="${pi.i}"></i>${pi.l}</a>`;}).join('')}</div>
           ${tt?`<div style="margin-top:8px;padding:7px 14px;border-radius:50px;background:#111;display:flex;align-items:center;justify-content:center;gap:6px;color:#fff;font-size:12px;font-weight:600"><i class="fab fa-tiktok"></i>@${tt}</div>`:''}
+        </div>
+      </div>
+    </div>`;
+  } else {
+    // ستایلە سۆفتەکان — peach, mint, lavender, blush, cloud
+    const _softP={
+      peach:{bg:'#fff8f3',avBorder:'rgba(255,120,60,.35)',nameTxt:'#b84a1a',bioTxt:'#c0603a',btnBg:'rgba(255,120,60,.09)',btnBorder:'rgba(255,120,60,.22)',btnTxt:'#b84a1a',ttBg:'rgba(255,120,60,.07)',ttTxt:'#b84a1a',ftBorder:'rgba(255,120,60,.1)',ftTxt:'#c8806a'},
+      mint:{bg:'#f2fdf7',avBorder:'rgba(34,180,120,.35)',nameTxt:'#0d6e48',bioTxt:'#1a8a5a',btnBg:'rgba(34,180,120,.09)',btnBorder:'rgba(34,180,120,.22)',btnTxt:'#0d6e48',ttBg:'rgba(34,180,120,.07)',ttTxt:'#0d6e48',ftBorder:'rgba(34,180,120,.1)',ftTxt:'#4aaa80'},
+      lavender:{bg:'#f8f4ff',avBorder:'rgba(130,80,220,.35)',nameTxt:'#5a2fa0',bioTxt:'#7040c0',btnBg:'rgba(130,80,220,.09)',btnBorder:'rgba(130,80,220,.22)',btnTxt:'#5a2fa0',ttBg:'rgba(130,80,220,.07)',ttTxt:'#5a2fa0',ftBorder:'rgba(130,80,220,.1)',ftTxt:'#8060c0'},
+      blush:{bg:'#fff3f8',avBorder:'rgba(220,80,140,.35)',nameTxt:'#8c1f50',bioTxt:'#b03070',btnBg:'rgba(220,80,140,.09)',btnBorder:'rgba(220,80,140,.22)',btnTxt:'#8c1f50',ttBg:'rgba(220,80,140,.07)',ttTxt:'#8c1f50',ftBorder:'rgba(220,80,140,.1)',ftTxt:'#c060a0'},
+      cloud:{bg:'#f2f6ff',avBorder:'rgba(80,120,230,.35)',nameTxt:'#2040a0',bioTxt:'#3050c0',btnBg:'rgba(80,120,230,.09)',btnBorder:'rgba(80,120,230,.22)',btnTxt:'#2040a0',ttBg:'rgba(80,120,230,.07)',ttTxt:'#2040a0',ftBorder:'rgba(80,120,230,.1)',ftTxt:'#6080d0'},
+    };
+    const sp=_softP[plStyle]||_softP.peach;
+    wrap.innerHTML=`<div style="padding:12px">
+      <div style="background:${sp.bg};border-radius:20px;overflow:hidden;font-family:'R',sans-serif;box-shadow:0 4px 18px rgba(0,0,0,.07)">
+        <div style="padding:22px 16px 14px;text-align:center">
+          <div style="width:70px;height:70px;border-radius:50%;border:3px solid ${sp.avBorder};display:flex;align-items:center;justify-content:center;overflow:hidden;margin:0 auto 10px;box-shadow:0 4px 12px rgba(0,0,0,.08)">${av}</div>
+          <div style="font-size:15px;font-weight:800;color:${sp.nameTxt};margin-bottom:4px">${name}</div>
+          ${bio?`<div style="font-size:11px;color:${sp.bioTxt};line-height:1.7;margin-bottom:8px">${bio}</div>`:''}
+          ${tt?`<div style="display:inline-flex;align-items:center;gap:5px;padding:5px 14px;border-radius:50px;background:${sp.ttBg};border:1.5px solid ${sp.avBorder};color:${sp.ttTxt};font-size:11px;font-weight:700;margin-bottom:10px"><i class="fab fa-tiktok"></i>@${tt}</div>`:''}
+        </div>
+        <div style="padding:0 14px 6px">
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            ${activePlats.map(p=>{const pi=platIcons[p]||{c:'#888',i:'fas fa-link',l:p};const ic=pi.c.startsWith('linear')?sp.nameTxt:pi.c;return`<div style="flex:1;min-width:calc(50% - 4px);padding:11px 8px;border-radius:14px;background:${sp.btnBg};border:1.5px solid ${sp.btnBorder};display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px;color:${sp.btnTxt}"><i class="${pi.i}" style="font-size:19px;color:${ic}"></i>${pi.l}</div>`;}).join('')}
+          </div>
+        </div>
+        <div style="margin:12px 14px 0;padding:10px 0 12px;border-top:1px solid ${sp.ftBorder};text-align:center">
+          <span style="font-size:10px;color:${sp.ftTxt};opacity:.75">Powered by <b>Proxo</b></span>
         </div>
       </div>
     </div>`;
@@ -8763,7 +8832,8 @@ function plValidateForm(){
     ok=false;
   } else document.getElementById('plTT')?.classList.remove('err');
 
-  if((plStyle==='dark'||plStyle==='light')&&!plLogoB64){
+  const _needsLogo=['dark','light','peach','mint','lavender','blush','cloud'];
+  if(_needsLogo.includes(plStyle)&&!plLogoB64){
     const zone=document.getElementById('logoUploadZone');
     if(zone){zone.style.borderColor='rgba(220,38,38,.7)';zone.style.background='rgba(220,38,38,.04)';setTimeout(()=>{zone.style.borderColor='';zone.style.background='';},3000);}
     showToast('وێنەی پرۆفایل پێویستە بۆ ستایلی '+plStyle,'err');
@@ -9660,7 +9730,67 @@ function buildPLCardHTML(name, bio, tt, platforms, avatar, style, theme){
 
   if(style === 'light')   return buildPageLight(name, bio, tt, ttUrl, avatarImg, activeBtns, handlers, tg);
   if(style === 'classic') return buildPageClassic(name, bio, tt, ttUrl, avatarImg, activeBtns, handlers, tg);
+  if(['peach','mint','lavender','blush','cloud'].includes(style)) return buildPageSoft(name, bio, tt, ttUrl, avatarImg, activeBtns, handlers, style);
   return buildPageDark(name, bio, tt, ttUrl, avatarImg, activeBtns, handlers, tg);
+}
+
+function buildPageSoft(name, bio, tt, ttUrl, avatarImg, activeBtns, handlers, style){
+  const softCfg={
+    peach:{bg:'linear-gradient(160deg,#fff5ee,#ffe4cc)',card:'#fff8f4',avRing:'rgba(255,120,60,.35)',nameTxt:'#b84a1a',bioTxt:'#c0603a',btnBg:'rgba(255,120,60,.09)',btnBorder:'rgba(255,120,60,.22)',btnTxt:'#b84a1a',ttBg:'rgba(255,120,60,.07)',ttBorder:'rgba(255,120,60,.2)',ttTxt:'#b84a1a',ftBorder:'rgba(255,120,60,.12)',ftTxt:'#c8806a'},
+    mint:{bg:'linear-gradient(160deg,#edfcf4,#c8f0de)',card:'#f4fdf8',avRing:'rgba(34,180,120,.35)',nameTxt:'#0d6e48',bioTxt:'#1a8a5a',btnBg:'rgba(34,180,120,.09)',btnBorder:'rgba(34,180,120,.22)',btnTxt:'#0d6e48',ttBg:'rgba(34,180,120,.07)',ttBorder:'rgba(34,180,120,.2)',ttTxt:'#0d6e48',ftBorder:'rgba(34,180,120,.12)',ftTxt:'#4aaa80'},
+    lavender:{bg:'linear-gradient(160deg,#f5f0ff,#e2d0ff)',card:'#faf6ff',avRing:'rgba(130,80,220,.35)',nameTxt:'#5a2fa0',bioTxt:'#7040c0',btnBg:'rgba(130,80,220,.09)',btnBorder:'rgba(130,80,220,.22)',btnTxt:'#5a2fa0',ttBg:'rgba(130,80,220,.07)',ttBorder:'rgba(130,80,220,.2)',ttTxt:'#5a2fa0',ftBorder:'rgba(130,80,220,.12)',ftTxt:'#8060c0'},
+    blush:{bg:'linear-gradient(160deg,#fff0f6,#ffd6ea)',card:'#fff5f9',avRing:'rgba(220,80,140,.35)',nameTxt:'#8c1f50',bioTxt:'#b03070',btnBg:'rgba(220,80,140,.09)',btnBorder:'rgba(220,80,140,.22)',btnTxt:'#8c1f50',ttBg:'rgba(220,80,140,.07)',ttBorder:'rgba(220,80,140,.2)',ttTxt:'#8c1f50',ftBorder:'rgba(220,80,140,.12)',ftTxt:'#c060a0'},
+    cloud:{bg:'linear-gradient(160deg,#f0f4ff,#d8e4ff)',card:'#f5f8ff',avRing:'rgba(80,120,230,.35)',nameTxt:'#2040a0',bioTxt:'#3050c0',btnBg:'rgba(80,120,230,.09)',btnBorder:'rgba(80,120,230,.22)',btnTxt:'#2040a0',ttBg:'rgba(80,120,230,.07)',ttBorder:'rgba(80,120,230,.2)',ttTxt:'#2040a0',ftBorder:'rgba(80,120,230,.12)',ftTxt:'#6080d0'},
+  };
+  const c = softCfg[style] || softCfg.peach;
+
+  const btnRows = activeBtns.map(b => {
+    const iconColor = b.type==='instagram'?'#e1306c':b.type==='whatsapp'?'#25d366':b.type==='viber'?'#7360f2':b.type==='telegram'?'#229ed9':b.type==='phone'||b.type==='asya'?'#2563eb':c.btnTxt;
+    return '<a id="'+b.id+'" href="javascript:void(0)" style="flex:1;min-width:calc(50% - 6px);padding:14px 8px;border-radius:18px;background:'+c.btnBg+';border:1.5px solid '+c.btnBorder+';display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;cursor:pointer;-webkit-tap-highlight-color:transparent"><i class="'+b.icon+'" style="font-size:23px;color:'+iconColor+'"></i><span style="font-size:12px;font-weight:700;color:'+c.btnTxt+';font-family:R,sans-serif">'+b.label+'</span></a>';
+  }).join('');
+
+  const ttBadge = tt ? '<a href="'+ttUrl+'" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:50px;background:'+c.ttBg+';border:1.5px solid '+c.ttBorder+';color:'+c.ttTxt+';font-size:13px;font-weight:700;text-decoration:none;font-family:Inter,sans-serif"><i class=\"fab fa-tiktok\"></i>@'+tt+'</a>' : '';
+
+  const bioHtml = bio ? '<div style="text-align:center;font-size:13px;color:'+c.bioTxt+';line-height:1.7;margin-bottom:12px">'+bio+'</div>' : '';
+  const ttHtml = tt ? '<div style="text-align:center;margin-bottom:16px">'+ttBadge+'</div>' : '';
+
+  const p = [];
+  p.push('<!DOCTYPE html><html lang="ku" dir="rtl"><head>');
+  p.push('<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">');
+  p.push('<title>'+name+'</title>');
+  p.push('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">');
+  p.push('<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap">');
+  p.push('<style>');
+  p.push('@font-face{font-family:R;src:url("https://raw.githubusercontent.com/Zana-Sponsor/Zana-Sponsor/main/Rabar_021.woff2") format("woff2");}');
+  p.push('*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}');
+  p.push('body{font-family:R,sans-serif;min-height:100vh;min-height:-webkit-fill-available;background:'+c.bg+';display:flex;align-items:flex-start;justify-content:center;padding:28px 16px 48px;}');
+  p.push('.wrap{width:100%;max-width:380px;}');
+  p.push('.av{width:82px;height:82px;border-radius:50%;border:3px solid '+c.avRing+';display:flex;align-items:center;justify-content:center;overflow:hidden;margin:0 auto 12px;box-shadow:0 6px 18px rgba(0,0,0,.09);}');
+  p.push('.av img{width:100%;height:100%;object-fit:cover;border-radius:50%;}');
+  p.push('.nm{text-align:center;font-size:20px;font-weight:800;color:'+c.nameTxt+';margin-bottom:6px;}');
+  p.push('.bio{text-align:center;font-size:13px;color:'+c.bioTxt+';line-height:1.7;margin-bottom:12px;}');
+  p.push('.tt{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:50px;background:'+c.ttBg+';border:1.5px solid '+c.ttBorder+';color:'+c.ttTxt+';font-size:13px;font-weight:700;text-decoration:none;font-family:Inter,sans-serif;}');
+  p.push('.grid{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 14px;}');
+  p.push('.grid a{flex:1;min-width:calc(50% - 5px);padding:15px 8px;border-radius:18px;background:'+c.btnBg+';border:1.5px solid '+c.btnBorder+';display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;cursor:pointer;transition:opacity .2s;}');
+  p.push('.grid a:active{opacity:.75;}');
+  p.push('.grid a i{font-size:24px;}');
+  p.push('.grid a span{font-size:13px;font-weight:700;color:'+c.nameTxt+';font-family:R,sans-serif;}');
+  p.push('.footer{text-align:center;padding:14px 0 0;border-top:1px solid '+c.ftBorder+';margin-top:4px;}');
+  p.push('.footer small{font-size:11px;color:'+c.ftTxt+';opacity:.75;}');
+  p.push('.footer a{color:inherit;text-decoration:none;font-weight:700;}');
+  p.push('</style></head><body><div class="wrap">');
+  p.push('<div style="text-align:center;padding-top:10px">');
+  p.push('<div class="av">'+avatarImg+'</div>');
+  p.push('<div class="nm">'+name+'</div>');
+  p.push(bioHtml);
+  p.push(ttHtml);
+  p.push('</div>');
+  p.push('<div class="grid">'+btnRows+'</div>');
+  p.push('<div class="footer"><small>Powered by <a href="https://proxopages.com" target="_blank">Proxo</a></small></div>');
+  p.push('</div>');
+  p.push('<script>function askConfirm(t,u,l){if(confirm("بچیتە "+l+"؟"))window.open(u,"_blank");}'+handlers+'<\/script>');
+  p.push('</body></html>');
+  return p.join("\n");
 }
 
 async function loadProxoCards(){
