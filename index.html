@@ -8781,30 +8781,31 @@ function updatePLPreview(){
       </div>
     </div>`;
   } else {
-    // ستایلە سۆفتەکان — peach, mint, lavender, blush, cloud
-    const _softP={
-      peach:{bg:'#fff8f3',avBorder:'rgba(255,120,60,.35)',nameTxt:'#b84a1a',bioTxt:'#c0603a',btnBg:'rgba(255,120,60,.09)',btnBorder:'rgba(255,120,60,.22)',btnTxt:'#b84a1a',ttBg:'rgba(255,120,60,.07)',ttTxt:'#b84a1a',ftBorder:'rgba(255,120,60,.1)',ftTxt:'#c8806a'},
-      mint:{bg:'#f2fdf7',avBorder:'rgba(34,180,120,.35)',nameTxt:'#0d6e48',bioTxt:'#1a8a5a',btnBg:'rgba(34,180,120,.09)',btnBorder:'rgba(34,180,120,.22)',btnTxt:'#0d6e48',ttBg:'rgba(34,180,120,.07)',ttTxt:'#0d6e48',ftBorder:'rgba(34,180,120,.1)',ftTxt:'#4aaa80'},
-      lavender:{bg:'#f8f4ff',avBorder:'rgba(130,80,220,.35)',nameTxt:'#5a2fa0',bioTxt:'#7040c0',btnBg:'rgba(130,80,220,.09)',btnBorder:'rgba(130,80,220,.22)',btnTxt:'#5a2fa0',ttBg:'rgba(130,80,220,.07)',ttTxt:'#5a2fa0',ftBorder:'rgba(130,80,220,.1)',ftTxt:'#8060c0'},
-      blush:{bg:'#fff3f8',avBorder:'rgba(220,80,140,.35)',nameTxt:'#8c1f50',bioTxt:'#b03070',btnBg:'rgba(220,80,140,.09)',btnBorder:'rgba(220,80,140,.22)',btnTxt:'#8c1f50',ttBg:'rgba(220,80,140,.07)',ttTxt:'#8c1f50',ftBorder:'rgba(220,80,140,.1)',ftTxt:'#c060a0'},
-      cloud:{bg:'#f2f6ff',avBorder:'rgba(80,120,230,.35)',nameTxt:'#2040a0',bioTxt:'#3050c0',btnBg:'rgba(80,120,230,.09)',btnBorder:'rgba(80,120,230,.22)',btnTxt:'#2040a0',ttBg:'rgba(80,120,230,.07)',ttTxt:'#2040a0',ftBorder:'rgba(80,120,230,.1)',ftTxt:'#6080d0'},
+    // SOFT styles — peach / mint / lavender / blush / cloud
+    const _sp={
+      peach:{bg:'#fff8f3',avBorder:'rgba(255,120,60,.35)',nameTxt:'#b84a1a',bioTxt:'#c0603a',btnBg:'rgba(255,120,60,.09)',btnBorder:'rgba(255,120,60,.22)',btnTxt:'#b84a1a',ttBg:'rgba(255,120,60,.07)',ttTxt:'#b84a1a',ftTxt:'#c8806a'},
+      mint:{bg:'#f2fdf7',avBorder:'rgba(34,180,120,.35)',nameTxt:'#0d6e48',bioTxt:'#1a8a5a',btnBg:'rgba(34,180,120,.09)',btnBorder:'rgba(34,180,120,.22)',btnTxt:'#0d6e48',ttBg:'rgba(34,180,120,.07)',ttTxt:'#0d6e48',ftTxt:'#4aaa80'},
+      lavender:{bg:'#f8f4ff',avBorder:'rgba(130,80,220,.35)',nameTxt:'#5a2fa0',bioTxt:'#7040c0',btnBg:'rgba(130,80,220,.09)',btnBorder:'rgba(130,80,220,.22)',btnTxt:'#5a2fa0',ttBg:'rgba(130,80,220,.07)',ttTxt:'#5a2fa0',ftTxt:'#8060c0'},
+      blush:{bg:'#fff3f8',avBorder:'rgba(220,80,140,.35)',nameTxt:'#8c1f50',bioTxt:'#b03070',btnBg:'rgba(220,80,140,.09)',btnBorder:'rgba(220,80,140,.22)',btnTxt:'#8c1f50',ttBg:'rgba(220,80,140,.07)',ttTxt:'#8c1f50',ftTxt:'#c060a0'},
+      cloud:{bg:'#f2f6ff',avBorder:'rgba(80,120,230,.35)',nameTxt:'#2040a0',bioTxt:'#3050c0',btnBg:'rgba(80,120,230,.09)',btnBorder:'rgba(80,120,230,.22)',btnTxt:'#2040a0',ttBg:'rgba(80,120,230,.07)',ttTxt:'#2040a0',ftTxt:'#6080d0'},
     };
-    const sp=_softP[plStyle]||_softP.peach;
+    const sp=_sp[plStyle]||_sp.peach;
+    const ttPill=tt?`<div style="margin-top:10px;position:relative;display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:50px;background:${sp.ttBg};color:${sp.ttTxt};font-size:12px;font-weight:700;border:1.5px solid transparent;background-clip:padding-box"><span style="position:relative;z-index:1;direction:ltr">@${tt}</span><i class="fab fa-tiktok" style="position:relative;z-index:1;font-size:14px"></i><span style="position:absolute;inset:-1.5px;border-radius:50px;background:linear-gradient(45deg,#69c9d0,#ee1d52);z-index:0;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;opacity:.75"></span></div>`:'';
     wrap.innerHTML=`<div style="padding:12px">
       <div style="background:${sp.bg};border-radius:20px;overflow:hidden;font-family:'R',sans-serif;box-shadow:0 4px 18px rgba(0,0,0,.07)">
         <div style="padding:22px 16px 14px;text-align:center">
           <div style="width:70px;height:70px;border-radius:50%;border:3px solid ${sp.avBorder};display:flex;align-items:center;justify-content:center;overflow:hidden;margin:0 auto 10px;box-shadow:0 4px 12px rgba(0,0,0,.08)">${av}</div>
           <div style="font-size:15px;font-weight:800;color:${sp.nameTxt};margin-bottom:4px">${name}</div>
-          ${bio?`<div style="font-size:11px;color:${sp.bioTxt};line-height:1.7;margin-bottom:8px">${bio}</div>`:''}
-          ${tt?`<div style="display:inline-flex;align-items:center;gap:5px;padding:5px 14px;border-radius:50px;background:${sp.ttBg};border:1.5px solid ${sp.avBorder};color:${sp.ttTxt};font-size:11px;font-weight:700;margin-bottom:10px"><i class="fab fa-tiktok"></i>@${tt}</div>`:''}
+          ${bio?`<div style="font-size:11px;color:${sp.bioTxt};line-height:1.7;margin-bottom:6px">${bio}</div>`:''}
+          ${ttPill}
         </div>
         <div style="padding:0 14px 6px">
           <div style="display:flex;flex-wrap:wrap;gap:8px">
             ${activePlats.map(p=>{const pi=platIcons[p]||{c:'#888',i:'fas fa-link',l:p};const ic=pi.c.startsWith('linear')?sp.nameTxt:pi.c;return`<div style="flex:1;min-width:calc(50% - 4px);padding:11px 8px;border-radius:14px;background:${sp.btnBg};border:1.5px solid ${sp.btnBorder};display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px;color:${sp.btnTxt}"><i class="${pi.i}" style="font-size:19px;color:${ic}"></i>${pi.l}</div>`;}).join('')}
           </div>
         </div>
-        <div style="margin:12px 14px 0;padding:10px 0 12px;border-top:1px solid ${sp.ftBorder};text-align:center">
-          <span style="font-size:10px;color:${sp.ftTxt};opacity:.75">Powered by <b>Proxo</b></span>
+        <div style="margin:10px 14px 0;padding:9px 0 12px;border-top:1px solid ${sp.avBorder};opacity:.4;text-align:center">
+          <span style="font-size:9px;color:${sp.ftTxt};opacity:1">سپۆنسەر کراوە لەلایەن <b style="font-style:italic">Proxo</b></span>
         </div>
       </div>
     </div>`;
@@ -9734,61 +9735,135 @@ function buildPLCardHTML(name, bio, tt, platforms, avatar, style, theme){
   return buildPageDark(name, bio, tt, ttUrl, avatarImg, activeBtns, handlers, tg);
 }
 
+// ═══ SOFT 5 STYLES ═══
 function buildPageSoft(name, bio, tt, ttUrl, avatarImg, activeBtns, handlers, style){
-  const softCfg={
-    peach:{bg:'linear-gradient(160deg,#fff5ee,#ffe4cc)',card:'#fff8f4',avRing:'rgba(255,120,60,.35)',nameTxt:'#b84a1a',bioTxt:'#c0603a',btnBg:'rgba(255,120,60,.09)',btnBorder:'rgba(255,120,60,.22)',btnTxt:'#b84a1a',ttBg:'rgba(255,120,60,.07)',ttBorder:'rgba(255,120,60,.2)',ttTxt:'#b84a1a',ftBorder:'rgba(255,120,60,.12)',ftTxt:'#c8806a'},
-    mint:{bg:'linear-gradient(160deg,#edfcf4,#c8f0de)',card:'#f4fdf8',avRing:'rgba(34,180,120,.35)',nameTxt:'#0d6e48',bioTxt:'#1a8a5a',btnBg:'rgba(34,180,120,.09)',btnBorder:'rgba(34,180,120,.22)',btnTxt:'#0d6e48',ttBg:'rgba(34,180,120,.07)',ttBorder:'rgba(34,180,120,.2)',ttTxt:'#0d6e48',ftBorder:'rgba(34,180,120,.12)',ftTxt:'#4aaa80'},
-    lavender:{bg:'linear-gradient(160deg,#f5f0ff,#e2d0ff)',card:'#faf6ff',avRing:'rgba(130,80,220,.35)',nameTxt:'#5a2fa0',bioTxt:'#7040c0',btnBg:'rgba(130,80,220,.09)',btnBorder:'rgba(130,80,220,.22)',btnTxt:'#5a2fa0',ttBg:'rgba(130,80,220,.07)',ttBorder:'rgba(130,80,220,.2)',ttTxt:'#5a2fa0',ftBorder:'rgba(130,80,220,.12)',ftTxt:'#8060c0'},
-    blush:{bg:'linear-gradient(160deg,#fff0f6,#ffd6ea)',card:'#fff5f9',avRing:'rgba(220,80,140,.35)',nameTxt:'#8c1f50',bioTxt:'#b03070',btnBg:'rgba(220,80,140,.09)',btnBorder:'rgba(220,80,140,.22)',btnTxt:'#8c1f50',ttBg:'rgba(220,80,140,.07)',ttBorder:'rgba(220,80,140,.2)',ttTxt:'#8c1f50',ftBorder:'rgba(220,80,140,.12)',ftTxt:'#c060a0'},
-    cloud:{bg:'linear-gradient(160deg,#f0f4ff,#d8e4ff)',card:'#f5f8ff',avRing:'rgba(80,120,230,.35)',nameTxt:'#2040a0',bioTxt:'#3050c0',btnBg:'rgba(80,120,230,.09)',btnBorder:'rgba(80,120,230,.22)',btnTxt:'#2040a0',ttBg:'rgba(80,120,230,.07)',ttBorder:'rgba(80,120,230,.2)',ttTxt:'#2040a0',ftBorder:'rgba(80,120,230,.12)',ftTxt:'#6080d0'},
+  const C={
+    peach:{bg:'linear-gradient(160deg,#fff5ee,#ffe8d5)',avRing:'rgba(220,100,50,.3)',nameTxt:'#b84a1a',bioTxt:'#c0603a',btnBg:'rgba(255,120,60,.07)',btnBorder:'rgba(255,120,60,.2)',btnTxt:'#b84a1a',icoFn:function(t){return t==='instagram'?'#e1306c':t==='whatsapp'?'#25d366':t==='viber'?'#7360f2':t==='telegram'?'#229ed9':'#b84a1a';},shineCol:'rgba(255,120,60,.12)'},
+    mint:{bg:'linear-gradient(160deg,#edfcf4,#cbf0dc)',avRing:'rgba(30,160,100,.3)',nameTxt:'#0d6e48',bioTxt:'#1a8a5a',btnBg:'rgba(34,180,120,.07)',btnBorder:'rgba(34,180,120,.2)',btnTxt:'#0d6e48',icoFn:function(t){return t==='instagram'?'#e1306c':t==='whatsapp'?'#25d366':t==='viber'?'#7360f2':t==='telegram'?'#229ed9':'#0d6e48';},shineCol:'rgba(34,180,120,.12)'},
+    lavender:{bg:'linear-gradient(160deg,#f5f0ff,#e4d4ff)',avRing:'rgba(120,70,210,.3)',nameTxt:'#5a2fa0',bioTxt:'#7040c0',btnBg:'rgba(130,80,220,.07)',btnBorder:'rgba(130,80,220,.2)',btnTxt:'#5a2fa0',icoFn:function(t){return t==='instagram'?'#e1306c':t==='whatsapp'?'#25d366':t==='viber'?'#7360f2':t==='telegram'?'#229ed9':'#5a2fa0';},shineCol:'rgba(130,80,220,.12)'},
+    blush:{bg:'linear-gradient(160deg,#fff0f6,#ffd8ec)',avRing:'rgba(210,70,130,.3)',nameTxt:'#8c1f50',bioTxt:'#b03070',btnBg:'rgba(220,80,140,.07)',btnBorder:'rgba(220,80,140,.2)',btnTxt:'#8c1f50',icoFn:function(t){return t==='instagram'?'#e1306c':t==='whatsapp'?'#25d366':t==='viber'?'#7360f2':t==='telegram'?'#229ed9':'#8c1f50';},shineCol:'rgba(220,80,140,.12)'},
+    cloud:{bg:'linear-gradient(160deg,#f0f4ff,#dae6ff)',avRing:'rgba(70,110,220,.3)',nameTxt:'#2040a0',bioTxt:'#3050c0',btnBg:'rgba(80,120,230,.07)',btnBorder:'rgba(80,120,230,.2)',btnTxt:'#2040a0',icoFn:function(t){return t==='instagram'?'#e1306c':t==='whatsapp'?'#25d366':t==='viber'?'#7360f2':t==='telegram'?'#229ed9':'#2040a0';},shineCol:'rgba(80,120,230,.12)'},
   };
-  const c = softCfg[style] || softCfg.peach;
+  const c = C[style] || C.peach;
 
-  const btnRows = activeBtns.map(b => {
-    const iconColor = b.type==='instagram'?'#e1306c':b.type==='whatsapp'?'#25d366':b.type==='viber'?'#7360f2':b.type==='telegram'?'#229ed9':b.type==='phone'||b.type==='asya'?'#2563eb':c.btnTxt;
-    return '<a id="'+b.id+'" href="javascript:void(0)" style="flex:1;min-width:calc(50% - 6px);padding:14px 8px;border-radius:18px;background:'+c.btnBg+';border:1.5px solid '+c.btnBorder+';display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;cursor:pointer;-webkit-tap-highlight-color:transparent"><i class="'+b.icon+'" style="font-size:23px;color:'+iconColor+'"></i><span style="font-size:12px;font-weight:700;color:'+c.btnTxt+';font-family:R,sans-serif">'+b.label+'</span></a>';
-  }).join('');
-
-  const ttBadge = tt ? '<a href="'+ttUrl+'" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:50px;background:'+c.ttBg+';border:1.5px solid '+c.ttBorder+';color:'+c.ttTxt+';font-size:13px;font-weight:700;text-decoration:none;font-family:Inter,sans-serif"><i class=\"fab fa-tiktok\"></i>@'+tt+'</a>' : '';
-
-  const bioHtml = bio ? '<div style="text-align:center;font-size:13px;color:'+c.bioTxt+';line-height:1.7;margin-bottom:12px">'+bio+'</div>' : '';
-  const ttHtml = tt ? '<div style="text-align:center;margin-bottom:16px">'+ttBadge+'</div>' : '';
+  // buildLayout بەکاردێت بۆ هەمان grid + tt-pill/tt-badge
+  function makeBtnSoft(b, isFirst){
+    const ic = c.icoFn(b.type);
+    return '<a id="'+b.id+'" class="btn'+(isFirst?' shine-active':'')+'" onclick="askConfirm(''+b.type+'',''+b._val+'',''+b.label+'')">'+
+      '<i class="'+b.icon+'" style="color:'+ic+'"></i>'+
+      '<span>'+b.label+'</span></a>';
+  }
+  const {gridHTML, belowGrid, cols} = buildLayout(activeBtns, tt, ttUrl, makeBtnSoft);
+  const bioSafe = bio.replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
   const p = [];
   p.push('<!DOCTYPE html><html lang="ku" dir="rtl"><head>');
-  p.push('<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">');
+  p.push('<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">');
   p.push('<title>'+name+'</title>');
   p.push('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">');
-  p.push('<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap">');
   p.push('<style>');
-  p.push('@font-face{font-family:R;src:url("https://raw.githubusercontent.com/Zana-Sponsor/Zana-Sponsor/main/Rabar_021.woff2") format("woff2");}');
-  p.push('*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}');
-  p.push('body{font-family:R,sans-serif;min-height:100vh;min-height:-webkit-fill-available;background:'+c.bg+';display:flex;align-items:flex-start;justify-content:center;padding:28px 16px 48px;}');
-  p.push('.wrap{width:100%;max-width:380px;}');
-  p.push('.av{width:82px;height:82px;border-radius:50%;border:3px solid '+c.avRing+';display:flex;align-items:center;justify-content:center;overflow:hidden;margin:0 auto 12px;box-shadow:0 6px 18px rgba(0,0,0,.09);}');
-  p.push('.av img{width:100%;height:100%;object-fit:cover;border-radius:50%;}');
-  p.push('.nm{text-align:center;font-size:20px;font-weight:800;color:'+c.nameTxt+';margin-bottom:6px;}');
-  p.push('.bio{text-align:center;font-size:13px;color:'+c.bioTxt+';line-height:1.7;margin-bottom:12px;}');
-  p.push('.tt{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:50px;background:'+c.ttBg+';border:1.5px solid '+c.ttBorder+';color:'+c.ttTxt+';font-size:13px;font-weight:700;text-decoration:none;font-family:Inter,sans-serif;}');
-  p.push('.grid{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 14px;}');
-  p.push('.grid a{flex:1;min-width:calc(50% - 5px);padding:15px 8px;border-radius:18px;background:'+c.btnBg+';border:1.5px solid '+c.btnBorder+';display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;cursor:pointer;transition:opacity .2s;}');
-  p.push('.grid a:active{opacity:.75;}');
-  p.push('.grid a i{font-size:24px;}');
-  p.push('.grid a span{font-size:13px;font-weight:700;color:'+c.nameTxt+';font-family:R,sans-serif;}');
-  p.push('.footer{text-align:center;padding:14px 0 0;border-top:1px solid '+c.ftBorder+';margin-top:4px;}');
-  p.push('.footer small{font-size:11px;color:'+c.ftTxt+';opacity:.75;}');
-  p.push('.footer a{color:inherit;text-decoration:none;font-weight:700;}');
-  p.push('</style></head><body><div class="wrap">');
-  p.push('<div style="text-align:center;padding-top:10px">');
-  p.push('<div class="av">'+avatarImg+'</div>');
-  p.push('<div class="nm">'+name+'</div>');
-  p.push(bioHtml);
-  p.push(ttHtml);
+  p.push("@font-face{font-family:'Rabar_021';src:url('https://raw.githubusercontent.com/Zana-Sponsor/Zana-Sponsor/main/Rabar_021.woff2') format('woff2');}");
+  p.push("@import url('https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap');");
+  p.push("*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}");
+  p.push("body{font-family:'Rabar_021',sans-serif;margin:0;padding:0;display:flex;justify-content:center;background:"+c.bg+";min-height:100vh;}");
+  p.push('.page{width:100%;max-width:430px;min-height:100vh;display:flex;flex-direction:column;align-items:center;}');
+  p.push('.top-section{width:100%;position:relative;text-align:center;padding:36px 16px 0;}');
+  p.push('.avatar{width:96px;height:96px;border-radius:50%;border:4px solid '+c.avRing+';overflow:hidden;background:#fff;box-shadow:0 6px 22px rgba(0,0,0,.12);margin:0 auto 14px;position:relative;}');
+  p.push('.avatar img{width:100%;height:100%;object-fit:cover;display:block;}');
+  p.push('.content{width:100%;display:flex;flex-direction:column;align-items:center;padding:0 16px 50px;}');
+  p.push(".name{font-size:19px;font-weight:700;color:"+c.nameTxt+";text-align:center;margin-bottom:8px;font-family:'Inter','Rabar_021',sans-serif;}");
+  p.push('.desc{font-size:14px;color:'+c.bioTxt+';line-height:2;text-align:center;margin-bottom:16px;padding:0 4px;white-space:pre-line;}');
+  // TikTok pill/badge — هەمان گرادیەنت بوردەری ستایلەکانی کۆن
+  p.push('.tt-pill{display:inline-flex;flex-direction:row;align-items:center;justify-content:center;gap:7px;padding:9px 16px;border-radius:90px;background:rgba(0,0,0,.03);color:'+c.nameTxt+';text-decoration:none;font-family:"Rabar_021",sans-serif;font-size:13.5px;font-weight:600;position:relative;border:1px solid rgba(0,0,0,.08);width:100%;box-sizing:border-box;}');
+  p.push(".tt-pill::before{content:'';position:absolute;inset:-1px;border-radius:90px;padding:1.2px;background:linear-gradient(45deg,#69c9d0,#ee1d52);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;opacity:.75;}");
+  p.push('.tt-pill i{font-size:18px;position:relative;z-index:1;}');
+  p.push('.tt-pill span{position:relative;z-index:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:ltr;}');
+  p.push('.tt-pill:active{transform:scale(.95);}');
+  p.push('.tt-wrap{display:flex;justify-content:center;width:100%;}');
+  p.push('.tt-badge{background:rgba(0,0,0,.03);color:'+c.nameTxt+';text-decoration:none;display:flex;flex-direction:row;align-items:center;gap:8px;padding:7px 18px;border-radius:90px;border:1px solid rgba(0,0,0,.08);position:relative;margin-top:14px;font-family:"Rabar_021",sans-serif;font-size:14.5px;font-weight:600;}');
+  p.push(".tt-badge::before{content:'';position:absolute;inset:-1px;border-radius:50px;padding:1.2px;background:linear-gradient(45deg,#69c9d0,#ee1d52);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;opacity:.6;}");
+  p.push('.tt-badge i{font-size:17px;position:relative;z-index:1;}');
+  p.push('.tt-badge span{position:relative;z-index:1;direction:ltr;}');
+  p.push('.tt-badge:active{transform:scale(.95);}');
+  // Buttons
+  p.push('.grid{display:grid;grid-template-columns:'+cols+';gap:10px;width:100%;margin-top:22px;}');
+  p.push('.btn{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:18px 8px 15px;border-radius:18px;font-size:14px;font-weight:bold;color:'+c.btnTxt+';min-height:88px;cursor:pointer;text-decoration:none;overflow:hidden;transition:transform .13s;background:'+c.btnBg+';border:1.5px solid '+c.btnBorder+';}');
+  p.push('.btn:active{transform:scale(.96);}');
+  p.push('.btn i{font-size:28px;}');
+  p.push('#wa i{font-size:25px;}#vb i{font-size:22px;}#tg i{font-size:22px;}#ig i{font-size:22px;}#ph i{font-size:20px;}#as i{font-size:20px;}');
+  p.push('.three-bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin-top:10px;align-items:center;}');
+  // Shine animation
+  p.push("@keyframes shine{0%{left:-100%}100%{left:150%}}");
+  p.push(".shine-active{overflow:hidden;position:relative;}");
+  p.push(".shine-active::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(to right,transparent,"+c.shineCol+",transparent);transform:skewX(-25deg);animation:shine 2.5s ease-in-out infinite;pointer-events:none;border-radius:inherit;}");
+  p.push(".no-shine::after{animation:none!important;display:none;}");
+  p.push("@keyframes fadeIn{from{opacity:0}to{opacity:1}}");
+  // Footer
+  p.push('.footer{width:100%;margin-top:40px;padding-bottom:28px;text-align:center;}');
+  p.push('.footer small{display:block;font-size:11px;color:#8b8b8b;margin-bottom:8px;}');
+  p.push('.footer img{height:13px;display:block;margin:0 auto 10px;}');
+  p.push('.legal{font-size:10px;color:#8b8b8b;}');
+  p.push('.legal a{color:inherit;text-decoration:none;margin:0 5px;}');
+  // Modal
+  p.push('.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:none;justify-content:center;align-items:center;z-index:10000;}');
+  p.push('.modal-overlay.active{display:flex;animation:fadeIn .2s ease;}');
+  p.push(".modal-content{width:85%;max-width:320px;padding:35px 25px;border-radius:24px;text-align:center;background:#fff;color:#111;border:1px solid rgba(0,0,0,.08);box-shadow:0 20px 50px rgba(0,0,0,.12);}");
+  p.push('.modal-content h3{margin:0 0 16px;font-size:20px;}');
+  p.push(".modal-content p{font-size:14px;opacity:.65;margin-bottom:25px;line-height:1.6;font-family:'Rabar_021',sans-serif;}");
+  p.push(".btn-confirm{width:100%;padding:16px;border-radius:16px;border:none;font-family:'Rabar_021';font-size:16px;font-weight:bold;cursor:pointer;transition:.2s;margin-bottom:12px;}");
+  p.push('.btn-cancel{color:#888;font-size:14px;cursor:pointer;display:inline-block;padding:5px;}');
+  p.push('.btn-confirm.confirm-wh{background:#28E16D;color:#000;}');
+  p.push('.btn-confirm.confirm-vi{background:#7360f2;color:#fff;}');
+  p.push('.btn-confirm.confirm-te{background:#26A5E4;color:#fff;}');
+  p.push('.btn-confirm.confirm-ph{background:#fff;color:#000;border:1px solid #ddd;}');
+  p.push('.btn-confirm.confirm-as{background:#e03030;color:#fff;}');
+  p.push('.btn-confirm.confirm-in{background:#dc2743;color:#fff;}');
+  p.push('</style></head><body>');
+
+  // Modal HTML
+  p.push('<div class="modal-overlay" id="confirm-modal">');
+  p.push('  <div class="modal-content">');
+  p.push('    <h3 id="modal-title">...</h3>');
+  p.push('    <p>ئایا دەتەوێت پەیوەندیمان پێوە بکەی؟</p>');
+  p.push('    <button id="main-confirm-btn" class="btn-confirm" onclick="goLink()">بەڵێ، بەردەوام بە</button>');
+  p.push('    <div class="btn-cancel" onclick="closeModal()">پاشگەزبوونەوە</div>');
+  p.push('  </div>');
   p.push('</div>');
-  p.push('<div class="grid">'+btnRows+'</div>');
-  p.push('<div class="footer"><small>Powered by <a href="https://proxopages.com" target="_blank">Proxo</a></small></div>');
+
+  // Page
+  p.push('<div class="page">');
+  p.push('  <div class="top-section">');
+  p.push('    <div class="avatar">'+avatarImg+'</div>');
+  p.push('  </div>');
+  p.push('  <div class="content">');
+  p.push('    <h1 class="name">'+name+'</h1>');
+  p.push('    <p class="desc">'+bioSafe+'</p>');
+  p.push('    <div class="grid">'+gridHTML+'</div>');
+  p.push('    '+belowGrid);
+  p.push('    <div class="footer">');
+  p.push('      <small>سپۆنسەر کراوە لەلایەن</small>');
+  p.push('      <a href="https://www.tiktok.com/@proxo_iq" target="_blank">');
+  p.push('        <img src="https://image2url.com/r2/default/images/1772757087694-7bee9862-8ba7-44c2-9056-a4543f25aa32.webp" alt="Proxo">');
+  p.push('      </a>');
+  p.push('      <div class="legal">');
+  p.push('        <a href="https://proxopages.com/policy" target="_blank">Privacy Policy</a>');
+  p.push('        | <a href="https://proxopages.com/terms" target="_blank">Terms &amp; Conditions</a>');
+  p.push('      </div>');
+  p.push('    </div>');
+  p.push('  </div>');
   p.push('</div>');
-  p.push('<script>function askConfirm(t,u,l){if(confirm("بچیتە "+l+"؟"))window.open(u,"_blank");}'+handlers+'<\/script>');
+
+  // Script
+  p.push('<script>');
+  p.push("const urlParams=new URLSearchParams(window.location.search);");
+  p.push("let selectedApp='',selectedUrl='';");
+  p.push("function hideEffects(){const h=document.getElementById('click-hand');const s=document.querySelector('.shine-active');if(h)h.classList.add('hidden');if(s)s.classList.add('no-shine');}");
+  p.push("function askConfirm(name,url,kurdishName){selectedApp=name;selectedUrl=url;const btn=document.getElementById('main-confirm-btn');const title=document.getElementById('modal-title');title.innerText=kurdishName;btn.className='btn-confirm confirm-'+({whatsapp:'wh',viber:'vi',telegram:'te',phone:'ph',asya:'as',instagram:'in'}[name]||'wh');document.getElementById('confirm-modal').classList.add('active');hideEffects();}");
+  p.push("function goLink(){window.open(selectedUrl,'_blank');closeModal();}");
+  p.push("function closeModal(){document.getElementById('confirm-modal').classList.remove('active');}");
+  p.push("document.getElementById('confirm-modal').addEventListener('click',function(e){if(e.target===this)closeModal();});");
+  p.push(handlers);
+  p.push('<\/script>');
   p.push('</body></html>');
   return p.join("\n");
 }
