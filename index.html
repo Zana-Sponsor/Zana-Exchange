@@ -6391,18 +6391,53 @@ document.addEventListener('DOMContentLoaded',()=>{
     sl.classList.add('hidden');
     setTimeout(()=>{sl.style.display='none';},350);
   }
+  // فلاگی ئایا boot() هاتووە
+  var _bootStarted=false;
+  function _safeBoot(user){
+    if(_bootStarted)return;
+    _bootStarted=true;
+    cu=user;
+    boot();
+  }
+
+  // getSession بە timeout بۆ ئەوەی هەرگیز نەمێنێتەوە
+  var _sessionDone=false;
+  var _sessionRaceTimeout=setTimeout(function(){
+    if(!_sessionDone){
+      _sessionDone=true;
+      // getSession وەڵامی نەدا — ئەگەر cu هاتووە لەلایەن onAuthStateChange، boot بکە
+      if(cu&&!_bootStarted){_safeBoot(cu);}
+      else if(!cu){_hideSessionLoader();showAuth();}
+    }
+  },4000);
+
   sb.auth.getSession().then(({data:{session}})=>{
-    if(session?.user){cu=session.user;boot();}
+    if(_sessionDone)return;
+    _sessionDone=true;
+    clearTimeout(_sessionRaceTimeout);
+    if(session?.user){_safeBoot(session.user);}
     else{_hideSessionLoader();showAuth();}
-  }).catch(()=>{_hideSessionLoader();showAuth();});
-  // ڵاوەڽی: ئەگەر Supabase لە ماوەی ٨ چرکەدا ﺒﺴ دەی نەبووایە، فۆرمی چوونەژوورەوە پیشان بدە
+  }).catch(()=>{
+    if(_sessionDone)return;
+    _sessionDone=true;
+    clearTimeout(_sessionRaceTimeout);
+    _hideSessionLoader();showAuth();
+  });
+
+  // onAuthStateChange — ئەگەر پێشتر هات، boot بکە
   setTimeout(()=>{
     const _sl=document.getElementById('sessionLoader');
-    if(_sl&&_sl.style.display!=='none'){_sl.style.display='none';if(!cu)showAuth();}
-  },8000);
+    if(_sl&&_sl.style.display!=='none'){
+      _sl.style.display='none';
+      if(cu&&!_bootStarted){_safeBoot(cu);}
+      else if(!cu){showAuth();}
+    }
+  },6000);
+
   sb.auth.onAuthStateChange((_,s)=>{
-    if(s?.user&&!cu){cu=s.user;_hideSessionLoader();}
-    else if(!s&&cu){cu=null;showAuth();}
+    if(s?.user){
+      if(!_bootStarted){_safeBoot(s.user);}
+    } else if(!s&&cu){cu=null;showAuth();}
   });
 });
 
