@@ -602,18 +602,20 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .spons-status-rejected{background:rgba(239,68,68,.09);color:#dc2626;border:1px solid rgba(239,68,68,.25);}
 .spons-status-completed{background:rgba(99,102,241,.09);color:#4f46e5;border:1px solid rgba(99,102,241,.25);}
 .spons-status-paused{background:rgba(107,114,128,.09);color:#4b5563;border:1px solid rgba(107,114,128,.25);}
-.spons-title{font-size:15px;font-weight:800;color:var(--dark);margin-bottom:14px;line-height:1.4;}
+.spons-title{font-size:13px;font-weight:800;color:var(--dark);margin-bottom:14px;line-height:1.4;}
 .spons-metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;}
 .spons-metric-box{background:var(--bg);border-radius:14px;padding:12px 10px;text-align:center;border:1px solid var(--b1);}
-.spons-metric-ico{font-size:13px;margin-bottom:5px;}
+.spons-metric-ico{font-size:12px;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;}
 .spons-metric-val{font-size:16px;font-weight:900;color:var(--dark);font-family:'Inter',sans-serif;line-height:1;}
 .spons-metric-lbl{font-size:10px;color:var(--mt);font-weight:600;margin-top:4px;}
-.spons-metric-box.spend .spons-metric-ico{color:#16a34a;}
+.spons-metric-box.spend .spons-metric-ico{color:#16a34a;background:rgba(22,163,74,.1);}
 .spons-metric-box.spend .spons-metric-val{color:#16a34a;}
-.spons-metric-box.clicks .spons-metric-ico{color:#2563eb;}
+.spons-metric-box.clicks .spons-metric-ico{color:#2563eb;background:rgba(37,99,235,.1);}
 .spons-metric-box.clicks .spons-metric-val{color:#2563eb;}
-.spons-metric-box.impr .spons-metric-ico{color:#7c3aed;}
+.spons-metric-box.impr .spons-metric-ico{color:#7c3aed;background:rgba(124,58,237,.1);}
 .spons-metric-box.impr .spons-metric-val{color:#7c3aed;}
+.spons-metric-box.muted .spons-metric-ico{color:var(--mt)!important;background:var(--bg)!important;}
+.spons-metric-box.muted .spons-metric-val{color:var(--mt)!important;}
 .spons-dates{display:flex;gap:8px;}
 .spons-date-item{flex:1;display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--b1);border-radius:11px;padding:8px 10px;font-size:11px;color:var(--mt2);}
 .spons-date-item i{font-size:11px;color:var(--mt);flex-shrink:0;}
@@ -839,8 +841,19 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 /* TOAST */
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(6px);padding:12px 20px;border-radius:14px;font-size:13px;display:none;z-index:19999;white-space:nowrap;opacity:0;transition:all .25s;background:var(--dark);color:#fff;box-shadow:0 6px 24px rgba(28,35,51,.3);}
 .toast.show{display:block;opacity:1;transform:translateX(-50%) translateY(0);}
-.toast.err{background:var(--rd);}
-.toast.ok{background:var(--gr);}
+.toast.err{background:#fef2f2;color:#991b1b;border:1px solid rgba(220,38,38,.22);box-shadow:0 6px 24px rgba(220,38,38,.14);}
+.toast.ok{background:#f0fdf4;color:#166534;border:1px solid rgba(22,163,74,.22);box-shadow:0 6px 24px rgba(22,163,74,.14);}
+
+/* ─── Skeleton Loaders ─── */
+@keyframes sk-pulse{0%,100%{opacity:1}50%{opacity:.42}}
+.sk-line{height:13px;border-radius:8px;background:var(--b1);animation:sk-pulse 1.5s ease-in-out infinite;}
+.sk-card{background:var(--w);border:1.5px solid var(--b1);border-radius:20px;padding:18px 16px;margin-bottom:12px;}
+.sk-badge{height:22px;width:82px;border-radius:20px;background:var(--b1);animation:sk-pulse 1.5s ease-in-out infinite;}
+.sk-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0 0;}
+.sk-metric{height:72px;border-radius:14px;background:var(--b1);animation:sk-pulse 1.5s ease-in-out infinite;}
+.sk-tx{background:var(--w);border:1.5px solid var(--b1);border-radius:18px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;}
+.sk-ico{width:40px;height:40px;border-radius:12px;flex-shrink:0;background:var(--b1);animation:sk-pulse 1.5s ease-in-out infinite;}
+.sk-tx-body{flex:1;display:flex;flex-direction:column;gap:8px;}
 
 /* CARD PICK */
 .card-pick{display:flex;align-items:center;gap:11px;padding:12px 14px;border-radius:14px;border:1.5px solid var(--b1);background:var(--w);cursor:pointer;margin-bottom:8px;transition:all .2s;}
@@ -3512,7 +3525,7 @@ function _toWebP(dataUrl,quality){
 
     <div class="pcard" id="txHistoryPanel">
       <div id="txHistoryList">
-        <div style="text-align:center;padding:20px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin"></i></div>
+        <div class="sk-tx"><div class="sk-ico"></div><div class="sk-tx-body"><div class="sk-line" style="width:55%"></div><div class="sk-line" style="width:35%"></div></div></div><div class="sk-tx"><div class="sk-ico"></div><div class="sk-tx-body"><div class="sk-line" style="width:60%"></div><div class="sk-line" style="width:40%"></div></div></div><div class="sk-tx"><div class="sk-ico"></div><div class="sk-tx-body"><div class="sk-line" style="width:45%"></div><div class="sk-line" style="width:30%"></div></div></div>
       </div>
     </div>
     <div style="height:14px"></div>
@@ -8430,6 +8443,8 @@ function pickCard(el,id){
 
 let allAds=[],filterStatus='all';
 async function loadMyAds(){
+  const wrap=document.getElementById('myAdsWrap');
+  if(wrap&&!allAds.length)wrap.innerHTML='<div class="sk-card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div class="sk-line" style="width:55px"></div><div class="sk-badge"></div></div><div class="sk-line" style="width:70%;margin-bottom:12px"></div><div class="sk-metrics"><div class="sk-metric"></div><div class="sk-metric"></div><div class="sk-metric"></div></div></div><div class="sk-card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div class="sk-line" style="width:55px"></div><div class="sk-badge"></div></div><div class="sk-line" style="width:60%;margin-bottom:12px"></div><div class="sk-metrics"><div class="sk-metric"></div><div class="sk-metric"></div><div class="sk-metric"></div></div></div>';
   const{data}=await sb.from('pa_ads').select('*').eq('user_id',cu.id).order('created_at',{ascending:false});
   allAds=data||[];renderAds();
 }
@@ -8507,6 +8522,7 @@ function renderAds(){
       statusLbl='<i class="fas fa-clock" style="font-size:9px;margin-left:4px"></i>چاوەڕوان';
     }
 
+    const isRejected=st==='rejected';
     const spend=isActive?parseFloat(ad.spend||0):0;
     const clicks=isActive?parseInt(ad.clicks||0):0;
     const impr=isActive?parseInt(ad.impressions||0):0;
@@ -8538,17 +8554,17 @@ function renderAds(){
       <div class="spons-title">${adName}</div>
       ${pendingNote}
       <div class="spons-metrics">
-        <div class="spons-metric-box spend">
+        <div class="spons-metric-box spend${isRejected?' muted':''}">
           <div class="spons-metric-ico"><i class="fas fa-dollar-sign"></i></div>
           <div class="spons-metric-val">${spendFmt}</div>
           <div class="spons-metric-lbl">خەرجکراو</div>
         </div>
-        <div class="spons-metric-box clicks">
+        <div class="spons-metric-box clicks${isRejected?' muted':''}">
           <div class="spons-metric-ico"><i class="fas fa-arrow-pointer"></i></div>
           <div class="spons-metric-val">${_fmtNum(clicks)}</div>
           <div class="spons-metric-lbl">کلیک</div>
         </div>
-        <div class="spons-metric-box impr">
+        <div class="spons-metric-box impr${isRejected?' muted':''}">
           <div class="spons-metric-ico"><i class="fas fa-eye"></i></div>
           <div class="spons-metric-val">${_fmtNum(impr)}</div>
           <div class="spons-metric-lbl">بینین</div>
@@ -8676,7 +8692,7 @@ async function showAdDetail(ad){
   h+='<div class="ad-micro-grid">';
   h+='<div class="ad-micro-card"><div class="ad-micro-card-lbl">ئامانج</div><div class="ad-micro-card-val" style="direction:rtl">'+(goalMap[ad.goal]||ad.goal||'—')+'</div></div>';
   h+='<div class="ad-micro-card"><div class="ad-micro-card-lbl">پلاتفۆرم</div><div class="ad-micro-card-val"><i class="fab fa-tiktok" style="margin-left:4px;font-size:11px"></i>TikTok</div></div>';
-  if(estLabel&&estValue!=null) h+='<div class="ad-micro-card"><div class="ad-micro-card-lbl">'+estLabel+'</div><div class="ad-micro-card-val" style="color:var(--gr)">~'+estValue.toLocaleString()+'</div></div>';
+  if(estLabel&&estValue!=null) h+='<div class="ad-micro-card"><div class="ad-micro-card-lbl">'+estLabel+'</div><div class="ad-micro-card-val" style="color:'+(ad.status==='rejected'?'var(--mt)':'var(--gr)')+'">~'+estValue.toLocaleString()+'</div></div>';
   h+='<div class="ad-micro-card"><div class="ad-micro-card-lbl">ماوە</div><div class="ad-micro-card-val">'+days+' ڕۆژ</div></div>';
   h+='<div class="ad-micro-card"><div class="ad-micro-card-lbl">دەستپێکردن</div><div class="ad-micro-card-val" style="font-family:Inter,sans-serif;font-size:12px">'+(ad.start_date||'—')+'</div></div>';
   h+='<div class="ad-micro-card"><div class="ad-micro-card-lbl">کۆتایی</div><div class="ad-micro-card-val" style="font-family:Inter,sans-serif;font-size:12px">'+endDateStr+'</div></div>';
@@ -8686,6 +8702,7 @@ async function showAdDetail(ad){
   if(ad.location&&ad.location!=='all') h+='<div class="ad-micro-card"><div class="ad-micro-card-lbl">شوێن</div><div class="ad-micro-card-val" style="direction:rtl">'+(locMap[ad.location]||ad.location)+'</div></div>';
   h+='</div>';
   if(ad.reject_reason) h+='<div class="ad-expire-banner" style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.18)"><div class="ad-expire-banner-ico" style="background:rgba(239,68,68,.12);color:var(--rd)"><i class="fas fa-circle-info"></i></div><div style="flex:1"><div style="font-size:11px;font-weight:800;color:#991b1b;margin-bottom:3px">هۆکاری ڕەتکردنەوە</div><div style="font-size:11.5px;color:#7f1d1d;line-height:1.7">'+ad.reject_reason+'</div></div></div>';
+  if(ad.status==='rejected') h+='<div class="ad-expire-banner" style="margin-top:8px;background:rgba(22,163,74,.06);border:1px solid rgba(22,163,74,.2)"><div class="ad-expire-banner-ico" style="background:rgba(22,163,74,.12);color:var(--gr)"><i class="fas fa-rotate-left"></i></div><div style="flex:1"><div style="font-size:11px;font-weight:800;color:#166534;margin-bottom:3px">پارەکەت گەڕایەوە</div><div style="font-size:11.5px;color:#15803d;line-height:1.7">بودجەی ئەم ڕیکلامە بە شێوەی خۆکاری گەڕایەوەتە باڵانسەکەت.</div></div></div>';
   if(ad.status==='completed'||ad.status==='done') h+='<div class="ad-expire-banner" style="background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.18)"><div class="ad-expire-banner-ico" style="background:rgba(99,102,241,.12);color:#6366f1"><i class="fas fa-flag-checkered"></i></div><div style="flex:1"><div style="font-size:11px;font-weight:800;color:#4338ca;margin-bottom:3px">ڕیکلام تەواوبووە</div><div style="font-size:11.5px;color:#3730a3;line-height:1.7">ماوەی ڕیکلامەکەت تەواوبوو.</div></div></div>';
   h+='<div class="ad-sheet-sec" style="margin-top:18px"><i class="fas fa-receipt" style="margin-left:5px"></i>وردەکاری نرخ</div>';
   h+='<div class="ad-price-box">';
@@ -8693,6 +8710,7 @@ async function showAdDetail(ad){
   if(promoCode) h+='<div class="ad-price-row" style="margin-top:3px"><span style="display:flex;align-items:center;gap:6px">پڕۆمۆ کۆد <span class="ad-promo-badge"><i class="fas fa-tag" style="font-size:9px"></i>'+promoCode+'</span></span><span style="color:var(--gr)">- '+discountIQD.toLocaleString()+' IQD</span></div>';
   h+='<div class="ad-price-row ad-price-total"><span>نرخی کۆتایی</span><span>'+finalTotal.toLocaleString()+' IQD</span></div>';
   h+='</div>';
+  h+='<button onclick="downloadAdSheetImg()" style="width:100%;margin-top:14px;padding:13px;background:var(--bg);color:var(--dark);border:1.5px solid var(--b1);border-radius:14px;font-family:\'R\',sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px"><i class="fas fa-download" style="font-size:12px"></i> داگرتنی پسووڵەی ڕیکلام</button>';
   body.innerHTML=h;
 }
 
@@ -10763,11 +10781,46 @@ function showReceipt(t){
     </div>
 
     <!-- ═══ داخستن ═══ -->
-    <button onclick="closeMo('moReceipt')" style="width:100%;padding:15px;background:var(--dark);color:#fff;border:none;border-radius:15px;font-family:'R',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(28,35,51,.2)">
-      <i class="fas fa-check"></i> باشە، داخە
-    </button>`;
+    <div style="display:grid;grid-template-columns:1fr auto;gap:10px">
+      <button onclick="closeMo('moReceipt')" style="padding:15px;background:var(--dark);color:#fff;border:none;border-radius:15px;font-family:'R',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(28,35,51,.2)">
+        <i class="fas fa-check"></i> باشە، داخە
+      </button>
+      <button onclick="downloadReceiptImg()" title="داگرتنی پسووڵە" style="width:52px;background:var(--bg);color:var(--dark);border:1.5px solid var(--b1);border-radius:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px">
+        <i class="fas fa-download"></i>
+      </button>
+    </div>`;
 
   document.getElementById('moReceipt').classList.add('on');
+}
+
+// ─── داگرتنی وەنەی پسووڵەی مامەڵە ───
+function downloadReceiptImg(){
+  const el=document.getElementById('receiptContent');
+  if(!el){showToast('پسووڵە نەدۆزرایەوە','err');return;}
+  if(typeof html2canvas==='undefined'){showToast('تکایە چەند چرکەیەک چاوەڕوانبە...','err');return;}
+  showToast('پسووڵە ئامادە دەبێت...','ok');
+  html2canvas(el,{backgroundColor:null,scale:2,useCORS:true,allowTaint:true}).then(canvas=>{
+    const a=document.createElement('a');
+    a.download='proxo-receipt-'+Date.now()+'.png';
+    a.href=canvas.toDataURL('image/png');
+    a.click();
+    showToast('پسووڵە داگیرا','ok');
+  }).catch(()=>showToast('هەڵە لە داگرتن','err'));
+}
+
+// ─── داگرتنی وەنەی پسووڵەی ڕیکلام ───
+function downloadAdSheetImg(){
+  const el=document.getElementById('adSheetBody');
+  if(!el){showToast('زانیاری ڕیکلام نەدۆزرایەوە','err');return;}
+  if(typeof html2canvas==='undefined'){showToast('تکایە چەند چرکەیەک چاوەڕوانبە...','err');return;}
+  showToast('پسووڵە ئامادە دەبێت...','ok');
+  html2canvas(el,{backgroundColor:getComputedStyle(document.documentElement).getPropertyValue('--w').trim()||'#ffffff',scale:2,useCORS:true,allowTaint:true}).then(canvas=>{
+    const a=document.createElement('a');
+    a.download='proxo-ad-'+Date.now()+'.png';
+    a.href=canvas.toDataURL('image/png');
+    a.click();
+    showToast('پسووڵە داگیرا','ok');
+  }).catch(()=>showToast('هەڵە لە داگرتن','err'));
 }
 
 // ═══ TRANSACTION HISTORY PAGE ═══
@@ -10775,7 +10828,7 @@ let allTxHistory=[], txFilterMode='all';
 
 async function loadTxHistory(){
   const list=document.getElementById('txHistoryList');
-  list.innerHTML='<div style="text-align:center;padding:20px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin"></i></div>';
+  list.innerHTML='<div class="sk-tx"><div class="sk-ico"></div><div class="sk-tx-body"><div class="sk-line" style="width:55%"></div><div class="sk-line" style="width:35%"></div></div></div><div class="sk-tx"><div class="sk-ico"></div><div class="sk-tx-body"><div class="sk-line" style="width:60%"></div><div class="sk-line" style="width:40%"></div></div></div><div class="sk-tx"><div class="sk-ico"></div><div class="sk-tx-body"><div class="sk-line" style="width:45%"></div><div class="sk-line" style="width:30%"></div></div></div>';
 
   const{data:deposits}=await sb.from('pa_transactions').select('*').eq('user_id',cu.id).order('created_at',{ascending:false});
   const{data:ads}=await sb.from('pa_ads').select('id,title,budget,created_at,ad_number,status').eq('user_id',cu.id).order('created_at',{ascending:false});
@@ -12474,4 +12527,5 @@ document.addEventListener('DOMContentLoaded',function(){
   }
 });
 </script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </html>
