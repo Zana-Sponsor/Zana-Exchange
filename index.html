@@ -2134,6 +2134,43 @@ function _clipboardFallback(text, onSuccess, onFail) {
 .tt-inp[type=url]{unicode-bidi:plaintext;}
 </style>
 <style>
+/* ══ SOFT HERO ══ */
+.ch-soft{
+  background:linear-gradient(145deg,#f8f9ff 0%,#eef2ff 55%,#f5f0ff 100%);
+  border:1px solid rgba(139,130,255,.13);
+  border-radius:24px;padding:20px 18px 20px;margin-bottom:12px;
+  position:relative;overflow:hidden;
+  box-shadow:0 4px 28px rgba(99,102,241,.07),0 1px 0 rgba(255,255,255,.9) inset;
+}
+.ch-soft-deco1{
+  position:absolute;top:-40px;right:-40px;width:140px;height:140px;
+  border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.10) 0%,transparent 70%);
+  pointer-events:none;
+}
+.ch-soft-deco2{
+  position:absolute;bottom:-30px;left:0;width:100px;height:100px;
+  border-radius:50%;background:radial-gradient(circle,rgba(168,85,247,.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+.ch-soft-body{display:flex;align-items:center;gap:15px;position:relative;}
+.ch-soft-icon-wrap{flex-shrink:0;}
+.ch-soft-icon{
+  width:52px;height:52px;border-radius:16px;
+  background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;color:#fff;
+  box-shadow:0 6px 20px rgba(99,102,241,.30);
+}
+.ch-soft-text{display:flex;flex-direction:column;gap:4px;}
+.ch-soft-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(99,102,241,.09);border:1px solid rgba(99,102,241,.18);
+  border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;
+  color:#6366f1;font-family:'R',sans-serif;margin-bottom:2px;width:fit-content;
+}
+.ch-soft-title{font-size:20px;font-weight:900;color:#1c2333;letter-spacing:-.3px;}
+.ch-soft-sub{font-size:11px;color:#8b95a8;font-family:'Inter',sans-serif;margin-top:2px;}
+
 /* ══ GOAL SLIDING SEGMENTED CONTROL ══ */
 .goal-seg-wrap{position:relative;display:flex;flex-direction:column;gap:7px;padding:5px;background:var(--bg);border-radius:18px;}
 .goal-seg-pill{position:absolute;background:var(--dark);border-radius:14px;box-shadow:0 4px 18px rgba(28,35,51,.22);pointer-events:none;transition:top .32s cubic-bezier(.4,0,.2,1),height .32s cubic-bezier(.4,0,.2,1);left:5px;right:5px;top:5px;}
@@ -2149,16 +2186,64 @@ function _clipboardFallback(text, onSuccess, onFail) {
 .goal-seg-opt.on .goal-seg-sub{color:rgba(255,255,255,.55);}
 .goal-seg-chk{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;flex-shrink:0;transition:all .28s;}
 .goal-seg-opt.on .goal-seg-chk{border-color:#fff;background:#fff;color:var(--dark);}
-/* ══ BUDGET / DAYS RING ══ */
-.ring-section-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:8px;padding:6px 0 2px;}
-.ring-wrap{position:relative;width:130px;height:130px;}
-.ring-svg{width:100%;height:100%;transform:rotate(-90deg);}
-.ring-bg-c{fill:none;stroke:var(--bg);stroke-width:9;}
-.ring-fg-c{fill:none;stroke:var(--dark);stroke-width:9;stroke-linecap:round;stroke-dasharray:251.3;stroke-dashoffset:251.3;transition:stroke-dashoffset .45s cubic-bezier(.4,0,.2,1);}
-.ring-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;}
-.ring-val{font-size:22px;font-weight:400;color:var(--dark);font-family:'Inter',sans-serif;line-height:1;}
-.ring-lbl{font-size:10px;color:var(--mt);font-family:'R',sans-serif;}
-.ring-btns-row{display:flex;align-items:center;gap:20px;}
+
+/* ══ TARGETING — clean chip redesign ══ */
+.age-grp{padding:9px 16px;border-radius:22px;font-family:'R',sans-serif;font-size:12.5px;cursor:pointer;border:1.5px solid var(--b1);background:var(--w);color:var(--mt2);transition:all .18s;font-weight:600;display:flex;align-items:center;gap:5px;}
+.age-grp.on{background:var(--dark);color:#fff;border-color:var(--dark);box-shadow:0 2px 10px rgba(28,35,51,.15);}
+.age-grp-all{/* no unconditional dark styling */}
+.gender-pill{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 8px;border-radius:22px;border:1.5px solid var(--b1);background:var(--w);color:var(--mt2);font-family:'R',sans-serif;font-size:12.5px;cursor:pointer;text-align:center;font-weight:600;transition:all .18s;white-space:nowrap;}
+.gender-pill.on{background:var(--dark);color:#fff;border-color:var(--dark);box-shadow:0 2px 10px rgba(28,35,51,.15);}
+.fchip{padding:9px 16px;border-radius:22px;border:1.5px solid var(--b1);background:var(--w);color:var(--mt2);font-size:12.5px;font-weight:600;cursor:pointer;transition:all .18s;font-family:'R',sans-serif;}
+.fchip.on{background:var(--dark);color:#fff;border-color:var(--dark);box-shadow:0 2px 10px rgba(28,35,51,.15);}
+
+/* ══ BUDGET / DAYS SIDE-BY-SIDE RINGS ══ */
+.bud-rings-grid{display:flex;align-items:flex-start;gap:0;margin:4px 0 14px;}
+.bud-ring-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px 6px;}
+.bud-ring-label{font-size:11px;color:var(--mt2);font-weight:700;font-family:'R',sans-serif;}
+.bud-rings-divider{width:1px;background:var(--b1);align-self:stretch;margin:8px 0;flex-shrink:0;}
+.ring-sm-wrap{position:relative;width:110px;height:110px;}
+.ring-svg-sm{width:100%;height:100%;transform:rotate(-90deg);}
+.ring-bg-c{fill:none;stroke:#eef0f6;stroke-width:9;}
+.ring-fg-c{fill:none;stroke:var(--dark);stroke-width:9;stroke-linecap:round;stroke-dasharray:238.7;stroke-dashoffset:238.7;transition:stroke-dashoffset .45s cubic-bezier(.4,0,.2,1);}
+.ring-inner-sm{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;}
+.ring-val-sm{font-size:20px;font-weight:400;color:var(--dark);font-family:'Inter',sans-serif;line-height:1;}
+.ring-lbl-sm{font-size:9.5px;color:var(--mt);font-family:'R',sans-serif;}
+.ring-btns-sm{display:flex;align-items:center;gap:14px;}
+.rbtn{width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:19px;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;transition:.15s;touch-action:manipulation;font-weight:300;line-height:1;border:none;}
+.rbtn-plus{background:var(--dark);color:#fff;box-shadow:0 3px 10px rgba(28,35,51,.2);}
+.rbtn-plus:active{transform:scale(.85);}
+.rbtn-minus{background:var(--w);color:var(--mt2);border:1.5px solid var(--b2);}
+.rbtn-minus:active{background:var(--bg);}
+
+/* Soft total box */
+.bud-total-soft{
+  background:var(--bg);border:1.5px solid var(--b1);border-radius:18px;
+  padding:14px 18px;display:flex;align-items:center;justify-content:space-between;
+  margin-top:4px;
+}
+.bud-total-soft-lbl{font-size:11.5px;color:var(--mt2);font-weight:700;}
+.bud-total-soft-center{display:flex;align-items:center;gap:10px;}
+.bud-total-soft-usd{font-size:20px;font-weight:700;color:var(--dark);font-family:'Inter',sans-serif;}
+.bud-total-soft-days{font-size:11.5px;color:#fff;background:var(--dark);border-radius:20px;padding:3px 11px;font-weight:700;}
+
+/* ══ EXPECTED RESULTS — upgraded ══ */
+.est3-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.est3-card{
+  background:var(--bg);border:1px solid var(--b1);
+  border-radius:18px;padding:16px 12px;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  text-align:center;
+}
+.est3-ico-wrap{
+  width:40px;height:40px;border-radius:13px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;margin-bottom:2px;
+}
+.views-ico3{background:rgba(99,102,241,.09);color:#6366f1;}
+.clicks-ico3{background:rgba(22,163,74,.09);color:#16a34a;}
+.est3-val{font-size:12px;font-weight:700;color:var(--dark);font-family:'Inter',sans-serif;line-height:1.3;}
+.est3-lbl{font-size:10.5px;color:var(--mt2);font-weight:600;}
+.est3-sub{font-size:9.5px;color:var(--mt);font-family:'Inter',sans-serif;}
 </style>
 </head>
 
@@ -2821,13 +2906,17 @@ function _toWebP(dataUrl,quality){
   <div class="pg" id="pgCreate">
 
     <!-- ── Hero Header ── -->
-    <div class="create-hero">
-      <div class="create-hero-inner">
-        <div class="create-hero-icon"><i class="fas fa-rectangle-ad"></i></div>
-        <div>
-          <div class="create-hero-title">سپۆنسەری نوێ</div>
-          <div class="create-hero-sub" id="todayLbl"></div>
-          <div class="create-hero-badge"><i class="fas fa-circle-check" style="margin-left:4px;font-size:9px"></i>پڕۆکسۆ ئەدز</div>
+    <div class="ch-soft">
+      <div class="ch-soft-deco1"></div>
+      <div class="ch-soft-deco2"></div>
+      <div class="ch-soft-body">
+        <div class="ch-soft-icon-wrap">
+          <div class="ch-soft-icon"><i class="fas fa-rectangle-ad"></i></div>
+        </div>
+        <div class="ch-soft-text">
+          <div class="ch-soft-badge"><i class="fas fa-circle-check" style="margin-left:4px"></i>پڕۆکسۆ ئەدز</div>
+          <div class="ch-soft-title">سپۆنسەری نوێ</div>
+          <div class="ch-soft-sub" id="todayLbl"></div>
         </div>
       </div>
     </div>
@@ -2950,61 +3039,53 @@ function _toWebP(dataUrl,quality){
         <span class="cstep">٣</span>
       </div>
 
-      <!-- Daily USD amount -->
-      <div class="csub" style="margin-top:12px">بودجەی ڕۆژانە</div>
-      <div class="ring-section-wrap">
-        <div class="ring-wrap">
-          <svg viewBox="0 0 100 100" class="ring-svg">
-            <circle class="ring-bg-c" cx="50" cy="50" r="40"/>
-            <circle class="ring-fg-c" id="budRingFg" cx="50" cy="50" r="40"/>
-          </svg>
-          <div class="ring-inner">
-            <div class="ring-val" id="dailyUSDDisp">$10</div>
-            <div class="ring-lbl">بۆ هەر ڕۆژێک</div>
+      <!-- Budget + Days side by side rings -->
+      <div class="bud-rings-grid">
+        <!-- Budget Ring -->
+        <div class="bud-ring-col">
+          <div class="bud-ring-label">بودجەی ڕۆژانە</div>
+          <div class="ring-sm-wrap">
+            <svg viewBox="0 0 100 100" class="ring-svg-sm">
+              <circle class="ring-bg-c" cx="50" cy="50" r="38"/>
+              <circle class="ring-fg-c" id="budRingFg" cx="50" cy="50" r="38"/>
+            </svg>
+            <div class="ring-inner-sm">
+              <div class="ring-val-sm" id="dailyUSDDisp">$10</div>
+              <div class="ring-lbl-sm">ڕۆژانە</div>
+            </div>
+          </div>
+          <div class="ring-btns-sm">
+            <button class="rbtn rbtn-minus" onclick="chgBudAmt(-1)">−</button>
+            <button class="rbtn rbtn-plus" onclick="chgBudAmt(1)">+</button>
           </div>
         </div>
-        <div class="ring-btns-row">
-          <button class="bud-cbtns bud-day-minus" onclick="chgBudAmt(-1)">−</button>
-          <button class="bud-cbtns bud-day-plus" onclick="chgBudAmt(1)">+</button>
-        </div>
-      </div>
-      <div class="bud-chips-row" id="budChipsRow">
-        <div class="bud-chip sel" onclick="pickDailyUSD(10,this)">$10</div>
-        <div class="bud-chip" onclick="pickDailyUSD(20,this)">$20</div>
-        <div class="bud-chip" onclick="pickDailyUSD(50,this)">$50</div>
-        <div class="bud-chip" onclick="pickDailyUSD(100,this)">$100</div>
-        <div class="bud-chip" onclick="pickDailyUSD(200,this)">$200</div>
-        <div class="bud-chip" onclick="pickDailyUSD(500,this)">$500</div>
-        <div class="bud-chip" onclick="pickDailyUSD(1000,this)">$1K</div>
-      </div>
-
-      <!-- Days counter -->
-      <div class="csub">ماوەی ڕیکلام</div>
-      <div class="ring-section-wrap">
-        <div class="ring-wrap">
-          <svg viewBox="0 0 100 100" class="ring-svg">
-            <circle class="ring-bg-c" cx="50" cy="50" r="40"/>
-            <circle class="ring-fg-c" id="daysRingFg" cx="50" cy="50" r="40"/>
-          </svg>
-          <div class="ring-inner">
-            <div class="ring-val" id="daysDisp">1</div>
-            <div class="ring-lbl">ژمارەی ڕۆژ</div>
+        <!-- Divider -->
+        <div class="bud-rings-divider"></div>
+        <!-- Days Ring -->
+        <div class="bud-ring-col">
+          <div class="bud-ring-label">ماوەی ڕیکلام</div>
+          <div class="ring-sm-wrap">
+            <svg viewBox="0 0 100 100" class="ring-svg-sm">
+              <circle class="ring-bg-c" cx="50" cy="50" r="38"/>
+              <circle class="ring-fg-c" id="daysRingFg" cx="50" cy="50" r="38"/>
+            </svg>
+            <div class="ring-inner-sm">
+              <div class="ring-val-sm" id="daysDisp">1</div>
+              <div class="ring-lbl-sm">ڕۆژ</div>
+            </div>
+          </div>
+          <div class="ring-btns-sm">
+            <button class="rbtn rbtn-minus" onclick="chgDays(-1)">−</button>
+            <button class="rbtn rbtn-plus" onclick="chgDays(1)">+</button>
           </div>
         </div>
-        <div class="ring-btns-row">
-          <button class="bud-cbtns bud-day-minus" onclick="chgDays(-1)">−</button>
-          <button class="bud-cbtns bud-day-plus" onclick="chgDays(1)">+</button>
-        </div>
       </div>
-
-      <!-- Total box -->
-      <div class="bud-total-box">
-        <div class="bud-total-left">
-          <span class="bud-total-lbl">کۆی گشتی:</span>
-          <span class="bud-total-usd" id="totalBud">$10</span>
-        </div>
-        <div class="bud-total-right">
-          <div class="bud-total-days-badge" id="totalDaysBadge">1 ڕۆژ</div>
+      <!-- Soft Total Box -->
+      <div class="bud-total-soft">
+        <div class="bud-total-soft-lbl">کۆی گشتی</div>
+        <div class="bud-total-soft-center">
+          <span class="bud-total-soft-usd" id="totalBud">$10</span>
+          <span class="bud-total-soft-days" id="totalDaysBadge">1 ڕۆژ</span>
         </div>
       </div>
     </div>
@@ -3015,22 +3096,18 @@ function _toWebP(dataUrl,quality){
         <div class="create-sec-ico"><i class="fas fa-chart-line"></i></div>
         <div class="create-sec-lbl">ئەنجامی چاوەڕوانکراو</div>
       </div>
-      <div class="est2-grid">
-        <div class="est2-card" id="estViewsRow">
-          <div class="est2-ico est2-ico-views"><i class="fas fa-eye"></i></div>
-          <div class="est2-val-wrap">
-            <div id="estViewsVal" class="est-val est2-val">133,000 – 167,000</div>
-            <div class="est2-lbl">بینەری چاوەڕوانکراو</div>
-            <div id="estViewsCpm" class="est2-sub">CPM: $0.12–$0.15</div>
-          </div>
+      <div class="est3-grid">
+        <div class="est3-card" id="estViewsRow">
+          <div class="est3-ico-wrap views-ico3"><i class="fas fa-eye"></i></div>
+          <div id="estViewsVal" class="est3-val">133,000 – 167,000</div>
+          <div class="est3-lbl">بینەری چاوەڕوانکراو</div>
+          <div id="estViewsCpm" class="est3-sub">CPM: $0.12–$0.15</div>
         </div>
-        <div class="est2-card" id="estClicksRow">
-          <div class="est2-ico est2-ico-clicks"><i class="fas fa-hand-pointer"></i></div>
-          <div class="est2-val-wrap">
-            <div id="estClicksVal" class="est-val est2-val">665 – 3,340</div>
-            <div class="est2-lbl">کلیک / نامەی چاوەڕوانکراو</div>
-            <div id="estClicksCtr" class="est2-sub">CTR: 0.5%–2%</div>
-          </div>
+        <div class="est3-card" id="estClicksRow">
+          <div class="est3-ico-wrap clicks-ico3"><i class="fas fa-hand-pointer"></i></div>
+          <div id="estClicksVal" class="est3-val">665 – 3,340</div>
+          <div class="est3-lbl">کلیک / نامەی چاوەڕوانکراو</div>
+          <div id="estClicksCtr" class="est3-sub">CTR: 0.5%–2%</div>
         </div>
       </div>
     </div>
@@ -12225,7 +12302,7 @@ function _resetTermsAgree() {
 
 
 <script>
-/* ══ GOAL PILL ANIMATION ══ */
+/* ══ GOAL PILL ══ */
 function _animGoalPill(){
   var wrap=document.getElementById('goalSegWrap');
   var pill=document.getElementById('goalSegPill');
@@ -12234,23 +12311,23 @@ function _animGoalPill(){
   pill.style.top=(active.offsetTop-5)+'px';
   pill.style.height=active.offsetHeight+'px';
 }
-/* ══ RING HELPERS ══ */
-var _RING_CIRC=251.3;
+/* ══ RINGS (r=38 → circ=238.7) ══ */
+var _RC=238.7;
 function _updateBudRing(){
   var fg=document.getElementById('budRingFg');
   if(!fg)return;
   var steps=[10,20,50,100,200,500,1000];
-  var val=(typeof dailyUSD!=='undefined')?dailyUSD:10;
-  var idx=steps.indexOf(val);
-  var pct=idx<0?0.08:(0.08+(0.92*(idx/(steps.length-1))));
-  fg.style.strokeDashoffset=(_RING_CIRC*(1-pct)).toFixed(2);
+  var v=(typeof dailyUSD!=='undefined')?dailyUSD:10;
+  var idx=steps.indexOf(v);
+  var pct=idx<0?0.08:(0.08+0.92*(idx/(steps.length-1)));
+  fg.style.strokeDashoffset=(_RC*(1-pct)).toFixed(2);
 }
 function _updateDaysRing(){
   var fg=document.getElementById('daysRingFg');
   if(!fg)return;
   var d=(typeof days!=='undefined')?days:1;
-  var pct=0.05+(0.95*((d-1)/29));
-  fg.style.strokeDashoffset=(_RING_CIRC*(1-pct)).toFixed(2);
+  var pct=0.05+0.95*((d-1)/29);
+  fg.style.strokeDashoffset=(_RC*(1-pct)).toFixed(2);
 }
 document.addEventListener('DOMContentLoaded',function(){
   setTimeout(function(){
