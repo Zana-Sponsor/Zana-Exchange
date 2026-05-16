@@ -2141,23 +2141,25 @@ function _clipboardFallback(text, onSuccess, onFail) {
 .ch-soft-icon{width:54px;height:54px;border-radius:17px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;box-shadow:0 6px 22px rgba(99,102,241,.28);flex-shrink:0;}
 .ch-soft-text{display:flex;flex-direction:column;gap:5px;}
 .ch-soft-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(99,102,241,.10);border:1px solid rgba(99,102,241,.18);border-radius:20px;padding:3px 11px;font-size:10px;font-weight:700;color:#6366f1;font-family:'R',sans-serif;width:fit-content;}
-.ch-soft-title{font-size:20px;font-weight:900;color:#1c2333;letter-spacing:-.3px;line-height:1.2;}
+.ch-soft-title{font-size:20px;font-weight:900;color:#1c2333;letter-spacing:-.3px;}
 .ch-soft-sub{font-size:11px;color:#8b95a8;font-family:'Inter',sans-serif;}
+
 /* GOAL SLIDING */
-.goal-seg-wrap{position:relative;display:flex;flex-direction:column;gap:7px;padding:5px;background:var(--bg);border-radius:18px;}
-.goal-seg-pill{position:absolute;background:var(--dark);border-radius:14px;box-shadow:0 4px 18px rgba(28,35,51,.22);pointer-events:none;transition:top .3s cubic-bezier(.4,0,.2,1),height .3s cubic-bezier(.4,0,.2,1);left:5px;right:5px;top:5px;}
-.goal-seg-opt{position:relative;z-index:1;display:flex;align-items:center;gap:12px;padding:13px;border-radius:14px;border:none;background:transparent;cursor:pointer;font-family:'R',sans-serif;text-align:right;-webkit-tap-highlight-color:transparent;}
-.goal-seg-ico-box{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;transition:background .25s,color .25s;}
-.goal-seg-ico-box.msg-ico,.goal-seg-ico-box.views-ico{background:rgba(28,35,51,.08);color:var(--dark2);}
-.goal-seg-opt.on .goal-seg-ico-box{background:rgba(255,255,255,.14);color:#fff;}
-.goal-seg-info{flex:1;}
-.goal-seg-title{font-size:14px;font-weight:800;color:var(--dark);transition:color .25s;}
-.goal-seg-opt.on .goal-seg-title{color:#fff;}
-.goal-seg-sub{font-size:11px;color:var(--mt);margin-top:3px;transition:color .25s;}
-.goal-seg-opt.on .goal-seg-sub{color:rgba(255,255,255,.55);}
-.goal-seg-chk{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;flex-shrink:0;transition:all .25s;}
-.goal-seg-opt.on .goal-seg-chk{border-color:#fff;background:#fff;color:var(--dark);}
-/* TARGETING FIX */
+.gseg-wrap{position:relative;display:flex;flex-direction:column;gap:0;background:#f0f1f5;border-radius:20px;padding:5px;}
+.gseg-pill{position:absolute;background:#fff;border-radius:16px;box-shadow:0 2px 14px rgba(28,35,51,.12),0 1px 3px rgba(28,35,51,.08);pointer-events:none;transition:top .28s cubic-bezier(.4,0,.2,1),height .28s cubic-bezier(.4,0,.2,1);left:5px;right:5px;top:5px;}
+.gseg-opt{position:relative;z-index:1;display:flex;align-items:center;gap:13px;padding:14px 14px;border-radius:16px;border:none;background:transparent;cursor:pointer;font-family:'R',sans-serif;text-align:right;-webkit-tap-highlight-color:transparent;transition:none;}
+.gseg-ico{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:background .25s,color .25s;}
+.gseg-ico.msg-c{background:rgba(99,102,241,.10);color:#6366f1;}
+.gseg-ico.views-c{background:rgba(14,120,255,.09);color:#0E78FF;}
+.gseg-opt.on .gseg-ico.msg-c{background:rgba(99,102,241,.12);color:#6366f1;}
+.gseg-opt.on .gseg-ico.views-c{background:rgba(14,120,255,.10);color:#0E78FF;}
+.gseg-info{flex:1;}
+.gseg-title{font-size:14px;font-weight:800;color:#1c2333;transition:none;}
+.gseg-sub{font-size:11px;color:#8b95a8;margin-top:3px;}
+.gseg-chk{width:24px;height:24px;border-radius:50%;border:2px solid #d4d8e4;display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;flex-shrink:0;transition:all .25s;background:#fff;}
+.gseg-opt.on .gseg-chk{border-color:#1c2333;background:#1c2333;color:#fff;}
+
+/* TARGETING */
 .age-grp{padding:9px 15px;border-radius:22px;font-family:'R',sans-serif;font-size:12.5px;cursor:pointer;border:1.5px solid var(--b1);background:var(--w);color:var(--mt2);transition:all .18s;font-weight:600;display:flex;align-items:center;gap:5px;}
 .age-grp.on{background:var(--dark)!important;color:#fff!important;border-color:var(--dark)!important;box-shadow:0 2px 10px rgba(28,35,51,.14);}
 .age-grp-all{}
@@ -2165,6 +2167,7 @@ function _clipboardFallback(text, onSuccess, onFail) {
 .gender-pill.on{background:var(--dark)!important;color:#fff!important;border-color:var(--dark)!important;box-shadow:0 2px 10px rgba(28,35,51,.14);}
 .fchip{padding:9px 16px;border-radius:22px;border:1.5px solid var(--b1);background:var(--w);color:var(--mt2);font-size:12.5px;font-weight:600;cursor:pointer;transition:all .18s;font-family:'R',sans-serif;}
 .fchip.on{background:var(--dark);color:#fff;border-color:var(--dark);box-shadow:0 2px 10px rgba(28,35,51,.14);}
+
 /* BUDGET RINGS */
 .bud-rings-grid{display:flex;align-items:flex-start;margin:6px 0 14px;}
 .bud-ring-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:12px;padding:14px 6px;}
@@ -2188,6 +2191,7 @@ function _clipboardFallback(text, onSuccess, onFail) {
 .bud-total-soft-right{display:flex;align-items:center;gap:10px;}
 .bud-total-soft-usd{font-size:20px;font-weight:700;color:var(--dark);font-family:'Inter',sans-serif;}
 .bud-total-soft-days{font-size:11.5px;color:#fff;background:var(--dark);border-radius:20px;padding:3px 12px;font-weight:700;}
+
 /* EXPECTED RESULTS */
 .est3-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .est3-card{background:var(--bg);border:1.5px solid var(--b1);border-radius:20px;padding:18px 12px 16px;display:flex;flex-direction:column;align-items:center;gap:9px;text-align:center;}
@@ -2197,19 +2201,20 @@ function _clipboardFallback(text, onSuccess, onFail) {
 .est3-val{font-size:12.5px;font-weight:700;color:var(--dark);font-family:'Inter',sans-serif;line-height:1.4;}
 .est3-lbl{font-size:10.5px;color:var(--mt2);font-weight:600;}
 .est3-cpm{font-size:9.5px;color:var(--mt);font-family:'Inter',sans-serif;}
+
 /* BOTTOM NAV */
-.bnav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.97);border-top:1px solid rgba(232,234,240,.7);display:none;z-index:300;padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 -4px 28px rgba(28,35,51,.07);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);}
+.bnav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.97);border-top:1px solid rgba(228,231,240,.8);display:none;z-index:300;padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 -2px 20px rgba(28,35,51,.06);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);}
 .bnav-inner{display:flex;max-width:500px;margin:0 auto;align-items:flex-end;}
-.bn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 4px 11px;border:none;background:transparent;color:var(--mt);font-family:'R',sans-serif;font-size:9.5px;cursor:pointer;transition:color .2s;}
-.bn-ico-pill{width:46px;height:28px;border-radius:14px;display:flex;align-items:center;justify-content:center;transition:background .22s;}
-.bn i{font-size:20px;transition:transform .2s;}
-.bn-lbl{font-weight:600;}
+.bn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px 12px;border:none;background:transparent;color:#9ba5b7;font-family:'R',sans-serif;font-size:9.5px;cursor:pointer;transition:color .2s;-webkit-tap-highlight-color:transparent;}
+.bn-pip{width:44px;height:30px;border-radius:15px;display:flex;align-items:center;justify-content:center;transition:background .22s,transform .18s;}
+.bn i{font-size:20px;transition:color .2s;}
+.bn-lbl{font-weight:600;font-size:9.5px;margin-top:1px;}
 .bn.on{color:#0E78FF;}
-.bn.on .bn-ico-pill{background:rgba(14,120,255,.10);}
-.bn.on i{transform:scale(1.08);}
-.bn-fab-col{flex:1;display:flex;justify-content:center;align-items:flex-start;padding-top:5px;}
-.bn-fab{background:linear-gradient(135deg,#1a85ff,#0E78FF);border-radius:20px;width:54px;height:54px;display:flex;align-items:center;justify-content:center;margin-top:-24px;box-shadow:0 8px 26px rgba(14,120,255,.38);cursor:pointer;transition:transform .2s,box-shadow .2s;}
-.bn-fab:active{transform:scale(.9);box-shadow:0 4px 14px rgba(14,120,255,.3);}
+.bn.on .bn-pip{background:rgba(14,120,255,.10);}
+.bn.on i{color:#0E78FF;}
+.bn-fab-col{flex:1;display:flex;justify-content:center;align-items:flex-start;padding-top:6px;}
+.bn-fab{background:linear-gradient(135deg,#2a8fff,#0E78FF);border-radius:18px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;margin-top:-20px;box-shadow:0 8px 26px rgba(14,120,255,.36);cursor:pointer;transition:transform .18s,box-shadow .18s;-webkit-tap-highlight-color:transparent;}
+.bn-fab:active{transform:scale(.9);box-shadow:0 4px 12px rgba(14,120,255,.28);}
 .bn-fab i{font-size:22px;color:#fff;}
 </style>
 </head>
@@ -2542,10 +2547,7 @@ function _toWebP(dataUrl,quality){
         <div class="sidebar-item-ico"><i class="fas fa-clock-rotate-left"></i></div>
         <div class="sidebar-item-txt">مێژووی مامەڵەکان</div>
       </div>
-      <div class="sidebar-item" onclick="goPage('adcalc');closeSidebar()">
-        <div class="sidebar-item-ico"><i class="fas fa-calculator"></i></div>
-        <div class="sidebar-item-txt">ژمێرکاری گەیشتن</div>
-      </div>
+
       <div class="sidebar-item" onclick="goPage('promocodes');closeSidebar()">
         <div class="sidebar-item-ico" style="background:rgba(234,179,8,.08);border-color:rgba(234,179,8,.2)"><i class="fas fa-tags" style="color:#ca8a04"></i></div>
         <div class="sidebar-item-txt">کۆدی داشکاندن</div>
@@ -2607,14 +2609,7 @@ function _toWebP(dataUrl,quality){
       </div>
       <i class="fas fa-chevron-left home-card-arr"></i>
     </div>
-    <div class="home-card" onclick="goPage('adcalc')">
-      <div class="home-card-ico"><i class="fas fa-calculator"></i></div>
-      <div class="home-card-info">
-        <div class="home-card-title">ژمێرکاری گەیشتن</div>
-        <div class="home-card-sub">خەمڵاندنی گەیشتنی ڕیکلامەکەت</div>
-      </div>
-      <i class="fas fa-chevron-left home-card-arr"></i>
-    </div>
+
     <!-- ══ FAQ DIVIDER ══ -->
     <div style="display:flex;align-items:center;gap:12px;margin:14px 0 12px">
       <div style="flex:1;height:1px;background:var(--b1)"></div>
@@ -2892,23 +2887,23 @@ function _toWebP(dataUrl,quality){
         <div class="create-sec-lbl">ئامانجی ڕیکلام</div>
         <span class="cstep">١</span>
       </div>
-      <div class="goal-seg-wrap" id="goalSegWrap">
-        <div class="goal-seg-pill" id="goalSegPill"></div>
-        <button class="goal-seg-opt on" data-g="messages" onclick="pickGoal(this)">
-          <div class="goal-seg-ico-box msg-ico"><i class="fas fa-comment-dots"></i></div>
-          <div class="goal-seg-info">
-            <div class="goal-seg-title">نامە و زیاکردنی فرۆش</div>
-            <div class="goal-seg-sub">واتسئەپ · ئینستاگرام · تەلەفۆن</div>
+      <div class="gseg-wrap" id="goalSegWrap">
+        <div class="gseg-pill" id="goalSegPill"></div>
+        <button class="gseg-opt on" data-g="messages" onclick="pickGoal(this)">
+          <div class="gseg-ico msg-c"><i class="fas fa-comment-dots"></i></div>
+          <div class="gseg-info">
+            <div class="gseg-title">نامە و زیاکردنی فرۆش</div>
+            <div class="gseg-sub">واتسئەپ · ئینستاگرام · تەلەفۆن</div>
           </div>
-          <div class="goal-seg-chk"><i class="fas fa-check"></i></div>
+          <div class="gseg-chk"><i class="fas fa-check"></i></div>
         </button>
-        <button class="goal-seg-opt" data-g="views" onclick="pickGoal(this)">
-          <div class="goal-seg-ico-box views-ico"><i class="fas fa-circle-play"></i></div>
-          <div class="goal-seg-info">
-            <div class="goal-seg-title">کارلێک و بینەر</div>
-            <div class="goal-seg-sub">ڤیوو · کارلێک · بڵاوبوونەوە</div>
+        <button class="gseg-opt" data-g="views" onclick="pickGoal(this)">
+          <div class="gseg-ico views-c"><i class="fas fa-circle-play"></i></div>
+          <div class="gseg-info">
+            <div class="gseg-title">کارلێک و بینەر</div>
+            <div class="gseg-sub">ڤیوو · کارلێک · بڵاوبوونەوە</div>
           </div>
-          <div class="goal-seg-chk"><i class="fas fa-check"></i></div>
+          <div class="gseg-chk"><i class="fas fa-check"></i></div>
         </button>
       </div>
     </div>
@@ -3003,7 +2998,6 @@ function _toWebP(dataUrl,quality){
         <span class="cstep">٣</span>
       </div>
 
-      <!-- Budget + Days side-by-side rings -->
       <div class="bud-rings-grid">
         <div class="bud-ring-col">
           <div class="bud-ring-label">بودجەی ڕۆژانە</div>
@@ -3153,7 +3147,6 @@ function _toWebP(dataUrl,quality){
         <i class="fas fa-paper-plane"></i>
         ناردنی داواکاری
       </button>
-      <div class="create-submit-note">پشتی ناردن، ئەدمین ئەی بڕوانێت و ئاگاداری دەکەیتەوە</div>
     </div>
 
     <div style="height:14px"></div>
@@ -3885,22 +3878,22 @@ function _toWebP(dataUrl,quality){
 <nav class="bnav" id="bnav">
   <div class="bnav-inner">
     <button class="bn on" id="bn_home" onclick="goPage('home')" ondblclick="location.reload()">
-      <div class="bn-ico-pill"><i class="fas fa-house-chimney"></i></div>
+      <div class="bn-pip"><i class="fas fa-house-chimney"></i></div>
       <span class="bn-lbl">سەرەکی</span>
     </button>
     <button class="bn" id="bn_myads" onclick="goPage('myads')">
-      <div class="bn-ico-pill"><i class="fas fa-bullhorn"></i></div>
+      <div class="bn-pip"><i class="fas fa-bullhorn"></i></div>
       <span class="bn-lbl">سپۆنسەرەکان</span>
     </button>
     <div class="bn-fab-col">
       <div class="bn-fab" onclick="goPage('create')"><i class="fas fa-plus"></i></div>
     </div>
     <button class="bn" id="bn_tutorials" onclick="goPage('tutorials')">
-      <div class="bn-ico-pill"><i class="fas fa-circle-play"></i></div>
+      <div class="bn-pip"><i class="fas fa-circle-play"></i></div>
       <span class="bn-lbl">فێرکارییەکان</span>
     </button>
     <button class="bn" id="bn_proxolink" onclick="goPage('proxolink')">
-      <div class="bn-ico-pill"><i class="fas fa-layer-group"></i></div>
+      <div class="bn-pip"><i class="fas fa-layer-group"></i></div>
       <span class="bn-lbl">ئامرازەکان</span>
     </button>
   </div>
@@ -7663,7 +7656,7 @@ function chgDays(d){
   if(typeof clearPromoResult==='function')clearPromoResult();
 }
 function pickGoal(el){
-  document.querySelectorAll('.goal-tab,.goal-tab-v2,.goal-seg-opt').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.goal-tab,.goal-tab-v2,.gseg-opt').forEach(x=>x.classList.remove('on'));
   el.classList.add('on');goal=el.dataset.g;
   if(typeof _animGoalPill==='function')_animGoalPill();
   document.getElementById('cardSelWrap').style.display='none';
@@ -12269,10 +12262,12 @@ function _resetTermsAgree() {
 function _animGoalPill(){
   var wrap=document.getElementById('goalSegWrap');
   var pill=document.getElementById('goalSegPill');
-  var active=document.querySelector('.goal-seg-opt.on');
+  var active=document.querySelector('.gseg-opt.on');
   if(!wrap||!pill||!active)return;
-  pill.style.top=(active.offsetTop-5)+'px';
-  pill.style.height=active.offsetHeight+'px';
+  var ot=active.offsetTop;
+  var oh=active.offsetHeight;
+  pill.style.top=(ot-0)+'px';
+  pill.style.height=oh+'px';
 }
 var _RC=238.7;
 function _updateBudRing(){
