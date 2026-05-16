@@ -2135,110 +2135,30 @@ function _clipboardFallback(text, onSuccess, onFail) {
 </style>
 <style>
 /* ══ GOAL SLIDING SEGMENTED CONTROL ══ */
-.goal-seg-wrap{
-  position:relative;
-  display:flex;flex-direction:column;gap:7px;
-  padding:5px;
-  background:var(--bg);
-  border-radius:18px;
-}
-.goal-seg-pill{
-  position:absolute;
-  background:var(--dark);
-  border-radius:14px;
-  box-shadow:0 4px 18px rgba(28,35,51,.22);
-  pointer-events:none;
-  transition:top .32s cubic-bezier(.4,0,.2,1), height .32s cubic-bezier(.4,0,.2,1);
-  left:5px;right:5px;
-  top:5px;
-}
-.goal-seg-opt{
-  position:relative;z-index:1;
-  display:flex;align-items:center;gap:12px;
-  padding:13px 13px;
-  border-radius:14px;
-  border:none;background:transparent;
-  cursor:pointer;font-family:'R',sans-serif;
-  text-align:right;transition:none;
-  -webkit-tap-highlight-color:transparent;
-}
-.goal-seg-ico-box{
-  width:40px;height:40px;border-radius:12px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:17px;flex-shrink:0;
-  transition:background .28s, color .28s, box-shadow .28s;
-}
+.goal-seg-wrap{position:relative;display:flex;flex-direction:column;gap:7px;padding:5px;background:var(--bg);border-radius:18px;}
+.goal-seg-pill{position:absolute;background:var(--dark);border-radius:14px;box-shadow:0 4px 18px rgba(28,35,51,.22);pointer-events:none;transition:top .32s cubic-bezier(.4,0,.2,1),height .32s cubic-bezier(.4,0,.2,1);left:5px;right:5px;top:5px;}
+.goal-seg-opt{position:relative;z-index:1;display:flex;align-items:center;gap:12px;padding:13px 13px;border-radius:14px;border:none;background:transparent;cursor:pointer;font-family:'R',sans-serif;text-align:right;-webkit-tap-highlight-color:transparent;}
+.goal-seg-ico-box{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;transition:background .28s,color .28s;}
 .goal-seg-ico-box.msg-ico{background:rgba(28,35,51,.08);color:var(--dark2);}
 .goal-seg-ico-box.views-ico{background:rgba(28,35,51,.08);color:var(--dark2);}
 .goal-seg-opt.on .goal-seg-ico-box{background:rgba(255,255,255,.14);color:#fff;}
 .goal-seg-info{flex:1;}
-.goal-seg-title{
-  font-size:14px;font-weight:800;color:var(--dark);
-  transition:color .28s;
-}
+.goal-seg-title{font-size:14px;font-weight:800;color:var(--dark);transition:color .28s;}
 .goal-seg-opt.on .goal-seg-title{color:#fff;}
-.goal-seg-sub{
-  font-size:11px;color:var(--mt);margin-top:3px;
-  transition:color .28s;
-}
+.goal-seg-sub{font-size:11px;color:var(--mt);margin-top:3px;transition:color .28s;}
 .goal-seg-opt.on .goal-seg-sub{color:rgba(255,255,255,.55);}
-.goal-seg-chk{
-  width:22px;height:22px;border-radius:50%;
-  border:1.5px solid var(--b2);
-  display:flex;align-items:center;justify-content:center;
-  font-size:9px;color:transparent;flex-shrink:0;
-  transition:all .28s;
-}
+.goal-seg-chk{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;flex-shrink:0;transition:all .28s;}
 .goal-seg-opt.on .goal-seg-chk{border-color:#fff;background:#fff;color:var(--dark);}
-
 /* ══ BUDGET / DAYS RING ══ */
-.ring-section-wrap{
-  display:flex;flex-direction:column;align-items:center;
-  gap:14px;margin-bottom:8px;
-  padding:6px 0 2px;
-}
-.ring-wrap{
-  position:relative;width:130px;height:130px;
-}
-.ring-svg{
-  width:100%;height:100%;
-  transform:rotate(-90deg);
-}
-.ring-bg-c{
-  fill:none;
-  stroke:var(--bg);
-  stroke-width:9;
-}
-.ring-fg-c{
-  fill:none;
-  stroke:var(--dark);
-  stroke-width:9;
-  stroke-linecap:round;
-  stroke-dasharray:251.3;
-  stroke-dashoffset:251.3;
-  transition:stroke-dashoffset .45s cubic-bezier(.4,0,.2,1);
-}
-.ring-inner{
-  position:absolute;inset:0;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  gap:3px;
-}
-.ring-val{
-  font-size:22px;
-  font-weight:400;
-  color:var(--dark);
-  font-family:'Inter',sans-serif;
-  line-height:1;
-}
-.ring-lbl{
-  font-size:10px;color:var(--mt);
-  font-family:'R',sans-serif;
-}
-.ring-btns-row{
-  display:flex;align-items:center;
-  gap:20px;
-}
+.ring-section-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:8px;padding:6px 0 2px;}
+.ring-wrap{position:relative;width:130px;height:130px;}
+.ring-svg{width:100%;height:100%;transform:rotate(-90deg);}
+.ring-bg-c{fill:none;stroke:var(--bg);stroke-width:9;}
+.ring-fg-c{fill:none;stroke:var(--dark);stroke-width:9;stroke-linecap:round;stroke-dasharray:251.3;stroke-dashoffset:251.3;transition:stroke-dashoffset .45s cubic-bezier(.4,0,.2,1);}
+.ring-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;}
+.ring-val{font-size:22px;font-weight:400;color:var(--dark);font-family:'Inter',sans-serif;line-height:1;}
+.ring-lbl{font-size:10px;color:var(--mt);font-family:'R',sans-serif;}
+.ring-btns-row{display:flex;align-items:center;gap:20px;}
 </style>
 </head>
 
@@ -7682,8 +7602,7 @@ function updateBudgetDisplay(){
   const tdb=document.getElementById('totalDaysBadge'); if(tdb)tdb.textContent=days+' ڕۆژ';
 
   updateEstResults();
-  _updateBudRing();
-  _updateDaysRing();
+  if(typeof _updateBudRing==='function'){_updateBudRing();_updateDaysRing();}
 
   // وردەکاری نرخ — هەموو بە IQD
   const service=Math.round(budget/6);
@@ -7705,7 +7624,7 @@ function chgDays(d){
 function pickGoal(el){
   document.querySelectorAll('.goal-tab,.goal-tab-v2,.goal-seg-opt').forEach(x=>x.classList.remove('on'));
   el.classList.add('on');goal=el.dataset.g;
-  _animGoalPill();
+  if(typeof _animGoalPill==='function')_animGoalPill();
   document.getElementById('cardSelWrap').style.display='none';
   document.getElementById('msgAssetWrap').style.display=goal==='messages'?'block':'none';
   // ئەنجامی خەملێنراو دەستبەجێ نوێ بکەرەوە بۆ ئامانجی نوێ
@@ -9392,45 +9311,7 @@ function buildPageDark(name,bio,tt,ttUrl,avatar,activeBtns,handlers,theme){
   p.push("  setTimeout(hideEffects, 10000);");
   p.push("  // فووتەر خۆکار");p.push("  (function(){var b=document.querySelectorAll('.btn');var n=b.length;var m=n<=2?100:n<=3?120:n<=4?140:n<=5?160:180;var f=document.querySelector('.footer');if(f)f.style.marginTop=m+'px';})();");p.push("});");
   p.push('<'+'/script>');
-  p.push('<script>
-/* ══ GOAL PILL ANIMATION ══ */
-function _animGoalPill(){
-  const wrap=document.getElementById('goalSegWrap');
-  const pill=document.getElementById('goalSegPill');
-  const active=document.querySelector('.goal-seg-opt.on');
-  if(!wrap||!pill||!active)return;
-  const wTop=wrap.getBoundingClientRect().top;
-  const bRect=active.getBoundingClientRect();
-  pill.style.top=(active.offsetTop-5)+'px';
-  pill.style.height=active.offsetHeight+'px';
-}
-/* ══ RING HELPERS ══ */
-const _RING_CIRC=251.3;
-function _updateBudRing(){
-  const fg=document.getElementById('budRingFg');
-  if(!fg)return;
-  const steps=[10,20,50,100,200,500,1000];
-  const idx=steps.indexOf(typeof dailyUSD!=='undefined'?dailyUSD:10);
-  const pct=idx<0?0.08:(0.08+(0.92*(idx/(steps.length-1))));
-  fg.style.strokeDashoffset=(_RING_CIRC*(1-pct)).toFixed(2);
-}
-function _updateDaysRing(){
-  const fg=document.getElementById('daysRingFg');
-  if(!fg)return;
-  const d=typeof days!=='undefined'?days:1;
-  const pct=0.05+(0.95*((d-1)/29));
-  fg.style.strokeDashoffset=(_RING_CIRC*(1-pct)).toFixed(2);
-}
-/* ── init after DOM ready ── */
-document.addEventListener('DOMContentLoaded',function(){
-  setTimeout(function(){
-    _animGoalPill();
-    _updateBudRing();
-    _updateDaysRing();
-  },120);
-});
-</script>
-</body>');
+  p.push('</body>');
   p.push('</html>');
 
   return p.join('\n');
@@ -12343,4 +12224,40 @@ function _resetTermsAgree() {
 </div>
 
 
+<script>
+/* ══ GOAL PILL ANIMATION ══ */
+function _animGoalPill(){
+  var wrap=document.getElementById('goalSegWrap');
+  var pill=document.getElementById('goalSegPill');
+  var active=document.querySelector('.goal-seg-opt.on');
+  if(!wrap||!pill||!active)return;
+  pill.style.top=(active.offsetTop-5)+'px';
+  pill.style.height=active.offsetHeight+'px';
+}
+/* ══ RING HELPERS ══ */
+var _RING_CIRC=251.3;
+function _updateBudRing(){
+  var fg=document.getElementById('budRingFg');
+  if(!fg)return;
+  var steps=[10,20,50,100,200,500,1000];
+  var val=(typeof dailyUSD!=='undefined')?dailyUSD:10;
+  var idx=steps.indexOf(val);
+  var pct=idx<0?0.08:(0.08+(0.92*(idx/(steps.length-1))));
+  fg.style.strokeDashoffset=(_RING_CIRC*(1-pct)).toFixed(2);
+}
+function _updateDaysRing(){
+  var fg=document.getElementById('daysRingFg');
+  if(!fg)return;
+  var d=(typeof days!=='undefined')?days:1;
+  var pct=0.05+(0.95*((d-1)/29));
+  fg.style.strokeDashoffset=(_RING_CIRC*(1-pct)).toFixed(2);
+}
+document.addEventListener('DOMContentLoaded',function(){
+  setTimeout(function(){
+    _animGoalPill();
+    _updateBudRing();
+    _updateDaysRing();
+  },300);
+});
+</script>
 </html>
