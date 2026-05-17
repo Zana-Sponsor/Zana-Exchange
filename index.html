@@ -602,17 +602,17 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .spons-status-rejected{background:rgba(239,68,68,.09);color:#dc2626;border:1px solid rgba(239,68,68,.25);}
 .spons-status-completed{background:rgba(99,102,241,.09);color:#4f46e5;border:1px solid rgba(99,102,241,.25);}
 .spons-status-paused{background:rgba(107,114,128,.09);color:#4b5563;border:1px solid rgba(107,114,128,.25);}
-.spons-title{font-size:15px;font-weight:800;color:var(--dark);margin-bottom:14px;line-height:1.4;}
+.spons-title{font-size:13.5px;font-weight:800;color:var(--dark);margin-bottom:14px;line-height:1.4;}
 .spons-metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;}
 .spons-metric-box{background:var(--bg);border-radius:14px;padding:12px 10px;text-align:center;border:1px solid var(--b1);}
-.spons-metric-ico{font-size:13px;margin-bottom:5px;}
-.spons-metric-val{font-size:16px;font-weight:900;color:var(--dark);font-family:'Inter',sans-serif;line-height:1;}
+.spons-metric-ico{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:13px;}
+.spons-metric-val{font-size:15px;font-weight:900;color:var(--dark);font-family:'Inter',sans-serif;line-height:1;}
 .spons-metric-lbl{font-size:10px;color:var(--mt);font-weight:600;margin-top:4px;}
-.spons-metric-box.spend .spons-metric-ico{color:#16a34a;}
+.spons-metric-box.spend .spons-metric-ico{color:#16a34a;background:rgba(22,163,74,.12);}
 .spons-metric-box.spend .spons-metric-val{color:#16a34a;}
-.spons-metric-box.clicks .spons-metric-ico{color:#2563eb;}
+.spons-metric-box.clicks .spons-metric-ico{color:#2563eb;background:rgba(37,99,235,.12);}
 .spons-metric-box.clicks .spons-metric-val{color:#2563eb;}
-.spons-metric-box.impr .spons-metric-ico{color:#7c3aed;}
+.spons-metric-box.impr .spons-metric-ico{color:#7c3aed;background:rgba(124,58,237,.12);}
 .spons-metric-box.impr .spons-metric-val{color:#7c3aed;}
 .spons-dates{display:flex;gap:8px;}
 .spons-date-item{flex:1;display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--b1);border-radius:11px;padding:8px 10px;font-size:11px;color:var(--mt2);}
@@ -837,10 +837,26 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .bud-val{flex:1;text-align:center;font-size:24px;font-weight:900;color:var(--dark);padding:10px;background:var(--bg);border:1.5px solid var(--b1);border-radius:13px;direction:ltr;}
 
 /* TOAST */
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(6px);padding:12px 20px;border-radius:14px;font-size:13px;display:none;z-index:19999;white-space:nowrap;opacity:0;transition:all .25s;background:var(--dark);color:#fff;box-shadow:0 6px 24px rgba(28,35,51,.3);}
-.toast.show{display:block;opacity:1;transform:translateX(-50%) translateY(0);}
-.toast.err{background:var(--rd);}
-.toast.ok{background:var(--gr);}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(14px);padding:11px 18px 11px 16px;border-radius:50px;font-size:13px;display:none;z-index:19999;opacity:0;transition:opacity .22s,transform .22s;background:#1c2333;color:#fff;box-shadow:0 8px 28px rgba(28,35,51,.35);align-items:center;gap:7px;white-space:nowrap;max-width:88vw;font-weight:600;}
+.toast.show{display:flex;opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.err{background:#dc2626;}
+.toast.ok{background:#16a34a;}
+
+/* ══ SKELETON LOADERS ══ */
+@keyframes skelShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skel-wave{background:linear-gradient(90deg,var(--bg) 25%,var(--b1) 50%,var(--bg) 75%);background-size:200% 100%;animation:skelShimmer 1.4s ease infinite;}
+.skel-card{border-radius:18px;overflow:hidden;margin-bottom:10px;padding:20px;border:1px solid var(--b1);background:var(--w);}
+.skel-card .skel-h{height:12px;border-radius:6px;margin-bottom:10px;}
+.skel-card .skel-title{height:16px;border-radius:6px;width:58%;margin-bottom:14px;}
+.skel-card .skel-metric{height:64px;border-radius:14px;flex:1;}
+.skel-card .skel-row{display:flex;gap:8px;margin-bottom:10px;}
+.skel-card .skel-date{height:44px;flex:1;border-radius:11px;}
+.skel-tx{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--b1);}
+.skel-tx .skel-ico{width:42px;height:42px;border-radius:12px;flex-shrink:0;}
+.skel-tx .skel-info{flex:1;}
+.skel-tx .skel-lbl{height:13px;border-radius:6px;width:50%;margin-bottom:7px;}
+.skel-tx .skel-sub{height:10px;border-radius:5px;width:35%;}
+.skel-tx .skel-amt{width:60px;height:13px;border-radius:6px;}
 
 /* CARD PICK */
 .card-pick{display:flex;align-items:center;gap:11px;padding:12px 14px;border-radius:14px;border:1.5px solid var(--b1);background:var(--w);cursor:pointer;margin-bottom:8px;transition:all .2s;}
@@ -911,6 +927,18 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .tut-post-avatar{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,.15);}
 .tut-post-info{flex:1;min-width:0;}
 .tut-post-title{font-size:13.5px;font-weight:800;color:var(--dark);line-height:1.45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+/* Netflix-style tutorial grid */
+.tut-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:2px;}
+.tut-grid-card{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:16/10;cursor:pointer;background:#111;box-shadow:0 4px 14px rgba(0,0,0,.18);transition:transform .2s,box-shadow .2s;}
+.tut-grid-card:active{transform:scale(.96);}
+.tut-grid-thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.tut-grid-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.tut-grid-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 38%,rgba(0,0,0,.08) 100%);}
+.tut-grid-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-65%);width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.16);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);border:1.5px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;padding-right:2px;}
+.tut-grid-bottom{position:absolute;bottom:0;right:0;left:0;padding:7px 9px 9px;}
+.tut-grid-title{font-size:11px;font-weight:800;color:#fff;line-height:1.4;font-family:R,sans-serif;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.tut-grid-dur{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:700;color:rgba(255,255,255,.72);background:rgba(0,0,0,.32);border-radius:7px;padding:2px 6px;margin-bottom:4px;font-family:Inter,sans-serif;}
+.tut-grid-cat{position:absolute;top:7px;right:7px;display:inline-flex;align-items:center;gap:3px;font-size:8.5px;font-weight:700;color:#fff;padding:3px 7px;border-radius:9px;line-height:1;}
 .tut-post-dur{font-size:10.5px;color:var(--mt);display:flex;align-items:center;gap:6px;margin-top:5px;flex-wrap:wrap;}
 .tut-post-dur-time{display:inline-flex;align-items:center;gap:3px;background:var(--bg);border:1px solid var(--b1);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;color:var(--mt2);}
 .tut-post-dur-cat{display:inline-flex;align-items:center;gap:3px;border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;color:#fff;}
@@ -2233,6 +2261,7 @@ function _clipboardFallback(text, onSuccess, onFail) {
 }
 .bn-fab.fab-bounce{animation:fabBounce .46s cubic-bezier(.36,.07,.19,.97) both;}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 </head>
 
 <script>
@@ -3217,8 +3246,18 @@ function _toWebP(dataUrl,quality){
           <div class="plform-close" onclick="hidePLForm()"><i class="fas fa-xmark"></i></div>
         </div>
 
+        <!-- وێنە -->
+        <div class="plform-lbl">وێنەی پرۆفایل <span style="color:var(--rd)">*</span> <span style="font-size:10px;color:var(--mt)">(پێویستە بۆ Dark/Light)</span></div>
+        <div class="logo-upload" id="logoUploadZone" onclick="document.getElementById('plLogoFile').click()" style="cursor:pointer">
+          <input type="file" id="plLogoFile" accept="image/*" onchange="loadPlLogo(this)" style="display:none">
+          <img id="plLogoPrev" class="logo-preview" alt="وێنە" style="display:none">
+          <div class="logo-upload-ico" id="plLogoIco"><i class="fas fa-camera"></i></div>
+          <b id="plLogoTxt">وێنە بارکە</b>
+          <span>کرتە بکە تا هەڵبژێریت</span>
+        </div>
+
         <!-- ناو -->
-        <div class="plform-lbl">ناو <span style="color:var(--rd)">*</span></div>
+        <div class="plform-lbl" style="margin-top:8px">ناو <span style="color:var(--rd)">*</span></div>
         <input class="pl-inp" type="text" id="plBrandName" placeholder="ناوت یان ناوی براند" oninput="updatePLPreview()">
         <div class="pl-field-err" id="plErrName" style="display:none"><i class="fas fa-circle-exclamation"></i><span>تکایە ناوت بنووسە</span></div>
 
@@ -3231,16 +3270,6 @@ function _toWebP(dataUrl,quality){
           <span id="plBioCount">0 / 150</span>
         </div>
         <div class="pl-bio-chips" id="plBioChips"></div>
-
-        <!-- وێنە -->
-        <div class="plform-lbl" style="margin-top:8px">وێنەی پرۆفایل <span style="color:var(--rd)">*</span> <span style="font-size:10px;color:var(--mt)">(پێویستە بۆ Dark/Light)</span></div>
-        <div class="logo-upload" id="logoUploadZone" onclick="document.getElementById('plLogoFile').click()" style="cursor:pointer">
-          <input type="file" id="plLogoFile" accept="image/*" onchange="loadPlLogo(this)" style="display:none">
-          <img id="plLogoPrev" class="logo-preview" alt="وێنە" style="display:none">
-          <div class="logo-upload-ico" id="plLogoIco"><i class="fas fa-camera"></i></div>
-          <b id="plLogoTxt">وێنە بارکە</b>
-          <span>کرتە بکە تا هەڵبژێریت</span>
-        </div>
 
         <!-- تیکتۆک -->
         <div class="plform-lbl"><i class="fab fa-tiktok" style="margin-left:5px"></i>ناوی ئەکاونتی تیکتۆک <span style="color:var(--rd)">*</span></div>
@@ -4433,11 +4462,7 @@ function _toWebP(dataUrl,quality){
 <div class="mover" id="moReceipt">
   <div class="mbox" style="max-height:92vh">
     <div class="mbar"></div>
-    <div class="mhdr" style="position:sticky;top:0;background:var(--w);z-index:10;padding-bottom:14px;margin-bottom:0;border-bottom:1px solid var(--b1)">
-      <h3 style="display:flex;align-items:center;gap:8px"><i class="fas fa-receipt" style="color:var(--bl)"></i>پسووڵەی مامەڵە</h3>
-      <button class="mclose" onclick="closeMo('moReceipt')"><i class="fas fa-xmark"></i></button>
-    </div>
-    <div id="receiptContent" style="padding-top:16px"></div>
+    <div id="receiptContent" style="padding-top:4px"></div>
   </div>
 </div>
 
@@ -5810,7 +5835,7 @@ async function checkReferralDeviceSafe(refCode){
   }catch(e){}
   return true;
 }
-function showToast(m,c){const t=document.getElementById('toast');t.textContent=m;t.className='toast show'+(c?' '+c:'');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),3200);}
+function showToast(m,c){const t=document.getElementById('toast');const ico=c==='ok'?'<i class="fas fa-circle-check"></i>':c==='err'?'<i class="fas fa-circle-xmark"></i>':'<i class="fas fa-info-circle" style="opacity:.75"></i>';t.innerHTML=ico+m;t.className='toast show'+(c?' '+c:'');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),3000);}
 function closeMo(id){document.getElementById(id).classList.remove('on');}
 function copyNum(num,btn){
   _safeCopy(num).then(()=>{
@@ -6735,28 +6760,34 @@ function _tutRenderFiltered(){
     {grad:'linear-gradient(135deg,#f97316,#ef4444)',icon:'fa-star',tc:'#f97316'},
     {grad:'linear-gradient(135deg,#0ea5e9,#6366f1)',icon:'fa-lightbulb',tc:'#0ea5e9'}
   ];
-  wrap.innerHTML=rows.map(function(t,i){
-    var cid='dbtpost'+i;
-    var ytUrl=(t.youtube_url||'').replace(/'/g,"\'");
+  if(typeof _tutShowAll==='undefined')window._tutShowAll=false;
+  var _tutShowAllFlag=window._tutShowAll||false;
+  var _tutDisplayRows=_tutShowAllFlag?rows:rows.slice(0,3);
+  wrap.innerHTML='<div class="tut-grid">'+_tutDisplayRows.map(function(t,i){
+    var ytId=_extractYtId(t.youtube_url||'');
     var sm=secMeta[t.section]||defMeta[i%defMeta.length];
-    var catBadge=t.section?('<span class="tut-post-dur-cat" style="background:'+sm.grad+'"><i class="fas '+sm.icon+'" style="font-size:8px"></i> '+t.section+'</span>'):'';
-    var timeBadge=t.duration?('<span class="tut-post-dur-time"><i class="fas fa-clock" style="color:'+sm.tc+'"></i> '+t.duration+' خولەک</span>'):'';
-    var dur=(timeBadge||catBadge)?('<div class="tut-post-dur">'+timeBadge+catBadge+'</div>'):'';
-    return '<div class="tut-post-card" id="'+cid+'" data-cat="'+(t.section||'tutorial')+'" onclick="toggleTutPost(\''+cid+'\',\''+ytUrl+'\',[])">'
-      +'<div class="tut-post-head">'
-      +'<div class="tut-post-avatar" style="background:'+sm.grad+'"><i class="fas '+sm.icon+'"></i></div>'
-      +'<div class="tut-post-info">'
-      +'<div class="tut-post-title">'+(t.title||'—')+'</div>'
-      +dur
-      +'</div>'
-      +'<div class="tut-post-play-btn"><i class="fas fa-play"></i></div>'
-      +'</div>'
-      +'<div class="tut-post-video" id="dbtvid'+i+'">'
-      +'<div class="tut-post-iframe-wrap"></div>'
-      +'</div>'
-      +'<div class="tut-post-close-row"><span class="tut-post-close-btn" onclick="event.stopPropagation();toggleTutPost(\''+cid+'\',\'\',[])"><i class="fas fa-times-circle"></i> داخستن</span></div>'
+    var thumbSrc=ytId?('https://img.youtube.com/vi/'+ytId+'/hqdefault.jpg'):'';
+    var ytUrl=(t.youtube_url||'').replace(/'/g,"\\'");
+    var titleSafe=(t.title||'—').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    var descSafe=(t.description||'ئامۆژگاری گشتگیر بۆ بەکارهێنانی سیستەمی Proxo Ads').replace(/'/g,"\\'");
+    var catArr=t.section?[t.section]:[];
+    var durBadge=t.duration?('<div class="tut-grid-dur"><i class="fas fa-play" style="font-size:7px"></i>'+t.duration+'م</div>'):'';
+    var catBadge=t.section?('<div class="tut-grid-cat" style="background:'+sm.grad+'"><i class="fas '+sm.icon+'" style="font-size:7px"></i> '+t.section+'</div>'):'';
+    return '<div class="tut-grid-card" data-cat="'+(t.section||'tutorial')+'" onclick="openTutVideo(\''+ytUrl+'\',\''+titleSafe+'\',\''+descSafe+'\',\''+(t.section||'')+'\','+JSON.stringify(catArr)+')">'
+      +(thumbSrc?'<img class="tut-grid-thumb" src="'+thumbSrc+'" alt="" onerror="this.style.display=\'none\'">':'')
+      +'<div class="tut-grid-fallback" style="background:'+sm.grad+'"><i class="fas '+sm.icon+'" style="font-size:28px;color:rgba(255,255,255,.35)"></i></div>'
+      +'<div class="tut-grid-overlay"></div>'
+      +catBadge
+      +'<div class="tut-grid-play"><i class="fas fa-play"></i></div>'
+      +'<div class="tut-grid-bottom">'+durBadge+'<div class="tut-grid-title">'+titleSafe+'</div></div>'
       +'</div>';
-  }).join('');
+  }).join('')+'</div>';
+  if(!_tutShowAllFlag&&rows.length>3){
+    var _tmDiv=document.createElement('div');
+    _tmDiv.style.cssText='text-align:center;padding:14px 0 8px';
+    _tmDiv.innerHTML='<button onclick="window._tutShowAll=true;_tutRenderFiltered()" style="padding:10px 28px;border-radius:20px;background:var(--bg);border:1.5px solid var(--b1);font-family:R,sans-serif;font-size:13px;font-weight:700;color:var(--dark);cursor:pointer;display:inline-flex;align-items:center;gap:6px"><i class=\\"fas fa-chevron-down\\" style=\\"font-size:10px\\"></i>بینینی زیاتر ('+(rows.length-3)+' ڤیدیۆی تر)</button>';
+    wrap.appendChild(_tmDiv);
+  }
   _tutBuildFilterChips();
 }
 
@@ -6777,6 +6808,7 @@ function _tutBuildFilterChips(){
 
 function _tutSetFilter(sec,el){
   _tutSecFilter=sec;
+  window._tutShowAll=false;
   document.querySelectorAll('.tut-cat').forEach(function(c){c.classList.remove('on');});
   if(el)el.classList.add('on');
   if(_openTutId){
@@ -8342,6 +8374,8 @@ function pickCard(el,id){
 
 let allAds=[],filterStatus='all';
 async function loadMyAds(){
+  const wrap=document.getElementById('myAdsWrap');
+  if(wrap)wrap.innerHTML=`<div class="skel-card"><div class="skel-h skel-wave" style="width:42%;margin-bottom:12px"></div><div class="skel-title skel-wave"></div><div class="skel-row"><div class="skel-metric skel-wave"></div><div class="skel-metric skel-wave"></div><div class="skel-metric skel-wave"></div></div><div class="skel-row"><div class="skel-date skel-wave"></div><div class="skel-date skel-wave"></div></div></div><div class="skel-card"><div class="skel-h skel-wave" style="width:36%;margin-bottom:12px"></div><div class="skel-title skel-wave"></div><div class="skel-row"><div class="skel-metric skel-wave"></div><div class="skel-metric skel-wave"></div><div class="skel-metric skel-wave"></div></div><div class="skel-row"><div class="skel-date skel-wave"></div><div class="skel-date skel-wave"></div></div></div>`;
   const{data}=await sb.from('pa_ads').select('*').eq('user_id',cu.id).order('created_at',{ascending:false});
   allAds=data||[];renderAds();
 }
@@ -8364,7 +8398,7 @@ async function refreshSponsorships(){
 
 function filterAds(el){
   document.querySelectorAll('#adsFilter .fchip').forEach(x=>x.classList.remove('on'));
-  el.classList.add('on');filterStatus=el.dataset.f;renderAds();
+  el.classList.add('on');filterStatus=el.dataset.f;_adsShowAll=false;renderAds();
 }
 
 function _fmtNum(n){
@@ -8391,7 +8425,8 @@ function renderAds(){
       ${filterStatus==='all'?`<button class="empty-btn" onclick="goPage('create')"><i class="fas fa-plus"></i> سپۆنسەرێکی نوێ دروست بکە</button>`:''}
     </div>`;return;
   }
-  wrap.innerHTML=filtered.map(ad=>{
+  var _adsSlice=_adsShowAll?filtered:filtered.slice(0,2);
+  wrap.innerHTML=_adsSlice.map(ad=>{
     // ── تۆمارکردنی حاڵەتی دروست ──
     // یەکەم: باری تەواوبوو/ڕەتکراوەکان بەپێی ad.status دیاری بکە
     // دووەم: بۆ ئەوانی تر، بەپێی tiktok_ad_id pending یان active دیاری بکە
@@ -8439,6 +8474,8 @@ function renderAds(){
     const pendingNote=(!isTerminal&&!isActive)?`<div class="spons-pending-overlay"><i class="fas fa-hourglass-half" style="flex-shrink:0"></i><span>بۆ چالاکبوون چاوەڕوانی ئادمین بە، ئینجا ئەنجامەکان بەخۆکاری دەکەوێتە ئاستی ڕاستەوخۆ.</span></div>`:'';
 
     const rejectNote=ad.reject_reason?`<div class="ad-reject" style="margin-top:10px"><i class="fas fa-info-circle"></i> ${ad.reject_reason}</div>`:'';
+    const isRejected=st==='rejected';
+    const refundNote=isRejected?`<div style="margin-top:10px;padding:10px 13px;background:rgba(22,163,74,.06);border:1px solid rgba(22,163,74,.18);border-radius:12px;font-size:12px;color:#15803d;display:flex;align-items:center;gap:7px;line-height:1.5"><i class="fas fa-rotate-left" style="flex-shrink:0"></i>پارەکە گەڕاوەتەوە بۆ جزدانی هەژمارەکەت</div>`:'';
 
     return`<div class="spons-card" onclick="showAdDetail(allAds.find(x=>x.id==='${ad.id}'))" style="cursor:pointer">
       <div class="spons-card-top">
@@ -8448,19 +8485,19 @@ function renderAds(){
       <div class="spons-title">${adName}</div>
       ${pendingNote}
       <div class="spons-metrics">
-        <div class="spons-metric-box spend">
-          <div class="spons-metric-ico"><i class="fas fa-dollar-sign"></i></div>
-          <div class="spons-metric-val">${spendFmt}</div>
+        <div class="spons-metric-box${isRejected?'':' spend'}" ${isRejected?'style="opacity:.52"':''}>
+          <div class="spons-metric-ico" ${isRejected?'style="background:rgba(139,149,168,.1);color:#8b95a8"':''}><i class="fas fa-dollar-sign"></i></div>
+          <div class="spons-metric-val" ${isRejected?'style="color:#8b95a8"':''}>${spendFmt}</div>
           <div class="spons-metric-lbl">خەرجکراو</div>
         </div>
-        <div class="spons-metric-box clicks">
-          <div class="spons-metric-ico"><i class="fas fa-arrow-pointer"></i></div>
-          <div class="spons-metric-val">${_fmtNum(clicks)}</div>
+        <div class="spons-metric-box clicks" ${isRejected?'style="opacity:.52"':''}>
+          <div class="spons-metric-ico" ${isRejected?'style="background:rgba(139,149,168,.1);color:#8b95a8"':''}><i class="fas fa-arrow-pointer"></i></div>
+          <div class="spons-metric-val" ${isRejected?'style="color:#8b95a8"':''}>${_fmtNum(clicks)}</div>
           <div class="spons-metric-lbl">کلیک</div>
         </div>
-        <div class="spons-metric-box impr">
-          <div class="spons-metric-ico"><i class="fas fa-eye"></i></div>
-          <div class="spons-metric-val">${_fmtNum(impr)}</div>
+        <div class="spons-metric-box${isRejected?'':' impr'}" ${isRejected?'style="opacity:.52"':''}>
+          <div class="spons-metric-ico" ${isRejected?'style="background:rgba(139,149,168,.1);color:#8b95a8"':''}><i class="fas fa-eye"></i></div>
+          <div class="spons-metric-val" ${isRejected?'style="color:#8b95a8"':''}>${_fmtNum(impr)}</div>
           <div class="spons-metric-lbl">بینین</div>
         </div>
       </div>
@@ -8474,9 +8511,11 @@ function renderAds(){
           <div><div style="font-size:9px;color:var(--mt);margin-bottom:2px">کۆتایی</div><span>${endDateStr}</span></div>
         </div>
       </div>
+      ${refundNote}
       ${rejectNote}
     </div>`;
   }).join('');
+  if(!_adsShowAll&&filtered.length>2){var _vmDiv2=document.createElement('div');_vmDiv2.style.cssText='text-align:center;padding:14px 0 4px';_vmDiv2.innerHTML='<button onclick="_adsShowAll=true;renderAds()" style="padding:10px 28px;border-radius:20px;background:var(--bg);border:1.5px solid var(--b1);font-family:R,sans-serif;font-size:13px;font-weight:700;color:var(--dark);cursor:pointer;display:inline-flex;align-items:center;gap:6px"><i class=\\"fas fa-chevron-down\\" style=\\"font-size:10px\\"></i>بۆ بینینی زیاتر ('+(filtered.length-2)+' ڕیکلامی تر)</button>';wrap.appendChild(_vmDiv2);}
 }
 
 // ══ REALTIME: pa_ads metrics (spend, clicks, impressions) ══
@@ -8593,7 +8632,7 @@ async function showAdDetail(ad){
   if(ageStr) h+='<div class="ad-sheet-row"><span class="ad-sheet-lbl">تەمەنی ئامانج</span><span class="ad-sheet-val" style="direction:rtl;text-align:right;font-size:11px">'+ageStr+'</span></div>';
   if(ad.gender&&ad.gender!=='all') h+='<div class="ad-sheet-row"><span class="ad-sheet-lbl">ڕەگەز</span><span class="ad-sheet-val" style="direction:rtl;text-align:right">'+(genderMap[ad.gender]||ad.gender)+'</span></div>';
   if(ad.location&&ad.location!=='all') h+='<div class="ad-sheet-row"><span class="ad-sheet-lbl">شوێن</span><span class="ad-sheet-val" style="direction:rtl;text-align:right">'+(locMap[ad.location]||ad.location)+'</span></div>';
-  if(ad.reject_reason) h+='<div style="background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);border-radius:10px;padding:10px 13px;margin-top:10px;font-size:12px;color:var(--rd);line-height:1.7"><i class="fas fa-circle-info" style="margin-left:5px"></i>'+ad.reject_reason+'</div>';
+  if(ad.reject_reason) h+='<div style="background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.12);border-radius:10px;padding:9px 12px;margin-top:10px;font-size:11.5px;color:rgba(185,28,28,.8);line-height:1.7"><i class="fas fa-circle-exclamation" style="margin-left:6px;opacity:.65;font-size:11px"></i>'+ad.reject_reason+'</div>';
   h+='<div class="ad-sheet-sec" style="margin-top:18px"><i class="fas fa-receipt" style="margin-left:5px"></i>وردەکاری نرخ</div>';
   h+='<div class="ad-price-box">';
   h+='<div class="ad-price-row"><span>نرخی بنەڕەتی</span><span>'+originalTotal.toLocaleString()+' IQD</span></div>';
@@ -10480,6 +10519,20 @@ async function setupDatabase(){
 }
 
 // ═══ RECEIPT / INVOICE MODAL ═══
+function saveReceiptAsImage(){
+  var el=document.getElementById('receiptContent');
+  if(!el){showToast('هیچ پسووڵەیەک نییە','err');return;}
+  if(typeof html2canvas==='undefined'){showToast('html2canvas بارنەبووە','err');return;}
+  showToast('پاشەکەوتکردن...','');
+  html2canvas(el,{backgroundColor:'#ffffff',scale:2,useCORS:true,logging:false,allowTaint:true}).then(function(canvas){
+    var link=document.createElement('a');
+    link.download='proxo-receipt-'+Date.now()+'.png';
+    link.href=canvas.toDataURL('image/png');
+    link.click();
+    showToast('پسووڵەکە پاشەکەوت کرا','ok');
+  }).catch(function(){showToast('هەڵەیەک ڕوویدا','err');});
+}
+
 function showReceipt(t){
   const mn={fib:'FIB Bank',fastpay:'FastPay',kcard:'ZainCash / K-Card'};
   const appIco={fib:'fas fa-university',fastpay:'fas fa-bolt',kcard:'fas fa-credit-card'};
@@ -10557,7 +10610,7 @@ function showReceipt(t){
         <div style="width:32px;height:32px;border-radius:50%;background:${step.done?step.color+'22':'rgba(139,149,168,.1)'};border:2px solid ${step.done?step.color:'rgba(139,149,168,.2)'};display:flex;align-items:center;justify-content:center;font-size:12px;color:${step.done?step.color:'#8b95a8'};transition:all .3s">
           <i class="${step.ico}"></i>
         </div>
-        ${i<timelineSteps.length-1?`<div style="width:2px;height:22px;background:${step.done?step.color+'44':'rgba(139,149,168,.15)'};margin:3px 0;border-radius:2px"></div>`:''}
+        ${i<timelineSteps.length-1?`<div style="width:1px;height:16px;background:${step.done?step.color+'33':'rgba(139,149,168,.1)'};margin:3px 0;border-radius:2px"></div>`:''}
       </div>
       <div style="padding-top:6px;flex:1">
         <div style="font-size:12.5px;font-weight:700;color:${step.done?'var(--dark)':'#8b95a8'}">${step.lbl}</div>
@@ -10604,6 +10657,7 @@ function showReceipt(t){
   document.getElementById('receiptContent').innerHTML=`
     <!-- ═══ هيرۆ ═══ -->
     <div style="background:${heroGrad};border-radius:20px;padding:24px 20px 20px;text-align:center;margin-bottom:16px;position:relative;overflow:hidden">
+      <button onclick="closeMo('moReceipt')" style="position:absolute;top:12px;left:12px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.65);font-size:13px;z-index:2;padding:0"><i class="fas fa-xmark"></i></button>
       <div style="position:absolute;top:-30px;right:-30px;width:100px;height:100px;background:${accentColor}18;border-radius:50%"></div>
       <div style="position:absolute;bottom:-20px;left:-20px;width:70px;height:70px;background:${accentColor}10;border-radius:50%"></div>
       <div style="font-size:10px;color:rgba(255,255,255,.4);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:14px;position:relative">PROXO ADS · پسووڵەی مامەڵە</div>
@@ -10642,6 +10696,9 @@ function showReceipt(t){
     </div>
 
     <!-- ═══ داخستن ═══ -->
+    <button onclick="saveReceiptAsImage()" style="width:100%;padding:13px;background:rgba(22,163,74,.1);color:#16a34a;border:1.5px solid rgba(22,163,74,.25);border-radius:15px;font-family:'R',sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px">
+      <i class="fas fa-download"></i> پاشەکەوتکردن بە وێنە
+    </button>
     <button onclick="closeMo('moReceipt')" style="width:100%;padding:15px;background:var(--dark);color:#fff;border:none;border-radius:15px;font-family:'R',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(28,35,51,.2)">
       <i class="fas fa-check"></i> باشە، داخە
     </button>`;
@@ -10651,10 +10708,12 @@ function showReceipt(t){
 
 // ═══ TRANSACTION HISTORY PAGE ═══
 let allTxHistory=[], txFilterMode='all';
+let _txShowAll=false, _adsShowAll=false;
 
 async function loadTxHistory(){
+  _txShowAll=false;
   const list=document.getElementById('txHistoryList');
-  list.innerHTML='<div style="text-align:center;padding:20px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin"></i></div>';
+  list.innerHTML='<div class="skel-tx"><div class="skel-ico skel-wave"></div><div class="skel-info"><div class="skel-lbl skel-wave"></div><div class="skel-sub skel-wave"></div></div><div class="skel-amt skel-wave"></div></div>'.repeat(4);
 
   const{data:deposits}=await sb.from('pa_transactions').select('*').eq('user_id',cu.id).order('created_at',{ascending:false});
   const{data:ads}=await sb.from('pa_ads').select('id,title,budget,created_at,ad_number,status').eq('user_id',cu.id).order('created_at',{ascending:false});
@@ -10729,6 +10788,7 @@ function filterTxHistory(el){
   document.querySelectorAll('[data-txf]').forEach(x=>x.classList.remove('on'));
   el.classList.add('on');
   txFilterMode=el.dataset.txf;
+  _txShowAll=false;
   renderTxHistory();
 }
 
@@ -10744,7 +10804,8 @@ function renderTxHistory(){
     return;
   }
 
-  list.innerHTML=filtered.map(t=>{
+  var _txSlice=_txShowAll?filtered:filtered.slice(0,2);
+  list.innerHTML=_txSlice.map(t=>{
     const isRefund=t.kind==='refund';
     const isSpend=t.kind==='spend';
     const isCoinExchange=t.kind==='coin_exchange';
@@ -10815,6 +10876,7 @@ function renderTxHistory(){
       </div>
     </div>`;
   }).join('');
+  if(!_txShowAll&&filtered.length>2){var _vmDiv=document.createElement('div');_vmDiv.style.cssText='text-align:center;padding:14px 0 4px';_vmDiv.innerHTML='<button onclick="_txShowAll=true;renderTxHistory()" style="padding:10px 28px;border-radius:20px;background:var(--bg);border:1.5px solid var(--b1);font-family:R,sans-serif;font-size:13px;font-weight:700;color:var(--dark);cursor:pointer;display:inline-flex;align-items:center;gap:6px"><i class=\\"fas fa-chevron-down\\" style=\\"font-size:10px\\"></i>بۆ بینینی زیاتر ('+(filtered.length-2)+' تر)</button>';list.appendChild(_vmDiv);}
 }
 
 
@@ -12160,8 +12222,7 @@ function faqSearch(val, listId, emptyId) {
 // ══ TERMS JS ══
 let _termsAgreed = false;
 function openTermsModal() {
-  document.getElementById('termsOverlay').classList.add('show');
-  document.body.style.overflow = 'hidden';
+  window.open('https://www.proxopages.com/condition-of-services.html', '_blank');
 }
 function closeTermsModal() {
   document.getElementById('termsOverlay').classList.remove('show');
