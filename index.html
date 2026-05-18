@@ -6800,7 +6800,7 @@ function _tutRenderFiltered(){
     var catName=t.section||'';
 
     var thumbHtml=thumb
-      ?('<img class="tut-vcard-img" src="'+thumb+'" loading="lazy" onerror="this.style.display='none'">')
+      ?('<img class="tut-vcard-img" src="'+thumb+'" loading="lazy" onerror="this.remove()">')
       :'';
     var fallbackHtml='<div class="tut-vcard-fallback" style="background:'+sm.grad+'"><i class="fas '+sm.icon+'"></i></div>';
     var durBadge=dur?('<div class="tut-vcard-dur">'+dur+'</div>'):'';
