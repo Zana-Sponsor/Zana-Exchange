@@ -2586,7 +2586,7 @@ function _toWebP(dataUrl,quality){
       </div>
       <div class="sidebar-item" onclick="goPage('tutorials');closeSidebar()">
         <div class="sidebar-item-ico"><i class="fas fa-graduation-cap"></i></div>
-        <div class="sidebar-item-txt">فێرکارییەکان</div>
+        <div class="sidebar-item-txt">فێرکاری</div>
       </div>
       <div class="sidebar-item" onclick="goPage('txhistory');closeSidebar()">
         <div class="sidebar-item-ico"><i class="fas fa-clock-rotate-left"></i></div>
@@ -3497,7 +3497,7 @@ function _toWebP(dataUrl,quality){
       <div class="tut-lhero-inner">
         <div class="tut-lhero-icon"><i class="fas fa-play-circle"></i></div>
         <div class="tut-lhero-text">
-          <div class="tut-lhero-title">فێرکارییەکان</div>
+          <div class="tut-lhero-title">فێرکاری</div>
           <div class="tut-lhero-sub">کلیک بکە و ڤیدیۆکەت لێرەوە ببینە</div>
           <div class="tut-lhero-badge"><i class="fas fa-bolt"></i> فێربوون بە ئاسانی</div>
         </div>
@@ -3530,7 +3530,7 @@ function _toWebP(dataUrl,quality){
     <div class="tvp-header">
       <div class="tvp-back-btn" onclick="goPage('tutorials')"><i class="fas fa-arrow-right"></i></div>
       <div class="tvp-header-info">
-        <div class="tvp-header-label"><i class="fas fa-circle-play" style="margin-left:4px"></i>فێرکارییەکان</div>
+        <div class="tvp-header-label"><i class="fas fa-circle-play" style="margin-left:4px"></i>فێرکاری</div>
         <div class="tvp-header-title" id="tvpTitle">ڤیدیۆی فێرکاری</div>
       </div>
     </div>
@@ -3931,13 +3931,13 @@ function _toWebP(dataUrl,quality){
     <div class="bn-fab-col">
       <div class="bn-fab" id="bnFab" onclick="goPage('create');_fabBounce()"><i class="fas fa-plus"></i></div>
     </div>
-    <button class="bn" id="bn_tutorials" onclick="goPage('tutorials')">
-      <div class="bn-pip"><i class="fas fa-circle-play"></i></div>
-      <span class="bn-lbl">فێرکارییەکان</span>
-    </button>
     <button class="bn" id="bn_proxolink" onclick="goPage('proxolink')">
       <div class="bn-pip"><i class="fas fa-layer-group"></i></div>
       <span class="bn-lbl">ئامرازەکان</span>
+    </button>
+    <button class="bn" id="bn_tutorials" onclick="goPage('tutorials')">
+      <div class="bn-pip"><i class="fas fa-circle-play"></i></div>
+      <span class="bn-lbl">فێرکاری</span>
     </button>
   </div>
 </nav>
@@ -6706,7 +6706,7 @@ function updateSidebarActive(page){
   if(key){
     document.querySelectorAll('.sidebar-item').forEach(el=>{
       const txt=el.querySelector('.sidebar-item-txt')?.textContent||'';
-      const maps2={home:'سەرەکی',profile:'پرۆفایل',myads:'ڕیکلامەکانم',proxolink:'ئامرازەکان',tutorials:'فێرکارییەکان',txhistory:'مێژووی مامەڵەکان'};
+      const maps2={home:'سەرەکی',profile:'پرۆفایل',myads:'ڕیکلامەکانم',proxolink:'ئامرازەکان',tutorials:'فێرکاری',txhistory:'مێژووی مامەڵەکان'};
       if(maps2[page]&&txt===maps2[page])el.classList.add('active');
     });
   }
