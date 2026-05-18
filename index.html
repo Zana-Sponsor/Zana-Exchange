@@ -457,10 +457,10 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .bn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:10px 4px 8px;border:none;background:transparent;color:var(--mt);font-family:'R',sans-serif;font-size:10px;cursor:pointer;transition:color .2s;}
 .bn.on{color:#0E78FF;}
 .bn i{font-size:20px;}
-.bn-fab-col{flex:1;display:flex;justify-content:center;align-items:flex-start;padding-top:6px;}
-.bn-fab{background:linear-gradient(135deg,#1c2333,#2e3a50);border-radius:18px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;margin-top:-26px;border:3px solid var(--bg);box-shadow:0 8px 24px rgba(28,35,51,.30);cursor:pointer;transition:transform .18s,box-shadow .18s;}
+.bn-fab-col{flex:1;display:flex;justify-content:center;align-items:flex-start;padding-top:10px;}
+.bn-fab{background:none;border:none;border-radius:0;width:64px;height:64px;display:flex;align-items:center;justify-content:center;margin-top:-44px;padding:0;box-shadow:0 12px 36px rgba(28,35,51,.32);cursor:pointer;transition:transform .18s,box-shadow .18s;}
 .bn-fab:active{transform:scale(.93);box-shadow:0 3px 10px rgba(28,35,51,.20);}
-.bn-fab i{font-size:20px;color:#fff;}
+.bn-fab i{display:none;}
 
 /* ══ PAGES ══ */
 .pg{display:none;padding:20px;animation:fu .22s cubic-bezier(.25,.46,.45,.94);-webkit-overflow-scrolling:touch;scroll-behavior:smooth;}
@@ -902,66 +902,50 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .ham-btn{width:34px;height:34px;border-radius:10px;background:var(--dark);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,.15);transition:transform .15s,opacity .15s;}.ham-btn:active{opacity:.85;transform:scale(.95);}
 
 /* ══ TUTORIALS PAGE — PREMIUM REDESIGN ══ */
-/* Hero Banner */
-.tut-lhero{position:relative;margin:-16px -16px 20px;padding:30px 20px 26px;background:linear-gradient(135deg,#0f1724 0%,#1c2333 50%,#263044 100%);overflow:hidden;border-radius:0 0 32px 32px;}
-.tut-lhero::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(99,102,241,.15);pointer-events:none;}
-.tut-lhero::after{content:'';position:absolute;bottom:-30px;left:-20px;width:100px;height:100px;border-radius:50%;background:rgba(139,92,246,.1);pointer-events:none;}
-.tut-lhero-inner{position:relative;display:flex;align-items:center;gap:14px;}
-.tut-lhero-icon{width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;flex-shrink:0;box-shadow:0 8px 28px rgba(99,102,241,.45);}
-.tut-lhero-text{flex:1;}
-.tut-lhero-title{font-size:22px;font-weight:900;color:#fff;letter-spacing:-.4px;}
-.tut-lhero-sub{font-size:12px;color:rgba(255,255,255,.6);margin-top:4px;line-height:1.5;}
-.tut-lhero-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:4px 11px;font-size:10px;font-weight:700;color:rgba(255,255,255,.75);margin-top:8px;backdrop-filter:blur(4px);}
-/* Filter chips scroll row */
-.tut-filter-row{display:flex;gap:8px;overflow-x:auto;padding:0 0 4px;margin-bottom:16px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+/* ══ TUTORIALS PAGE — PREMIUM REDESIGN v3 ══ */
+/* ── Hero ── */
+.tut-hero{position:relative;margin:-16px -16px 0;padding:26px 20px 22px;background:linear-gradient(135deg,#0d1520 0%,#1a2537 55%,#1e2e45 100%);overflow:hidden;}
+.tut-hero::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 80% 20%,rgba(99,102,241,.14) 0%,transparent 65%);pointer-events:none;}
+.tut-hero-row{position:relative;display:flex;align-items:center;gap:14px;}
+.tut-hero-ico{width:50px;height:50px;border-radius:16px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;flex-shrink:0;box-shadow:0 6px 20px rgba(99,102,241,.4);}
+.tut-hero-txt{flex:1;}
+.tut-hero-title{font-size:20px;font-weight:900;color:#fff;letter-spacing:-.3px;line-height:1.2;}
+.tut-hero-sub{font-size:11.5px;color:rgba(255,255,255,.5);margin-top:3px;}
+.tut-hero-count{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:4px 12px;font-size:10px;font-weight:700;color:rgba(255,255,255,.65);margin-top:10px;}
+/* ── Divider wave ── */
+.tut-hero-wave{width:100%;height:18px;margin-bottom:16px;display:block;}
+/* ── Filter row ── */
+.tut-filter-row{display:flex;gap:7px;overflow-x:auto;padding:0 0 4px;margin-bottom:18px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
 .tut-filter-row::-webkit-scrollbar{display:none;}
-.tut-cat{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:20px;font-family:'R',sans-serif;font-size:11.5px;font-weight:700;cursor:pointer;border:1.5px solid var(--b1);background:var(--w);color:var(--mt2);transition:all .22s;white-space:nowrap;touch-action:manipulation;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.04);}
-.tut-cat.on{background:linear-gradient(135deg,#1c2333,#2e3a50);color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(28,35,51,.25);}
-.tut-cat:active{opacity:.8;transform:scale(.96);}
-.tut-cat i{font-size:10px;}
-/* ── Post-style tutorial card ── */
-.tut-post-card{background:var(--w);border:1.5px solid var(--b1);border-radius:18px;margin-bottom:10px;overflow:hidden;cursor:pointer;position:relative;transition:box-shadow .2s,border-color .2s,transform .15s;will-change:transform;transform:translateZ(0);contain:layout;box-shadow:0 2px 8px rgba(0,0,0,.04);}
-.tut-post-card:active{transform:scale(.985);opacity:.95;}
-.tut-post-card.open{border-color:rgba(99,102,241,.25);box-shadow:0 6px 24px rgba(99,102,241,.1);}
-.tut-post-head{display:flex;align-items:center;gap:12px;padding:14px 14px;}
-.tut-post-avatar{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,.15);}
-.tut-post-info{flex:1;min-width:0;}
-.tut-post-title{font-size:13.5px;font-weight:800;color:var(--dark);line-height:1.45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-/* Netflix-style tutorial grid */
-.tut-grid{display:flex;flex-direction:column;gap:14px;padding:2px 0;}
-.tut-grid-card{position:relative;border-radius:18px;overflow:hidden;aspect-ratio:16/9;cursor:pointer;background:#111;box-shadow:0 6px 20px rgba(0,0,0,.14);transition:transform .22s,box-shadow .22s;}
-.tut-grid-card:active{transform:scale(.97);}
-.tut-grid-thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-.tut-grid-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
-.tut-grid-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.82) 30%,rgba(0,0,0,.22) 65%,rgba(0,0,0,.04) 100%);}
-.tut-grid-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.18);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:2px solid rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;padding-right:3px;transition:background .2s,transform .2s;}
-.tut-grid-card:active .tut-grid-play{background:rgba(255,255,255,.28);transform:translate(-50%,-60%) scale(.92);}
-.tut-grid-bottom{position:absolute;bottom:0;right:0;left:0;padding:10px 14px 14px;}
-.tut-grid-title{font-size:13px;font-weight:800;color:#fff;line-height:1.45;font-family:R,sans-serif;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-shadow:0 1px 4px rgba(0,0,0,.4);}
-.tut-grid-dur{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:rgba(255,255,255,.8);background:rgba(0,0,0,.38);border-radius:8px;padding:3px 8px;margin-bottom:6px;font-family:Inter,sans-serif;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
-.tut-grid-cat{position:absolute;top:10px;right:10px;display:inline-flex;align-items:center;gap:4px;font-size:9.5px;font-weight:700;color:#fff;padding:4px 10px;border-radius:10px;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.2);}
-.tut-post-dur{font-size:10.5px;color:var(--mt);display:flex;align-items:center;gap:6px;margin-top:5px;flex-wrap:wrap;}
-.tut-post-dur-time{display:inline-flex;align-items:center;gap:3px;background:var(--bg);border:1px solid var(--b1);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;color:var(--mt2);}
-.tut-post-dur-cat{display:inline-flex;align-items:center;gap:3px;border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;color:#fff;}
-.tut-post-play-btn{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#ef4444,#dc2626);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;flex-shrink:0;transition:all .2s;box-shadow:0 4px 12px rgba(220,38,38,.3);padding-left:2px;}
-.tut-post-card.open .tut-post-play-btn{background:linear-gradient(135deg,#1c2333,#2e3a50);box-shadow:0 4px 12px rgba(28,35,51,.3);}
-/* Divider inside card */
-.tut-post-divider{height:1px;background:var(--b1);margin:0 14px;}
-.tut-post-card.open .tut-post-divider{display:block;}
-/* Expanded video area */
-.tut-post-video{display:none;padding:12px 12px 12px;}
-.tut-post-video.show{display:block;animation:tutExpand .25s cubic-bezier(.165,.84,.44,1);}
-@keyframes tutExpand{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-.tut-post-iframe-wrap{border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.12);}
-.tut-ytthumb{position:absolute;inset:0;cursor:pointer;background:#000;display:flex;align-items:center;justify-content:center;border-radius:0;}
-.tut-ytthumb img{width:100%;height:100%;object-fit:cover;display:block;}
-.tut-ytthumb-btn{position:absolute;width:62px;height:62px;background:rgba(220,38,38,.95);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;padding-left:4px;box-shadow:0 6px 28px rgba(0,0,0,.5);transition:transform .15s,background .15s;}
-.tut-ytthumb:active .tut-ytthumb-btn{transform:scale(.88);background:#b91c1c;}
-.tut-post-iframe-wrap{position:relative;padding-top:56.25%;}.tut-post-iframe-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;background:#111;display:block;}
-.tut-post-close-row{display:none;align-items:center;justify-content:center;padding:0 12px 12px;}
-.tut-post-card.open .tut-post-close-row{display:flex;}
-.tut-post-close-btn{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--mt2);background:var(--bg);border:1.5px solid var(--b1);border-radius:20px;padding:7px 18px;cursor:pointer;transition:all .18s;}
-.tut-post-close-btn:active{background:var(--dark);color:#fff;border-color:var(--dark);}
+.tut-cat{display:inline-flex;align-items:center;gap:5px;padding:7px 16px;border-radius:20px;font-family:"R",sans-serif;font-size:11.5px;font-weight:700;cursor:pointer;border:1.5px solid var(--b1);background:var(--w);color:var(--mt2);transition:all .2s;white-space:nowrap;touch-action:manipulation;flex-shrink:0;}
+.tut-cat.on{background:#1a2537;color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(26,37,55,.3);}
+.tut-cat:active{transform:scale(.95);}
+.tut-cat i{font-size:9px;}
+/* ── Video card (horizontal) ── */
+.tut-vcard{display:flex;align-items:center;gap:13px;background:var(--w);border:1.5px solid var(--b1);border-radius:16px;padding:12px;margin-bottom:11px;cursor:pointer;transition:transform .18s,box-shadow .18s,border-color .18s;box-shadow:0 2px 10px rgba(0,0,0,.04);}
+.tut-vcard:active{transform:scale(.975);box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.tut-vcard-thumb{position:relative;width:118px;min-width:118px;height:70px;border-radius:11px;overflow:hidden;background:#111;flex-shrink:0;}
+.tut-vcard-img{width:100%;height:100%;object-fit:cover;display:block;}
+.tut-vcard-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:24px;color:rgba(255,255,255,.3);}
+.tut-vcard-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.tut-vcard-play-btn{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.22);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1.5px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;padding-right:2px;}
+.tut-vcard-dur{position:absolute;bottom:5px;left:6px;background:rgba(0,0,0,.62);color:rgba(255,255,255,.9);font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px;font-family:Inter,sans-serif;line-height:1.4;}
+.tut-vcard-info{flex:1;min-width:0;}
+.tut-vcard-cat{display:inline-flex;align-items:center;gap:4px;font-size:9.5px;font-weight:700;color:#fff;padding:3px 9px;border-radius:7px;margin-bottom:6px;line-height:1;}
+.tut-vcard-title{font-size:13px;font-weight:800;color:var(--dark);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:6px;}
+.tut-vcard-meta{display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--mt);font-weight:600;}
+.tut-vcard-meta i{font-size:9px;opacity:.7;}
+/* ── Section divider label ── */
+.tut-sec-div{display:flex;align-items:center;gap:10px;margin:6px 0 14px;color:var(--mt);font-size:10px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;}
+.tut-sec-div::before,.tut-sec-div::after{content:"";flex:1;height:1px;background:var(--b1);}
+/* ── Empty state ── */
+.tut-empty{text-align:center;padding:50px 20px;color:var(--mt);}
+.tut-empty i{font-size:38px;opacity:.25;display:block;margin-bottom:14px;}
+.tut-empty-title{font-size:14px;font-weight:800;color:var(--dark);margin-bottom:6px;}
+.tut-empty-sub{font-size:12px;color:var(--mt);}
+/* ── Show more btn ── */
+.tut-more-btn{width:100%;padding:11px;border-radius:14px;background:var(--bg);border:1.5px solid var(--b1);font-family:"R",sans-serif;font-size:12.5px;font-weight:700;color:var(--dark);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;margin-top:4px;transition:all .18s;}
+.tut-more-btn:active{background:var(--dark);color:#fff;}
 /* Section label */
 .tut-sec-lbl{font-size:10.5px;font-weight:800;color:var(--mt);letter-spacing:.5px;margin:16px 0 10px;display:flex;align-items:center;gap:10px;text-transform:uppercase;}
 .tut-sec-lbl::before,.tut-sec-lbl::after{content:'';flex:1;height:1px;background:var(--b1);}
@@ -2249,10 +2233,10 @@ function _clipboardFallback(text, onSuccess, onFail) {
 .bn.on{color:#0E78FF;}
 .bn.on .bn-pip{background:rgba(14,120,255,.10);}
 .bn.on i{color:#0E78FF;}
-.bn-fab-col{flex:1;display:flex;justify-content:center;align-items:flex-start;padding-top:5px;position:relative;overflow:visible;}
-.bn-fab{background:linear-gradient(135deg,#1c2333,#2e3a50);border-radius:18px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;margin-top:-26px;border:3px solid var(--bg);box-shadow:0 8px 24px rgba(28,35,51,.30),0 2px 8px rgba(0,0,0,.12);cursor:pointer;transition:transform .18s,box-shadow .18s;-webkit-tap-highlight-color:transparent;will-change:transform;transform-origin:center bottom;}
+.bn-fab-col{flex:1;display:flex;justify-content:center;align-items:flex-start;padding-top:10px;position:relative;overflow:visible;}
+.bn-fab{background:none;border:none;border-radius:0;width:64px;height:64px;display:flex;align-items:center;justify-content:center;margin-top:-44px;padding:0;box-shadow:0 12px 36px rgba(28,35,51,.32),0 4px 14px rgba(0,0,0,.14);cursor:pointer;transition:transform .18s,box-shadow .18s;-webkit-tap-highlight-color:transparent;will-change:transform;transform-origin:center bottom;}
 .bn-fab:active{transform:scale(.93);box-shadow:0 3px 10px rgba(28,35,51,.20);}
-.bn-fab i{font-size:22px;color:#fff;}
+.bn-fab i{display:none;}
 @keyframes fabBounce{
   0%{transform:scale(1);}
   22%{transform:scale(1.18);}
@@ -3493,40 +3477,35 @@ function _toWebP(dataUrl,quality){
   ════════════════════════════════════════════════ -->
   <div class="pg" id="pgTutorials">
 
-    <!-- Hero Banner -->
-    <div class="tut-lhero">
-      <div style="position:absolute;top:-50px;left:-50px;width:180px;height:180px;border-radius:50%;background:rgba(99,102,241,.08);pointer-events:none"></div>
-      <div style="position:absolute;bottom:-30px;right:-20px;width:110px;height:110px;border-radius:50%;background:rgba(139,92,246,.07);pointer-events:none"></div>
-      <div style="position:absolute;top:16px;left:24px;font-size:9px;color:rgba(255,255,255,.25);pointer-events:none">✦</div>
-      <div style="position:absolute;top:32px;left:56px;font-size:6px;color:rgba(255,255,255,.18);pointer-events:none">✦</div>
-      <div style="position:absolute;bottom:20px;right:36px;font-size:7px;color:rgba(255,255,255,.2);pointer-events:none">✦</div>
-      <div class="tut-lhero-inner">
-        <div class="tut-lhero-icon"><i class="fas fa-graduation-cap"></i></div>
-        <div class="tut-lhero-text">
-          <div class="tut-lhero-title">فێرکارییەکان</div>
-          <div class="tut-lhero-sub">فێربوون بە ئاسانی لەڕێگەی ڤیدیۆکانەوە</div>
-          <div class="tut-lhero-badge"><i class="fas fa-bolt"></i> گەیشتن بە پرۆ</div>
+    <!-- Hero -->
+    <div class="tut-hero">
+      <div class="tut-hero-row">
+        <div class="tut-hero-ico"><i class="fas fa-graduation-cap"></i></div>
+        <div class="tut-hero-txt">
+          <div class="tut-hero-title">فێرکارییەکان</div>
+          <div class="tut-hero-sub">فێربوون بە ئاسانی لەڕێگەی ڤیدیۆکانەوە</div>
+          <div class="tut-hero-count" id="tutHeroCount"><i class="fas fa-play-circle" style="font-size:9px"></i> چاوەڕوانبە...</div>
         </div>
       </div>
     </div>
+    <!-- Wave divider -->
+    <svg class="tut-hero-wave" viewBox="0 0 390 18" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,0 C90,18 300,18 390,0 L390,0 L0,0 Z" fill="#1a2537"/>
+    </svg>
 
-    <!-- فلتەری بەش -->
+    <!-- Filter chips -->
     <div id="tutFilterChips" style="display:none;" class="tut-filter-row">
       <span class="tut-cat on" onclick="_tutSetFilter('all',this)"><i class="fas fa-th-large"></i> هەموو</span>
     </div>
 
-    <!-- Dynamic Tutorials loaded from Supabase pa_tutorials -->
+    <!-- Tutorial cards (loaded from Supabase pa_tutorials) -->
     <div id="tutDynamicList">
-      <div style="text-align:center;padding:40px 20px;color:var(--mt)">
-        <div style="width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 8px 24px rgba(99,102,241,.3)">
-          <i class="fas fa-circle-notch fa-spin" style="font-size:22px;color:#fff"></i>
-        </div>
+      <div style="text-align:center;padding:44px 20px;color:var(--mt)">
+        <i class="fas fa-circle-notch fa-spin" style="font-size:26px;color:#6366f1;display:block;margin-bottom:14px"></i>
         <div style="font-size:13px;font-weight:700;color:var(--dark)">چاوەڕوانبە...</div>
-        <div style="font-size:11px;color:var(--mt);margin-top:4px">ڤیدیۆکان بار دەبن</div>
       </div>
     </div>
-
-    <div style="height:24px"></div>
+    <div style="height:28px"></div>
   </div>
 
   <!-- ══ VIDEO PLAYER PAGE — LIGHT ══ -->
@@ -3935,7 +3914,35 @@ function _toWebP(dataUrl,quality){
       <span class="bn-lbl">سپۆنسەرەکان</span>
     </button>
     <div class="bn-fab-col">
-      <div class="bn-fab" id="bnFab" onclick="goPage('create');_fabBounce()"><i class="fas fa-plus"></i></div>
+      <div class="bn-fab" id="bnFab" onclick="goPage('create');_fabBounce()">
+  <svg viewBox="0 0 64 64" width="64" height="64" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;flex-shrink:0">
+    <defs>
+      <linearGradient id="fabBg" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#2d4163"/>
+        <stop offset="100%" stop-color="#141e2e"/>
+      </linearGradient>
+      <radialGradient id="fabShine" cx="38%" cy="28%" r="60%">
+        <stop offset="0%" stop-color="rgba(255,255,255,0.18)"/>
+        <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+      </radialGradient>
+    </defs>
+    <!-- White border ring -->
+    <rect x="1" y="1" width="62" height="62" rx="20" fill="white"/>
+    <!-- Main dark button -->
+    <rect x="5" y="5" width="54" height="54" rx="17" fill="url(#fabBg)"/>
+    <!-- Radial shine overlay -->
+    <rect x="5" y="5" width="54" height="54" rx="17" fill="url(#fabShine)"/>
+    <!-- Subtle top highlight bar -->
+    <rect x="14" y="9" width="26" height="10" rx="5" fill="rgba(255,255,255,0.09)"/>
+    <!-- Decorative outer faint ring around icon -->
+    <circle cx="32" cy="33" r="15" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+    <!-- Circle-plus icon: circle -->
+    <circle cx="32" cy="33" r="11" stroke="white" stroke-width="2" fill="none"/>
+    <!-- Plus arms -->
+    <line x1="32" y1="27.5" x2="32" y2="38.5" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+    <line x1="26.5" y1="33" x2="37.5" y2="33" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+  </svg>
+</div>
     </div>
     <button class="bn" id="bn_tutorials" onclick="goPage('tutorials')">
       <div class="bn-pip"><i class="fas fa-circle-play"></i></div>
@@ -6749,14 +6756,26 @@ function _tutRenderFiltered(){
   var wrap=document.getElementById('tutDynamicList');
   if(!wrap)return;
   var rows=_tutSecFilter==='all'?_tutAllRows:_tutAllRows.filter(function(t){return t.section===_tutSecFilter;});
-  if(!rows.length){wrap.innerHTML='<div style="text-align:center;padding:30px;color:var(--mt);font-size:13px">هیچ فێرکارییەک نەدۆزرایەوە</div>';return;}
+
+  // Update hero count badge
+  var countEl=document.getElementById('tutHeroCount');
+  if(countEl){
+    var total=_tutAllRows.length;
+    countEl.innerHTML='<i class="fas fa-play-circle" style="font-size:9px"></i> '+total+' ڤیدیۆی فێرکاری';
+  }
+
+  if(!rows.length){
+    wrap.innerHTML='<div class="tut-empty"><i class="fas fa-video-slash"></i><div class="tut-empty-title">هیچ فێرکارییەک نەدۆزرایەوە</div><div class="tut-empty-sub">دواتر سەردانی مان بکەرەوە</div></div>';
+    _tutBuildFilterChips();return;
+  }
+
   var secMeta={
     'دەستپێک':{grad:'linear-gradient(135deg,#f97316,#ef4444)',icon:'fa-rocket',tc:'#f97316'},
-    'ڕیکلام':{grad:'linear-gradient(135deg,#2563eb,#0ea5e9)',icon:'fa-bullhorn',tc:'#2563eb'},
-    'ئامراز':{grad:'linear-gradient(135deg,#7c3aed,#a855f7)',icon:'fa-tools',tc:'#7c3aed'},
-    'باڵانس':{grad:'linear-gradient(135deg,#16a34a,#10b981)',icon:'fa-wallet',tc:'#16a34a'},
-    'کۆین':{grad:'linear-gradient(135deg,#d97706,#f59e0b)',icon:'fa-coins',tc:'#d97706'},
-    'گشتگیر':{grad:'linear-gradient(135deg,#0ea5e9,#6366f1)',icon:'fa-info-circle',tc:'#0ea5e9'}
+    'ڕیکلام': {grad:'linear-gradient(135deg,#2563eb,#0ea5e9)',icon:'fa-bullhorn',tc:'#2563eb'},
+    'ئامراز':  {grad:'linear-gradient(135deg,#7c3aed,#a855f7)',icon:'fa-tools',tc:'#7c3aed'},
+    'باڵانس': {grad:'linear-gradient(135deg,#16a34a,#10b981)',icon:'fa-wallet',tc:'#16a34a'},
+    'کۆین':   {grad:'linear-gradient(135deg,#d97706,#f59e0b)',icon:'fa-coins',tc:'#d97706'},
+    'گشتگیر': {grad:'linear-gradient(135deg,#0ea5e9,#6366f1)',icon:'fa-info-circle',tc:'#0ea5e9'}
   };
   var defMeta=[
     {grad:'linear-gradient(135deg,#6366f1,#8b5cf6)',icon:'fa-play-circle',tc:'#6366f1'},
@@ -6766,34 +6785,49 @@ function _tutRenderFiltered(){
     {grad:'linear-gradient(135deg,#f97316,#ef4444)',icon:'fa-star',tc:'#f97316'},
     {grad:'linear-gradient(135deg,#0ea5e9,#6366f1)',icon:'fa-lightbulb',tc:'#0ea5e9'}
   ];
+
   if(typeof _tutShowAll==='undefined')window._tutShowAll=false;
-  var _tutShowAllFlag=window._tutShowAll||false;
-  var _tutDisplayRows=_tutShowAllFlag?rows:rows.slice(0,3);
-  window._tutCurrentRows=_tutDisplayRows;
-  wrap.innerHTML='<div class="tut-grid">'+_tutDisplayRows.map(function(t,i){
+  var showAll=window._tutShowAll||false;
+  var display=showAll?rows:rows.slice(0,5);
+  window._tutCurrentRows=display;
+
+  wrap.innerHTML=display.map(function(t,i){
     var ytId=_extractYtId(t.youtube_url||'');
     var sm=secMeta[t.section]||defMeta[i%defMeta.length];
-    var thumbSrc=ytId?('https://img.youtube.com/vi/'+ytId+'/hqdefault.jpg'):'';
-    var ytUrl=(t.youtube_url||'').replace(/'/g,"\\'");
-    var titleSafe=(t.title||'—').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    var descSafe=(t.description||'ئامۆژگاری گشتگیر بۆ بەکارهێنانی سیستەمی Proxo Ads').replace(/'/g,"\\'");
-    var catArr=t.section?[t.section]:[];
-    var durBadge=t.duration?('<div class="tut-grid-dur"><i class="fas fa-play" style="font-size:7px"></i>'+t.duration+'م</div>'):'';
-    var catBadge=t.section?('<div class="tut-grid-cat" style="background:'+sm.grad+'"><i class="fas '+sm.icon+'" style="font-size:7px"></i> '+t.section+'</div>'):'';
-    return '<div class="tut-grid-card" data-cat="'+(t.section||'tutorial')+'" onclick="openTutVideoIdx('+i+')">'+
-      +(thumbSrc?'<img class="tut-grid-thumb" src="'+thumbSrc+'" alt="" onerror="this.style.display=\'none\'">':'')
-      +'<div class="tut-grid-fallback" style="background:'+sm.grad+'"><i class="fas '+sm.icon+'" style="font-size:28px;color:rgba(255,255,255,.35)"></i></div>'
-      +'<div class="tut-grid-overlay"></div>'
+    var thumb=ytId?('https://img.youtube.com/vi/'+ytId+'/mqdefault.jpg'):'';
+    var titleSafe=(t.title||'فێرکاری').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    var dur=t.duration?(t.duration+'م'):'';
+    var catName=t.section||'';
+
+    var thumbHtml=thumb
+      ?('<img class="tut-vcard-img" src="'+thumb+'" loading="lazy" onerror="this.style.display='none'">')
+      :'';
+    var fallbackHtml='<div class="tut-vcard-fallback" style="background:'+sm.grad+'"><i class="fas '+sm.icon+'"></i></div>';
+    var durBadge=dur?('<div class="tut-vcard-dur">'+dur+'</div>'):'';
+    var catBadge=catName?('<div class="tut-vcard-cat" style="background:'+sm.grad+'"><i class="fas '+sm.icon+'" style="font-size:8px"></i> '+catName+'</div>'):'';
+    var metaTime=dur?('<span><i class="fas fa-clock"></i> '+dur+'</span>'):'';
+
+    return '<div class="tut-vcard" onclick="openTutVideoIdx('+i+')">'
+      +'<div class="tut-vcard-thumb">'
+      +fallbackHtml
+      +thumbHtml
+      +'<div class="tut-vcard-play"><div class="tut-vcard-play-btn"><i class="fas fa-play" style="padding-right:1px"></i></div></div>'
+      +durBadge
+      +'</div>'
+      +'<div class="tut-vcard-info">'
       +catBadge
-      +'<div class="tut-grid-play"><i class="fas fa-play"></i></div>'
-      +'<div class="tut-grid-bottom">'+durBadge+'<div class="tut-grid-title">'+titleSafe+'</div></div>'
+      +'<div class="tut-vcard-title">'+titleSafe+'</div>'
+      +(metaTime?('<div class="tut-vcard-meta">'+metaTime+'</div>'):'')
+      +'</div>'
       +'</div>';
-  }).join('')+'</div>';
-  if(!_tutShowAllFlag&&rows.length>3){
-    var _tmDiv=document.createElement('div');
-    _tmDiv.style.cssText='text-align:center;padding:14px 0 8px';
-    _tmDiv.innerHTML='<button onclick="window._tutShowAll=true;_tutRenderFiltered()" style="padding:10px 28px;border-radius:20px;background:var(--bg);border:1.5px solid var(--b1);font-family:R,sans-serif;font-size:13px;font-weight:700;color:var(--dark);cursor:pointer;display:inline-flex;align-items:center;gap:6px"><i class=\\"fas fa-chevron-down\\" style=\\"font-size:10px\\"></i>بینینی زیاتر ('+(rows.length-3)+' ڤیدیۆی تر)</button>';
-    wrap.appendChild(_tmDiv);
+  }).join('');
+
+  if(!showAll&&rows.length>5){
+    var more=document.createElement('button');
+    more.className='tut-more-btn';
+    more.innerHTML='<i class="fas fa-chevron-down" style="font-size:11px"></i> بینینی زیاتر ('+(rows.length-5)+' ڤیدیۆی تر)';
+    more.onclick=function(){window._tutShowAll=true;_tutRenderFiltered();};
+    wrap.appendChild(more);
   }
   _tutBuildFilterChips();
 }
