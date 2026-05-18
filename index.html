@@ -260,7 +260,7 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 @keyframes spin{to{transform:rotate(360deg);}}
 
 /* ══ APP ══ */
-#app{display:none;flex-direction:column;min-height:100vh;min-height:-webkit-fill-available;padding-bottom:86px;background:var(--bg);-webkit-overflow-scrolling:touch;scroll-behavior:smooth;}
+#app{display:none;flex-direction:column;min-height:100vh;min-height:-webkit-fill-available;padding-bottom:104px;background:var(--bg);-webkit-overflow-scrolling:touch;scroll-behavior:smooth;}
 .topbar{padding:10px 14px;background:var(--w);border-bottom:1px solid var(--b1);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;position:-webkit-sticky;position:sticky;top:0;z-index:200;gap:8px;}
 .topbar-left{display:flex;align-items:center;gap:8px;}
 .topbar-center{display:flex;justify-content:center;align-items:center;}
@@ -2649,18 +2649,34 @@ function _toWebP(dataUrl,quality){
     </div>
 
     <div class="home-card" onclick="goPage('create')">
-      <div class="home-card-ico"><i class="fas fa-rectangle-ad"></i></div>
+      <div class="home-card-ico"><i class="fas fa-plus"></i></div>
       <div class="home-card-info">
         <div class="home-card-title">سپۆنسەری نوێ</div>
         <div class="home-card-sub">ڕیکلامێکی تیکتۆک دەستپێ بکە</div>
       </div>
       <i class="fas fa-chevron-left home-card-arr"></i>
     </div>
+    <div class="home-card" onclick="goPage('myads')">
+      <div class="home-card-ico" style="background:rgba(28,35,51,.08);"><i class="fas fa-bullhorn" style="color:#1c2333"></i></div>
+      <div class="home-card-info">
+        <div class="home-card-title">سپۆنسەرەکانم</div>
+        <div class="home-card-sub">ڕیکلامەکانی خۆت بپاروو بکە</div>
+      </div>
+      <i class="fas fa-chevron-left home-card-arr"></i>
+    </div>
     <div class="home-card" onclick="goPage('proxolink')">
-      <div class="home-card-ico light"><i class="fas fa-link"></i></div>
+      <div class="home-card-ico" style="background:rgba(28,35,51,.08);"><i class="fas fa-layer-group" style="color:#1c2333"></i></div>
       <div class="home-card-info">
         <div class="home-card-title">ئامرازەکان</div>
         <div class="home-card-sub">ئامرازی پەیوەندیت دروست بکە</div>
+      </div>
+      <i class="fas fa-chevron-left home-card-arr"></i>
+    </div>
+    <div class="home-card" onclick="goPage('tutorials')">
+      <div class="home-card-ico" style="background:rgba(28,35,51,.08);"><i class="fas fa-circle-play" style="color:#1c2333"></i></div>
+      <div class="home-card-info">
+        <div class="home-card-title">فێرکاری</div>
+        <div class="home-card-sub">کلیک بکە و ڤیدیۆکەت لێرەوە ببینە</div>
       </div>
       <i class="fas fa-chevron-left home-card-arr"></i>
     </div>
@@ -6731,6 +6747,7 @@ function _extractYtId(url){
 var _tutAllRows = [];
 var _tutSecFilter = 'all';
 
+var _tutRealtimeChannel=null;
 async function loadTutorials(){
   var wrap=document.getElementById('tutDynamicList');
   if(!wrap)return;
@@ -6740,6 +6757,29 @@ async function loadTutorials(){
     _tutAllRows=(res.data)||[];
     _tutRenderFiltered();
   }catch(e){wrap.innerHTML='';}
+  // Realtime: auto-open newly published tutorial
+  if(_tutRealtimeChannel)sb.removeChannel(_tutRealtimeChannel);
+  _tutRealtimeChannel=sb.channel('tut_live_'+Date.now())
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'pa_tutorials'},function(payload){
+      var t=payload.new;
+      if(!t)return;
+      // Reload the list
+      sb.from('pa_tutorials').select('*').order('created_at',{ascending:false}).then(function(r){
+        _tutAllRows=(r.data)||[];
+        _tutRenderFiltered();
+        // Auto-open the new video if tutorial page is visible
+        var tutPg=document.getElementById('pgTutorials');
+        if(tutPg&&tutPg.classList.contains('on')&&t.youtube_url){
+          setTimeout(function(){
+            var title=t.title||'ڤیدیۆی فێرکاری';
+            var desc=t.description||'';
+            var sec=t.section||'';
+            openTutVideo(t.youtube_url,title,desc,sec,sec?[sec]:[]);
+          },400);
+        }
+      });
+    })
+    .subscribe();
 }
 
 function _tutRenderFiltered(){
@@ -6774,15 +6814,30 @@ function _tutRenderFiltered(){
     if(!grouped[sec]){grouped[sec]=[];sectionOrder.push(sec);}
     grouped[sec].push(t);
   });
-  // Section icon map for header icons (emoji/text icons shown beside section title)
+  // Section icon map — FontAwesome icons
   var secHdrIcon={
-    'دەستپێک':'🚀','ڕیکلام':'📢','ئامراز':'🛠','باڵانس':'💰','کۆین':'🪙','گشتگیر':'📚',
-    'تیکتۆک':'🎵','یوتیوب':'▶️','ئینستاگرام':'📸','فەیسبووک':'👤'
+    'دەستپێک':'fas fa-rocket',
+    'ڕیکلام':'fas fa-bullhorn',
+    'ئامراز':'fas fa-wrench',
+    'باڵانس':'fas fa-wallet',
+    'کۆین':'fas fa-coins',
+    'گشتگیر':'fas fa-graduation-cap',
+    'تیکتۆک':'fab fa-tiktok',
+    'یوتیوب':'fab fa-youtube',
+    'ئینستاگرام':'fab fa-instagram',
+    'فەیسبووک':'fab fa-facebook'
+  };
+  // Section icon color map
+  var secHdrColor={
+    'دەستپێک':'#f97316','ڕیکلام':'#2563eb','ئامراز':'#7c3aed',
+    'باڵانس':'#16a34a','کۆین':'#d97706','گشتگیر':'#6366f1',
+    'تیکتۆک':'#000','یوتیوب':'#dc2626','ئینستاگرام':'#e1306c','فەیسبووک':'#1877f2'
   };
   var html='<div class="tut-list">';
   sectionOrder.forEach(function(sec){
-    var ico=secHdrIcon[sec]||'🎬';
-    html+='<div class="tut-section-hdr"><span class="tut-section-hdr-txt">فێرکاری بۆ '+sec+'</span><span class="tut-section-hdr-ico">'+ico+'</span></div>';
+    var icoClass=secHdrIcon[sec]||'fas fa-play-circle';
+    var icoColor=secHdrColor[sec]||'#6366f1';
+    // section header removed per user request
     grouped[sec].forEach(function(t,i){
       var ytUrl=(t.youtube_url||'').replace(/'/g,"\\'");
       var titleSafe=(t.title||'—').replace(/</g,'&lt;').replace(/>/g,'&gt;');
