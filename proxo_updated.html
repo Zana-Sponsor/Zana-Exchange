@@ -1281,14 +1281,14 @@ textarea.lc-inp{resize:none;}
 .faq-item.open{border-color:rgba(14,120,255,.35);box-shadow:0 4px 18px rgba(14,120,255,.1);}
 .faq-item-q{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .18s;-webkit-user-select:none;user-select:none;}
 .faq-item-q:active{background:var(--bg);}
-.faq-item-q-ico{width:34px;height:34px;border-radius:11px;background:rgba(14,120,255,.08);border:1px solid rgba(14,120,255,.15);display:flex;align-items:center;justify-content:center;font-size:13px;color:#0E78FF;flex-shrink:0;transition:all .25s;}
-.faq-item.open .faq-item-q-ico{background:linear-gradient(135deg,#0E78FF,#0a50c9);border-color:transparent;color:#fff;box-shadow:0 3px 10px rgba(14,120,255,.3);}
+.faq-item-q-ico{width:38px;height:38px;border-radius:13px;background:var(--dark);border:none;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;flex-shrink:0;transition:all .25s;}
+.faq-item.open .faq-item-q-ico{background:var(--dark);color:#fff;box-shadow:0 4px 12px rgba(28,35,51,.25);}
 .faq-item-q-txt{flex:1;font-size:13.5px;font-weight:700;color:var(--dark);line-height:1.5;}
 .faq-item.open .faq-item-q-txt{color:#0E78FF;}
 .faq-item-q-arr{width:28px;height:28px;border-radius:50%;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--mt);flex-shrink:0;transition:all .3s;}
 .faq-item.open .faq-item-q-arr{background:rgba(14,120,255,.08);border-color:rgba(14,120,255,.2);color:#0E78FF;transform:rotate(180deg);}
-.faq-item-a{display:none;padding:0 16px 14px;animation:faqFadeIn .2s ease;}
-.faq-item.open .faq-item-a{display:block;}
+.faq-item-a{max-height:0;overflow:hidden;padding:0 16px;transition:max-height .38s cubic-bezier(.4,0,.2,1),padding .38s cubic-bezier(.4,0,.2,1),opacity .28s ease;opacity:0;}
+.faq-item.open .faq-item-a{max-height:600px;padding:0 16px 14px;opacity:1;}
 @keyframes faqFadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 .faq-item-a-inner{background:linear-gradient(135deg,rgba(14,120,255,.04),rgba(14,120,255,.02));border:1px solid rgba(14,120,255,.12);border-radius:12px;padding:13px 14px;}
 .faq-item-a-txt{font-size:13px;color:var(--dark2);line-height:1.9;}
@@ -2581,31 +2581,31 @@ function _toWebP(dataUrl,quality){
       </div>
       <!-- ١ — پارە زیادکردن -->
       <div class="sidebar-item" onclick="openDeposit();closeSidebar()">
-        <div class="sidebar-item-txt">پارە زیادکردن</div>
         <div class="sidebar-item-ico"><i class="fas fa-plus-circle"></i></div>
+        <div class="sidebar-item-txt">پارە زیادکردن</div>
       </div>
       <!-- ٢ — مێژووی مامەڵەکان -->
       <div class="sidebar-item" onclick="goPage('txhistory');closeSidebar()">
-        <div class="sidebar-item-txt">مێژووی مامەڵەکان</div>
         <div class="sidebar-item-ico"><i class="fas fa-clock-rotate-left"></i></div>
+        <div class="sidebar-item-txt">مێژووی مامەڵەکان</div>
       </div>
       <!-- ٣ — خەڵاتی هەفتانە -->
       <div class="sidebar-item" onclick="goPage('giveaway');closeSidebar()">
-        <div class="sidebar-item-txt">خەڵاتی هەفتانە</div>
         <div class="sidebar-item-ico"><i class="fas fa-gift"></i></div>
+        <div class="sidebar-item-txt">خەڵاتی هەفتانە</div>
       </div>
       <!-- ٤ — پشتگیری ڕاستەوخۆ -->
       <div class="sidebar-item" id="lcSidebarItem" onclick="lcOpenChatDirect();closeSidebar();">
-        <div class="sidebar-item-txt">پشتگیری ڕاستەوخۆ</div>
         <div class="sidebar-item-ico" style="position:relative">
           <i class="fas fa-headset"></i>
           <span id="lcSideNavDot" style="display:none;position:absolute;top:4px;right:4px;width:9px;height:9px;border-radius:50%;background:#4ade80;border:2px solid #fff"></span>
         </div>
+        <div class="sidebar-item-txt">پشتگیری ڕاستەوخۆ</div>
       </div>
       <!-- ٥ — مەرجەکان -->
       <div class="sidebar-item terms" onclick="openTermsModal();closeSidebar()">
-        <div class="sidebar-item-txt">مەرجەکان</div>
         <div class="sidebar-item-ico"><i class="fas fa-file-lines"></i></div>
+        <div class="sidebar-item-txt">مەرجەکان</div>
       </div>
       <div style="text-align:center;padding:14px 0 4px;font-size:11px;color:var(--mt);font-family:'Inter',sans-serif;letter-spacing:.5px;font-weight:500">
         v<span id="sidebarVersionLbl">1.0.1</span>
@@ -10422,13 +10422,11 @@ async function loadNotifications(){
     warning:           {ico:'fas fa-triangle-exclamation',cls:'notif-yw', title:'ئاگادارکردنەوە'},
     error:             {ico:'fas fa-circle-exclamation',  cls:'notif-rd', title:'کێشە'},
   };
-  list.innerHTML=data.map(n=>{
+  function buildNotifHTML(n,typeMap){
     const t=typeMap[n.type]||typeMap.general;
     const timeAgo=getTimeAgo(n.created_at);
     const icoBgMap={'notif-gr':'rgba(22,163,74,.1)','notif-rd':'rgba(220,38,38,.08)','notif-yw':'rgba(217,119,6,.08)','notif-bl':'rgba(37,99,235,.08)'};
     const icoBorderMap={'notif-gr':'rgba(22,163,74,.2)','notif-rd':'rgba(220,38,38,.15)','notif-yw':'rgba(217,119,6,.2)','notif-bl':'rgba(37,99,235,.15)'};
-
-    // ── گەڕانەوەی پارە: نیشاندانی بڕ + ناو + ئایدی بەڕوونی ──
     const isRefund=(n.type==='refund'||n.type==='refund_rejected_ad');
     const refundExtra=isRefund&&n.meta?`
       <div style="margin-top:8px;background:rgba(22,163,74,.06);border:1px solid rgba(22,163,74,.2);border-radius:10px;padding:9px 12px">
@@ -10439,14 +10437,12 @@ async function loadNotifications(){
         ${n.meta.ad_number?`<div style="font-size:10px;color:var(--mt2);display:flex;align-items:center;gap:4px"><i class="fas fa-rectangle-ad" style="font-size:9px"></i>ڕیکلام <span style="font-family:monospace;background:var(--bg);padding:1px 6px;border-radius:5px;border:1px solid var(--b1)">#${n.meta.ad_number}</span>${n.meta.ad_title?`— ${n.meta.ad_title}`:''}</div>`:''}
         ${n.meta.reason?`<div style="font-size:10px;color:var(--mt);margin-top:4px;padding-top:4px;border-top:1px dashed rgba(22,163,74,.2)"><i class="fas fa-info-circle" style="margin-left:3px;opacity:.6"></i>${n.meta.reason}</div>`:''}
       </div>`:
-    // ── ئایدی ڕیکلام ئەگەر ئەوجۆرە بوو ──
     (n.meta?.ad_number&&!isRefund)?`
       <div style="margin-top:6px;display:inline-flex;align-items:center;gap:5px;background:var(--bg);border:1px solid var(--b1);border-radius:8px;padding:3px 9px;font-size:10px;color:var(--dark2)">
         <i class="fas fa-rectangle-ad" style="font-size:9px;opacity:.6"></i>
         ڕیکلام <span style="font-family:monospace;font-weight:700">#${n.meta.ad_number}</span>
         ${n.meta.ad_title?`<span style="color:var(--mt)">— ${n.meta.ad_title}</span>`:''}
       </div>`:'';
-
     return`<div class="notif-item ${n.is_read?'':'unread'}" id="notif-${n.id}" style="position:relative">
       <div class="notif-ico ${t.cls}" style="background:${icoBgMap[t.cls]||'var(--bg)'};border:1px solid ${icoBorderMap[t.cls]||'var(--b1)'}">
         <i class="${t.ico}"></i>
@@ -10466,8 +10462,39 @@ async function loadNotifications(){
         </div>
       </div>
     </div>`;
-  }).join('');
-  list.innerHTML=(versionCard||'')+list.innerHTML;
+  }
+  const visible=data.slice(0,3);
+  const hidden=data.slice(3);
+  const visibleHTML=visible.map(n=>buildNotifHTML(n,typeMap)).join('');
+  const hiddenHTML=hidden.length?`
+    <div id="notifExtra" style="overflow:hidden;max-height:0;transition:max-height .45s cubic-bezier(.4,0,.2,1);">
+      ${hidden.map(n=>buildNotifHTML(n,typeMap)).join('')}
+    </div>
+    <button id="notifSeeMoreBtn" onclick="notifToggleMore()" style="display:flex;align-items:center;justify-content:center;gap:7px;width:100%;margin-top:4px;padding:13px 0;background:rgba(28,35,51,.05);border:1.5px solid rgba(28,35,51,.1);border-radius:14px;font-family:'R',sans-serif;font-size:13px;font-weight:700;color:var(--dark);cursor:pointer;transition:all .22s;touch-action:manipulation;">
+      <span id="notifSeeMoreTxt">بۆ بینینی زیاتر (${hidden.length})</span>
+      <i id="notifSeeMoreIco" class="fas fa-chevron-down" style="font-size:11px;transition:transform .3s;"></i>
+    </button>`:'';
+  list.innerHTML=(versionCard||'')+visibleHTML+hiddenHTML;
+}
+var _notifMoreOpen=false;
+function notifToggleMore(){
+  _notifMoreOpen=!_notifMoreOpen;
+  var extra=document.getElementById('notifExtra');
+  var btn=document.getElementById('notifSeeMoreBtn');
+  var txt=document.getElementById('notifSeeMoreTxt');
+  var ico=document.getElementById('notifSeeMoreIco');
+  if(!extra||!btn)return;
+  if(_notifMoreOpen){
+    extra.style.maxHeight=extra.scrollHeight+'px';
+    txt.textContent='کەمکردنەوە';
+    ico.style.transform='rotate(180deg)';
+    btn.style.background='rgba(28,35,51,.08)';
+  }else{
+    extra.style.maxHeight='0';
+    txt.textContent='بۆ بینینی زیاتر';
+    ico.style.transform='rotate(0deg)';
+    btn.style.background='rgba(28,35,51,.05)';
+  }
 }
 
 async function dismissNotif(id){
