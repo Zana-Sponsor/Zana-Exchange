@@ -336,7 +336,7 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .coins-need-more{width:100%;padding:13px;background:var(--bg);border:1.5px dashed var(--b2);border-radius:14px;color:var(--mt);font-family:'R',sans-serif;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;cursor:default;}
 
 /* ══ NOTIFICATION BELL ══ */
-.notif-btn{position:relative;width:34px;height:34px;border-radius:50%;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--dark);overflow:visible;isolation:isolate;}
+.notif-btn{position:relative;width:34px;height:34px;border-radius:10px;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--dark);overflow:visible;isolation:isolate;}
 .notif-dot{position:absolute;top:-7px;right:-7px;min-width:20px;height:20px;border-radius:10px;background:#dc2626;border:2px solid var(--w);display:none;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff;font-family:'Inter',sans-serif;letter-spacing:-.3px;padding:0 5px;box-shadow:0 2px 8px rgba(220,38,38,.55);z-index:20;white-space:nowrap;line-height:1;}
 .notif-dot.show{display:flex;animation:notifPulse 1.8s ease-in-out infinite;}
 .notif-count{position:absolute;top:-5px;left:-5px;min-width:18px;height:18px;border-radius:9px;background:#dc2626;border:2px solid var(--w);display:none;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;padding:0 4px;font-family:'Inter',sans-serif;box-shadow:0 2px 6px rgba(220,38,38,.4);z-index:10;}
@@ -892,12 +892,12 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .sidebar-item{display:flex;align-items:center;gap:13px;padding:13px 14px;border-radius:14px;cursor:pointer;transition:all .18s;margin-bottom:4px;}
 .sidebar-item:active,.sidebar-item:hover{background:var(--bg);}
 .sidebar-item.active{background:rgba(28,35,51,.06);}
-.sidebar-item-ico{width:40px;height:40px;border-radius:13px;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--dark2);flex-shrink:0;}
-.sidebar-item-txt{font-size:14px;font-weight:700;color:var(--dark);}
-.sidebar-item.red .sidebar-item-ico{background:rgba(220,38,38,.06);border-color:rgba(220,38,38,.15);}
+.sidebar-item-ico{width:42px;height:42px;border-radius:13px;background:var(--dark);border:none;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;flex-shrink:0;}
+.sidebar-item-txt{font-size:14px;font-weight:700;color:var(--dark);flex:1;}
+.sidebar-item.red .sidebar-item-ico{background:rgba(220,38,38,.1);border:1px solid rgba(220,38,38,.15);}
 .sidebar-item.red .sidebar-item-ico i{color:var(--rd);}
 .sidebar-item.red .sidebar-item-txt{color:var(--rd);}
-.sidebar-item.green .sidebar-item-ico{background:rgba(22,163,74,.07);border-color:rgba(22,163,74,.18);}
+.sidebar-item.green .sidebar-item-ico{background:rgba(22,163,74,.1);border:1px solid rgba(22,163,74,.18);}
 .sidebar-item.green .sidebar-item-ico i{color:var(--gr);}
 .sidebar-div{height:1px;background:var(--b1);margin:8px 4px;}
 .sidebar-bal{display:flex;align-items:center;justify-content:space-between;margin:8px 4px 10px;padding:10px 14px;background:var(--dark);border-radius:14px;}
@@ -2578,55 +2578,47 @@ function _toWebP(dataUrl,quality){
         </div>
         <div onclick="openDeposit();closeSidebar();" style="background:rgba(255,255,255,.15);border-radius:10px;padding:8px 12px;font-size:12px;color:#fff;cursor:pointer;"><i class="fas fa-plus"></i> بارکردن</div>
       </div>
-      <div class="sidebar-item" onclick="goPage('home');closeSidebar()">
-        <div class="sidebar-item-ico"><i class="fas fa-house"></i></div>
-        <div class="sidebar-item-txt">سەرەکی</div>
-      </div>
-      <div class="sidebar-item" onclick="goPage('profile');closeSidebar()">
-        <div class="sidebar-item-ico"><i class="fas fa-circle-user"></i></div>
-        <div class="sidebar-item-txt">پرۆفایل</div>
-      </div>
       <div class="sidebar-item" onclick="goPage('myads');closeSidebar()">
-        <div class="sidebar-item-ico"><i class="fas fa-bullhorn"></i></div>
         <div class="sidebar-item-txt">ڕیکلامەکانم</div>
+        <div class="sidebar-item-ico"><i class="fas fa-bullhorn"></i></div>
       </div>
       <div class="sidebar-item" onclick="goPage('proxolink');closeSidebar()">
-        <div class="sidebar-item-ico"><i class="fas fa-layer-group"></i></div>
         <div class="sidebar-item-txt">ئامرازەکان</div>
+        <div class="sidebar-item-ico"><i class="fas fa-layer-group"></i></div>
       </div>
       <div class="sidebar-item" onclick="goPage('tutorials');closeSidebar()">
-        <div class="sidebar-item-ico"><i class="fas fa-graduation-cap"></i></div>
         <div class="sidebar-item-txt">فێرکاری</div>
+        <div class="sidebar-item-ico"><i class="fas fa-graduation-cap"></i></div>
       </div>
       <div class="sidebar-item" onclick="goPage('txhistory');closeSidebar()">
-        <div class="sidebar-item-ico"><i class="fas fa-clock-rotate-left"></i></div>
         <div class="sidebar-item-txt">مێژووی مامەڵەکان</div>
+        <div class="sidebar-item-ico"><i class="fas fa-clock-rotate-left"></i></div>
       </div>
-
+      <div class="sidebar-div"></div>
       <div class="sidebar-item" onclick="goPage('promocodes');closeSidebar()">
-        <div class="sidebar-item-ico" style="background:rgba(234,179,8,.08);border-color:rgba(234,179,8,.2)"><i class="fas fa-tags" style="color:#ca8a04"></i></div>
         <div class="sidebar-item-txt">کۆدی داشکاندن</div>
+        <div class="sidebar-item-ico" style="background:rgba(234,179,8,.15);"><i class="fas fa-tags" style="color:#ca8a04"></i></div>
       </div>
       <div class="sidebar-item" onclick="goPage('giveaway');closeSidebar()">
-        <div class="sidebar-item-ico" style="background:rgba(168,85,247,.08);border-color:rgba(168,85,247,.2)"><i class="fas fa-gift" style="color:#a855f7"></i></div>
         <div class="sidebar-item-txt">خەڵاتی هەفتانە</div>
+        <div class="sidebar-item-ico" style="background:rgba(168,85,247,.15);"><i class="fas fa-gift" style="color:#a855f7"></i></div>
       </div>
       <!-- ══ LIVE CHAT SIDEBAR ITEM ══ -->
       <div class="sidebar-item" id="lcSidebarItem" onclick="lcOpenChatDirect();closeSidebar();" style="display:none">
-        <div class="sidebar-item-ico" style="background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.2);position:relative">
-          <i class="fas fa-headset" style="color:#10b981"></i>
-          <span id="lcSideNavDot" style="display:none;position:absolute;top:5px;right:5px;width:8px;height:8px;border-radius:50%;background:#4ade80;border:2px solid #fff"></span>
-        </div>
         <div class="sidebar-item-txt">پشتگیری ڕاستەوخۆ</div>
+        <div class="sidebar-item-ico" style="background:rgba(16,185,129,.15);position:relative">
+          <i class="fas fa-headset" style="color:#10b981"></i>
+          <span id="lcSideNavDot" style="display:none;position:absolute;top:4px;right:4px;width:9px;height:9px;border-radius:50%;background:#4ade80;border:2px solid #fff"></span>
+        </div>
       </div>
       <div class="sidebar-item terms" onclick="openTermsModal();closeSidebar()">
-        <div class="sidebar-item-ico"><i class="fas fa-file-lines"></i></div>
         <div class="sidebar-item-txt">مەرجەکانی بەکارهێنان</div>
+        <div class="sidebar-item-ico"><i class="fas fa-file-lines"></i></div>
       </div>
       <div class="sidebar-div"></div>
       <div class="sidebar-item red" onclick="doLogout()">
-        <div class="sidebar-item-ico"><i class="fas fa-right-from-bracket"></i></div>
         <div class="sidebar-item-txt">چوونەدەرەوە</div>
+        <div class="sidebar-item-ico"><i class="fas fa-right-from-bracket"></i></div>
       </div>
       <div style="text-align:center;padding:14px 0 4px;font-size:11px;color:var(--mt);font-family:'Inter',sans-serif;letter-spacing:.5px;font-weight:500">
         v<span id="sidebarVersionLbl">1.0.1</span>
@@ -7020,9 +7012,10 @@ function openTutVideo(url, title, desc, cat, tags){
   }
 
   var embedUrl = url;
-  var ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
-  if(ytMatch){ embedUrl = 'https://www.youtube.com/embed/' + ytMatch[1] + '?autoplay=1&rel=0'; }
-  else if(url.indexOf('/embed/') > -1 && url.indexOf('autoplay') === -1){
+  var ytId = _extractYtId(url);
+  if(ytId){
+    embedUrl = 'https://www.youtube.com/embed/' + ytId + '?autoplay=1&rel=0';
+  } else if(url.indexOf('/embed/') > -1){
     embedUrl = url + (url.indexOf('?') > -1 ? '&' : '?') + 'autoplay=1&rel=0';
   }
 
