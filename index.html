@@ -451,16 +451,20 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .create-submit:active{opacity:.9;transform:scale(.99);}
 .create-submit:disabled{opacity:.4;pointer-events:none;}
 
-/* ══ BOTTOM NAV ══ */
-.bnav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.96);border-top:1px solid rgba(232,234,240,.6);display:none;z-index:300;padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 -4px 24px rgba(0,0,0,.07);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);}
-.bnav-inner{display:flex;max-width:500px;margin:0 auto;}
-.bn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:10px 4px 8px;border:none;background:transparent;color:var(--mt);font-family:'R',sans-serif;font-size:10px;cursor:pointer;transition:color .2s;}
-.bn.on{color:#0E78FF;}
+/* ══ BOTTOM NAV — PILL FLOAT ══ */
+.bnav{position:fixed;bottom:14px;left:14px;right:14px;background:rgba(255,255,255,.98);border-radius:32px;display:none;z-index:300;box-shadow:0 6px 32px rgba(0,0,0,.13),0 1px 6px rgba(0,0,0,.06);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);}
+.bnav-inner{display:flex;max-width:500px;margin:0 auto;align-items:center;padding:6px 4px;}
+.bn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px 2px;border:none;background:transparent;color:#9ba5b7;font-family:'R',sans-serif;font-size:9.5px;cursor:pointer;transition:color .2s;-webkit-tap-highlight-color:transparent;}
+.bn.on{color:#1c2333;}
 .bn i{font-size:20px;}
-.bn-fab-col{flex:1;display:flex;justify-content:center;align-items:flex-start;padding-top:6px;}
-.bn-fab{background:#0E78FF;border-radius:18px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;margin-top:-22px;border:3px solid var(--bg);box-shadow:0 6px 22px rgba(14,120,255,.4);cursor:pointer;transition:transform .2s,box-shadow .2s;}
-.bn-fab:active{transform:scale(.92);box-shadow:0 3px 12px rgba(14,120,255,.3);}
-.bn-fab i{font-size:20px;color:#fff;}
+.bn-pip{width:44px;height:34px;border-radius:17px;display:flex;align-items:center;justify-content:center;transition:background .22s;}
+.bn-lbl{font-weight:600;margin-top:1px;}
+.bn.on .bn-pip{background:rgba(28,35,51,.08);}
+.bn.on i{color:#1c2333;}
+.bn-fab-col{flex:1;display:flex;justify-content:center;align-items:center;}
+.bn-fab{background:#1c2333;border-radius:50%;width:54px;height:54px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(28,35,51,.35);cursor:pointer;transition:transform .18s,box-shadow .18s;-webkit-tap-highlight-color:transparent;}
+.bn-fab:active{transform:scale(.92);box-shadow:0 2px 10px rgba(28,35,51,.25);}
+.bn-fab i{font-size:22px;color:#fff;}
 
 /* ══ PAGES ══ */
 .pg{display:none;padding:20px;animation:fu .22s cubic-bezier(.25,.46,.45,.94);-webkit-overflow-scrolling:touch;scroll-behavior:smooth;}
@@ -903,15 +907,21 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 
 /* ══ TUTORIALS PAGE — PREMIUM REDESIGN ══ */
 /* Hero Banner */
-.tut-lhero{position:relative;margin:-16px -16px 18px;padding:28px 20px 24px;background:linear-gradient(135deg,#1c2333 0%,#2e3a50 60%,#3d4f6e 100%);overflow:hidden;border-radius:0 0 28px 28px;}
-.tut-lhero::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(99,102,241,.15);pointer-events:none;}
-.tut-lhero::after{content:'';position:absolute;bottom:-30px;left:-20px;width:100px;height:100px;border-radius:50%;background:rgba(139,92,246,.1);pointer-events:none;}
-.tut-lhero-inner{position:relative;display:flex;align-items:center;gap:14px;}
-.tut-lhero-icon{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;flex-shrink:0;box-shadow:0 8px 24px rgba(99,102,241,.4);}
-.tut-lhero-text{flex:1;}
-.tut-lhero-title{font-size:20px;font-weight:900;color:#fff;letter-spacing:-.3px;}
-.tut-lhero-sub{font-size:12px;color:rgba(255,255,255,.6);margin-top:4px;line-height:1.5;}
-.tut-lhero-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:4px 11px;font-size:10px;font-weight:700;color:rgba(255,255,255,.75);margin-top:8px;backdrop-filter:blur(4px);}
+/* ── Tutorial simple header ── */
+.tut-simple-header{text-align:center;padding:8px 0 20px;}
+.tut-page-title{font-size:26px;font-weight:900;color:var(--dark);letter-spacing:-.5px;}
+/* ── Tutorial list card ── */
+.tut-list{display:flex;flex-direction:column;gap:0;}
+.tut-section-hdr{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:18px 0 10px;}
+.tut-section-hdr-txt{font-size:15px;font-weight:800;color:var(--dark);}
+.tut-section-hdr-ico{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.tut-list-card{display:flex;align-items:center;gap:14px;background:#fff;border:1.5px solid rgba(228,232,240,.7);border-radius:18px;padding:16px 16px;margin-bottom:10px;box-shadow:0 2px 10px rgba(0,0,0,.04);cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.tut-list-card:active{transform:scale(.98);box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.tut-list-btn{display:flex;align-items:center;gap:6px;background:#1c2333;border-radius:14px;padding:10px 14px;flex-shrink:0;color:#fff;font-family:'R',sans-serif;font-size:12px;font-weight:700;}
+.tut-list-btn i{font-size:11px;}
+.tut-list-info{flex:1;text-align:right;}
+.tut-list-title{font-size:14px;font-weight:800;color:var(--dark);line-height:1.5;}
+.tut-list-desc{font-size:11.5px;color:var(--mt2);margin-top:3px;line-height:1.55;}
 /* Filter chips scroll row */
 .tut-filter-row{display:flex;gap:8px;overflow-x:auto;padding:0 0 4px;margin-bottom:16px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
 .tut-filter-row::-webkit-scrollbar{display:none;}
@@ -1417,7 +1427,7 @@ html{scroll-behavior:smooth;}
 .bn{position:relative;transition:color .22s cubic-bezier(.22,.61,.36,1);}
 .bn i{display:block;transition:transform .25s cubic-bezier(.34,1.56,.64,1),color .2s ease;}
 .bn.on i{transform:translateY(-2px);}
-.bn.on::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:18px;height:3px;background:#0E78FF;border-radius:3px 3px 0 0;animation:navPip .3s cubic-bezier(.34,1.56,.64,1);}
+.bn.on::after{display:none;}
 @keyframes navPip{from{width:0;opacity:0}to{width:18px;opacity:1}}
 /* Scroll containers — smooth + no scrollbar */
 .sidebar-body,.mbox,.tms-body,.ad-sheet-body,.lc-msgs-area,.chat-body,.pg{
@@ -2238,19 +2248,19 @@ function _clipboardFallback(text, onSuccess, onFail) {
 .notif-body{font-size:12px;color:var(--mt2);margin-top:3px;line-height:1.65;}
 .notif-time{font-size:10px;color:var(--mt);display:flex;align-items:center;gap:3px;}
 .unread-dot{width:8px;height:8px;border-radius:50%;background:#6366f1;box-shadow:0 0 6px rgba(99,102,241,.5);}
-/* BOTTOM NAV — circular FAB + bounce */
-.bnav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.97);border-top:1px solid rgba(228,231,240,.8);display:none;z-index:300;padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 -2px 20px rgba(28,35,51,.06);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);}
-.bnav-inner{display:flex;max-width:500px;margin:0 auto;align-items:flex-end;}
-.bn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px 12px;border:none;background:transparent;color:#9ba5b7;font-family:'R',sans-serif;font-size:9.5px;cursor:pointer;transition:color .2s;-webkit-tap-highlight-color:transparent;}
-.bn-pip{width:44px;height:28px;border-radius:14px;display:flex;align-items:center;justify-content:center;transition:background .22s;}
+/* BOTTOM NAV — PILL FLOAT override */
+.bnav{position:fixed;bottom:14px;left:14px;right:14px;background:rgba(255,255,255,.98);border-radius:32px;display:none;z-index:300;box-shadow:0 6px 32px rgba(0,0,0,.13),0 1px 6px rgba(0,0,0,.06);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-top:none;padding-bottom:0;}
+.bnav-inner{display:flex;max-width:500px;margin:0 auto;align-items:center;padding:6px 4px;}
+.bn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 2px;border:none;background:transparent;color:#9ba5b7;font-family:'R',sans-serif;font-size:9.5px;cursor:pointer;transition:color .2s;-webkit-tap-highlight-color:transparent;}
+.bn-pip{width:44px;height:34px;border-radius:17px;display:flex;align-items:center;justify-content:center;transition:background .22s;}
 .bn i{font-size:20px;transition:color .2s;}
 .bn-lbl{font-weight:600;margin-top:1px;}
-.bn.on{color:#0E78FF;}
-.bn.on .bn-pip{background:rgba(14,120,255,.10);}
-.bn.on i{color:#0E78FF;}
-.bn-fab-col{flex:1;display:flex;justify-content:center;align-items:flex-start;padding-top:5px;}
-.bn-fab{background:linear-gradient(135deg,#2a8fff,#0E78FF);border-radius:50%;width:54px;height:54px;display:flex;align-items:center;justify-content:center;margin-top:-22px;box-shadow:0 8px 28px rgba(14,120,255,.40);cursor:pointer;transition:box-shadow .18s;-webkit-tap-highlight-color:transparent;}
-.bn-fab:active{box-shadow:0 4px 12px rgba(14,120,255,.28);}
+.bn.on{color:#1c2333;}
+.bn.on .bn-pip{background:rgba(28,35,51,.08);}
+.bn.on i{color:#1c2333;}
+.bn-fab-col{flex:1;display:flex;justify-content:center;align-items:center;}
+.bn-fab{background:#1c2333;border-radius:50%;width:54px;height:54px;display:flex;align-items:center;justify-content:center;margin-top:0;border:none;box-shadow:0 4px 18px rgba(28,35,51,.35);cursor:pointer;transition:transform .18s,box-shadow .18s;-webkit-tap-highlight-color:transparent;}
+.bn-fab:active{transform:scale(.92);box-shadow:0 2px 10px rgba(28,35,51,.25);}
 .bn-fab i{font-size:22px;color:#fff;}
 @keyframes fabBounce{
   0%{transform:scale(1) translateY(0);}
@@ -3492,16 +3502,9 @@ function _toWebP(dataUrl,quality){
   ════════════════════════════════════════════════ -->
   <div class="pg" id="pgTutorials">
 
-    <!-- Hero Banner -->
-    <div class="tut-lhero">
-      <div class="tut-lhero-inner">
-        <div class="tut-lhero-icon"><i class="fas fa-play-circle"></i></div>
-        <div class="tut-lhero-text">
-          <div class="tut-lhero-title">فێرکاری</div>
-          <div class="tut-lhero-sub">کلیک بکە و ڤیدیۆکەت لێرەوە ببینە</div>
-          <div class="tut-lhero-badge"><i class="fas fa-bolt"></i> فێربوون بە ئاسانی</div>
-        </div>
-      </div>
+    <!-- Simple Header -->
+    <div class="tut-simple-header">
+      <h1 class="tut-page-title">فێرکاری</h1>
     </div>
 
     <!-- فلتەری بەش -->
@@ -6763,25 +6766,36 @@ function _tutRenderFiltered(){
   if(typeof _tutShowAll==='undefined')window._tutShowAll=false;
   var _tutShowAllFlag=window._tutShowAll||false;
   var _tutDisplayRows=_tutShowAllFlag?rows:rows.slice(0,3);
-  wrap.innerHTML='<div class="tut-grid">'+_tutDisplayRows.map(function(t,i){
-    var ytId=_extractYtId(t.youtube_url||'');
-    var sm=secMeta[t.section]||defMeta[i%defMeta.length];
-    var thumbSrc=ytId?('https://img.youtube.com/vi/'+ytId+'/hqdefault.jpg'):'';
-    var ytUrl=(t.youtube_url||'').replace(/'/g,"\\'");
-    var titleSafe=(t.title||'—').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    var descSafe=(t.description||'ئامۆژگاری گشتگیر بۆ بەکارهێنانی سیستەمی Proxo Ads').replace(/'/g,"\\'");
-    var catArr=t.section?[t.section]:[];
-    var durBadge=t.duration?('<div class="tut-grid-dur"><i class="fas fa-play" style="font-size:7px"></i>'+t.duration+'م</div>'):'';
-    var catBadge=t.section?('<div class="tut-grid-cat" style="background:'+sm.grad+'"><i class="fas '+sm.icon+'" style="font-size:7px"></i> '+t.section+'</div>'):'';
-    return '<div class="tut-grid-card" data-cat="'+(t.section||'tutorial')+'" onclick="openTutVideo(\''+ytUrl+'\',\''+titleSafe+'\',\''+descSafe+'\',\''+(t.section||'')+'\','+JSON.stringify(catArr)+')">'
-      +(thumbSrc?'<img class="tut-grid-thumb" src="'+thumbSrc+'" alt="" onerror="this.style.display=\'none\'">':'')
-      +'<div class="tut-grid-fallback" style="background:'+sm.grad+'"><i class="fas '+sm.icon+'" style="font-size:28px;color:rgba(255,255,255,.35)"></i></div>'
-      +'<div class="tut-grid-overlay"></div>'
-      +catBadge
-      +'<div class="tut-grid-play"><i class="fas fa-play"></i></div>'
-      +'<div class="tut-grid-bottom">'+durBadge+'<div class="tut-grid-title">'+titleSafe+'</div></div>'
-      +'</div>';
-  }).join('')+'</div>';
+  // Group rows by section
+  var grouped={};
+  var sectionOrder=[];
+  _tutDisplayRows.forEach(function(t){
+    var sec=t.section||'گشتگیر';
+    if(!grouped[sec]){grouped[sec]=[];sectionOrder.push(sec);}
+    grouped[sec].push(t);
+  });
+  // Section icon map for header icons (emoji/text icons shown beside section title)
+  var secHdrIcon={
+    'دەستپێک':'🚀','ڕیکلام':'📢','ئامراز':'🛠','باڵانس':'💰','کۆین':'🪙','گشتگیر':'📚',
+    'تیکتۆک':'🎵','یوتیوب':'▶️','ئینستاگرام':'📸','فەیسبووک':'👤'
+  };
+  var html='<div class="tut-list">';
+  sectionOrder.forEach(function(sec){
+    var ico=secHdrIcon[sec]||'🎬';
+    html+='<div class="tut-section-hdr"><span class="tut-section-hdr-txt">فێرکاری بۆ '+sec+'</span><span class="tut-section-hdr-ico">'+ico+'</span></div>';
+    grouped[sec].forEach(function(t,i){
+      var ytUrl=(t.youtube_url||'').replace(/'/g,"\\'");
+      var titleSafe=(t.title||'—').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      var descSafe=(t.description||'ئامۆژگاری گشتگیر بۆ بەکارهێنانی سیستەمی Proxo Ads').replace(/'/g,"\\'");
+      var catArr=t.section?[t.section]:[];
+      html+='<div class="tut-list-card" onclick="openTutVideo(\''+ytUrl+'\',\''+titleSafe+'\',\''+descSafe+'\',\''+(t.section||'')+'\','+JSON.stringify(catArr)+')">'
+        +'<div class="tut-list-btn"><i class="fas fa-play"></i>فیدیۆ</div>'
+        +'<div class="tut-list-info"><div class="tut-list-title">'+titleSafe+'</div>'+(t.description?'<div class="tut-list-desc">'+t.description.replace(/</g,'&lt;').replace(/>/g,'&gt;').substring(0,80)+(t.description.length>80?'...':'')+'</div>':'')+'</div>'
+        +'</div>';
+    });
+  });
+  html+='</div>';
+  wrap.innerHTML=html;
   if(!_tutShowAllFlag&&rows.length>3){
     var _tmDiv=document.createElement('div');
     _tmDiv.style.cssText='text-align:center;padding:14px 0 8px';
