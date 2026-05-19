@@ -2240,10 +2240,10 @@ function _clipboardFallback(text, onSuccess, onFail) {
 .ch-soft-title{font-size:20px;font-weight:900;color:#1c2333;letter-spacing:-.3px;}.ch-soft-title-inp{width:100%;border:none;background:transparent;outline:none;font-size:18px;font-weight:900;color:#1c2333;letter-spacing:-.3px;font-family:'R',sans-serif;padding:0;cursor:text;caret-color:#6366f1;}.ch-soft-title-inp::placeholder{color:#b0b8cc;font-weight:700;}
 .ch-soft-sub{font-size:11px;color:#8b95a8;font-family:'Inter',sans-serif;}
 /* GOAL SLIDING */
-.gseg-wrap{position:relative;display:flex;flex-direction:row;gap:6px;background:var(--bg);border-radius:22px;padding:6px;border:1.5px solid var(--b1);}
-.gseg-pill{position:absolute;background:var(--dark);border-radius:16px;box-shadow:0 3px 14px rgba(28,35,51,.20);pointer-events:none;transition:left .30s cubic-bezier(.4,0,.2,1),width .30s cubic-bezier(.4,0,.2,1);top:6px;bottom:6px;left:6px;}
-.gseg-opt{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px 8px;border-radius:16px;border:none;background:transparent;cursor:pointer;font-family:'R',sans-serif;text-align:center;flex:1;-webkit-tap-highlight-color:transparent;}
-.gseg-ico{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;background:var(--dark);color:#fff;transition:background .30s,color .30s;}
+.gseg-wrap{position:relative;display:flex;flex-direction:row;gap:5px;background:var(--bg);border-radius:20px;padding:5px;border:1.5px solid var(--b1);}
+.gseg-pill{position:absolute;background:var(--dark);border-radius:16px;box-shadow:0 3px 14px rgba(28,35,51,.20);pointer-events:none;transition:left .30s cubic-bezier(.4,0,.2,1),width .30s cubic-bezier(.4,0,.2,1);top:5px;bottom:5px;left:5px;}
+.gseg-opt{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:14px 8px;border-radius:16px;border:none;background:transparent;cursor:pointer;font-family:'R',sans-serif;text-align:center;flex:1;-webkit-tap-highlight-color:transparent;}
+.gseg-ico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:var(--dark);color:#fff;transition:background .30s,color .30s;}
 .gseg-ico.msg-c{background:var(--dark);color:#fff;}
 .gseg-ico.views-c{background:var(--dark);color:#fff;}
 .gseg-info{flex:1;}
@@ -2251,10 +2251,14 @@ function _clipboardFallback(text, onSuccess, onFail) {
 .gseg-sub{font-size:10px;color:var(--mt2);margin-top:3px;line-height:1.5;transition:color .30s;}.gseg-opt.on .gseg-sub{color:rgba(255,255,255,.60);}
 .gseg-chk{display:none;}.gseg-opt.on .gseg-ico{background:rgba(255,255,255,.18);color:#fff;}
 
-.ad-date-pill-wrap{display:flex;justify-content:center;align-items:center;padding:14px 4px 10px;}
-.ad-date-pill{display:inline-flex;align-items:center;background:#1c2333;border-radius:50px;padding:10px 22px;max-width:100%;box-shadow:0 4px 18px rgba(28,35,51,.18);}
-.ad-date-inp{background:transparent;border:none;outline:none;font-family:'R',sans-serif;font-size:15px;font-weight:800;color:#fff;letter-spacing:-.2px;text-align:center;width:220px;caret-color:#a5b4fc;}
-.ad-date-inp::placeholder{color:rgba(255,255,255,.4);font-weight:700;}
+.ad-date-card{background:var(--w);border:1.5px solid var(--b1);border-radius:20px;padding:16px 18px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.04);}
+.ad-date-card-top{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.ad-date-card-ico{width:30px;height:30px;border-radius:9px;background:var(--dark);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;flex-shrink:0;}
+.ad-date-card-lbl{font-size:12px;font-weight:700;color:var(--mt2);flex:1;}
+.ad-date-card-date{font-size:11px;font-weight:600;color:var(--mt2);font-family:'Inter',sans-serif;}
+.ad-date-inp-wrap{border-bottom:1.5px solid var(--b1);padding-bottom:4px;}
+.ad-date-inp{width:100%;background:transparent;border:none;outline:none;font-family:'R',sans-serif;font-size:18px;font-weight:900;color:var(--dark);letter-spacing:-.3px;text-align:right;caret-color:#6366f1;padding:0;}
+.ad-date-inp::placeholder{color:var(--mt2);font-weight:700;font-size:16px;}
 /* TARGETING */
 .age-grp{padding:9px 15px;border-radius:22px;font-family:'R',sans-serif;font-size:12.5px;cursor:pointer;border:1.5px solid var(--b1);background:var(--w);color:var(--mt2);transition:all .18s;font-weight:600;display:flex;align-items:center;gap:5px;}
 .age-grp.on{background:var(--dark)!important;color:#fff!important;border-color:var(--dark)!important;box-shadow:0 2px 10px rgba(28,35,51,.14);}
@@ -2959,13 +2963,17 @@ function _toWebP(dataUrl,quality){
   <!-- CREATE AD -->
   <div class="pg" id="pgCreate">
 
-    <!-- ── Ad Date Pill ── -->
-    <div class="ad-date-pill-wrap">
-      <div class="ad-date-pill">
-        <input class="ad-date-inp" id="adNameTitle" type="text" placeholder="ناوی ڕیکلام..." maxlength="50" dir="auto">
+    <!-- ── Ad Name Card ── -->
+    <div class="ad-date-card">
+      <div class="ad-date-card-top">
+        <div class="ad-date-card-ico"><i class="fas fa-pen"></i></div>
+        <div class="ad-date-card-lbl">ناوی ڕیکلام</div>
+        <div class="ad-date-card-date" id="todayLbl"></div>
+      </div>
+      <div class="ad-date-inp-wrap">
+        <input class="ad-date-inp" id="adNameTitle" type="text" placeholder="ناوی ڕیکلامەکەت بنووسە..." maxlength="50" dir="auto">
       </div>
     </div>
-    <div id="todayLbl" style="display:none"></div>
 
     <!-- ── 1. Goal Selection ── -->
     <div class="create-sec">
@@ -6419,7 +6427,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     auth:{persistSession:true,autoRefreshToken:true,storageKey:'proxo_sb_session'}
   });
   const n=new Date();
-  var _adNameInp=document.getElementById('adNameTitle');if(_adNameInp)_adNameInp.value='New Ad '+n.toLocaleDateString('en-GB').replace(/\//g,'/');document.getElementById('todayLbl').textContent='New Ad '+n.toLocaleDateString('en-GB').replace(/\//g,'/');
+  var _adNameInp=document.getElementById('adNameTitle');if(_adNameInp)_adNameInp.value='New Ad '+n.toLocaleDateString('en-GB').replace(/\//g,'/');var _tl=document.getElementById('todayLbl');if(_tl)_tl.textContent=n.toLocaleDateString('en-GB').replace(/\//g,'/');
   document.getElementById('adDate').value=n.toISOString().split('T')[0];
   document.getElementById('adTime').value=n.toTimeString().substring(0,5);
   initTierPicker();
@@ -7314,7 +7322,7 @@ function goPage(p){
   if(p==='support')loadChat();
   if(p==='profile'){loadBal();loadReferralSection();}
   if(p==='home'){loadCoins();}
-  if(p==='create'){selectedAssetId=null;cardId=null;goal='messages';days=1;dailyUSD=10;dailyCost=18500;budget=18500;budgetTier=0;tierIndex=0;document.querySelectorAll('.bud-daily-btn').forEach((b,i)=>{b.classList.toggle('sel',i===0);});clearAssetSel&&clearAssetSel();document.querySelectorAll('.card-pick').forEach(x=>x.classList.remove('sel'));document.querySelectorAll('.goal-tab,.goal-tab-v2,.gseg-opt').forEach(x=>x.classList.toggle('on',x.dataset.g==='messages'));setTimeout(function(){if(typeof _animGoalPill==='function')_animGoalPill();if(typeof _animGenDark==='function')_animGenDark();if(typeof _animLocDark==='function')_animLocDark();},60);var _ani=document.getElementById('adNameTitle');if(_ani){const _nd=new Date();_ani.value='New Ad '+_nd.toLocaleDateString('en-GB').replace(/\//g,'/');}  const _al=document.getElementById('adLink');if(_al)_al.value='';const _ac=document.getElementById('adCode');if(_ac)_ac.value='';const _pi=document.getElementById('promoCodeInp');if(_pi)_pi.value='';if(typeof clearPromoResult==='function')clearPromoResult();updateBudgetDisplay();loadAssetsForDropdown();}
+  if(p==='create'){selectedAssetId=null;cardId=null;goal='messages';days=1;dailyUSD=10;dailyCost=18500;budget=18500;budgetTier=0;tierIndex=0;document.querySelectorAll('.bud-daily-btn').forEach((b,i)=>{b.classList.toggle('sel',i===0);});clearAssetSel&&clearAssetSel();document.querySelectorAll('.card-pick').forEach(x=>x.classList.remove('sel'));document.querySelectorAll('.goal-tab,.goal-tab-v2,.gseg-opt').forEach(x=>x.classList.toggle('on',x.dataset.g==='messages'));setTimeout(function(){if(typeof _animGoalPill==='function')_animGoalPill();if(typeof _animGenDark==='function')_animGenDark();if(typeof _animLocDark==='function')_animLocDark();},60);var _ani=document.getElementById('adNameTitle');var _nd2=new Date();if(_ani)_ani.value='New Ad '+_nd2.toLocaleDateString('en-GB').replace(/\//g,'/');var _tl2=document.getElementById('todayLbl');if(_tl2)_tl2.textContent=_nd2.toLocaleDateString('en-GB').replace(/\//g,'/');const _al=document.getElementById('adLink');if(_al)_al.value='';const _ac=document.getElementById('adCode');if(_ac)_ac.value='';const _pi=document.getElementById('promoCodeInp');if(_pi)_pi.value='';if(typeof clearPromoResult==='function')clearPromoResult();updateBudgetDisplay();loadAssetsForDropdown();}
   if(p==='txhistory')loadTxHistory();
   if(p==='tutorials')loadTutorials();
   if(p==='promocodes')loadPromocodesPage();
