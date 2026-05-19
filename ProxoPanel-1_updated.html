@@ -3048,7 +3048,7 @@ async function submitApproval(){
         });
       }
     }catch(_apErr){/* silent */}
-    showToast('✅ ڕیکلام پەسەندکرا — ستاتۆس: چالاک (Live)','gr');
+    showToast('✅ ڕیکلام پەسەندکرا — دۆخ: چالاک (Live)','gr');
     closeMo('moApproveAd');
     loadAds();
     loadApprovalWorkflow();
@@ -3085,12 +3085,12 @@ async function confirmReject(){
       await sb.from('pa_notifications').insert({
         user_id:dep.user_id,
         type:'deposit_rejected',
-        title:'پارەدانت ڕەتکرا ❌',
+        title:'پارەدانت ڕەتکراوە ❌',
         body:'هۆکار: '+reason,
         is_read:false
       });
       // ── Firebase realtime push ──
-      _fbPushNotif(dep.user_id,'پارەدانت ڕەتکرا ❌','هۆکار: '+reason,'deposit_rejected');
+      _fbPushNotif(dep.user_id,'پارەدانت ڕەتکراوە ❌','هۆکار: '+reason,'deposit_rejected');
     }
     loadDeposits();
   } else {
@@ -3171,12 +3171,12 @@ async function confirmReject(){
         await sb.from('pa_notifications').insert({
           user_id:adObj.user_id,
           type:'general',
-          title:`${adLabel} ڕەتکرا ❌`,
+          title:`${adLabel} ڕەتکراوە ❌`,
           body:'هۆکاری ڕەتکردنەوە: '+reason,
           is_read:false
         });
         // ── Firebase realtime push (ڕەتکردنی ڕیکلام) ──
-        _fbPushNotif(adObj.user_id,`${adLabel} ڕەتکرا ❌`,'هۆکاری ڕەتکردنەوە: '+reason,'ad_rejected');
+        _fbPushNotif(adObj.user_id,`${adLabel} ڕەتکراوە ❌`,'هۆکاری ڕەتکردنەوە: '+reason,'ad_rejected');
         _fbTriggerAds(adObj.user_id, id, 'rejected');
         // ══ ناردنی ئیمەیلی ڕەتکردنەوەی ڕیکلام لە ڕێگای webhook ══
         try{
