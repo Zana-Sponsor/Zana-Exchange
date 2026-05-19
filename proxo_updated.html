@@ -2259,6 +2259,18 @@ function _clipboardFallback(text, onSuccess, onFail) {
 .gender-pill.on{background:var(--dark)!important;color:#fff!important;border-color:var(--dark)!important;box-shadow:0 2px 10px rgba(28,35,51,.14);}
 .fchip{padding:9px 16px;border-radius:22px;border:1.5px solid var(--b1);background:var(--w);color:var(--mt2);font-size:12.5px;font-weight:600;cursor:pointer;transition:all .18s;font-family:'R',sans-serif;}
 .fchip.on{background:var(--dark);color:#fff;border-color:var(--dark);box-shadow:0 2px 10px rgba(28,35,51,.14);}
+
+/* ══ GENDER SLIDING PILL (horizontal, like gseg) ══ */
+.gender-wrap{position:relative!important;background:#f0f1f5!important;border-radius:26px!important;padding:4px!important;gap:0!important;margin-bottom:10px!important;}
+.gender-slide-pill{position:absolute;background:#fff;border-radius:22px;box-shadow:0 2px 14px rgba(28,35,51,.10),0 1px 3px rgba(28,35,51,.06);pointer-events:none;top:4px;height:calc(100% - 8px);transition:left .28s cubic-bezier(.4,0,.2,1),width .28s cubic-bezier(.4,0,.2,1);}
+.gender-pill{position:relative!important;z-index:1!important;background:transparent!important;border:none!important;box-shadow:none!important;color:var(--mt2)!important;border-radius:22px!important;}
+.gender-pill.on{background:transparent!important;border:none!important;box-shadow:none!important;color:var(--dark)!important;}
+
+/* ══ LOCATION SLIDING PILL (horizontal) ══ */
+.loc-chips-wrap{position:relative;background:#f0f1f5;border-radius:26px;padding:4px;display:flex;gap:0;flex-wrap:nowrap;margin-bottom:4px;}
+.loc-slide-pill{position:absolute;background:#fff;border-radius:22px;box-shadow:0 2px 14px rgba(28,35,51,.10),0 1px 3px rgba(28,35,51,.06);pointer-events:none;top:4px;height:calc(100% - 8px);transition:left .28s cubic-bezier(.4,0,.2,1),width .28s cubic-bezier(.4,0,.2,1);}
+.loc-chips-wrap .fchip{position:relative;z-index:1;background:transparent!important;border:none!important;box-shadow:none!important;color:var(--mt2);flex:1;text-align:center;}
+.loc-chips-wrap .fchip.on{background:transparent!important;border:none!important;box-shadow:none!important;color:var(--dark)!important;font-weight:700;}
 /* BUDGET RINGS */
 .bud-rings-grid{display:flex;align-items:flex-start;margin:6px 0 14px;}
 .bud-ring-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:12px;padding:14px 6px;}
@@ -3045,6 +3057,7 @@ function _toWebP(dataUrl,quality){
       <!-- Gender -->
       <div class="csub">ڕەگەز</div>
       <div class="gender-wrap">
+        <div class="gender-slide-pill" id="genSlidePill"></div>
         <button class="gender-pill on" data-gen="all" onclick="pickGen(this)">
           <i class="fas fa-users"></i><span>هەموو</span>
         </button>
@@ -3058,7 +3071,8 @@ function _toWebP(dataUrl,quality){
 
       <!-- Location -->
       <div class="csub">شوێن <span style="color:var(--rd)">*</span></div>
-      <div style="display:flex;gap:7px;flex-wrap:wrap">
+      <div class="loc-chips-wrap">
+        <div class="loc-slide-pill" id="locSlidePill"></div>
         <div class="fchip on" data-loc="kurdistan" onclick="pickLoc(this)">کوردستان</div>
         <div class="fchip" data-loc="iraq" onclick="pickLoc(this)">عێراق</div>
         <div class="fchip" data-loc="all" onclick="pickLoc(this)">کورد و عەرەب</div>
@@ -7789,6 +7803,7 @@ function pickGoal(el){
   // ئەنجامی خەملێنراو دەستبەجێ نوێ بکەرەوە بۆ ئامانجی نوێ
   updateEstResults();
   updateBudgetDisplay();
+  setTimeout(function(){if(typeof _animGoalPill==='function')_animGoalPill();if(typeof _animGenSlide==='function')_animGenSlide();if(typeof _animLocSlide==='function')_animLocSlide();},80);
   // ئەگەر ئامانج "نامە" نەبوو، هەڵبژاردنی ئامراز بسڕەوە
   if(goal!=='messages'){
     selectedAssetId=null;
@@ -7804,8 +7819,8 @@ function pickGoal(el){
     if(chev)chev.style.transform='';
   }
 }
-function pickGen(el){document.querySelectorAll('.gender-pill').forEach(x=>{x.classList.remove('on');x.classList.remove('jump');});el.classList.add('on');requestAnimationFrame(()=>{el.classList.remove('jump');requestAnimationFrame(()=>{el.classList.add('jump');});});gender=el.dataset.gen;}
-function pickLoc(el){document.querySelectorAll('[data-loc]').forEach(x=>{x.classList.remove('on');x.classList.remove('jump');});el.classList.add('on');requestAnimationFrame(()=>{el.classList.remove('jump');requestAnimationFrame(()=>{el.classList.add('jump');});});adLocation=el.dataset.loc;}
+function pickGen(el){document.querySelectorAll('.gender-pill').forEach(x=>x.classList.remove('on'));el.classList.add('on');gender=el.dataset.gen;if(typeof _animGenSlide==='function')_animGenSlide();}
+function pickLoc(el){document.querySelectorAll('[data-loc]').forEach(x=>x.classList.remove('on'));el.classList.add('on');adLocation=el.dataset.loc;if(typeof _animLocSlide==='function')_animLocSlide();}
 
 // ═══ TELEGRAM CONFIG (هەمان ProxoLink) ═══
 const TG_TOKEN_ASSET = atob('ODU2ODA0MDUzMDpBQUh1X2pfQUxYdFBaeFl1RS02QS1tUUozZ1A0Z1hyd3RFbw==');
@@ -12444,10 +12459,48 @@ function _resetTermsAgree() {
 function _animGoalPill(){
   var wrap=document.getElementById('goalSegWrap');
   var pill=document.getElementById('goalSegPill');
-  var active=document.querySelector('.gseg-opt.on');
+  var active=document.querySelector('#goalSegWrap .gseg-opt.on');
   if(!wrap||!pill||!active)return;
   pill.style.top=active.offsetTop+'px';
   pill.style.height=active.offsetHeight+'px';
+}
+function _animGenSlide(){
+  requestAnimationFrame(function(){
+    var pill=document.getElementById('genSlidePill');
+    var active=document.querySelector('.gender-pill.on');
+    if(!pill||!active)return;
+    pill.style.left=active.offsetLeft+'px';
+    pill.style.width=active.offsetWidth+'px';
+  });
+}
+function _animLocSlide(){
+  requestAnimationFrame(function(){
+    var pill=document.getElementById('locSlidePill');
+    var active=document.querySelector('.loc-chips-wrap .fchip.on');
+    if(!pill||!active)return;
+    pill.style.left=active.offsetLeft+'px';
+    pill.style.width=active.offsetWidth+'px';
+  });
+}
+function _animGenPill(){
+  requestAnimationFrame(function(){
+    var wrap=document.getElementById('genSegWrap');
+    var pill=document.getElementById('genSegPill');
+    var active=document.querySelector('#genSegWrap .gseg-opt.on');
+    if(!wrap||!pill||!active)return;
+    pill.style.top=active.offsetTop+'px';
+    pill.style.height=active.offsetHeight+'px';
+  });
+}
+function _animLocPill(){
+  requestAnimationFrame(function(){
+    var wrap=document.getElementById('locSegWrap');
+    var pill=document.getElementById('locSegPill');
+    var active=document.querySelector('#locSegWrap .gseg-opt.on');
+    if(!wrap||!pill||!active)return;
+    pill.style.top=active.offsetTop+'px';
+    pill.style.height=active.offsetHeight+'px';
+  });
 }
 /* RINGS r=38, circ=238.7 */
 var _RC=238.7;
