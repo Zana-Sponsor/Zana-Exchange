@@ -7315,7 +7315,7 @@ function goPage(p){
   if(p==='support')loadChat();
   if(p==='profile'){loadBal();loadReferralSection();}
   if(p==='home'){loadCoins();}
-  if(p==='create'){selectedAssetId=null;cardId=null;goal='messages';days=1;dailyUSD=10;dailyCost=18500;budget=18500;budgetTier=0;tierIndex=0;document.querySelectorAll('.bud-daily-btn').forEach((b,i)=>{b.classList.toggle('sel',i===0);});clearAssetSel&&clearAssetSel();document.querySelectorAll('.card-pick').forEach(x=>x.classList.remove('sel'));document.querySelectorAll('.goal-tab,.goal-tab-v2,.gseg-opt').forEach(x=>x.classList.toggle('on',x.dataset.g==='messages'));setTimeout(function(){if(typeof _animGoalPill==='function')_animGoalPill();},60);const _al=document.getElementById('adLink');if(_al)_al.value='';const _ac=document.getElementById('adCode');if(_ac)_ac.value='';const _pi=document.getElementById('promoCodeInp');if(_pi)_pi.value='';if(typeof clearPromoResult==='function')clearPromoResult();updateBudgetDisplay();loadAssetsForDropdown();}
+  if(p==='create'){selectedAssetId=null;cardId=null;goal='messages';days=1;dailyUSD=10;dailyCost=18500;budget=18500;budgetTier=0;tierIndex=0;document.querySelectorAll('.bud-daily-btn').forEach((b,i)=>{b.classList.toggle('sel',i===0);});clearAssetSel&&clearAssetSel();document.querySelectorAll('.card-pick').forEach(x=>x.classList.remove('sel'));document.querySelectorAll('.goal-tab,.goal-tab-v2,.gseg-opt').forEach(x=>x.classList.toggle('on',x.dataset.g==='messages'));setTimeout(function(){if(typeof _animGoalPill==='function')_animGoalPill();if(typeof _animGenDark==='function')_animGenDark();if(typeof _animLocDark==='function')_animLocDark();},60);const _al=document.getElementById('adLink');if(_al)_al.value='';const _ac=document.getElementById('adCode');if(_ac)_ac.value='';const _pi=document.getElementById('promoCodeInp');if(_pi)_pi.value='';if(typeof clearPromoResult==='function')clearPromoResult();updateBudgetDisplay();loadAssetsForDropdown();}
   if(p==='txhistory')loadTxHistory();
   if(p==='tutorials')loadTutorials();
   if(p==='promocodes')loadPromocodesPage();
@@ -7804,7 +7804,7 @@ function pickGoal(el){
   // ئەنجامی خەملێنراو دەستبەجێ نوێ بکەرەوە بۆ ئامانجی نوێ
   updateEstResults();
   updateBudgetDisplay();
-  setTimeout(function(){if(typeof _animGoalPill==='function')_animGoalPill();if(typeof _animGenDark==='function')_animGenDark();if(typeof _animLocDark==='function')_animLocDark();},80);
+  if(typeof _animGoalPill==='function')_animGoalPill();
   // ئەگەر ئامانج "نامە" نەبوو، هەڵبژاردنی ئامراز بسڕەوە
   if(goal!=='messages'){
     selectedAssetId=null;
