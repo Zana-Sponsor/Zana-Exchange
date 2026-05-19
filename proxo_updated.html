@@ -2240,17 +2240,21 @@ function _clipboardFallback(text, onSuccess, onFail) {
 .ch-soft-title{font-size:20px;font-weight:900;color:#1c2333;letter-spacing:-.3px;}.ch-soft-title-inp{width:100%;border:none;background:transparent;outline:none;font-size:18px;font-weight:900;color:#1c2333;letter-spacing:-.3px;font-family:'R',sans-serif;padding:0;cursor:text;caret-color:#6366f1;}.ch-soft-title-inp::placeholder{color:#b0b8cc;font-weight:700;}
 .ch-soft-sub{font-size:11px;color:#8b95a8;font-family:'Inter',sans-serif;}
 /* GOAL SLIDING */
-.gseg-wrap{position:relative;display:flex;flex-direction:row;gap:6px;background:#1c2333;border-radius:22px;padding:6px;}
-.gseg-pill{position:absolute;background:#2e3b55;border-radius:16px;box-shadow:0 4px 18px rgba(0,0,0,.30);pointer-events:none;transition:left .30s cubic-bezier(.4,0,.2,1),width .30s cubic-bezier(.4,0,.2,1);top:6px;bottom:6px;left:6px;}
-.gseg-opt{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px 8px;border-radius:16px;border:none;background:transparent;cursor:pointer;font-family:'R',sans-serif;text-align:center;flex:1;-webkit-tap-highlight-color:transparent;transition:transform .15s;}
-.gseg-ico{width:52px;height:52px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
-.gseg-ico.msg-c{background:rgba(99,102,241,.28);color:#c4b5fd;}
-.gseg-ico.views-c{background:rgba(14,120,255,.28);color:#93c5fd;}
+.gseg-wrap{position:relative;display:flex;flex-direction:row;gap:6px;background:var(--bg);border-radius:22px;padding:6px;border:1.5px solid var(--b1);}
+.gseg-pill{position:absolute;background:var(--dark);border-radius:16px;box-shadow:0 3px 14px rgba(28,35,51,.20);pointer-events:none;transition:left .30s cubic-bezier(.4,0,.2,1),width .30s cubic-bezier(.4,0,.2,1);top:6px;bottom:6px;left:6px;}
+.gseg-opt{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px 8px;border-radius:16px;border:none;background:transparent;cursor:pointer;font-family:'R',sans-serif;text-align:center;flex:1;-webkit-tap-highlight-color:transparent;}
+.gseg-ico{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;background:var(--dark);color:#fff;transition:background .30s,color .30s;}
+.gseg-ico.msg-c{background:var(--dark);color:#fff;}
+.gseg-ico.views-c{background:var(--dark);color:#fff;}
 .gseg-info{flex:1;}
-.gseg-title{font-size:15px;font-weight:900;color:#fff;letter-spacing:-.2px;}
-.gseg-sub{font-size:10px;color:rgba(255,255,255,0.45);margin-top:3px;line-height:1.5;}
-.gseg-chk{display:none;}
+.gseg-title{font-size:14px;font-weight:900;color:var(--dark);letter-spacing:-.2px;transition:color .30s;}.gseg-opt.on .gseg-title{color:#fff;}
+.gseg-sub{font-size:10px;color:var(--mt2);margin-top:3px;line-height:1.5;transition:color .30s;}.gseg-opt.on .gseg-sub{color:rgba(255,255,255,.60);}
+.gseg-chk{display:none;}.gseg-opt.on .gseg-ico{background:rgba(255,255,255,.18);color:#fff;}
 
+.ad-date-pill-wrap{display:flex;justify-content:center;align-items:center;padding:14px 4px 10px;}
+.ad-date-pill{display:inline-flex;align-items:center;background:#1c2333;border-radius:50px;padding:10px 22px;max-width:100%;box-shadow:0 4px 18px rgba(28,35,51,.18);}
+.ad-date-inp{background:transparent;border:none;outline:none;font-family:'R',sans-serif;font-size:15px;font-weight:800;color:#fff;letter-spacing:-.2px;text-align:center;width:220px;caret-color:#a5b4fc;}
+.ad-date-inp::placeholder{color:rgba(255,255,255,.4);font-weight:700;}
 /* TARGETING */
 .age-grp{padding:9px 15px;border-radius:22px;font-family:'R',sans-serif;font-size:12.5px;cursor:pointer;border:1.5px solid var(--b1);background:var(--w);color:var(--mt2);transition:all .18s;font-weight:600;display:flex;align-items:center;gap:5px;}
 .age-grp.on{background:var(--dark)!important;color:#fff!important;border-color:var(--dark)!important;box-shadow:0 2px 10px rgba(28,35,51,.14);}
@@ -2955,17 +2959,13 @@ function _toWebP(dataUrl,quality){
   <!-- CREATE AD -->
   <div class="pg" id="pgCreate">
 
-    <!-- ── Hero Header ── -->
-    <div class="ch-soft">
-      <div class="ch-soft-glow"></div>
-      <div class="ch-soft-body">
-        <div class="ch-soft-icon"><i class="fas fa-rectangle-ad"></i></div>
-        <div class="ch-soft-text">
-          <input class="ch-soft-title-inp" id="adNameTitle" type="text" placeholder="ناوی ڕیکلام..." maxlength="50" dir="auto">
-          <div class="ch-soft-sub" id="todayLbl"></div>
-        </div>
+    <!-- ── Ad Date Pill ── -->
+    <div class="ad-date-pill-wrap">
+      <div class="ad-date-pill">
+        <input class="ad-date-inp" id="adNameTitle" type="text" placeholder="ناوی ڕیکلام..." maxlength="50" dir="auto">
       </div>
     </div>
+    <div id="todayLbl" style="display:none"></div>
 
     <!-- ── 1. Goal Selection ── -->
     <div class="create-sec">
