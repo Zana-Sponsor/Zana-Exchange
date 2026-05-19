@@ -2237,18 +2237,18 @@ function _clipboardFallback(text, onSuccess, onFail) {
 .ch-soft-icon{width:54px;height:54px;border-radius:17px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;box-shadow:0 6px 22px rgba(99,102,241,.28);flex-shrink:0;}
 .ch-soft-text{display:flex;flex-direction:column;gap:5px;}
 .ch-soft-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(99,102,241,.10);border:1px solid rgba(99,102,241,.18);border-radius:20px;padding:3px 11px;font-size:10px;font-weight:700;color:#6366f1;font-family:'R',sans-serif;width:fit-content;}
-.ch-soft-title{font-size:20px;font-weight:900;color:#1c2333;letter-spacing:-.3px;}
+.ch-soft-title{font-size:20px;font-weight:900;color:#1c2333;letter-spacing:-.3px;}.ch-soft-title-inp{width:100%;border:none;background:transparent;outline:none;font-size:18px;font-weight:900;color:#1c2333;letter-spacing:-.3px;font-family:'R',sans-serif;padding:0;cursor:text;caret-color:#6366f1;}.ch-soft-title-inp::placeholder{color:#b0b8cc;font-weight:700;}
 .ch-soft-sub{font-size:11px;color:#8b95a8;font-family:'Inter',sans-serif;}
 /* GOAL SLIDING */
-.gseg-wrap{position:relative;display:flex;flex-direction:row;gap:0;background:#1c2333;border-radius:20px;padding:5px;}
-.gseg-pill{position:absolute;background:rgba(255,255,255,0.10);border-radius:15px;box-shadow:0 2px 14px rgba(0,0,0,.25);pointer-events:none;transition:left .28s cubic-bezier(.4,0,.2,1),width .28s cubic-bezier(.4,0,.2,1);top:5px;bottom:5px;left:5px;}
-.gseg-opt{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:18px 10px;border-radius:15px;border:none;background:transparent;cursor:pointer;font-family:'R',sans-serif;text-align:center;flex:1;-webkit-tap-highlight-color:transparent;}
-.gseg-ico{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-.gseg-ico.msg-c{background:rgba(99,102,241,.22);color:#a5b4fc;}
-.gseg-ico.views-c{background:rgba(14,120,255,.22);color:#60a5fa;}
+.gseg-wrap{position:relative;display:flex;flex-direction:row;gap:6px;background:#1c2333;border-radius:22px;padding:6px;}
+.gseg-pill{position:absolute;background:#2e3b55;border-radius:16px;box-shadow:0 4px 18px rgba(0,0,0,.30);pointer-events:none;transition:left .30s cubic-bezier(.4,0,.2,1),width .30s cubic-bezier(.4,0,.2,1);top:6px;bottom:6px;left:6px;}
+.gseg-opt{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px 8px;border-radius:16px;border:none;background:transparent;cursor:pointer;font-family:'R',sans-serif;text-align:center;flex:1;-webkit-tap-highlight-color:transparent;transition:transform .15s;}
+.gseg-ico{width:52px;height:52px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.gseg-ico.msg-c{background:rgba(99,102,241,.28);color:#c4b5fd;}
+.gseg-ico.views-c{background:rgba(14,120,255,.28);color:#93c5fd;}
 .gseg-info{flex:1;}
-.gseg-title{font-size:14px;font-weight:800;color:#fff;}
-.gseg-sub{font-size:10px;color:rgba(255,255,255,0.50);margin-top:2px;}
+.gseg-title{font-size:15px;font-weight:900;color:#fff;letter-spacing:-.2px;}
+.gseg-sub{font-size:10px;color:rgba(255,255,255,0.45);margin-top:3px;line-height:1.5;}
 .gseg-chk{display:none;}
 
 /* TARGETING */
@@ -2961,8 +2961,7 @@ function _toWebP(dataUrl,quality){
       <div class="ch-soft-body">
         <div class="ch-soft-icon"><i class="fas fa-rectangle-ad"></i></div>
         <div class="ch-soft-text">
-          <div class="ch-soft-badge"><i class="fas fa-circle-check"></i> پڕۆکسۆ ئەدز</div>
-          <div class="ch-soft-title">سپۆنسەری نوێ</div>
+          <input class="ch-soft-title-inp" id="adNameTitle" type="text" placeholder="ناوی ڕیکلام..." maxlength="50" dir="auto">
           <div class="ch-soft-sub" id="todayLbl"></div>
         </div>
       </div>
@@ -6420,7 +6419,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     auth:{persistSession:true,autoRefreshToken:true,storageKey:'proxo_sb_session'}
   });
   const n=new Date();
-  document.getElementById('todayLbl').textContent='New Ad '+n.toLocaleDateString('en-GB').replace(/\//g,'/');
+  var _adNameInp=document.getElementById('adNameTitle');if(_adNameInp)_adNameInp.value='New Ad '+n.toLocaleDateString('en-GB').replace(/\//g,'/');document.getElementById('todayLbl').textContent='New Ad '+n.toLocaleDateString('en-GB').replace(/\//g,'/');
   document.getElementById('adDate').value=n.toISOString().split('T')[0];
   document.getElementById('adTime').value=n.toTimeString().substring(0,5);
   initTierPicker();
@@ -7315,7 +7314,7 @@ function goPage(p){
   if(p==='support')loadChat();
   if(p==='profile'){loadBal();loadReferralSection();}
   if(p==='home'){loadCoins();}
-  if(p==='create'){selectedAssetId=null;cardId=null;goal='messages';days=1;dailyUSD=10;dailyCost=18500;budget=18500;budgetTier=0;tierIndex=0;document.querySelectorAll('.bud-daily-btn').forEach((b,i)=>{b.classList.toggle('sel',i===0);});clearAssetSel&&clearAssetSel();document.querySelectorAll('.card-pick').forEach(x=>x.classList.remove('sel'));document.querySelectorAll('.goal-tab,.goal-tab-v2,.gseg-opt').forEach(x=>x.classList.toggle('on',x.dataset.g==='messages'));setTimeout(function(){if(typeof _animGoalPill==='function')_animGoalPill();if(typeof _animGenDark==='function')_animGenDark();if(typeof _animLocDark==='function')_animLocDark();},60);const _al=document.getElementById('adLink');if(_al)_al.value='';const _ac=document.getElementById('adCode');if(_ac)_ac.value='';const _pi=document.getElementById('promoCodeInp');if(_pi)_pi.value='';if(typeof clearPromoResult==='function')clearPromoResult();updateBudgetDisplay();loadAssetsForDropdown();}
+  if(p==='create'){selectedAssetId=null;cardId=null;goal='messages';days=1;dailyUSD=10;dailyCost=18500;budget=18500;budgetTier=0;tierIndex=0;document.querySelectorAll('.bud-daily-btn').forEach((b,i)=>{b.classList.toggle('sel',i===0);});clearAssetSel&&clearAssetSel();document.querySelectorAll('.card-pick').forEach(x=>x.classList.remove('sel'));document.querySelectorAll('.goal-tab,.goal-tab-v2,.gseg-opt').forEach(x=>x.classList.toggle('on',x.dataset.g==='messages'));setTimeout(function(){if(typeof _animGoalPill==='function')_animGoalPill();if(typeof _animGenDark==='function')_animGenDark();if(typeof _animLocDark==='function')_animLocDark();},60);var _ani=document.getElementById('adNameTitle');if(_ani){const _nd=new Date();_ani.value='New Ad '+_nd.toLocaleDateString('en-GB').replace(/\//g,'/');}  const _al=document.getElementById('adLink');if(_al)_al.value='';const _ac=document.getElementById('adCode');if(_ac)_ac.value='';const _pi=document.getElementById('promoCodeInp');if(_pi)_pi.value='';if(typeof clearPromoResult==='function')clearPromoResult();updateBudgetDisplay();loadAssetsForDropdown();}
   if(p==='txhistory')loadTxHistory();
   if(p==='tutorials')loadTutorials();
   if(p==='promocodes')loadPromocodesPage();
