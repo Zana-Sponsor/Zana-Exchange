@@ -8010,7 +8010,7 @@ function updateBudgetDisplay(){
 function chgBud(d){ /* no-op */ }
 
 function chgDays(d){
-  days=Math.max(1,Math.min(30,days+(d>0?1:-1)));
+  days=Math.max(1,Math.min(7,days+(d>0?1:-1)));
   updateBudgetDisplay();
   if(typeof clearPromoResult==='function')clearPromoResult();
 }
