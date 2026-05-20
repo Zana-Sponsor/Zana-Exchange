@@ -1531,7 +1531,7 @@ function _safeScrollIntoView(el, opts) {
 // Safe clipboard copy (Safari iOS needs execCommand fallback)
 function _safeCopy(text, onSuccess, onFail) {
   if (navigator.clipboard && window.isSecureContext) {
-    _safeCopy(text).then(function() {
+    navigator.clipboard.writeText(text).then(function() {
       if (onSuccess) onSuccess();
     }).catch(function() { _clipboardFallback(text, onSuccess, onFail); });
   } else {
@@ -5464,28 +5464,33 @@ async function doForgotSavePass(){
   const btn=document.getElementById('fpSaveBtn');
   btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> گۆڕین...';
   try{
-    // n8n دەیکاتەوە بە Supabase Admin API
     const res=await fetch(N8N_WEBHOOK,{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({action:'reset_password',email:_fpEmail,code:_fpVerifiedCode,new_password:np})});
     let data={};
     try{const txt=await res.text();if(txt.trim())data=JSON.parse(txt);}catch(_){}
     if(res.ok&&data.success!==false){
       fpShowMsg('C','وشەی نهێنیەکە گۆڕدرا، چوونەژوورەوە...','ok');
-      // ١. سێشنی کۆنە سڕینەوە — ئەگەرنا stale session چوونەژوورەوە بلۆک دەکات
       try{ await sb.auth.signOut(); }catch(_){}
-      // ٢. چوونەژوورەوە بە وشەی نهێنیی نوێ
-      const{data:ld,error:le}=await sb.auth.signInWithPassword({email:_fpEmail,password:np});
+      // چاوەڕوانی ١ چرکە
+      await new Promise(r=>setTimeout(r,1000));
+      // ڕاستەوخۆ لۆگین بکە بە پاسۆردی نوێ
+      const {data:ld,error:le}=await sb.auth.signInWithPassword({email:_fpEmail,password:np});
       if(!le&&ld?.user){
-        // سەرکەوتوو — بچۆ ناو ئەپ
+        try{
+          const {data:_ban}=await sb.from('profiles').select('is_banned,ban_reason').eq('id',ld.user.id).single();
+          if(_ban?.is_banned){await sb.auth.signOut();fpShowMsg('C','ئەم هەژمارە باندکراوە'+(_ban.ban_reason?' — '+_ban.ban_reason:''),'err');return;}
+        }catch(_){}
         cu=ld.user;
         cancelForgotStep();
         await boot();
       } else {
-        // ئەگەر چوونەژوورەوە شکستی هێنا — فۆرمی لۆگین نیشان بدە بە ئیمەیل پڕکراو
+        // شکستی هێنا — فۆرمی لۆگین بە پاسۆرد پڕکراو
         cancelForgotStep();
-        const emailInp=document.getElementById('authEmail');
-        if(emailInp) emailInp.value=_fpEmail;
-        showAmsg('وشەی نهێنیەکەت گۆڕدرا — ئێستا چووەژوورەوە','ok');
+        document.getElementById('authEmail').value=_fpEmail;
+        document.getElementById('authPass').value=np;
+        authCurrentStep='email';
+        goAuthStep('pass');
+        setTimeout(()=>showAmsg('✅ وشەی نهێنیەکەت گۆڕدرا — کلیک لە چوونەژوورەوە بکە','ok'),100);
       }
     } else {
       fpShowMsg('C',data.message||'هەڵەیەک ڕووی دا، دووبارە هەوڵ بدەرەوە','err');
@@ -5711,15 +5716,13 @@ async function doAuth(){
         setTimeout(()=>switchTab('signup'),1800);
         return;
       }
-      const {data:credData,error:credErr}=await sb.auth.signInWithPassword({email,password:pass});
-      if(credErr){showAmsg('ئیمەیل یان وشەی نهێنی هەڵەیە','err');return;}
-      if(credData?.user?.id){
-        try{
-          const {data:_ban}=await sb.from('profiles').select('is_banned,ban_reason').eq('id',credData.user.id).single();
-          if(_ban?.is_banned){await sb.auth.signOut();showAmsg('ئەم هەژمارە باندکراوە'+(_ban.ban_reason?' — '+_ban.ban_reason:''),'err');return;}
-        }catch(_){}
-      }
-      await sb.auth.signOut();
+      try{ await sb.auth.signOut(); }catch(_){}
+    }
+    // پاسۆرد پشکنین پێش نێردنی OTP
+    if(aMode==='login'){
+      const{error:chkErr}=await sb.auth.signInWithPassword({email,password:pass});
+      if(chkErr){showAmsg('ئیمەیل یان وشەی نهێنی هەڵەیە','err');btn.innerHTML='<i class="fas fa-arrow-left"></i> دواتر';btn.disabled=false;return;}
+      try{ await sb.auth.signOut(); }catch(_){}
     }
     btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> کۆد دەنێردرێت...';
     const name=aMode==='signup'?(document.getElementById('authName').value.trim()||email.split('@')[0]):'';
