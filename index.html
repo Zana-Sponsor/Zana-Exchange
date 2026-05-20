@@ -12753,7 +12753,7 @@ function _updateBudRing(){
 function _updateDaysRing(){
   var fg=document.getElementById('daysRingFg');if(!fg)return;
   var d=(typeof days!=='undefined')?days:1;
-  var pct=0.05+0.95*((d-1)/29);
+  var pct=0.05+0.95*((d-1)/6);
   fg.style.strokeDashoffset=(_RC*(1-pct)).toFixed(2);
 }
 /* FAB BOUNCE */
