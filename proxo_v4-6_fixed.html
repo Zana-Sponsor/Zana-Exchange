@@ -7392,6 +7392,7 @@ let _activeAccum = 0;
 let _visibleSince = null;
 let _lastTrackedPage = null;
 let _sessInfo = null; // زانیارییە گشتییەکان — یەکجار وەردەگیرێن
+let _sessHeartbeat = null; // interval ID بۆ نوێکردنەوەی کات هەر 30 چرکە
 
 function _onVisibilityChange() {
   if (document.hidden) {
@@ -7439,7 +7440,19 @@ async function _trackSession() {
       duration_seconds: 0, created_at: new Date().toISOString()
     });
     if (_serr) console.error('SESSION INSERT FAILED:', _serr.code, _serr.message, _serr.details);
-    else console.log('Session tracked OK — id:', _sessionId);
+    else {
+      console.log('Session tracked OK — id:', _sessionId);
+      // ── heartbeat: نوێکردنەوەی کات هەر 30 چرکە ──
+      if (_sessHeartbeat) clearInterval(_sessHeartbeat);
+      _sessHeartbeat = setInterval(() => {
+        if (!_sessionId || !cu?.id) return;
+        const dur = _getActiveSec();
+        sb.from('pa_user_sessions').update({
+          duration_seconds: dur,
+          last_seen_at: new Date().toISOString()
+        }).eq('id', _sessionId).then(()=>{}).catch(()=>{});
+      }, 30000);
+    }
   } catch(e) { console.error('Session track exception:', e); }
 }
 
@@ -7465,6 +7478,16 @@ async function _updateSessionPage(pageName) {
       page_path: pageName, referrer: _sessInfo.referrer,
       duration_seconds: 0, created_at: new Date().toISOString()
     });
+    // ── restart heartbeat with new session ID ──
+    if (_sessHeartbeat) clearInterval(_sessHeartbeat);
+    _sessHeartbeat = setInterval(() => {
+      if (!_sessionId || !cu?.id) return;
+      const dur = _getActiveSec();
+      sb.from('pa_user_sessions').update({
+        duration_seconds: dur,
+        last_seen_at: new Date().toISOString()
+      }).eq('id', _sessionId).then(()=>{}).catch(()=>{});
+    }, 30000);
   } catch(e) {}
 }
 
