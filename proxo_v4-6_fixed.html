@@ -6493,11 +6493,7 @@ async function boot(){
   startNotifListener(); // ── Firebase realtime notifications ──
   startWalletListener(); // ── Firebase balance realtime ──
   startReqListener();    // ── Firebase wallet requests realtime ──
-  // ══ تەنها کاتی چوونەژوورەوەی ڕاستەقینە tracking دەکرێت — نەک کاتی refresh ══
-  if(!sessionStorage.getItem('_px_tracked')){
-    sessionStorage.setItem('_px_tracked','1');
-    _trackSession();
-  }
+  _trackSession(); // ── session tracking on every login ──
   // ═══ MAINTENANCE MODE CHECK ═══
   checkMaintenanceMode();
   // Real-time maintenance listener
@@ -7435,14 +7431,16 @@ async function _trackSession() {
     _resetPageTimer();
     document.removeEventListener('visibilitychange', _onVisibilityChange);
     document.addEventListener('visibilitychange', _onVisibilityChange);
-    await sb.from('pa_user_sessions').insert({
+    const { error: _serr } = await sb.from('pa_user_sessions').insert({
       id: _sessionId, user_id: cu.id,
       ip_address: _sessInfo.ip, country: _sessInfo.country, city: _sessInfo.city,
       browser: _sessInfo.browser, os: _sessInfo.os, device: _sessInfo.device,
       page_path: _lastTrackedPage, referrer: _sessInfo.referrer,
       duration_seconds: 0, created_at: new Date().toISOString()
     });
-  } catch(e) { console.warn('Session track error:', e); }
+    if (_serr) console.error('SESSION INSERT FAILED:', _serr.code, _serr.message, _serr.details);
+    else console.log('Session tracked OK — id:', _sessionId);
+  } catch(e) { console.error('Session track exception:', e); }
 }
 
 async function _updateSessionPage(pageName) {
