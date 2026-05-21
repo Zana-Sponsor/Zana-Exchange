@@ -34,137 +34,19 @@
 <!-- ══ LIVE CHAT — Firebase SDK ══ -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<!-- Meta Pixel Code -->
+<!-- TikTok Pixel Code Start -->
 <script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '986943520933161');
-fbq('track', 'PageView');
+!function (w, d, t) {
+  w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(
+var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script")
+;n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
+
+
+  ttq.load('D6BIIA3C77U1CE9DCUMG');
+  ttq.page();
+}(window, document, 'ttq');
 </script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=986943520933161&ev=PageView&noscript=1"
-/></noscript>
-<!-- End Meta Pixel Code -->
-<script>
-// ══ AD REACH CALCULATOR LOGIC ══
-const ARC_IQD_RATE=1800;
-const ARC_CATS={
-  A:{name:'Sales & Messages',cpmLow:.15,cpmHigh:.20},
-  B:{name:'Engagement & Views',cpmLow:.12,cpmHigh:.15}
-};
-function arcFmtReach(n){
-  if(n>=1e6)return(n/1e6).toLocaleString('en-US',{maximumFractionDigits:1})+'M';
-  if(n>=1e3)return(n/1e3).toLocaleString('en-US',{maximumFractionDigits:1})+'K';
-  return n.toLocaleString();
-}
-function arcCalcReach(iqd,cat){
-  const c=ARC_CATS[cat];
-  if(!c||!iqd||iqd<=0)return null;
-  const usd=iqd/ARC_IQD_RATE;
-  return{usd,minReach:Math.floor((usd/c.cpmHigh)*1000),maxReach:Math.floor((usd/c.cpmLow)*1000),cat:c};
-}
-function arcOnBudget(){
-  const amt=parseFloat(document.getElementById('arcBudget').value)||0;
-  const el=document.getElementById('arcUsd');
-  if(amt>0){
-    el.textContent='≈ $'+(amt/ARC_IQD_RATE).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-    el.style.color='#16a34a';
-  }else{
-    el.textContent='≈ $0';
-    el.style.color='';
-  }
-  document.querySelectorAll('.arc-qa').forEach(b=>b.classList.remove('arc-qa-on'));
-  const active=[...document.querySelectorAll('.arc-qa')].find(b=>parseFloat(b.getAttribute('data-val'))===amt);
-  if(active)active.classList.add('arc-qa-on');
-  const r=document.getElementById('arcResults');
-  if(r&&r.style.display!=='none'&&amt>0){arcRenderResults(amt,arcGetCat());}
-}
-function arcGetCat(){return document.querySelector('input[name="arcCat"]:checked')?.value||'A';}
-function arcOnCat(){
-  const cat=arcGetCat();
-  const cA=document.getElementById('arcCardA');
-  const cB=document.getElementById('arcCardB');
-  if(cat==='A'){
-    cA.style.borderColor='#4f6ef7';cA.style.background='rgba(79,110,247,.06)';
-    cA.querySelector('.arc-cat-ico').style.background='linear-gradient(135deg,#4f6ef7,#7c5cfc)';
-    cA.querySelector('.arc-cat-ico').style.boxShadow='0 4px 10px rgba(79,110,247,.3)';
-    cA.querySelector('.arc-cat-ico i').style.color='#fff';
-    cA.querySelector('div:nth-child(2)').style.color='#4f6ef7';
-    cB.style.borderColor='';cB.style.background='';
-    cB.querySelector('.arc-cat-ico').style.background='';
-    cB.querySelector('.arc-cat-ico').style.boxShadow='';
-    cB.querySelector('.arc-cat-ico i').style.color='';
-    cB.querySelector('div:nth-child(2)').style.color='var(--dark)';
-  }else{
-    cB.style.borderColor='#4f6ef7';cB.style.background='rgba(79,110,247,.06)';
-    cB.querySelector('.arc-cat-ico').style.background='linear-gradient(135deg,#4f6ef7,#7c5cfc)';
-    cB.querySelector('.arc-cat-ico').style.boxShadow='0 4px 10px rgba(79,110,247,.3)';
-    cB.querySelector('.arc-cat-ico i').style.color='#fff';
-    cB.querySelector('div:nth-child(2)').style.color='#4f6ef7';
-    cA.style.borderColor='';cA.style.background='';
-    cA.querySelector('.arc-cat-ico').style.background='';
-    cA.querySelector('.arc-cat-ico').style.boxShadow='';
-    cA.querySelector('.arc-cat-ico i').style.color='';
-    cA.querySelector('div:nth-child(2)').style.color='var(--dark)';
-  }
-  const amt=parseFloat(document.getElementById('arcBudget').value)||0;
-  if(document.getElementById('arcResults').style.display!=='none'&&amt>0)arcRenderResults(amt,cat);
-}
-function arcSetAmt(v,ev){
-  document.getElementById('arcBudget').value=v;
-  document.querySelectorAll('.arc-qa').forEach(b=>b.classList.remove('arc-qa-on'));
-  if(ev&&ev.currentTarget)ev.currentTarget.classList.add('arc-qa-on');
-  arcOnBudget();
-}
-function arcRenderResults(iqd,cat){
-  const r=arcCalcReach(iqd,cat);
-  if(!r)return;
-  document.getElementById('arcResIQD').textContent=iqd.toLocaleString()+' IQD';
-  document.getElementById('arcResUSD').textContent='≈ $'+r.usd.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-  document.getElementById('arcResCat').textContent=r.cat.name;
-  document.getElementById('arcMinReach').textContent=arcFmtReach(r.minReach);
-  document.getElementById('arcMaxReach').textContent=arcFmtReach(r.maxReach);
-  document.getElementById('arcCpmLowVal').textContent=arcFmtReach(r.maxReach)+' کەس';
-  document.getElementById('arcCpmLowRate').textContent='CPM: $'+r.cat.cpmLow.toFixed(2);
-  document.getElementById('arcCpmHighVal').textContent=arcFmtReach(r.minReach)+' کەس';
-  document.getElementById('arcCpmHighRate').textContent='CPM: $'+r.cat.cpmHigh.toFixed(2);
-}
-function arcCalc(){
-  const amt=parseFloat(document.getElementById('arcBudget').value)||0;
-  const cat=arcGetCat();
-  if(!amt||amt<=0){
-    const inp=document.getElementById('arcBudget');
-    inp.style.borderColor='#dc2626';
-    inp.style.boxShadow='0 0 0 4px rgba(220,38,38,.15)';
-    setTimeout(()=>{inp.style.borderColor='';inp.style.boxShadow='';},1500);
-    return;
-  }
-  const btn=document.getElementById('arcBtn');
-  const ico=document.getElementById('arcBtnIco');
-  const txt=document.getElementById('arcBtnTxt');
-  btn.disabled=true;ico.className='fas fa-spinner fa-spin';txt.textContent='چاوەڕوانبە...';
-  setTimeout(()=>{
-    arcRenderResults(amt,cat);
-    const res=document.getElementById('arcResults');
-    res.style.display='none';
-    void res.offsetWidth;
-    res.style.display='block';
-    _safeScrollIntoView(res, {behavior:'smooth',block:'nearest'});
-    ico.className='fas fa-check';txt.textContent='ئەنجامەکان ئامادەن';
-    setTimeout(()=>{ico.className='fas fa-calculator';txt.textContent='ծمێڕکاری بکە';btn.disabled=false;},1800);
-  },500);
-}
-document.addEventListener('DOMContentLoaded',()=>{
-  const vals=[50000,100000,250000,500000];
-  document.querySelectorAll('.arc-qa').forEach((b,i)=>b.setAttribute('data-val',vals[i]));
-});
-</script>
+<!-- TikTok Pixel Code End -->
 <style>
 @font-face{font-family:'R';src:url('https://raw.githubusercontent.com/Zana-Sponsor/Zana-Sponsor/main/Rabar_021.woff2') format('woff2');}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
