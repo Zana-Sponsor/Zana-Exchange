@@ -1582,6 +1582,34 @@ tr:hover td{background:rgba(28,35,51,.015);}
       <label class="modal-lbl">بەرواری کۆتایی <span style="font-size:10px;color:var(--mt)">(ئۆپشنی)</span></label>
       <input class="minp" type="datetime-local" id="promoExpiry" dir="ltr" style="font-family:'Inter'">
     </div>
+    <!-- بەکارهێنەری تایبەت -->
+    <div style="background:rgba(219,39,119,.05);border:1.5px dashed rgba(219,39,119,.25);border-radius:13px;padding:12px 14px;margin-top:4px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--dark)"><i class="fas fa-user-lock" style="color:#db2777;margin-left:6px"></i>بۆ بەکارهێنەرێکی تایبەت</div>
+          <div style="font-size:11px;color:var(--mt);margin-top:2px">ئەگەر دیاریکرا تەنها ئەو بەکارهێنەرە دەتوانێت بەکاریبهێنێت</div>
+        </div>
+        <label style="position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0">
+          <input type="checkbox" id="promoRestrictToggle" onchange="togglePromoRestrict(this)" style="opacity:0;width:0;height:0">
+          <span style="position:absolute;cursor:pointer;inset:0;background:#ccc;border-radius:22px;transition:.3s" id="promoRestrictTrack"></span>
+        </label>
+      </div>
+      <div id="promoRestrictWrap" style="display:none">
+        <div style="position:relative">
+          <input class="minp" type="text" id="promoUserSearch" placeholder="ناو یان ئیمەیلی بەکارهێنەر بنووسە..." oninput="searchPromoUser(this.value)" autocomplete="off" style="margin-bottom:0">
+          <div id="promoUserResults" style="position:absolute;top:100%;right:0;left:0;background:#fff;border:1.5px solid var(--b1);border-radius:11px;box-shadow:0 8px 24px rgba(0,0,0,.1);z-index:999;max-height:200px;overflow-y:auto;display:none"></div>
+        </div>
+        <div id="promoRestrictedUserBox" style="display:none;margin-top:8px;background:#fff;border:1px solid rgba(219,39,119,.2);border-radius:10px;padding:8px 12px;display:none;align-items:center;gap:8px">
+          <div id="promoRestrictedAvatar" class="mini-av" style="width:28px;height:28px;font-size:11px;background:#db2777;flex-shrink:0">?</div>
+          <div style="flex:1;min-width:0">
+            <div id="promoRestrictedName" style="font-size:12px;font-weight:700;color:var(--dark)">—</div>
+            <div id="promoRestrictedEmail" style="font-size:10px;color:var(--mt)">—</div>
+          </div>
+          <div class="act-btn rd" style="padding:4px 8px;font-size:11px" onclick="clearPromoRestrict()"><i class="fas fa-times"></i></div>
+        </div>
+        <input type="hidden" id="promoRestrictedUserId" value="">
+      </div>
+    </div>
     <button class="modal-btn dark" onclick="createPromoCode()"><i class="fas fa-plus"></i> دروستکردنی کۆد</button>
   </div>
 </div>
@@ -3326,6 +3354,24 @@ async function confirmReject(){
         }catch(_whErr){/* silent */}
       }catch(_refErr){console.warn('Refund failed:',_refErr);}
     }
+    // ── گەڕانەوەی کۆدی داشکاندن ئەگەر بەکارهێنراوبوو ──
+    if(adObj?.id){
+      try{
+        const{data:_pUsage}=await sb.from('promo_code_usages')
+          .select('id,promo_code_id').eq('ad_id',String(adObj.id)).eq('status','active').limit(1);
+        if(_pUsage?.length){
+          const _pu=_pUsage[0];
+          // سڕینەوەی تۆمارەکە تا کاربەر دووبارە بتوانێت کۆدەکە بەکاربهێنێت
+          await sb.from('promo_code_usages').delete().eq('id',_pu.id);
+          // کەمکردنی used_count لە جەدوەلی promo_codes
+          const{data:_pc}=await sb.from('promo_codes').select('used_count').eq('id',_pu.promo_code_id).single();
+          if(_pc){
+            const newCount=Math.max(0,(parseInt(_pc.used_count)||0)-1);
+            await sb.from('promo_codes').update({used_count:newCount}).eq('id',_pu.promo_code_id);
+          }
+        }
+      }catch(_pe){console.warn('Promo reversal failed:',_pe);}
+    }
     // ئاگادارکردنەوەی بەکارهێنەر
     if(adObj?.user_id){
       try{
@@ -3982,6 +4028,55 @@ function selectPromoType(type,el){
   document.getElementById('promoValLbl').textContent=type==='percentage'?'بڕی داشکان (%) *':'بڕی داشکان (IQD) *';
 }
 
+// ── فەنکشنەکانی بەکارهێنەری تایبەتی پرۆمۆ ──
+function togglePromoRestrict(cb){
+  const wrap=document.getElementById('promoRestrictWrap');
+  const track=document.getElementById('promoRestrictTrack');
+  if(cb.checked){
+    wrap.style.display='block';
+    track.style.background='#db2777';
+  }else{
+    wrap.style.display='none';
+    track.style.background='#ccc';
+    clearPromoRestrict();
+  }
+}
+function clearPromoRestrict(){
+  document.getElementById('promoRestrictedUserId').value='';
+  document.getElementById('promoUserSearch').value='';
+  document.getElementById('promoRestrictedUserBox').style.display='none';
+  document.getElementById('promoUserResults').style.display='none';
+}
+function selectPromoUser(id,name,email){
+  document.getElementById('promoRestrictedUserId').value=id;
+  document.getElementById('promoUserSearch').value='';
+  document.getElementById('promoUserResults').style.display='none';
+  const box=document.getElementById('promoRestrictedUserBox');
+  box.style.display='flex';
+  document.getElementById('promoRestrictedAvatar').textContent=(name||email||'?')[0].toUpperCase();
+  document.getElementById('promoRestrictedName').textContent=name||'—';
+  document.getElementById('promoRestrictedEmail').textContent=email||'—';
+}
+let _promoUserSearchTimer=null;
+async function searchPromoUser(q){
+  const res=document.getElementById('promoUserResults');
+  if(!q||q.length<2){res.style.display='none';return;}
+  clearTimeout(_promoUserSearchTimer);
+  _promoUserSearchTimer=setTimeout(async()=>{
+    res.innerHTML='<div style="padding:10px;text-align:center;color:var(--mt);font-size:12px"><i class="fas fa-circle-notch fa-spin"></i></div>';
+    res.style.display='block';
+    const{data:profs}=await sb.from('profiles').select('id,full_name,email')
+      .or(`full_name.ilike.%${q}%,email.ilike.%${q}%`).limit(8);
+    if(!profs?.length){res.innerHTML='<div style="padding:10px;text-align:center;color:var(--mt);font-size:12px">هیچ بەکارهێنەرێک نەدۆزرایەوە</div>';return;}
+    res.innerHTML=profs.map(p=>`<div onclick="selectPromoUser('${p.id}','${p.full_name||''}','${p.email||''}')" style="display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;border-bottom:1px solid var(--b1);transition:background .15s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='#fff'">
+      <div class="mini-av" style="width:26px;height:26px;font-size:11px;background:#db2777;flex-shrink:0">${(p.full_name||p.email||'?')[0].toUpperCase()}</div>
+      <div><div style="font-size:12px;font-weight:700">${p.full_name||'—'}</div><div style="font-size:10px;color:var(--mt)">${p.email||'—'}</div></div>
+    </div>`).join('');
+    res.style.display='block';
+  },300);
+}
+
+let _promoUsageMap={};
 async function loadPromos(){
   const wrap=document.getElementById('promoWrap');
   if(!wrap)return;
@@ -3989,6 +4084,40 @@ async function loadPromos(){
   const{data,error}=await sb.from('promo_codes').select('*').order('created_at',{ascending:false});
   if(error){wrap.innerHTML='<div class="empty"><i class="fas fa-exclamation-triangle"></i><p>هەڵە: '+error.message+'</p><p style="font-size:11px;margin-top:6px;color:var(--mt)">دڵنیابە جەدوەلی promo_codes لە Supabase دروستکراوە</p></div>';return;}
   _allPromos=data||[];
+  // بارکردنی پرۆفایلی بەکارهێنەرانی تایبەت
+  const _restrictIds=[...new Set(_allPromos.filter(p=>p.restricted_to_user_id).map(p=>p.restricted_to_user_id))];
+  let _restrictMap={};
+  if(_restrictIds.length){
+    const{data:_rProfs}=await sb.from('profiles').select('id,full_name,email').in('id',_restrictIds);
+    (_rProfs||[]).forEach(p=>{_restrictMap[p.id]=p;});
+  }
+  _allPromos=_allPromos.map(p=>({...p,_restrictedProfile:_restrictMap[p.restricted_to_user_id]||null}));
+  // بارکردنی وردەکاری بەکارهێنان لە promo_code_usages
+  _promoUsageMap={};
+  try{
+    const{data:usages}=await sb.from('promo_code_usages').select('*').order('created_at',{ascending:false});
+    if(usages?.length){
+      // بارکردنی پرۆفایلی بەکارهێنەران
+      const uids=[...new Set(usages.map(u=>u.user_id).filter(Boolean))];
+      const{data:profs}=await sb.from('profiles').select('id,full_name,email').in('id',uids);
+      const profMap={};(profs||[]).forEach(p=>{profMap[p.id]=p;});
+      // بارکردنی ژمارەی ڕیکلامەکان
+      const adIds=[...new Set(usages.map(u=>u.ad_id).filter(Boolean))];
+      let adMap={};
+      if(adIds.length){
+        const{data:ads}=await sb.from('pa_ads').select('id,ad_number').in('id',adIds);
+        (ads||[]).forEach(a=>{adMap[a.id]=a;});
+      }
+      usages.forEach(u=>{
+        if(!_promoUsageMap[u.promo_code_id])_promoUsageMap[u.promo_code_id]=[];
+        _promoUsageMap[u.promo_code_id].push({
+          ...u,
+          _profile:profMap[u.user_id]||null,
+          _ad:adMap[u.ad_id]||null
+        });
+      });
+    }
+  }catch(_){}
   // Update stats
   const s1=document.getElementById('promoStatTotal');
   const s2=document.getElementById('promoStatActive');
@@ -4000,6 +4129,32 @@ async function loadPromos(){
   renderPromos();
 }
 
+function _renderPromoUsages(promoId){
+  const usages=_promoUsageMap[promoId]||[];
+  if(!usages.length)return'';
+  return`<div style="margin-top:10px;border-top:1px solid var(--b1);padding-top:10px">
+    <div style="font-size:11px;font-weight:700;color:var(--mt);margin-bottom:8px"><i class="fas fa-users" style="margin-left:4px"></i>وردەکاری بەکارهێنان</div>
+    ${usages.map(u=>{
+      const prof=u._profile;
+      const adNum=u._ad?.ad_number;
+      const usedAt=u.created_at?new Date(u.created_at).toLocaleString('ku',{year:'2-digit',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
+      const discIQD=u.discount_applied?Math.round(parseFloat(u.discount_applied)).toLocaleString()+' IQD':'—';
+      return`<div style="display:flex;align-items:center;gap:10px;background:rgba(219,39,119,.04);border:1px solid rgba(219,39,119,.1);border-radius:10px;padding:8px 10px;margin-bottom:6px">
+        <div class="mini-av" style="width:28px;height:28px;font-size:11px;background:#db2777;flex-shrink:0">${(prof?.full_name||prof?.email||'?')[0].toUpperCase()}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:700;color:var(--dark)">${prof?.full_name||'—'}</div>
+          <div style="font-size:10px;color:var(--mt)">${prof?.email||'—'}</div>
+        </div>
+        <div style="text-align:center;flex-shrink:0">
+          ${adNum?`<div style="font-size:11px;font-weight:700;color:var(--bl);font-family:'Inter'">ڕیکلام #${adNum}</div>`:''}
+          <div style="font-size:10px;color:var(--gr);font-weight:700">-${discIQD}</div>
+        </div>
+        <div style="font-size:10px;color:var(--mt);white-space:nowrap;flex-shrink:0;direction:ltr">${usedAt}</div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
 function renderPromos(){
   const wrap=document.getElementById('promoWrap');
   if(!wrap)return;
@@ -4008,23 +4163,49 @@ function renderPromos(){
     return;
   }
   const fmtDisc=p=>p.discount_type==='percentage'?p.discount_value+'%':Math.round(p.discount_value).toLocaleString()+' IQD';
+  // کارتی بەشداری (desktop table replaced with expandable cards for full detail)
   const tableHTML=`<table>
-    <thead><tr><th>کۆد</th><th>داشکان</th><th>بەکارهێنان</th><th>سنور</th><th>بەرواری کۆتایی</th><th>دروستکراو</th><th>باری</th><th>کردار</th></tr></thead>
-    <tbody>${_allPromos.map(p=>`<tr>
-      <td><span style="font-family:'Inter';font-weight:800;font-size:13px;letter-spacing:1px;color:var(--dark)">${p.code}</span></td>
-      <td><span style="font-weight:700;color:#db2777">${fmtDisc(p)}</span></td>
-      <td><span style="font-family:'Inter';font-weight:700;color:var(--bl)">${p.used_count||0}</span></td>
-      <td><span style="font-family:'Inter';color:var(--mt)">${p.max_uses>0?p.max_uses:'بێ سنور'}</span></td>
-      <td style="font-size:11px;color:var(--mt)">${p.expires_at?new Date(p.expires_at).toLocaleDateString('ku'):'—'}</td>
-      <td style="font-size:11px;color:var(--mt)">${p.created_at?new Date(p.created_at).toLocaleDateString('ku'):'—'}</td>
-      <td><span class="badge ${p.is_active?'approved':'rejected'}">${p.is_active?'چالاک':'ناچالاک'}</span></td>
-      <td><div class="act-grp">
-        <div class="act-btn ${p.is_active?'yw':'gr'}" onclick="togglePromo('${p.id}',${p.is_active})"><i class="fas fa-toggle-${p.is_active?'on':'off'}"></i></div>
-        <div class="act-btn rd" onclick="deletePromo('${p.id}','${p.code}')"><i class="fas fa-trash"></i></div>
-      </div></td>
-    </tr>`).join('')}</tbody></table>`;
-  const cardsHTML=`<div class="user-cards">${_allPromos.map(p=>`
-    <div class="user-card">
+    <thead><tr><th>کۆد</th><th>داشکان</th><th>بەکارهێنان</th><th>سنور</th><th>بۆ بەکارهێنەر</th><th>بەرواری کۆتایی</th><th>دروستکراو</th><th>باری</th><th>کردار</th></tr></thead>
+    <tbody>${_allPromos.map(p=>{
+      const usages=_promoUsageMap[p.id]||[];
+      const rowId='promo-det-'+p.id;
+      const rProf=p._restrictedProfile;
+      return`<tr style="cursor:${usages.length?'pointer':''}" onclick="${usages.length?`document.getElementById('${rowId}').style.display=document.getElementById('${rowId}').style.display==='none'?'':'none'`:''}">
+        <td><span style="font-family:'Inter';font-weight:800;font-size:13px;letter-spacing:1px;color:var(--dark)">${p.code}</span></td>
+        <td><span style="font-weight:700;color:#db2777">${fmtDisc(p)}</span></td>
+        <td><span style="font-family:'Inter';font-weight:700;color:var(--bl)">${p.used_count||0}</span>${usages.length?` <i class="fas fa-chevron-down" style="font-size:9px;color:var(--mt)"></i>`:''}</td>
+        <td><span style="font-family:'Inter';color:var(--mt)">${p.max_uses>0?p.max_uses:'بێ سنور'}</span></td>
+        <td>${p.restricted_to_user_id?`<div style="display:flex;align-items:center;gap:6px"><div class="mini-av" style="width:22px;height:22px;font-size:9px;background:#db2777;flex-shrink:0">${(rProf?.full_name||rProf?.email||'?')[0].toUpperCase()}</div><div style="font-size:11px"><div style="font-weight:700">${rProf?.full_name||'—'}</div><div style="color:var(--mt)">${rProf?.email||'—'}</div></div></div>`:'<span style="color:var(--mt);font-size:11px">هەموو</span>'}</td>
+        <td style="font-size:11px;color:var(--mt)">${p.expires_at?new Date(p.expires_at).toLocaleDateString('ku'):'—'}</td>
+        <td style="font-size:11px;color:var(--mt)">${p.created_at?new Date(p.created_at).toLocaleDateString('ku'):'—'}</td>
+        <td><span class="badge ${p.is_active?'approved':'rejected'}">${p.is_active?'چالاک':'ناچالاک'}</span></td>
+        <td onclick="event.stopPropagation()"><div class="act-grp">
+          <div class="act-btn ${p.is_active?'yw':'gr'}" onclick="togglePromo('${p.id}',${p.is_active})"><i class="fas fa-toggle-${p.is_active?'on':'off'}"></i></div>
+          <div class="act-btn rd" onclick="deletePromo('${p.id}','${p.code}')"><i class="fas fa-trash"></i></div>
+        </div></td>
+      </tr>
+      ${usages.length?`<tr id="${rowId}" style="display:none"><td colspan="8" style="padding:0 12px 12px;background:rgba(219,39,119,.02)">
+        ${usages.map(u=>{
+          const prof=u._profile;
+          const adNum=u._ad?.ad_number;
+          const usedAt=u.created_at?new Date(u.created_at).toLocaleString('ku',{year:'2-digit',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
+          const discIQD=u.discount_applied?Math.round(parseFloat(u.discount_applied)).toLocaleString()+' IQD':'—';
+          return`<div style="display:flex;align-items:center;gap:10px;background:#fff;border:1px solid rgba(219,39,119,.15);border-radius:10px;padding:8px 12px;margin-top:6px">
+            <div class="mini-av" style="width:28px;height:28px;font-size:11px;background:#db2777;flex-shrink:0">${(prof?.full_name||prof?.email||'?')[0].toUpperCase()}</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:12px;font-weight:700;color:var(--dark)">${prof?.full_name||'—'}</div>
+              <div style="font-size:10px;color:var(--mt)">${prof?.email||'—'}</div>
+            </div>
+            ${adNum?`<div style="font-size:11px;font-weight:800;color:var(--bl);font-family:'Inter';flex-shrink:0">ڕیکلام #${adNum}</div>`:''}
+            <div style="font-size:10px;font-weight:700;color:var(--gr);flex-shrink:0">-${discIQD}</div>
+            <div style="font-size:10px;color:var(--mt);direction:ltr;white-space:nowrap;flex-shrink:0">${usedAt}</div>
+          </div>`;
+        }).join('')}
+      </td></tr>`:''}`
+    }).join('')}</tbody></table>`;
+  const cardsHTML=`<div class="user-cards">${_allPromos.map(p=>{
+    const rProf=p._restrictedProfile;
+    return`<div class="user-card">
       <div class="user-card-top">
         <div class="mini-av" style="background:#db2777;font-size:10px;letter-spacing:0;font-weight:900">%</div>
         <div class="user-card-info">
@@ -4033,16 +4214,25 @@ function renderPromos(){
         </div>
         <span class="badge ${p.is_active?'approved':'rejected'}">${p.is_active?'چالاک':'ناچالاک'}</span>
       </div>
+      ${p.restricted_to_user_id?`<div style="display:flex;align-items:center;gap:8px;background:rgba(219,39,119,.07);border:1px solid rgba(219,39,119,.18);border-radius:10px;padding:7px 10px;margin-bottom:8px">
+        <i class="fas fa-user-lock" style="color:#db2777;font-size:12px;flex-shrink:0"></i>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:11px;font-weight:700;color:var(--dark)">${rProf?.full_name||'بەکارهێنەری تایبەت'}</div>
+          <div style="font-size:10px;color:var(--mt)">${rProf?.email||'—'}</div>
+        </div>
+      </div>`:''}
       <div class="user-card-meta">
         <div class="user-card-stat bl"><i class="fas fa-chart-bar" style="font-size:10px"></i> ${p.used_count||0} جار</div>
         <div class="user-card-stat" style="font-size:11px">${p.max_uses>0?'سنور: '+p.max_uses:'بێ سنور'}</div>
         <div class="user-card-date"><i class="fas fa-calendar-plus" style="font-size:9px;opacity:.5;margin-left:3px"></i>${p.created_at?new Date(p.created_at).toLocaleDateString('ku'):'—'}</div>
       </div>
+      ${_renderPromoUsages(p.id)}
       <div class="user-card-actions">
         <div class="act-btn ${p.is_active?'yw':'gr'}" style="flex:1" onclick="togglePromo('${p.id}',${p.is_active})"><i class="fas fa-toggle-${p.is_active?'on':'off'}"></i> ${p.is_active?'ناچالاک':'چالاک'}</div>
         <div class="act-btn rd" style="flex:1" onclick="deletePromo('${p.id}','${p.code}')"><i class="fas fa-trash"></i> سڕینەوە</div>
       </div>
-    </div>`).join('')}</div>`;
+    </div>`;
+  }).join('')}</div>`;
   wrap.innerHTML=tableHTML+cardsHTML;
 }
 
@@ -4052,33 +4242,41 @@ async function createPromoCode(){
   const discVal=parseFloat(document.getElementById('promoDiscountValue').value);
   const maxUses=parseInt(document.getElementById('promoMaxUses').value||'0');
   const expiry=document.getElementById('promoExpiry').value;
+  const restrictEnabled=document.getElementById('promoRestrictToggle').checked;
+  const restrictedUserId=(document.getElementById('promoRestrictedUserId').value||'').trim();
   let valid=true;
   if(!code){showFieldErr('promoCode');valid=false;}
   if(isNaN(discVal)||discVal<=0){showFieldErr('promoDiscountValue');valid=false;}
+  if(restrictEnabled&&!restrictedUserId){showToast('تکایە بەکارهێنەرێک هەڵبژێرە','rd');return;}
   if(!valid)return;
   if(discType==='percentage'&&(discVal<1||discVal>100)){showToast('پارچەی داشکان دەبێت لەنێوان 1 و 100 بێت','rd');return;}
-  // Check duplicate
   const dup=_allPromos.find(p=>p.code===code);
   if(dup){showToast('ئەم کۆدە پێشتر هەیە','rd');return;}
-  const row = {
-  code,
-  discount_type: discType,
-  discount_value: discVal,
-  max_uses: maxUses,
-  used_count: 0,
-  is_active: true,
-  created_by: (await sb.auth.getUser()).data.user?.id};
+  const row={
+    code,
+    discount_type:discType,
+    discount_value:discVal,
+    max_uses:maxUses,
+    used_count:0,
+    is_active:true,
+    created_by:(await sb.auth.getUser()).data.user?.id
+  };
   if(expiry)row.expires_at=new Date(expiry).toISOString();
+  if(restrictEnabled&&restrictedUserId)row.restricted_to_user_id=restrictedUserId;
   const{error}=await sb.from('promo_codes').insert(row);
   if(error){showToast('هەڵە: '+error.message,'rd');return;}
   showToast('✅ کۆدی داشکاندن دروستکرا: '+code,'gr');
   closeMo('moCreatePromo');
-  // Reset form
+  // ریسێت کردنی فۆرم
   document.getElementById('promoCode').value='';
   document.getElementById('promoDiscountValue').value='';
   document.getElementById('promoMaxUses').value='0';
   document.getElementById('promoExpiry').value='';
   document.getElementById('promoDiscountType').value='percentage';
+  document.getElementById('promoRestrictToggle').checked=false;
+  document.getElementById('promoRestrictWrap').style.display='none';
+  document.getElementById('promoRestrictTrack').style.background='#ccc';
+  clearPromoRestrict();
   selectPromoType('percentage',document.querySelector('#promoTypeGroup>div'));
   loadPromos();
 }
