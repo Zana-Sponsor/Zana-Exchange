@@ -2777,7 +2777,14 @@ function renderAdsTable(q=''){
 }
 
 async function showAdDetail(id){
-  const a=allAds.find(x=>x.id===id);if(!a)return;
+  let a=allAds.find(x=>x.id===id);if(!a)return;
+  // ئەگەر پڕۆفایل بار نەبووبێت، ڕاستەوخۆ فەچ بکە
+  if(!a.profiles&&a.user_id){
+    try{
+      const{data:prof}=await sb.from('profiles').select('id,full_name,email,avatar_b64').eq('id',a.user_id).single();
+      if(prof){a={...a,profiles:prof};const idx=allAds.findIndex(x=>x.id===id);if(idx>-1)allAds[idx]={...allAds[idx],profiles:prof};}
+    }catch(e){}
+  }
   const ageGroups=a.age_groups?JSON.parse(a.age_groups).join('، '):'هەموو';
   const gs={messages:'نامە',engagement:'کارلێک',views:'ڤیووو'};
   const genKu={all:'هەموو',male:'پیاو',female:'ژن'};
@@ -2858,7 +2865,7 @@ async function showAdDetail(id){
   document.getElementById('adDetailContent').innerHTML=`
     <div class="detail-row"><span class="lbl">ناونیشان</span><span class="val">${a.title||(a.ad_number?'ڕیکلامی #'+a.ad_number:'—')}</span></div>
     <div class="detail-row"><span class="lbl">بەکارهێنەر</span><span class="val">${a.profiles?.full_name||a.profiles?.email||'—'}</span></div>
-    <div class="detail-row"><span class="lbl">ئیمەیل</span><span class="val" style="direction:ltr;text-align:left;font-size:12px">${a.profiles?.email||'—'}</span></div>
+    <div class="detail-row"><span class="lbl">ئیمەیل</span><div style="display:flex;align-items:center;gap:6px"><span class="val" style="direction:ltr;text-align:left;font-size:12px">${a.profiles?.email||'—'}</span>${a.profiles?.email?`<button onclick="navigator.clipboard.writeText('${a.profiles.email}');showToast('ئیمەیل کۆپی کرا','gr')" style="background:rgba(6,182,212,.1);border:none;border-radius:6px;color:#06b6d4;cursor:pointer;padding:3px 7px;font-size:11px" title="کۆپی"><i class="fas fa-copy"></i></button>`:''}</div></div>
     <div class="detail-row"><span class="lbl">ژمارەی ڕیکلام</span><span class="val" style="font-family:monospace">#${a.ad_number||'—'}</span></div>
     ${a.tiktok_ad_id?`<div class="detail-row"><span class="lbl">TikTok Ad ID</span><span class="val" style="font-family:'Inter';direction:ltr;font-weight:800;color:#2563eb">${a.tiktok_ad_id}</span></div>`:''}
     <div class="detail-row"><span class="lbl">بودجە</span><span class="val" style="color:var(--rd)">${fmtIQD(adPrice)}</span></div>
@@ -2869,7 +2876,7 @@ async function showAdDetail(id){
     <div class="detail-row"><span class="lbl">ڕەگەز</span><span class="val">${genKu[a.gender]||a.gender||'هەموو'}</span></div>
     <div class="detail-row"><span class="lbl">تەمەن</span><span class="val">${ageGroups}</span></div>
     <div class="detail-row"><span class="lbl">شوێن</span><span class="val">${locKu[a.location]||a.location||'—'}</span></div>
-    ${a.video_code?`<div class="detail-row"><span class="lbl">کۆدی ڤیدیۆ</span><span class="val" style="direction:ltr;font-family:'Inter';font-weight:700">${a.video_code}</span></div>`:''}
+    ${a.video_code?`<div class="detail-row" style="align-items:flex-start"><span class="lbl" style="padding-top:4px;flex-shrink:0">کۆدی ڤیدیۆ</span><div style="display:flex;align-items:flex-start;gap:6px;min-width:0;flex:1;justify-content:flex-end"><span class="val" style="direction:ltr;font-family:'Inter';font-weight:700;word-break:break-all;overflow-wrap:anywhere;font-size:11px;text-align:left;max-width:200px">${a.video_code}</span><button onclick="navigator.clipboard.writeText('${a.video_code.replace(/'/g,"\\'")}');showToast('کۆدی ڤیدیۆ کۆپی کرا','gr')" style="background:rgba(99,102,241,.1);border:none;border-radius:6px;color:#6366f1;cursor:pointer;padding:3px 7px;font-size:11px;flex-shrink:0" title="کۆپی"><i class="fas fa-copy"></i></button></div></div>`:''}
     ${a.video_link?`<div class="detail-row"><span class="lbl">لینکی ڤیدیۆ</span><span class="val" style="direction:ltr;font-size:11px"><a href="${a.video_link}" target="_blank" style="color:var(--bl)">${a.video_link}</a></span></div>`:''}
     ${assetHTML}
     ${a.reject_reason?`<div class="reject-reason-box"><i class="fas fa-info-circle" style="margin-left:6px"></i>${a.reject_reason}</div>`:''}
