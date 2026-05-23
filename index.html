@@ -34,7 +34,137 @@
 <!-- ══ LIVE CHAT — Firebase SDK ══ -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<!-- TikTok Pixel Code Start -->
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '986943520933161');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=986943520933161&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+<script>
+// ══ AD REACH CALCULATOR LOGIC ══
+const ARC_IQD_RATE=1800;
+const ARC_CATS={
+  A:{name:'Sales & Messages',cpmLow:.15,cpmHigh:.20},
+  B:{name:'Engagement & Views',cpmLow:.12,cpmHigh:.15}
+};
+function arcFmtReach(n){
+  if(n>=1e6)return(n/1e6).toLocaleString('en-US',{maximumFractionDigits:1})+'M';
+  if(n>=1e3)return(n/1e3).toLocaleString('en-US',{maximumFractionDigits:1})+'K';
+  return n.toLocaleString();
+}
+function arcCalcReach(iqd,cat){
+  const c=ARC_CATS[cat];
+  if(!c||!iqd||iqd<=0)return null;
+  const usd=iqd/ARC_IQD_RATE;
+  return{usd,minReach:Math.floor((usd/c.cpmHigh)*1000),maxReach:Math.floor((usd/c.cpmLow)*1000),cat:c};
+}
+function arcOnBudget(){
+  const amt=parseFloat(document.getElementById('arcBudget').value)||0;
+  const el=document.getElementById('arcUsd');
+  if(amt>0){
+    el.textContent='≈ $'+(amt/ARC_IQD_RATE).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+    el.style.color='#16a34a';
+  }else{
+    el.textContent='≈ $0';
+    el.style.color='';
+  }
+  document.querySelectorAll('.arc-qa').forEach(b=>b.classList.remove('arc-qa-on'));
+  const active=[...document.querySelectorAll('.arc-qa')].find(b=>parseFloat(b.getAttribute('data-val'))===amt);
+  if(active)active.classList.add('arc-qa-on');
+  const r=document.getElementById('arcResults');
+  if(r&&r.style.display!=='none'&&amt>0){arcRenderResults(amt,arcGetCat());}
+}
+function arcGetCat(){return document.querySelector('input[name="arcCat"]:checked')?.value||'A';}
+function arcOnCat(){
+  const cat=arcGetCat();
+  const cA=document.getElementById('arcCardA');
+  const cB=document.getElementById('arcCardB');
+  if(cat==='A'){
+    cA.style.borderColor='#4f6ef7';cA.style.background='rgba(79,110,247,.06)';
+    cA.querySelector('.arc-cat-ico').style.background='linear-gradient(135deg,#4f6ef7,#7c5cfc)';
+    cA.querySelector('.arc-cat-ico').style.boxShadow='0 4px 10px rgba(79,110,247,.3)';
+    cA.querySelector('.arc-cat-ico i').style.color='#fff';
+    cA.querySelector('div:nth-child(2)').style.color='#4f6ef7';
+    cB.style.borderColor='';cB.style.background='';
+    cB.querySelector('.arc-cat-ico').style.background='';
+    cB.querySelector('.arc-cat-ico').style.boxShadow='';
+    cB.querySelector('.arc-cat-ico i').style.color='';
+    cB.querySelector('div:nth-child(2)').style.color='var(--dark)';
+  }else{
+    cB.style.borderColor='#4f6ef7';cB.style.background='rgba(79,110,247,.06)';
+    cB.querySelector('.arc-cat-ico').style.background='linear-gradient(135deg,#4f6ef7,#7c5cfc)';
+    cB.querySelector('.arc-cat-ico').style.boxShadow='0 4px 10px rgba(79,110,247,.3)';
+    cB.querySelector('.arc-cat-ico i').style.color='#fff';
+    cB.querySelector('div:nth-child(2)').style.color='#4f6ef7';
+    cA.style.borderColor='';cA.style.background='';
+    cA.querySelector('.arc-cat-ico').style.background='';
+    cA.querySelector('.arc-cat-ico').style.boxShadow='';
+    cA.querySelector('.arc-cat-ico i').style.color='';
+    cA.querySelector('div:nth-child(2)').style.color='var(--dark)';
+  }
+  const amt=parseFloat(document.getElementById('arcBudget').value)||0;
+  if(document.getElementById('arcResults').style.display!=='none'&&amt>0)arcRenderResults(amt,cat);
+}
+function arcSetAmt(v,ev){
+  document.getElementById('arcBudget').value=v;
+  document.querySelectorAll('.arc-qa').forEach(b=>b.classList.remove('arc-qa-on'));
+  if(ev&&ev.currentTarget)ev.currentTarget.classList.add('arc-qa-on');
+  arcOnBudget();
+}
+function arcRenderResults(iqd,cat){
+  const r=arcCalcReach(iqd,cat);
+  if(!r)return;
+  document.getElementById('arcResIQD').textContent=iqd.toLocaleString()+' IQD';
+  document.getElementById('arcResUSD').textContent='≈ $'+r.usd.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('arcResCat').textContent=r.cat.name;
+  document.getElementById('arcMinReach').textContent=arcFmtReach(r.minReach);
+  document.getElementById('arcMaxReach').textContent=arcFmtReach(r.maxReach);
+  document.getElementById('arcCpmLowVal').textContent=arcFmtReach(r.maxReach)+' کەس';
+  document.getElementById('arcCpmLowRate').textContent='CPM: $'+r.cat.cpmLow.toFixed(2);
+  document.getElementById('arcCpmHighVal').textContent=arcFmtReach(r.minReach)+' کەس';
+  document.getElementById('arcCpmHighRate').textContent='CPM: $'+r.cat.cpmHigh.toFixed(2);
+}
+function arcCalc(){
+  const amt=parseFloat(document.getElementById('arcBudget').value)||0;
+  const cat=arcGetCat();
+  if(!amt||amt<=0){
+    const inp=document.getElementById('arcBudget');
+    inp.style.borderColor='#dc2626';
+    inp.style.boxShadow='0 0 0 4px rgba(220,38,38,.15)';
+    setTimeout(()=>{inp.style.borderColor='';inp.style.boxShadow='';},1500);
+    return;
+  }
+  const btn=document.getElementById('arcBtn');
+  const ico=document.getElementById('arcBtnIco');
+  const txt=document.getElementById('arcBtnTxt');
+  btn.disabled=true;ico.className='fas fa-spinner fa-spin';txt.textContent='چاوەڕوانبە...';
+  setTimeout(()=>{
+    arcRenderResults(amt,cat);
+    const res=document.getElementById('arcResults');
+    res.style.display='none';
+    void res.offsetWidth;
+    res.style.display='block';
+    _safeScrollIntoView(res, {behavior:'smooth',block:'nearest'});
+    ico.className='fas fa-check';txt.textContent='ئەنجامەکان ئامادەن';
+    setTimeout(()=>{ico.className='fas fa-calculator';txt.textContent='ծمێڕکاری بکە';btn.disabled=false;},1800);
+  },500);
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  const vals=[50000,100000,250000,500000];
+  document.querySelectorAll('.arc-qa').forEach((b,i)=>b.setAttribute('data-val',vals[i]));
+});
+</script>
 <style>
 @font-face{font-family:'R';src:url('https://raw.githubusercontent.com/Zana-Sponsor/Zana-Sponsor/main/Rabar_021.woff2') format('woff2');}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
@@ -2557,6 +2687,11 @@ function _toWebP(dataUrl,quality){
         <div class="sidebar-item-ico"><i class="fas fa-tag"></i></div>
         <div class="sidebar-item-txt">کۆدی داشکاندن</div>
       </div>
+      <!-- ٤b — ڤووچەر کۆد -->
+      <div class="sidebar-item" onclick="openVoucherModal();closeSidebar()">
+        <div class="sidebar-item-ico"><i class="fas fa-ticket"></i></div>
+        <div class="sidebar-item-txt">ڤووچەر کۆد</div>
+      </div>
       <!-- ٤ — پشتگیری ڕاستەوخۆ -->
       <div class="sidebar-item" id="lcSidebarItem" onclick="lcOpenChatDirect();closeSidebar();">
         <div class="sidebar-item-ico" style="position:relative">
@@ -4356,6 +4491,68 @@ function _toWebP(dataUrl,quality){
       </button>
     </div>
 
+  </div>
+</div>
+
+<!-- ══ VOUCHER MODAL ══ -->
+<div class="mover" id="moVoucher">
+  <div class="mbox">
+    <div class="mbar"></div>
+    <div class="mhdr">
+      <h3><i class="fas fa-ticket" style="margin-left:8px;color:#06b6d4"></i>ڤووچەر کۆد</h3>
+      <button class="mclose" onclick="closeMo('moVoucher')"><i class="fas fa-xmark"></i></button>
+    </div>
+
+    <!-- input state -->
+    <div id="voucherInputState">
+      <div style="text-align:center;margin-bottom:22px">
+        <div style="width:68px;height:68px;border-radius:22px;background:rgba(6,182,212,.1);border:2px solid rgba(6,182,212,.25);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:28px;color:#06b6d4"><i class="fas fa-ticket"></i></div>
+        <div style="font-size:16px;font-weight:800;color:var(--dark)">ڤووچەرەکەت بنووسە</div>
+        <div style="font-size:12px;color:var(--mt);margin-top:5px">کۆدی ڤووچەرەکەت بنووسە بۆ وەرگرتنی باڵانس</div>
+      </div>
+
+      <div style="position:relative;margin-bottom:10px">
+        <input class="finp" type="text" id="voucherCodeInp" placeholder="بۆ نموونە: PRXO-ABC1-XYZ9" dir="ltr"
+          style="text-transform:uppercase;letter-spacing:1px;font-family:'Inter',sans-serif;font-size:16px;font-weight:700;text-align:center;padding-right:50px"
+          oninput="this.value=this.value.toUpperCase()">
+        <button onclick="pasteToField('voucherCodeInp')" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--mt);cursor:pointer;font-size:14px;padding:4px"><i class="fas fa-clipboard"></i></button>
+      </div>
+
+      <div id="voucherMsg" style="display:none;font-size:12.5px;font-weight:600;padding:10px 14px;border-radius:12px;margin-bottom:12px;text-align:center"></div>
+
+      <button class="abtn" id="voucherBtn" onclick="claimVoucher()" style="margin-top:4px">
+        <i class="fas fa-ticket" id="voucherBtnIco"></i>
+        <span id="voucherBtnTxt">بەکارهێنانی ڤووچەر</span>
+      </button>
+    </div>
+
+    <!-- success state -->
+    <div id="voucherSuccessState" style="display:none">
+      <div style="text-align:center;padding:10px 0 20px">
+        <div style="width:80px;height:80px;border-radius:50%;background:rgba(22,163,74,.12);border:2px solid rgba(22,163,74,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:34px;color:var(--gr);animation:pulse 1s ease 1"><i class="fas fa-circle-check"></i></div>
+        <div style="font-size:18px;font-weight:900;color:var(--dark);margin-bottom:6px">پیرۆزبایت! 🎉</div>
+        <div style="font-size:13px;color:var(--mt)">ڤووچەرەکەت بەسەرکەوتوویی بەکارهێنرا</div>
+      </div>
+
+      <div style="background:rgba(6,182,212,.07);border:1.5px solid rgba(6,182,212,.2);border-radius:16px;padding:16px;margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--b1)">
+          <span style="font-size:12px;color:var(--mt)">کۆدی ڤووچەر</span>
+          <span style="font-family:'Inter',monospace;font-size:14px;font-weight:900;color:var(--dark)" id="vSuccCode">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--b1)">
+          <span style="font-size:12px;color:var(--mt)">بڕی زیادکراو</span>
+          <span style="font-family:'Inter',sans-serif;font-size:16px;font-weight:900;color:var(--gr)" id="vSuccAmt">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0">
+          <span style="font-size:12px;color:var(--mt)">باڵانسی نوێ</span>
+          <span style="font-family:'Inter',sans-serif;font-size:16px;font-weight:900;color:var(--dark)" id="vSuccBal">—</span>
+        </div>
+      </div>
+
+      <button class="abtn" onclick="closeMo('moVoucher')" style="background:var(--dark)">
+        <i class="fas fa-check"></i> باشە
+      </button>
+    </div>
   </div>
 </div>
 
@@ -12728,6 +12925,156 @@ async function pasteToField(id){
   }catch(e){
     /* fallback: do nothing silently */
   }
+}
+
+// ════════════════════════════════════════════════════════════════
+// ════  VOUCHER CODE SYSTEM  ══════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
+function openVoucherModal() {
+  // reset states
+  document.getElementById('voucherInputState').style.display = 'block';
+  document.getElementById('voucherSuccessState').style.display = 'none';
+  document.getElementById('voucherCodeInp').value = '';
+  const msg = document.getElementById('voucherMsg');
+  msg.style.display = 'none';
+  msg.textContent = '';
+  const btn = document.getElementById('voucherBtn');
+  btn.disabled = false;
+  document.getElementById('voucherBtnIco').className = 'fas fa-ticket';
+  document.getElementById('voucherBtnTxt').textContent = 'بەکارهێنانی ڤووچەر';
+  document.getElementById('moVoucher').classList.add('on');
+}
+
+function _vMsg(txt, ok) {
+  const el = document.getElementById('voucherMsg');
+  el.textContent = txt;
+  el.style.display = 'block';
+  if (ok) {
+    el.style.cssText = 'display:block;font-size:12.5px;font-weight:600;padding:10px 14px;border-radius:12px;margin-bottom:12px;text-align:center;background:rgba(22,163,74,.09);border:1px solid rgba(22,163,74,.25);color:#16a34a;';
+  } else {
+    el.style.cssText = 'display:block;font-size:12.5px;font-weight:600;padding:10px 14px;border-radius:12px;margin-bottom:12px;text-align:center;background:rgba(220,38,38,.07);border:1px solid rgba(220,38,38,.2);color:#dc2626;';
+  }
+}
+
+async function claimVoucher() {
+  if (!cu) { showToast('تکایە دووبارە بچۆ ژوورەوە', 'err'); return; }
+  const code = (document.getElementById('voucherCodeInp').value || '').trim().toUpperCase();
+  if (!code) { _vMsg('تکایە کۆدی ڤووچەرەکەت بنووسە', false); return; }
+
+  const btn = document.getElementById('voucherBtn');
+  const ico = document.getElementById('voucherBtnIco');
+  const txt = document.getElementById('voucherBtnTxt');
+  btn.disabled = true;
+  ico.className = 'fas fa-circle-notch fa-spin';
+  txt.textContent = 'چاوەڕوانبە...';
+  const msgEl = document.getElementById('voucherMsg');
+  msgEl.style.display = 'none';
+
+  await withSession(async () => {
+    try {
+      // 1. Look up the voucher
+      const { data: voucher, error: fetchErr } = await sb
+        .from('pa_vouchers')
+        .select('*')
+        .eq('code', code)
+        .single();
+
+      if (fetchErr || !voucher) {
+        _vMsg('ڤووچەرەکە نەدۆزرایەوە. کۆدەکە دووبارە بپشکنە.', false);
+        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی ڤووچەر';
+        return;
+      }
+
+      // 2. Validate
+      if (!voucher.is_active) {
+        _vMsg('ئەم ڤووچەرە چالاک نییە.', false);
+        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی ڤووچەر';
+        return;
+      }
+      if (voucher.used_by) {
+        _vMsg('ئەم ڤووچەرە پێشتر بەکارهێنراوە.', false);
+        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی ڤووچەر';
+        return;
+      }
+      if (voucher.expires_at && new Date(voucher.expires_at) < new Date()) {
+        _vMsg('ئەم ڤووچەرە بەسەرچووە.', false);
+        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی ڤووچەر';
+        return;
+      }
+
+      const uid = cu.id;
+      const amtIQD = parseFloat(voucher.amount_iqd);
+      const amtUSD = amtIQD / 1800;
+
+      // 3. Atomically claim: only update if used_by IS NULL (race-safe)
+      const { error: claimErr } = await sb
+        .from('pa_vouchers')
+        .update({ used_by: uid, used_at: new Date().toISOString(), is_active: false })
+        .eq('id', voucher.id)
+        .is('used_by', null);
+
+      if (claimErr) {
+        _vMsg('هەڵەیەک ڕووی دا. دووبارە هەوڵ بدەرەوە.', false);
+        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی ڤووچەر';
+        return;
+      }
+
+      // 4. Add to pa_wallets (upsert)
+      const { data: wallet } = await sb
+        .from('pa_wallets')
+        .select('balance')
+        .eq('user_id', uid)
+        .single();
+
+      const prevBal = parseFloat(wallet?.balance || 0);
+      const newBal = prevBal + amtUSD;
+
+      await sb.from('pa_wallets').upsert({
+        user_id: uid,
+        balance: newBal,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'user_id' });
+
+      // 5. Insert transaction record
+      await sb.from('pa_transactions').insert({
+        user_id: uid,
+        type: 'voucher',
+        status: 'approved',
+        amount: amtUSD,
+        note: 'ڤووچەر: ' + code,
+        created_at: new Date().toISOString()
+      });
+
+      // 6. Insert notification
+      await sb.from('pa_notifications').insert({
+        user_id: uid,
+        type: 'balance_added',
+        title: 'باڵانس زیادکرا',
+        body: amtIQD.toLocaleString() + ' IQD بە ڤووچەر زیادکرا',
+        is_read: false,
+        created_at: new Date().toISOString()
+      });
+
+      // 7. Sync Firebase balance
+      const newBalIQD = Math.round(newBal * 1800);
+      try {
+        const db = getFwDb();
+        if (db) await db.ref('wallets/' + uid + '/balance').set(newBalIQD);
+      } catch (_) {}
+
+      // 8. Show success card
+      document.getElementById('vSuccCode').textContent = code;
+      document.getElementById('vSuccAmt').textContent = amtIQD.toLocaleString() + ' IQD';
+      document.getElementById('vSuccBal').textContent = newBalIQD.toLocaleString() + ' IQD';
+      document.getElementById('voucherInputState').style.display = 'none';
+      document.getElementById('voucherSuccessState').style.display = 'block';
+      showToast('ڤووچەرەکەت بەسەرکەوتوویی بەکارهێنرا', 'ok');
+
+    } catch (e) {
+      _vMsg('هەڵەی نەچاو: ' + (e.message || e), false);
+      btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی ڤووچەر';
+    }
+  });
 }
 </script>
 </html>

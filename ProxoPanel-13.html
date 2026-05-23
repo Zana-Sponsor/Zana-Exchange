@@ -607,6 +607,7 @@ tr:hover td{background:rgba(28,35,51,.015);}
     <div class="sb-item" onclick="goPage('notifications')"><i class="fas fa-bell"></i> ناردنی ئاگاداری<span class="sb-notif-badge" id="adminNotifBadge"></span></div>
     <div class="sb-item" onclick="goPage('banners')"><i class="fas fa-ad"></i> بانەری ڕیکلام</div>
     <div class="sb-item" onclick="goPage('promo')"><i class="fas fa-tag" style="color:#f472b6"></i> کۆدی داشکاندن</div>
+    <div class="sb-item" onclick="goPage('vouchers')"><i class="fas fa-ticket" style="color:#06b6d4"></i> ڤووچەر کۆد</div>
     <div class="sb-item" onclick="goPage('version')"><i class="fas fa-rocket"></i> بەڕێوەبردنی ڤێرژن</div>
     <div class="sb-item" onclick="goPage('support')"><i class="fas fa-headset"></i> پشتیوانی / چات</div>
     <div class="sb-item" onclick="goPage('liveChat')" id="sbLiveChatItem" style="display:flex;align-items:center;justify-content:space-between"><span><i class="fas fa-comments" style="color:#10b981"></i> پشتگیری ژیوە</span><span class="lca-sb-dot" id="lcaSbDot"></span></div>
@@ -1261,6 +1262,98 @@ tr:hover td{background:rgba(28,35,51,.015);}
       </div>
     </div>
 
+    <!-- ══ VOUCHERS PAGE ══ -->
+    <div class="pg" id="pgVouchers">
+      <!-- Stats Row -->
+      <div class="stats-row" style="grid-template-columns:repeat(2,1fr)" id="vouchStatRow">
+        <div class="stat-card">
+          <div class="stat-ico dark"><i class="fas fa-ticket"></i></div>
+          <div><div class="stat-val" id="vStatTotal">—</div><div class="stat-lbl">کۆی ڤووچەرەکان</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico bl"><i class="fas fa-circle-check"></i></div>
+          <div><div class="stat-val" id="vStatActive">—</div><div class="stat-lbl">ڤووچەری چالاک</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico gr"><i class="fas fa-check-double"></i></div>
+          <div><div class="stat-val" id="vStatUsed">—</div><div class="stat-lbl">بەکارهێنراو</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico yw"><i class="fas fa-coins"></i></div>
+          <div><div class="stat-val" id="vStatTotal IQD">—</div><div class="stat-lbl">کۆی بڕ (IQD)</div></div>
+        </div>
+      </div>
+
+      <!-- Create Voucher Form -->
+      <div class="tbl-wrap" style="margin-bottom:20px;padding:18px 16px">
+        <div class="sec-hdr" style="margin-bottom:14px">
+          <h3><i class="fas fa-plus" style="margin-left:8px;color:#06b6d4"></i>دروستکردنی ڤووچەری نوێ</h3>
+        </div>
+
+        <div class="modal-row" style="margin-bottom:12px">
+          <div>
+            <label class="modal-lbl">کۆدی ڤووچەر <span style="color:var(--rd)">*</span></label>
+            <div style="display:flex;gap:8px">
+              <input class="minp" type="text" id="vCode" placeholder="PRXO-XXXX-XXXX" dir="ltr"
+                style="font-family:'Inter',monospace;font-weight:700;letter-spacing:1px;text-transform:uppercase;flex:1"
+                oninput="this.value=this.value.toUpperCase()">
+              <button class="act-btn dark" onclick="vGenCode()" title="ئۆتۆماتیکی دروستبکە" style="flex-shrink:0;padding:0 12px">
+                <i class="fas fa-wand-magic-sparkles"></i>
+              </button>
+            </div>
+          </div>
+          <div>
+            <label class="modal-lbl">بڕ (IQD) <span style="color:var(--rd)">*</span></label>
+            <input class="minp" type="number" id="vAmount" placeholder="بۆ نموونە: 10000" dir="ltr"
+              style="font-family:'Inter',sans-serif">
+          </div>
+        </div>
+
+        <div class="modal-row" style="margin-bottom:12px">
+          <div>
+            <label class="modal-lbl">بەرواری کۆتایی <span style="font-size:10px;color:var(--mt)">(ئارەزووی)</span></label>
+            <input class="minp" type="datetime-local" id="vExpiry" dir="ltr" style="font-family:'Inter',sans-serif">
+          </div>
+          <div>
+            <label class="modal-lbl">تێبینی <span style="font-size:10px;color:var(--mt)">(ئارەزووی)</span></label>
+            <input class="minp" type="text" id="vNote" placeholder="تێبینی بنووسە...">
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+          <label class="modal-lbl" style="margin:0">چالاک؟</label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+            <input type="checkbox" id="vIsActive" checked style="width:16px;height:16px;cursor:pointer;accent-color:var(--gr)">
+            <span style="font-size:13px;font-weight:700;color:var(--dark)" id="vIsActiveLbl">بەڵێ، چالاک</span>
+          </label>
+        </div>
+
+        <button class="modal-btn dark" id="vCreateBtn" onclick="createVoucher()" style="margin-top:0;width:auto;padding:11px 28px">
+          <i class="fas fa-plus"></i> دروستکردن
+        </button>
+      </div>
+
+      <!-- Vouchers Table -->
+      <div class="sec-hdr">
+        <h3><i class="fas fa-list" style="margin-left:8px"></i>لیستی ڤووچەرەکان</h3>
+        <div class="sec-hdr-right">
+          <input class="tbl-search" type="text" id="vSearch" placeholder="گەڕان بە کۆد..."
+            oninput="vRenderTable()" style="width:160px">
+          <select class="tbl-search" id="vFilter" onchange="vRenderTable()" style="width:120px;cursor:pointer">
+            <option value="all">هەموو</option>
+            <option value="active">چالاک</option>
+            <option value="used">بەکارهێنراو</option>
+            <option value="expired">بەسەرچوو</option>
+          </select>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-scroll">
+          <div id="vTableWrap"><div class="loading"><i class="fas fa-circle-notch fa-spin"></i> بارکردن...</div></div>
+        </div>
+      </div>
+    </div>
+
     <!-- ══ LIVE CHAT ADMIN ══ -->
     <div class="pg" id="pgLiveChat">
       <!-- تۆگل ئۆنلاین -->
@@ -1718,6 +1811,7 @@ const pageConfig={
   revenue:{title:'داهاتی ڕیکلامەکان',sub:'پیوانەی داهات، تێچوو و قازانجی ڕیکلامەکان',load:loadRevenue},
   maintenance:{title:'ڕاگرتنی پەڕەکە',sub:'کردنەوە و داخستنی ئەپلیکەیشن بۆ بەکارهێنەران',load:loadMaintenance},
   tutorials:{title:'فێرکارییەکان',sub:'زیادکردن و بەڕێوەبردنی ڤیدیۆکانی فێرکاری',load:loadTutorials},
+  vouchers:{title:'ڤووچەر کۆد',sub:'دروستکردن و بەڕێوەبردنی ڤووچەرەکان',load:loadVouchers},
 };
 
 let _curPage='dashboard';
@@ -4378,6 +4472,164 @@ lcaDb.ref('adminStatus/online').on('value',snap=>{
 window.lcaToggleOnline=function(checked){
   lcaDb.ref('adminStatus/online').set(checked);
 };
+
+// ════════════════════════════════════════════════════════════════
+// ════  VOUCHER ADMIN SYSTEM  ═════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
+let _allVouchers = [];
+
+function vGenCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const seg = () => Array.from({length:4}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
+  document.getElementById('vCode').value = 'PRXO-' + seg() + '-' + seg();
+}
+
+async function loadVouchers() {
+  const wrap = document.getElementById('vTableWrap');
+  if (!wrap) return;
+  wrap.innerHTML = '<div class="loading"><i class="fas fa-circle-notch fa-spin"></i> بارکردن...</div>';
+  const { data, error } = await sb.from('pa_vouchers').select('*').order('created_at', { ascending: false });
+  if (error) { wrap.innerHTML = '<div class="empty"><i class="fas fa-exclamation-circle"></i><p>' + error.message + '</p></div>'; return; }
+  _allVouchers = data || [];
+
+  // Load user emails for used_by
+  const uids = [...new Set(_allVouchers.filter(v => v.used_by).map(v => v.used_by))];
+  let emailMap = {};
+  if (uids.length) {
+    const { data: profs } = await sb.from('profiles').select('id,email,full_name').in('id', uids);
+    (profs || []).forEach(p => { emailMap[p.id] = p.email || p.full_name || p.id.slice(0,8); });
+  }
+  _allVouchers = _allVouchers.map(v => ({ ...v, _usedEmail: emailMap[v.used_by] || null }));
+
+  // Stats
+  const now = new Date();
+  const total = _allVouchers.length;
+  const used = _allVouchers.filter(v => v.used_by).length;
+  const expired = _allVouchers.filter(v => !v.used_by && v.expires_at && new Date(v.expires_at) < now).length;
+  const active = _allVouchers.filter(v => v.is_active && !v.used_by && (!v.expires_at || new Date(v.expires_at) >= now)).length;
+  const totalIQD = _allVouchers.reduce((s, v) => s + parseFloat(v.amount_iqd || 0), 0);
+
+  const sv = id => { const el = document.getElementById(id); if(el) el.textContent = typeof arguments[1] === 'string' ? arguments[1] : String(arguments[1]); };
+  document.getElementById('vStatTotal').textContent = total;
+  document.getElementById('vStatActive').textContent = active;
+  document.getElementById('vStatUsed').textContent = used;
+  document.getElementById('vStatTotal IQD').textContent = totalIQD.toLocaleString() + ' IQD';
+
+  vRenderTable();
+}
+
+function vRenderTable() {
+  const wrap = document.getElementById('vTableWrap');
+  if (!wrap) return;
+  const q = (document.getElementById('vSearch')?.value || '').trim().toLowerCase();
+  const filter = document.getElementById('vFilter')?.value || 'all';
+  const now = new Date();
+
+  let list = _allVouchers.filter(v => {
+    if (q && !v.code.toLowerCase().includes(q) && !(v.note || '').toLowerCase().includes(q)) return false;
+    const isUsed = !!v.used_by;
+    const isExpired = !isUsed && v.expires_at && new Date(v.expires_at) < now;
+    const isActive = v.is_active && !isUsed && !isExpired;
+    if (filter === 'active' && !isActive) return false;
+    if (filter === 'used' && !isUsed) return false;
+    if (filter === 'expired' && !isExpired) return false;
+    return true;
+  });
+
+  if (!list.length) {
+    wrap.innerHTML = '<div class="empty"><i class="fas fa-ticket"></i><p>هیچ ڤووچەرێک نەدۆزرایەوە</p></div>';
+    return;
+  }
+
+  const statusBadge = v => {
+    if (v.used_by) return '<span class="badge approved"><i class="fas fa-check-double"></i> بەکارهێنراو</span>';
+    if (v.expires_at && new Date(v.expires_at) < now) return '<span class="badge rejected"><i class="fas fa-clock"></i> بەسەرچوو</span>';
+    if (v.is_active) return '<span class="badge completed"><i class="fas fa-circle-check"></i> چالاک</span>';
+    return '<span class="badge paused"><i class="fas fa-pause"></i> ناچالاک</span>';
+  };
+
+  const fmtDate = d => d ? new Date(d).toLocaleDateString('ku') : '—';
+
+  wrap.innerHTML = '<table><thead><tr>' +
+    '<th>کۆد</th><th>بڕ (IQD)</th><th>تێبینی</th><th>کۆتایی</th><th>دروستکراو</th><th>باری</th><th>بەکارهێنەر</th><th>کردارەکان</th>' +
+    '</tr></thead><tbody>' +
+    list.map(v => `<tr>
+      <td><span style="font-family:'Inter',monospace;font-weight:900;font-size:13px;color:var(--dark)">${v.code}</span></td>
+      <td><span style="font-family:'Inter',sans-serif;font-weight:800;color:var(--gr)">${parseFloat(v.amount_iqd).toLocaleString()} IQD</span></td>
+      <td style="font-size:12px;color:var(--mt2)">${v.note || '—'}</td>
+      <td style="font-size:12px;color:var(--mt);direction:ltr">${fmtDate(v.expires_at)}</td>
+      <td style="font-size:12px;color:var(--mt);direction:ltr">${fmtDate(v.created_at)}</td>
+      <td>${statusBadge(v)}</td>
+      <td style="font-size:11px;color:var(--mt);direction:ltr">${v._usedEmail || '—'}</td>
+      <td><div class="act-grp">
+        ${!v.used_by ? `<button class="act-btn ${v.is_active ? 'yw' : 'gr'}" onclick="vToggleActive('${v.id}',${!v.is_active})">
+          <i class="fas fa-${v.is_active ? 'pause' : 'play'}"></i> ${v.is_active ? 'ناچالاک' : 'چالاک'}
+        </button>` : ''}
+        <button class="act-btn rd" onclick="vDeleteVoucher('${v.id}','${v.code}')">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div></td>
+    </tr>`).join('') +
+    '</tbody></table>';
+}
+
+async function createVoucher() {
+  const code = (document.getElementById('vCode').value || '').trim().toUpperCase();
+  const amount = parseFloat(document.getElementById('vAmount').value || '0');
+  const expiry = document.getElementById('vExpiry').value;
+  const note = (document.getElementById('vNote').value || '').trim();
+  const isActive = document.getElementById('vIsActive').checked;
+
+  if (!code) { showToast('کۆدی ڤووچەر پڕبکەرەوە', 'rd'); return; }
+  if (!amount || amount <= 0) { showToast('بڕی ڤووچەر پڕبکەرەوە', 'rd'); return; }
+
+  const btn = document.getElementById('vCreateBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> دروستکردن...';
+
+  const payload = {
+    code,
+    amount_iqd: amount,
+    note: note || null,
+    expires_at: expiry ? new Date(expiry).toISOString() : null,
+    is_active: isActive,
+    created_by: adminUser?.id || null
+  };
+
+  const { error } = await sb.from('pa_vouchers').insert(payload);
+  btn.disabled = false;
+  btn.innerHTML = '<i class="fas fa-plus"></i> دروستکردن';
+
+  if (error) {
+    if (error.code === '23505') showToast('ئەم کۆدە پێشتر بەکارهێنراوە', 'rd');
+    else showToast('هەڵە: ' + error.message, 'rd');
+    return;
+  }
+
+  showToast('✅ ڤووچەرەکە بەسەرکەوتوویی دروستکرا', 'gr');
+  // Reset form
+  document.getElementById('vCode').value = '';
+  document.getElementById('vAmount').value = '';
+  document.getElementById('vExpiry').value = '';
+  document.getElementById('vNote').value = '';
+  document.getElementById('vIsActive').checked = true;
+  loadVouchers();
+}
+
+async function vToggleActive(id, newVal) {
+  const { error } = await sb.from('pa_vouchers').update({ is_active: newVal }).eq('id', id);
+  if (error) { showToast('هەڵە: ' + error.message, 'rd'); return; }
+  showToast(newVal ? '✅ ڤووچەرەکە چالاک کرا' : '⏸ ڤووچەرەکە ناچالاک کرا', 'gr');
+  loadVouchers();
+}
+
+async function vDeleteVoucher(id, code) {
+  if (!confirm('ئایا دڵنیایت لە سڕینەوەی ڤووچەر ' + code + '؟')) return;
+  const { error } = await sb.from('pa_vouchers').delete().eq('id', id);
+  if (error) { showToast('هەڵە: ' + error.message, 'rd'); return; }
+  showToast('✅ ڤووچەرەکە سڕایەوە', 'gr');
+  loadVouchers();
+}
 
 // ئادەر کردنی goPage بۆ liveChat
 const _origGoPage = window.goPage;
