@@ -1280,7 +1280,7 @@ tr:hover td{background:rgba(28,35,51,.015);}
         </div>
         <div class="stat-card">
           <div class="stat-ico yw"><i class="fas fa-coins"></i></div>
-          <div><div class="stat-val" id="vStatTotal IQD">—</div><div class="stat-lbl">کۆی بڕ (IQD)</div></div>
+          <div><div class="stat-val" id="vStatTotalIQD">—</div><div class="stat-lbl">کۆی بڕ (IQD)</div></div>
         </div>
       </div>
 
@@ -1944,24 +1944,32 @@ function setupRealtime(){
 async function loadDashboard(){loadDashboardStats();loadDashDeposits();}
 
 async function loadDashboardStats(){
-  const[{count:users},{data:wallets},{data:pendDeps},{data:ads},{data:banned},{data:coins}]=await Promise.all([
-    sb.from('profiles').select('*',{count:'exact',head:true}),
-    sb.from('pa_wallets').select('balance'),
-    sb.from('pa_transactions').select('*',{count:'exact',head:true}).eq('status','pending'),
-    sb.from('pa_ads').select('*',{count:'exact',head:true}),
-    sb.from('profiles').select('*',{count:'exact',head:true}).eq('is_banned',true),
-    sb.from('pa_coins').select('coins_balance'),
-  ]);
-  const totalBal=(wallets||[]).reduce((s,r)=>s+parseFloat(r.balance||0),0);
-  const totalCoins=(coins||[]).reduce((s,r)=>s+parseInt(r.coins_balance||0),0);
-  document.getElementById('stUsers').textContent=users||0;
-  document.getElementById('stBalance').textContent=Math.round(totalBal*1800).toLocaleString()+' IQD';
-  document.getElementById('stPending').textContent=pendDeps?.length||0;
-  document.getElementById('stAds').textContent=ads||0;
-  document.getElementById('stBanned').textContent=banned||0;
-  document.getElementById('stCoins').textContent=(totalCoins||0).toLocaleString();
-  document.getElementById('sbUsersCount').textContent=users||0;
-  loadDepBadge();loadAdBadge();
+  try{
+    const results=await Promise.allSettled([
+      sb.from('profiles').select('*',{count:'exact',head:true}),
+      sb.from('pa_wallets').select('balance'),
+      sb.from('pa_transactions').select('*',{count:'exact',head:true}).eq('status','pending'),
+      sb.from('pa_ads').select('*',{count:'exact',head:true}),
+      sb.from('profiles').select('*',{count:'exact',head:true}).eq('is_banned',true),
+      sb.from('pa_coins').select('coins_balance'),
+    ]);
+    const val=i=>results[i].status==='fulfilled'?results[i].value:{};
+    const users=val(0).count||0;
+    const wallets=val(1).data||[];
+    const ads=val(3).count||0;
+    const banned=val(4).count||0;
+    const coins=val(5).data||[];
+    const totalBal=wallets.reduce((s,r)=>s+parseFloat(r.balance||0),0);
+    const totalCoins=coins.reduce((s,r)=>s+parseInt(r.coins_balance||0),0);
+    document.getElementById('stUsers').textContent=users;
+    document.getElementById('stBalance').textContent=Math.round(totalBal*1800).toLocaleString()+' IQD';
+    document.getElementById('stPending').textContent=val(2).count||0;
+    document.getElementById('stAds').textContent=ads;
+    document.getElementById('stBanned').textContent=banned;
+    document.getElementById('stCoins').textContent=totalCoins.toLocaleString();
+    document.getElementById('sbUsersCount').textContent=users;
+    loadDepBadge();loadAdBadge();
+  }catch(e){console.error('loadDashboardStats:',e);}
 }
 
 async function loadDepBadge(){
@@ -1981,27 +1989,31 @@ async function loadAdBadge(){
 }
 
 async function loadDashDeposits(){
-  const{data:_dtxs}=await sb.from('pa_transactions').select('*').order('created_at',{ascending:false}).limit(8);
-  const _duids=[...new Set((_dtxs||[]).map(t=>t.user_id).filter(Boolean))];
-  const{data:_dprofs}=await _duids.length?sb.from('profiles').select('id,full_name,email').in('id',_duids):{data:[]};
-  const _dpmap={};(_dprofs||[]).forEach(p=>{_dpmap[p.id]=p;});
-  const data=(_dtxs||[]).map(t=>({...t,profiles:_dpmap[t.user_id]||null}));
   const wrap=document.getElementById('dashDeposits');
-  if(!data?.length){wrap.innerHTML='<div class="empty"><i class="fas fa-inbox"></i><p>هیچ داواکارییەک نییە</p></div>';return;}
-  // Mobile cards + Desktop table
-  const cardsHTML=data.map(d=>`
-    <div class="dash-dep-card" onclick="showDepDetail(allDeposits.find(x=>x.id==='${d.id}')||{...d,profiles:${JSON.stringify(d.profiles||{})}})">
-      <div style="width:36px;height:36px;border-radius:10px;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:800;color:var(--dark);font-family:'Inter',sans-serif">$</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:13px;font-weight:700;color:var(--dark)">${d.profiles?.full_name||'بێ ناو'}</div>
-        <div style="font-size:11px;color:var(--mt);direction:ltr">${d.profiles?.email||'—'}</div>
-      </div>
-      <div style="text-align:left">
-        <div style="font-size:14px;font-weight:800;color:var(--dark);font-family:'Inter',sans-serif">${Math.round(parseFloat(d.amount||0)*1800).toLocaleString()} IQD</div>
-        <span class="badge ${d.status}" style="font-size:9.5px">${statusKu(d.status)}</span>
-      </div>
-    </div>`).join('');
-  wrap.innerHTML=`<div class="dash-dep-cards">${cardsHTML}</div><div class="dash-dep-table tbl-scroll">${renderDepTable(data,true)}</div>`;
+  try{
+    const{data:_dtxs,error}=await sb.from('pa_transactions').select('*').order('created_at',{ascending:false}).limit(8);
+    if(error)throw error;
+    const _duids=[...new Set((_dtxs||[]).map(t=>t.user_id).filter(Boolean))];
+    const{data:_dprofs}=await(_duids.length?sb.from('profiles').select('id,full_name,email').in('id',_duids):{data:[]});
+    const _dpmap={};(_dprofs||[]).forEach(p=>{_dpmap[p.id]=p;});
+    const data=(_dtxs||[]).map(t=>({...t,profiles:_dpmap[t.user_id]||null}));
+    if(!data.length){wrap.innerHTML='<div class="empty"><i class="fas fa-inbox"></i><p>هیچ داواکارییەک نییە</p></div>';return;}
+    const cardsHTML=data.map(d=>`
+      <div class="dash-dep-card" onclick="showDepDetail(allDeposits.find(x=>x.id==='${d.id}')||{...d,profiles:${JSON.stringify(d.profiles||{})}})">
+        <div style="width:36px;height:36px;border-radius:10px;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:800;color:var(--dark);font-family:'Inter',sans-serif">$</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:700;color:var(--dark)">${d.profiles?.full_name||'بێ ناو'}</div>
+          <div style="font-size:11px;color:var(--mt);direction:ltr">${d.profiles?.email||'—'}</div>
+        </div>
+        <div style="text-align:left">
+          <div style="font-size:14px;font-weight:800;color:var(--dark);font-family:'Inter',sans-serif">${Math.round(parseFloat(d.amount||0)*1800).toLocaleString()} IQD</div>
+          <span class="badge ${d.status}" style="font-size:9.5px">${statusKu(d.status)}</span>
+        </div>
+      </div>`).join('');
+    wrap.innerHTML=`<div class="dash-dep-cards">${cardsHTML}</div><div class="dash-dep-table tbl-scroll">${renderDepTable(data,true)}</div>`;
+  }catch(e){
+    wrap.innerHTML='<div class="empty"><i class="fas fa-exclamation-circle" style="color:var(--rd)"></i><p style="color:var(--rd)">هەڵەی بارکردن: '+( e.message||e)+'</p></div>';
+  }
 }
 
 // ══ USERS ══
@@ -4513,7 +4525,7 @@ async function loadVouchers() {
   document.getElementById('vStatTotal').textContent = total;
   document.getElementById('vStatActive').textContent = active;
   document.getElementById('vStatUsed').textContent = used;
-  document.getElementById('vStatTotal IQD').textContent = totalIQD.toLocaleString() + ' IQD';
+  document.getElementById('vStatTotalIQD').textContent = totalIQD.toLocaleString() + ' IQD';
 
   vRenderTable();
 }
