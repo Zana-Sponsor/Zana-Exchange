@@ -111,7 +111,7 @@ body{font-family:'R',sans-serif;background:var(--bg);color:var(--tx);min-height:
 .sb-av{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0;}
 .sb-admin-name{font-size:13px;font-weight:700;color:#fff;line-height:1.3;}
 .sb-admin-role{font-size:10px;color:rgba(255,255,255,.4);}
-.sb-logout{width:32px;height:32px;border-radius:10px;background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.25);color:#f87171;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;margin-right:auto;flex-shrink:0;transition:all .2s;}
+.sb-logout{width:36px;height:36px;border-radius:10px;background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.25);color:#f87171;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;margin-right:0;margin-left:auto;flex-shrink:0;transition:all .2s;}
 .sb-logout:hover{background:var(--rd);color:#fff;}
 
 /* ══ MAIN ══ */
@@ -636,7 +636,10 @@ tr:hover td{background:rgba(28,35,51,.015);}
         <div class="sb-admin-name" id="sbAdminName">ئادمین</div>
         <div class="sb-admin-role">Admin Panel</div>
       </div>
-      <div class="sb-logout" onclick="doLogout()" title="چوونەدەرەوە"><i class="fas fa-right-from-bracket"></i></div>
+      <div class="sb-logout" onclick="doLogout()" title="چوونەدەرەوە" style="flex-direction:column;gap:2px;width:auto;padding:6px 10px;border-radius:10px">
+        <i class="fas fa-right-from-bracket" style="font-size:13px"></i>
+        <span style="font-size:9px;font-weight:700;color:#f87171;white-space:nowrap">دەرچوون</span>
+      </div>
     </div>
   </div>
 </nav>

@@ -12368,15 +12368,23 @@ function lcAttachListeners(){
       lcSaveToHistory(lcSessionId,d.name,d.problem,d.adminName,'active');
       const bar=document.getElementById('lcInfoBar');
       bar.style.display='flex';
-      // ئەگەر adminName بەتاڵ بوو یان 'ئەدمین' بوو، لە Supabase بخوێنەوە
+      // ناوی ئادمین: ئەگەر 'ئەدمین' بوو یان بەتاڵ بوو، لە Supabase بخوێنەوە
       let adminLbl=d.adminName&&d.adminName!=='ئەدمین'?d.adminName:null;
-      if(!adminLbl&&d.adminId){
+      if(!adminLbl){
         try{
-          const{data:_ap}=await sb.from('profiles').select('full_name').eq('id',d.adminId).single();
-          if(_ap?.full_name)adminLbl=_ap.full_name;
+          // یەکەم: بە adminId
+          if(d.adminId){
+            const{data:_ap1}=await sb.from('profiles').select('full_name').eq('id',d.adminId).single();
+            if(_ap1?.full_name)adminLbl=_ap1.full_name;
+          }
+          // دووەم: لە live_chat_history بە sessionId
+          if(!adminLbl&&lcSessionId){
+            const{data:_ap2}=await sb.from('live_chat_history').select('admin_name').eq('session_id',lcSessionId).single();
+            if(_ap2?.admin_name&&_ap2.admin_name!=='ئەدمین')adminLbl=_ap2.admin_name;
+          }
         }catch(_){}
       }
-      adminLbl=adminLbl||d.adminName||'پشتگیری Proxo';
+      adminLbl=adminLbl||'تیمی پشتگیری Proxo';
       document.getElementById('lcInfoText').textContent=adminLbl+' ئێستا لەسەر هێڵە لەگەڵتە';
       // نیشاندانی ناوی ئادمین لە header
       const _hn=document.getElementById('lcHeadAdminName');
