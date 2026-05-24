@@ -819,18 +819,29 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .notif-time{font-size:10px;color:var(--mt);margin-top:4px;}
 .unread-dot{width:8px;height:8px;border-radius:50%;background:var(--bl);margin-top:4px;flex-shrink:0;}
 
-/* ══ SUPPORT ══ */
-.chat-outer{display:flex;flex-direction:column;height:calc(100vh - 175px);}
-.chat-body{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:4px 0;}
-.mw-u{display:flex;justify-content:flex-start;}
-.mw-a{display:flex;justify-content:flex-end;}
-.bub-u{background:var(--w);border:1px solid var(--b1);color:var(--tx);border-radius:18px 18px 18px 4px;padding:11px 14px;max-width:82%;font-size:13px;line-height:1.7;}
-.bub-a{background:var(--dark);color:#fff;border-radius:18px 18px 4px 18px;padding:11px 14px;max-width:82%;font-size:13px;line-height:1.7;}
-.bub-t{font-size:9.5px;opacity:.5;margin-top:4px;}
-.chat-foot{display:flex;gap:8px;padding:10px 0 0;}
-.chat-inp{flex:1;padding:13px 15px;background:var(--w);border:1.5px solid var(--b1);border-radius:14px;color:var(--tx);font-family:'R',sans-serif;font-size:15px;outline:none;}
-.chat-inp:focus{border-color:var(--dark);}
-.chat-send{width:46px;height:46px;border-radius:13px;background:var(--dark);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+/* ══ SUPPORT CHAT — WhatsApp Style ══ */
+.chat-pg{padding:0!important;display:flex!important;flex-direction:column!important;height:calc(100vh - 60px)!important;overflow:hidden!important;background:#efeae2!important;}
+.chat-hdr{display:flex;align-items:center;gap:11px;padding:12px 16px 12px;background:var(--dark);flex-shrink:0;}
+.chat-hdr-av{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.18);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex-shrink:0;position:relative;}
+.chat-hdr-av-dot{width:10px;height:10px;border-radius:50%;background:#4ade80;border:2px solid var(--dark);position:absolute;bottom:1px;right:1px;}
+.chat-hdr-info{flex:1;}
+.chat-hdr-name{font-size:14px;font-weight:800;color:#fff;letter-spacing:-.2px;}
+.chat-hdr-sub{font-size:10.5px;color:rgba(255,255,255,.6);margin-top:1px;}
+.chat-hdr-enc{color:rgba(255,255,255,.4);font-size:13px;}
+.chat-outer{display:flex;flex-direction:column;flex:1;overflow:hidden;}
+.chat-body{flex:1;overflow-y:auto;padding:12px 14px 8px;display:flex;flex-direction:column;gap:2px;background:#efeae2;}
+.mw-u{display:flex;justify-content:flex-end;margin-bottom:2px;}
+.mw-a{display:flex;align-items:flex-end;gap:6px;margin-bottom:2px;}
+.chat-adm-av-sm{width:26px;height:26px;border-radius:50%;background:var(--dark);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0;}
+.bub-u{background:#d9fdd3;color:#111b21;border-radius:10px 2px 10px 10px;padding:8px 12px 5px;max-width:78%;font-size:13.5px;line-height:1.55;box-shadow:0 1px 2px rgba(0,0,0,.12);}
+.bub-a{background:#fff;color:#111b21;border-radius:2px 10px 10px 10px;padding:8px 12px 5px;max-width:78%;font-size:13.5px;line-height:1.55;box-shadow:0 1px 2px rgba(0,0,0,.12);}
+.bub-meta{display:flex;align-items:center;justify-content:flex-end;gap:3px;margin-top:3px;}
+.bub-t{font-size:10px;color:#8b96a0;}
+.bub-tick{font-size:11px;color:#8b96a0;}
+.bub-tick.delivered{color:#53bdeb;}
+.chat-foot{display:flex;align-items:center;gap:8px;padding:8px 12px 12px;background:#f0f2f5;flex-shrink:0;}
+.chat-inp{flex:1;padding:10px 16px;background:#fff;border:none;border-radius:22px;color:#111b21;font-family:'R',sans-serif;font-size:14px;outline:none;box-shadow:0 1px 2px rgba(0,0,0,.1);}
+.chat-send{width:42px;height:42px;border-radius:50%;background:var(--dark);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;transition:all .18s;}
 
 /* ══ MODALS ══ */
 .mover{position:fixed;top:0;left:0;right:0;bottom:0;inset:0;background:rgba(0,0,0,.5);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:none;justify-content:center;align-items:flex-end;z-index:9000;padding:0;will-change:opacity;transition:opacity .15s ease;}
@@ -1163,44 +1174,50 @@ textarea.lc-inp{resize:none;}
 .lc-waiting-stage p{font-size:12.5px;color:#64748b;line-height:1.6;max-width:250px;}
 .lc-wait-badge{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:#fef9c3;border:1px solid #fde68a;border-radius:50px;color:#92400e;font-size:11px;font-weight:700;}
 .lc-cancel-btn{color:#94a3b8;font-size:12px;background:none;border:none;font-family:'R',sans-serif;cursor:pointer;text-decoration:underline;margin-top:6px;}
-/* مەرحەلەی چات چالاک */
-.lc-info-bar{display:flex;align-items:center;gap:7px;padding:7px 13px;background:#ecfdf5;border-bottom:1px solid #d1fae5;flex-shrink:0;}
+/* مەرحەلەی چات چالاک — WhatsApp Style */
+.lc-info-bar{display:flex;align-items:center;gap:7px;padding:7px 14px;background:#ecfdf5;border-bottom:1px solid #d1fae5;flex-shrink:0;}
 .lc-info-dot{width:7px;height:7px;border-radius:50%;background:#10b981;}
 .lc-info-text{font-size:11px;color:#065f46;font-weight:700;}
-.lc-msgs-area{flex:1;overflow-y:auto;padding:13px 13px 7px;display:flex;flex-direction:column;gap:8px;}
-.lc-bubble{max-width:78%;padding:9px 13px;border-radius:16px;font-size:13px;line-height:1.5;animation:lc-bubble-in .2s ease-out;}
-@keyframes lc-bubble-in{from{opacity:0;transform:translateY(5px)scale(.97);}to{opacity:1;transform:translateY(0)scale(1);}}
-.lc-bubble.user{background:#f1f5f9;color:#1c2333;border-bottom-right-radius:4px;align-self:flex-start;}
-.lc-bubble.admin{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border-bottom-left-radius:4px;align-self:flex-end;}
-.lc-msg-time{font-size:10px;margin-top:3px;opacity:.6;}
-.lc-typing-bubble{align-self:flex-end;padding:9px 14px;background:linear-gradient(135deg,#2563eb,#1d4ed8);border-radius:16px;border-bottom-left-radius:4px;display:flex;gap:5px;align-items:center;}
-.lc-t-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.7);}
+.lc-msgs-area{flex:1;overflow-y:auto;padding:12px 14px 8px;display:flex;flex-direction:column;gap:2px;background:#efeae2;}
+.lc-row-u{display:flex;justify-content:flex-end;margin-bottom:2px;}
+.lc-row-a{display:flex;align-items:flex-end;gap:6px;margin-bottom:2px;}
+.lc-row-av{width:26px;height:26px;border-radius:50%;background:var(--dark);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0;}
+.lc-bubble{max-width:78%;font-size:13.5px;line-height:1.55;animation:lc-bubble-in .18s ease-out;}
+@keyframes lc-bubble-in{from{opacity:0;transform:translateY(4px)scale(.98);}to{opacity:1;transform:translateY(0)scale(1);}}
+.lc-bubble.user{background:#d9fdd3;color:#111b21;border-radius:10px 2px 10px 10px;padding:8px 12px 5px;box-shadow:0 1px 2px rgba(0,0,0,.12);}
+.lc-bubble.admin{background:#fff;color:#111b21;border-radius:2px 10px 10px 10px;padding:8px 12px 5px;box-shadow:0 1px 2px rgba(0,0,0,.12);}
+.lc-msg-time{font-size:10px;color:#8b96a0;text-align:right;margin-top:3px;}
+.lc-typing-bubble{padding:10px 14px;background:#fff;border-radius:2px 10px 10px 10px;display:flex;gap:5px;align-items:center;box-shadow:0 1px 2px rgba(0,0,0,.1);width:fit-content;}
+.lc-t-dot{width:7px;height:7px;border-radius:50%;background:#94a3b8;}
 .lc-t-dot:nth-child(1){animation:lc-td 1.2s infinite 0s;}
 .lc-t-dot:nth-child(2){animation:lc-td 1.2s infinite .2s;}
 .lc-t-dot:nth-child(3){animation:lc-td 1.2s infinite .4s;}
 @keyframes lc-td{0%,80%,100%{transform:scale(.7);opacity:.4;}40%{transform:scale(1.2);opacity:1;}}
 .lc-closed-banner{padding:9px 13px;background:#fef2f2;border-top:1px solid #fecaca;text-align:center;font-size:12px;color:#991b1b;font-weight:700;flex-shrink:0;}
-/* مێژووی چات */
-.lc-hist-stage{padding:14px 14px 10px;flex-direction:column;}
-.lc-hist-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:13px;border:1px solid #e2e8f0;margin-bottom:8px;background:#fafafa;}
-.lc-hist-av{width:34px;height:34px;border-radius:50%;background:#1c2333;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;}
+/* مێژووی چات — WhatsApp Conversation List */
+.lc-hist-stage{padding:0;flex-direction:column;}
+.lc-hist-item{display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer;border-bottom:1px solid #f0f2f5;transition:background .15s;position:relative;}
+.lc-hist-item:active{background:#f0f2f5;}
+.lc-hist-av{width:48px;height:48px;border-radius:50%;background:var(--dark);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;flex-shrink:0;}
 .lc-hist-info{flex:1;min-width:0;}
-.lc-hist-name{font-size:12.5px;font-weight:700;color:#1c2333;}
-.lc-hist-sub{font-size:10.5px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.lc-hist-date{font-size:10px;color:#94a3b8;flex-shrink:0;text-align:left;direction:ltr;}
-.lc-new-chat-btn{width:100%;padding:12px;background:linear-gradient(135deg,#1c2333,#2e3a50);color:#fff;border:none;border-radius:12px;font-family:'R',sans-serif;font-size:14px;font-weight:800;cursor:pointer;flex-shrink:0;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.lc-hist-name{font-size:14px;font-weight:700;color:#111b21;margin-bottom:3px;}
+.lc-hist-sub{font-size:12.5px;color:#667781;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.lc-hist-meta{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;}
+.lc-hist-date{font-size:11px;color:#667781;}
+.lc-hist-stbadge{font-size:9.5px;padding:2px 8px;border-radius:20px;font-weight:700;}
+.lc-new-chat-btn{width:calc(100% - 28px);margin:14px;padding:13px;background:var(--dark);color:#fff;border:none;border-radius:14px;font-family:'R',sans-serif;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(28,35,51,.2);}
 .lc-id-pill{font-size:9.5px;color:#94a3b8;font-family:'Inter',sans-serif;letter-spacing:.3px;background:#f1f5f9;padding:2px 8px;border-radius:20px;direction:ltr;margin-right:auto;}
-.lc-hist-empty{text-align:center;padding:28px 16px;color:#94a3b8;}
-.lc-hist-empty i{font-size:32px;display:block;margin-bottom:10px;opacity:.35;}
-.lc-hist-empty p{font-size:12.5px;}
-/* خانەی نووسین */
-.lc-inp-wrap{display:flex;align-items:flex-end;gap:7px;padding:9px 11px;border-top:1px solid #e2e8f0;flex-shrink:0;}
-.lc-chat-inp{flex:1;padding:9px 13px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:13px;color:#1c2333;font-family:'R',sans-serif;font-size:13px;outline:none;resize:none;max-height:90px;transition:all .2s;}
-.lc-chat-inp:focus{border-color:#2563eb;background:#fff;}
-.lc-send-btn{width:38px;height:38px;flex-shrink:0;border-radius:11px;background:linear-gradient(135deg,#1c2333,#2e3a50);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s;}
+.lc-hist-empty{text-align:center;padding:40px 16px;color:#94a3b8;}
+.lc-hist-empty i{font-size:36px;display:block;margin-bottom:12px;opacity:.3;}
+.lc-hist-empty p{font-size:13px;}
+/* خانەی نووسین — WhatsApp style */
+.lc-inp-wrap{display:flex;align-items:center;gap:8px;padding:8px 12px 12px;background:#f0f2f5;flex-shrink:0;}
+.lc-chat-inp{flex:1;padding:10px 15px;background:#fff;border:none;border-radius:22px;color:#111b21;font-family:'R',sans-serif;font-size:14px;outline:none;resize:none;max-height:90px;transition:all .2s;box-shadow:0 1px 2px rgba(0,0,0,.08);}
+.lc-chat-inp:focus{box-shadow:0 1px 4px rgba(0,0,0,.14);}
+.lc-send-btn{width:42px;height:42px;flex-shrink:0;border-radius:50%;background:var(--dark);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s;}
 .lc-send-btn:disabled{opacity:.35;pointer-events:none;}
-.lc-media-btn{width:34px;height:34px;flex-shrink:0;border-radius:10px;background:#f1f5f9;border:1.5px solid #e2e8f0;color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s;}
-.lc-media-btn:hover{background:#e2e8f0;color:#1c2333;}
+.lc-media-btn{width:38px;height:38px;flex-shrink:0;border-radius:50%;background:#f0f2f5;border:none;color:#667781;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s;}
+.lc-media-btn:hover{background:#e2e8f0;}
 .lc-bubble img.lc-media-img{max-width:100%;max-height:220px;border-radius:10px;display:block;cursor:pointer;object-fit:contain;}
 .lc-bubble video.lc-media-vid{max-width:100%;max-height:200px;border-radius:10px;display:block;outline:none;}
 .lc-media-uploading{display:flex;align-items:center;gap:7px;font-size:12px;color:#64748b;padding:6px 10px;background:#f8fafc;border-radius:10px;border:1px dashed #cbd5e1;}
@@ -3464,19 +3481,27 @@ function _toWebP(dataUrl,quality){
   </div>
 
   <!-- SUPPORT -->
-  <div class="pg" id="pgSupport">
-    <div class="pg-title" style="margin-bottom:14px">سەپۆرت</div>
+  <div class="pg chat-pg" id="pgSupport">
+    <div class="chat-hdr">
+      <div class="chat-hdr-av">P<span class="chat-hdr-av-dot"></span></div>
+      <div class="chat-hdr-info">
+        <div class="chat-hdr-name">پشتگیری Proxo</div>
+        <div class="chat-hdr-sub" id="chatHdrSub">ئامادە و وەڵامدانەوەیت</div>
+      </div>
+      <div class="chat-hdr-enc"><i class="fas fa-lock"></i></div>
+    </div>
     <div class="chat-outer">
       <div class="chat-body" id="chatBody">
-        <div style="text-align:center;padding:30px;color:var(--mt)">
-          <i class="fas fa-headset" style="font-size:32px;display:block;margin-bottom:10px;opacity:.3"></i>
-          <span style="font-size:13px">سەلام! چۆن یارمەتیت بدەین؟</span>
+        <div style="text-align:center;padding:50px 20px">
+          <div style="width:58px;height:58px;border-radius:50%;background:rgba(28,35,51,.1);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 14px;color:#8b95a8"><i class="fas fa-headset"></i></div>
+          <div style="font-size:13.5px;font-weight:700;color:#475569;margin-bottom:6px">سەلام! 👋</div>
+          <div style="font-size:12px;color:#94a3b8;line-height:1.7">پەیامەکەت بنووسە،<br>تیمی پشتگیری زوو وەڵامت دەدەینەوە.</div>
         </div>
       </div>
       <div class="chat-foot">
         <input class="chat-inp" type="text" id="chatInp" placeholder="پەیامت بنووسە..."
           onkeydown="if(event.key==='Enter')sendMsg()">
-        <button class="chat-send" onclick="sendMsg()"><i class="fas fa-paper-plane"></i></button>
+        <button class="chat-send" onclick="sendMsg()"><i class="fas fa-paper-plane" style="transform:rotate(180deg)"></i></button>
       </div>
     </div>
   </div>
@@ -10956,14 +10981,31 @@ async function loadChat(){
   const{data}=await sb.from('pa_support').select('*').eq('user_id',cu.id).order('created_at',{ascending:true});
   const body=document.getElementById('chatBody');
   if(!data?.length){
-    body.innerHTML=`<div style="text-align:center;padding:30px;color:var(--mt)"><i class="fas fa-headset" style="font-size:32px;display:block;margin-bottom:10px;opacity:.3"></i><span style="font-size:13px">سەلام! چۆن یارمەتیت بدەین؟</span></div>`;return;
+    body.innerHTML=`<div style="text-align:center;padding:50px 20px">
+      <div style="width:58px;height:58px;border-radius:50%;background:rgba(28,35,51,.1);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 14px;color:#8b95a8"><i class="fas fa-headset"></i></div>
+      <div style="font-size:13.5px;font-weight:700;color:#475569;margin-bottom:6px">سەلام! 👋</div>
+      <div style="font-size:12px;color:#94a3b8;line-height:1.7">پەیامەکەت بنووسە،<br>تیمی پشتگیری زوو وەڵامت دەدەینەوە.</div>
+    </div>`;return;
   }
-  body.innerHTML=data.map(m=>`
-    <div class="${m.is_admin?'mw-a':'mw-u'}">
-      <div class="${m.is_admin?'bub-a':'bub-u'}">${m.message}
-        <div class="bub-t">${new Date(m.created_at).toLocaleTimeString('ku',{hour:'2-digit',minute:'2-digit'})}</div>
-      </div>
-    </div>`).join('');
+  // read status: user msgs before last admin reply = read
+  let lastAdminIdx=-1;
+  for(let i=data.length-1;i>=0;i--){if(data[i].is_admin){lastAdminIdx=i;break;}}
+  body.innerHTML=data.map((m,i)=>{
+    const time=new Date(m.created_at).toLocaleTimeString('ku-IQ',{hour:'2-digit',minute:'2-digit'});
+    if(m.is_admin){
+      return`<div class="mw-a">
+        <div class="chat-adm-av-sm">P</div>
+        <div class="bub-a">${m.message}<div class="bub-meta"><span class="bub-t">${time}</span></div></div>
+      </div>`;
+    }else{
+      const tick=lastAdminIdx>i
+        ?'<i class="fas fa-check-double bub-tick delivered"></i>'
+        :'<i class="fas fa-check-double bub-tick"></i>';
+      return`<div class="mw-u">
+        <div class="bub-u">${m.message}<div class="bub-meta">${tick}<span class="bub-t">${time}</span></div></div>
+      </div>`;
+    }
+  }).join('');
   setTimeout(()=>{body.scrollTop=body.scrollHeight;},50);
 }
 async function sendMsg(){
@@ -11820,9 +11862,9 @@ async function loadGiveawayPage(){
       </div>
       <!-- مێژووی چاتەکان -->
       <div class="lc-stage lc-hist-stage" id="lcStageHistory">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-          <div style="font-size:14px;font-weight:800;color:#1c2333"><i class="fas fa-history" style="margin-left:7px;color:#2563eb"></i>مێژووی چاتەکان</div>
-          <button onclick="lcStartNewChat()" style="padding:7px 14px;background:#1c2333;color:#fff;border:none;border-radius:10px;font-family:'R',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-plus" style="margin-left:4px"></i>چاتی نوێ</button>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;border-bottom:1px solid #f0f2f5;flex-shrink:0;">
+          <div style="font-size:14px;font-weight:800;color:#111b21">مێژووی چاتەکان</div>
+          <button onclick="lcStartNewChat()" style="padding:7px 14px;background:var(--dark);color:#fff;border:none;border-radius:22px;font-family:'R',sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px"><i class="fas fa-plus" style="font-size:10px"></i>چاتی نوێ</button>
         </div>
         <div id="lcHistoryList" style="flex:1;overflow-y:auto;"></div>
       </div>
@@ -11995,20 +12037,20 @@ async function lcRenderHistory(){
   };
   list.innerHTML=hist.map(h=>{
     const initials=(h.name||'?').charAt(0).toUpperCase();
-    const date=(h.closedAt||h.updatedAt)?new Date(h.closedAt||h.updatedAt).toLocaleDateString('ku-IQ',{month:'short',day:'numeric'}):'';
-    const idShort=(h.id||'').slice(-8);
+    const dt=h.closedAt||h.updatedAt;
+    const dateStr=dt?new Date(dt).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'';
     const st=statusCfg[h.status]||statusCfg.closed;
-    const clickAttr=st.clickable?`onclick="lcResumeFromHistory('${h.id}')" style="cursor:pointer"`:'';;
-    return `<div class="lc-hist-item" ${clickAttr}>
+    const stBg=h.status==='active'?'rgba(37,211,102,.14)':h.status==='pending'?'rgba(245,158,11,.13)':'#f1f5f9';
+    const stCl=h.status==='active'?'#15803d':h.status==='pending'?'#b45309':'#64748b';
+    return `<div class="lc-hist-item" onclick="lcResumeFromHistory('${h.id}')">
       <div class="lc-hist-av">${initials}</div>
       <div class="lc-hist-info">
         <div class="lc-hist-name">${lcEsc(h.name||'—')}</div>
         <div class="lc-hist-sub">${lcEsc(h.problem||'—')}</div>
-        <div style="font-size:9.5px;color:#94a3b8;margin-top:2px;direction:ltr;text-align:right">#${idShort}</div>
       </div>
-      <div class="lc-hist-date">
-        <div>${date}</div>
-        <div style="margin-top:3px;font-size:9px;background:${st.bg};padding:2px 6px;border-radius:6px;color:${st.color};font-weight:700">${st.lbl}</div>
+      <div class="lc-hist-meta">
+        <div class="lc-hist-date">${dateStr}</div>
+        <div class="lc-hist-stbadge" style="background:${stBg};color:${stCl}">${st.lbl}</div>
       </div>
     </div>`;
   }).join('');
@@ -12342,6 +12384,14 @@ function lcRenderMessages(msgs){
     }
   }catch(e){}
   msgs.forEach(m=>{
+    const isAdmin=m.sender==='admin';
+    const row=document.createElement('div');
+    row.className=isAdmin?'lc-row-a':'lc-row-u';
+    if(isAdmin){
+      const av=document.createElement('div');
+      av.className='lc-row-av';av.textContent='P';
+      row.appendChild(av);
+    }
     const div=document.createElement('div');
     div.className='lc-bubble '+m.sender;
     const time=new Date(m.timestamp).toLocaleTimeString('ku-IQ',{hour:'2-digit',minute:'2-digit'});
@@ -12352,15 +12402,19 @@ function lcRenderMessages(msgs){
       div.style.padding='6px';
       div.innerHTML=`<video class="lc-media-vid" src="${m.data}" controls playsinline preload="metadata"></video><div class="lc-msg-time" style="padding:0 4px 2px">${time}</div>`;
     }else{
-      div.innerHTML=`<div>${lcEsc(m.text||'')}</div><div class="lc-msg-time">${time}</div>`;
+      const tick=!isAdmin?`<span style="font-size:10px;color:#8b96a0;margin-right:3px"><i class="fas fa-check-double"></i></span>`:'';
+      div.innerHTML=`<div>${lcEsc(m.text||'')}</div><div class="lc-msg-time" style="display:flex;align-items:center;justify-content:flex-end;gap:3px">${tick}${time}</div>`;
     }
-    area.appendChild(div);
+    row.appendChild(div);
+    area.appendChild(row);
   });
   if(lcTypingShown){
+    const tr=document.createElement('div');tr.className='lc-row-a';
+    const av2=document.createElement('div');av2.className='lc-row-av';av2.textContent='P';
     const tb=document.createElement('div');
     tb.id='lcTypingBubble';tb.className='lc-typing-bubble';
     tb.innerHTML='<div class="lc-t-dot"></div><div class="lc-t-dot"></div><div class="lc-t-dot"></div>';
-    area.appendChild(tb);
+    tr.appendChild(av2);tr.appendChild(tb);area.appendChild(tr);
   }
   area.scrollTop=area.scrollHeight;
 }
@@ -12378,10 +12432,13 @@ function lcRenderTyping(show){
   const area=document.getElementById('lcMsgsArea');
   const ex=document.getElementById('lcTypingBubble');
   if(show&&!ex){
+    const tr=document.createElement('div');tr.id='lcTypingRow';tr.className='lc-row-a';
+    const av=document.createElement('div');av.className='lc-row-av';av.textContent='P';
     const tb=document.createElement('div');
     tb.id='lcTypingBubble';tb.className='lc-typing-bubble';
     tb.innerHTML='<div class="lc-t-dot"></div><div class="lc-t-dot"></div><div class="lc-t-dot"></div>';
-    area.appendChild(tb);area.scrollTop=area.scrollHeight;
+    tr.appendChild(av);tr.appendChild(tb);
+    area.appendChild(tr);area.scrollTop=area.scrollHeight;
   }else if(!show&&ex){ex.remove();}
 }
 
