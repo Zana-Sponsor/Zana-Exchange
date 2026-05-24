@@ -392,15 +392,14 @@ tr:hover td{background:rgba(28,35,51,.015);}
 .lca-session-preview{font-size:11px;color:var(--mt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
 .lca-session-meta{text-align:left;flex-shrink:0;}
 .lca-session-time{font-size:10px;color:var(--mt);direction:ltr;}
-.lca-unread-dot{width:8px;height:8px;border-radius:50%;background:#25D366;margin:3px 0 0 auto;animation:lca-pulse2 2s infinite;}
-@keyframes lca-pulse2{0%,100%{box-shadow:0 0 0 0 rgba(37,211,102,.5);}70%{box-shadow:0 0 0 5px rgba(37,211,102,0);}}
-.lca-unread-badge{min-width:20px;height:20px;border-radius:10px;background:#25D366;color:#fff;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;padding:0 5px;font-family:'Inter',sans-serif;flex-shrink:0;box-shadow:0 2px 6px rgba(37,211,102,.4);}
-.lca-unread-badge.rd{background:#dc2626;box-shadow:0 2px 6px rgba(220,38,38,.4);}
+.lca-unread-dot{width:8px;height:8px;border-radius:50%;background:#25D366;margin:3px 0 0 auto;}
+.lca-unread-cnt{min-width:20px;height:20px;border-radius:10px;background:#25D366;color:#fff;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;padding:0 5px;font-family:'Inter',sans-serif;flex-shrink:0;}
+.lca-unread-cnt.new{background:#dc2626;}
 .lca-session-item.has-unread .lca-session-name{font-weight:900;color:var(--dark);}
 .lca-session-item.has-unread .lca-session-preview{color:var(--dark);font-weight:600;}
-.lca-sender-name{font-size:10px;font-weight:700;color:#128C7E;margin-bottom:2px;}
-.lca-bubble.admin .lca-sender-name{color:#128C7E;}
-.lca-bubble.user .lca-sender-name{color:#667781;}
+.lca-sender-lbl{font-size:10.5px;font-weight:700;margin-bottom:3px;opacity:.75;}
+.lca-bubble.admin .lca-sender-lbl{color:#d1fae5;text-align:left;}
+.lca-bubble.user .lca-sender-lbl{color:#64748b;}
 /* پانێلی چات ئادمین */
 .lca-chat-wrap{display:flex;flex-direction:column;height:100%;min-height:500px;}
 .lca-chat-hdr{padding:13px 16px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:10px;flex-shrink:0;}
@@ -4763,8 +4762,8 @@ const lcaDb = lcaApp.database();
 let lcaAllSessions = {};
 let _lcaTgNotifiedSessions = new Set();
 let lcaCurrentSessionId = null;
-let lcaUnreadMap={};
-let lcaReadAtMap={};
+let lcaUnreadMap = {};   // sessionId → unread count
+let lcaLastMsgTs = {};   // sessionId → timestamp of last seen msg
 let lcaFilter = 'all';
 let lcaUnsubSessions = null;
 let lcaUnsubMessages = null;
@@ -4843,41 +4842,27 @@ function lcaInitPage(){
 function lcaLoadSessions(){
   if(lcaUnsubSessions){lcaDb.ref('sessions').off('value',lcaUnsubSessions);}
   lcaUnsubSessions=lcaDb.ref('sessions').on('value',snap=>{
-    const prevSessions=lcaAllSessions;
     lcaAllSessions=snap.val()||{};
     lcaRenderSessions();
     lcaUpdateStats();
-    // گوێگرتن بۆ پەیامی نوێ لە هەموو سێشنێک
-    Object.keys(lcaAllSessions).forEach(sid=>{
-      if(!lcaReadAtMap[sid]) lcaReadAtMap[sid]=0;
-      if(!lcaUnreadMap[sid]) lcaUnreadMap[sid]=0;
-    });
   });
-  // لیسنەری گشتی بۆ پەیامی نوێ (unread counter)
-  lcaDb.ref('messages').on('child_added',snap=>{});
+  // گوێگرتن بۆ پەیامی نوێ لە هەموو سێشنێک بۆ ژمارەی نەخوێندراو
   lcaDb.ref('sessions').on('child_changed',snap=>{
     const id=snap.key;
-    const s=snap.val();
-    // نووسینی پەیامی کڕیار بۆ سێشنێکی کراوە نەبوو
-    if(id!==lcaCurrentSessionId&&s){
-      // نمایش کردنی ئاگاداری پەیامی نوێ
-      const prevUnread=lcaUnreadMap[id]||0;
-      // پەیامی کۆتایی بخوێنەوە
-      lcaDb.ref('messages/'+id).orderByChild('timestamp').limitToLast(1).once('value',msgSnap=>{
-        const msgs=msgSnap.val();
-        if(!msgs) return;
-        const lastMsg=Object.values(msgs)[0];
-        if(lastMsg&&lastMsg.sender==='user'&&lastMsg.timestamp>(lcaReadAtMap[id]||0)){
-          lcaUnreadMap[id]=(lcaUnreadMap[id]||0)+1;
-          lcaReadAtMap[id]=lastMsg.timestamp;
-          lcaRenderSessions();
-          // ئاگاداری دەنگ
-          if(prevUnread===0){
-            try{const a=new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAA');a.volume=0.3;a.play().catch(()=>{});}catch(e){}
-          }
-        }
-      });
-    }
+    if(id===lcaCurrentSessionId) return; // کراوەیە — پێویست نییە
+    lcaDb.ref('messages/'+id).orderByChild('timestamp').limitToLast(1).once('value',msgSnap=>{
+      const d=msgSnap.val();
+      if(!d) return;
+      const last=Object.values(d)[0];
+      if(!last||last.sender!=='user') return;
+      const lastTs=last.timestamp||0;
+      if(lastTs>(lcaLastMsgTs[id]||0)){
+        lcaUnreadMap[id]=(lcaUnreadMap[id]||0)+1;
+        lcaLastMsgTs[id]=lastTs;
+        lcaRenderSessions();
+        lcaPlayNotif();
+      }
+    });
   });
 }
 
@@ -4955,11 +4940,11 @@ function lcaRenderSessions(){
     const isActive=id===lcaCurrentSessionId;
     const time=s.updatedAt||s.createdAt?new Date(s.updatedAt||s.createdAt).toLocaleTimeString('ku-IQ',{hour:'2-digit',minute:'2-digit'}):'';
     const idShort=id.slice(-8);
-    const unread=(!isActive&&lcaUnreadMap[id]>0)?lcaUnreadMap[id]:0;
-    const hasPending=s.status==='pending';
-    const hasUnreadClass=(unread>0||hasPending)&&!isActive?' has-unread':'';
-    return `<div class="lca-session-item${isActive?' active-sel':''}${hasUnreadClass}" onclick="lcaSelectSession('${id}')">
-      <div class="lca-session-av" style="${hasPending?'background:linear-gradient(135deg,#f59e0b,#d97706);':''}">${initials}</div>
+    const unread=lcaUnreadMap[id]||0;
+    const isPending=s.status==='pending';
+    const hasUnread=(unread>0||isPending)&&!isActive;
+    return `<div class="lca-session-item${isActive?' active-sel':''}${hasUnread?' has-unread':''}" onclick="lcaSelectSession('${id}')">
+      <div class="lca-session-av" style="${isPending?'background:linear-gradient(135deg,#f59e0b,#d97706);':''}">${initials}</div>
       <div class="lca-session-info">
         <div class="lca-session-name">${lcaEsc(s.name||'بێ ناو')}</div>
         <div class="lca-session-preview">${lcaEsc(s.problem||'')}${s.email?'<span style="color:#94a3b8;margin-right:4px"> · '+lcaEsc(s.email)+'</span>':''}</div>
@@ -4968,7 +4953,7 @@ function lcaRenderSessions(){
       <div class="lca-session-meta">
         <div class="lca-session-time">${time}</div>
         <span class="lca-badge ${clsMap[s.status]||''}">${statusMap[s.status]||s.status}</span>
-        ${unread>0?`<div class="lca-unread-badge">${unread>99?'99+':unread}</div>`:hasPending?'<div class="lca-unread-badge rd">نوێ</div>':''}
+        ${unread>0&&!isActive?`<div class="lca-unread-cnt">${unread>99?'99+':unread}</div>`:isPending&&!isActive?'<div class="lca-unread-cnt new">نوێ</div>':''}
       </div>
     </div>`;
   }).join('');
@@ -4999,17 +4984,26 @@ window.lcaSelectSession=function(id){
   }else if(s.status==='active'){
     btns.innerHTML=`<button class="act-btn rd" style="padding:7px 12px;font-size:12px" onclick="lcaCloseSession('${id}')"><i class="fas fa-lock"></i> داخستن</button>`;
   }
-  // لیسنەری پەیامەکان
   // مارک کردن بە خوێندراو
-  lcaReadAtMap[id]=Date.now();
   lcaUnreadMap[id]=0;
+  lcaLastMsgTs[id]=Date.now();
   lcaRenderSessions();
+  // لیسنەری پەیامەکان
   if(lcaUnsubMessages)lcaDb.ref('messages/'+lcaCurrentSessionId).off('value',lcaUnsubMessages);
   let firstMsg=true;
   lcaUnsubMessages=lcaDb.ref('messages/'+id).on('value',snap=>{
     const d=snap.val();
-    lcaRenderMessages(d?Object.entries(d).map(([k,v])=>({id:k,...v})).sort((a,b)=>a.timestamp-b.timestamp):[]);
-    if(!firstMsg&&d){const msgs=Object.values(d);const last=msgs.sort((a,b)=>a.timestamp-b.timestamp).pop();if(last&&last.sender==='user')lcaPlayNotif();}
+    const msgs=d?Object.entries(d).map(([k,v])=>({id:k,...v})).sort((a,b)=>a.timestamp-b.timestamp):[];
+    lcaRenderMessages(msgs);
+    if(!firstMsg&&d){
+      const last=msgs[msgs.length-1];
+      if(last&&last.sender==='user'){
+        lcaPlayNotif();
+        // خوێندراوکردنی خۆکار چونکە چاتەکە کراوەیە
+        lcaUnreadMap[id]=0;
+        lcaLastMsgTs[id]=last.timestamp;
+      }
+    }
     firstMsg=false;
   });
   // لیسنەری تایپینگ
@@ -5025,22 +5019,20 @@ window.lcaSelectSession=function(id){
 function lcaRenderMessages(msgs){
   const area=document.getElementById('lcaMsgs');
   if(!area)return;
-  // نیشاندانی ناوی ئادمین لە سەرەوەی حەبابەی ئادمین
-  const _myName=lcaAdminDisplayName||adminUser?.email?.split('@')[0]||'ئەدمین';
   area.innerHTML='';
-  // خوێندراوکردن — ریکۆردی کاتی دوایین خوێندنەوە
-  if(lcaCurrentSessionId){
-    lcaReadAtMap[lcaCurrentSessionId]=Date.now();
-    lcaUnreadMap[lcaCurrentSessionId]=0;
-  }
-  msgs.forEach(m=>{
+  const myName=lcaAdminDisplayName||adminUser?.email?.split('@')[0]||'ئەدمین';
+  msgs.forEach((m,i)=>{
     const div=document.createElement('div');
     div.className='lca-bubble '+m.sender;
     const time=new Date(m.timestamp).toLocaleTimeString('ku-IQ',{hour:'2-digit',minute:'2-digit'});
-    // ناوی ناردەر
-    const senderLabel=m.sender==='admin'
-      ? `<div class="lca-sender-name">🛡 ${lcaEsc(m.senderName||_myName)}</div>`
-      : `<div class="lca-sender-name">👤 ${lcaEsc(m.senderName||'کڕیار')}</div>`;
+    // ناوی ناردەر — تەنها کاتێک جیاواز بێت لە پێشووی
+    const prev=msgs[i-1];
+    const showName=!prev||prev.sender!==m.sender;
+    const senderLabel=showName
+      ? (m.sender==='admin'
+          ? `<div class="lca-sender-lbl">🛡 ${lcaEsc(m.senderName||myName)}</div>`
+          : `<div class="lca-sender-lbl">👤 ${lcaEsc(m.senderName||'کڕیار')}</div>`)
+      : '';
     if(m.type==='image'&&m.data){
       div.style.padding='6px 8px';
       div.innerHTML=senderLabel+`<img src="${m.data}" onclick="lcaViewImg(this)" loading="lazy" style="max-width:100%;max-height:250px;border-radius:10px;display:block;cursor:pointer;object-fit:contain;"><div class="lca-msg-time" style="padding:2px 4px">${time}</div>`;
@@ -5090,8 +5082,8 @@ window.lcaSendMsg=async function(){
   const s=lcaAllSessions[lcaCurrentSessionId];
   if(!s||s.status!=='active'){showToast('چاتەکە چالاک نییە','rd');return;}
   inp.value='';inp.style.height='auto';
-  const _adminName=lcaAdminDisplayName||adminUser?.email?.split('@')[0]||'ئەدمین';
-  await lcaDb.ref('messages/'+lcaCurrentSessionId).push({text,sender:'admin',senderName:_adminName,timestamp:Date.now()});
+  const _n=lcaAdminDisplayName||adminUser?.email?.split('@')[0]||'ئەدمین';
+  await lcaDb.ref('messages/'+lcaCurrentSessionId).push({text,sender:'admin',senderName:_n,timestamp:Date.now()});
   await lcaDb.ref('typing/'+lcaCurrentSessionId+'/admin').set(false);
 };
 
@@ -5104,7 +5096,7 @@ window.lcaSetTyping=function(on){
 
 window.lcaAcceptSession=async function(id){
   const name=lcaAdminDisplayName||adminUser?.email?.split('@')[0]||'ئەدمین';
-  await lcaDb.ref('sessions/'+id).update({status:'active',adminName:name,acceptedAt:Date.now()});
+  await lcaDb.ref('sessions/'+id).update({status:'active',adminName:name,adminId:adminUser?.id||'',acceptedAt:Date.now()});
   showToast('✅ چات قبووڵکرا','gr');
   lcaSelectSession(id);
 };
@@ -5401,7 +5393,8 @@ window.lcaFsSend=async function(){
   if(!s||s.status!=='active'){showToast&&showToast('چاتەکە چالاک نییە','rd');return;}
   inp.value='';inp.style.height='auto';
   // هاوکاتی نارد بۆ هەردووکیان
-  await _db.ref('messages/'+_csid).push({text,sender:'admin',senderName:'ئەدمین',timestamp:Date.now()});
+  const _n2=lcaAdminDisplayName||adminUser?.email?.split('@')[0]||'ئەدمین';
+  await _db.ref('messages/'+_csid).push({text,sender:'admin',senderName:_n2,timestamp:Date.now()});
   await _db.ref('typing/'+_csid+'/admin').set(false);
   const fsArea=document.getElementById('lcaFsMsgs');
   if(fsArea)fsArea.scrollTop=fsArea.scrollHeight;
