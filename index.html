@@ -2245,16 +2245,22 @@ function _clipboardFallback(text, onSuccess, onFail) {
 .ch-soft-title{font-size:20px;font-weight:900;color:#1c2333;letter-spacing:-.3px;}.ch-soft-title-inp{width:100%;border:none;background:transparent;outline:none;font-size:18px;font-weight:900;color:#1c2333;letter-spacing:-.3px;font-family:'R',sans-serif;padding:0;cursor:text;caret-color:#6366f1;}.ch-soft-title-inp::placeholder{color:#b0b8cc;font-weight:700;}
 .ch-soft-sub{font-size:11px;color:#8b95a8;font-family:'Inter',sans-serif;}
 /* GOAL SLIDING */
-.gseg-wrap{position:relative;display:flex;flex-direction:row;gap:5px;background:var(--bg);border-radius:20px;padding:5px;border:1.5px solid var(--b1);}
-.gseg-pill{position:absolute;background:var(--dark);border-radius:16px;box-shadow:0 3px 14px rgba(28,35,51,.20);pointer-events:none;transition:left .30s cubic-bezier(.4,0,.2,1),width .30s cubic-bezier(.4,0,.2,1);top:5px;bottom:5px;left:5px;}
-.gseg-opt{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:14px 8px;border-radius:16px;border:none;background:transparent;cursor:pointer;font-family:'R',sans-serif;text-align:center;flex:1;-webkit-tap-highlight-color:transparent;}
-.gseg-ico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:var(--dark);color:#fff;transition:background .30s,color .30s;}
-.gseg-ico.msg-c{background:var(--dark);color:#fff;}
-.gseg-ico.views-c{background:var(--dark);color:#fff;}
-.gseg-info{flex:1;}
-.gseg-title{font-size:14px;font-weight:900;color:var(--dark);letter-spacing:-.2px;transition:color .30s;}.gseg-opt.on .gseg-title{color:#fff;}
-.gseg-sub{font-size:10px;color:var(--mt2);margin-top:3px;line-height:1.5;transition:color .30s;}.gseg-opt.on .gseg-sub{color:rgba(255,255,255,.60);}
-.gseg-chk{display:none;}.gseg-opt.on .gseg-ico{background:rgba(255,255,255,.18);color:#fff;}
+.gseg-wrap{display:flex;flex-direction:row;gap:10px;background:transparent;border-radius:0;padding:0;border:none;}
+.gseg-pill{display:none;}
+.gseg-opt{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;padding:20px 10px 16px;border-radius:20px;border:2px solid var(--b1);background:var(--w);cursor:pointer;font-family:'R',sans-serif;text-align:center;transition:all .22s cubic-bezier(.4,0,.2,1);-webkit-tap-highlight-color:transparent;box-shadow:0 2px 8px rgba(0,0,0,.04);}
+.gseg-opt.on{border-color:var(--dark);background:var(--dark);box-shadow:0 6px 20px rgba(28,35,51,.22);}
+.gseg-ico{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;transition:background .22s,color .22s;}
+.gseg-ico.msg-c{background:rgba(99,102,241,.1);color:#6366f1;}
+.gseg-ico.views-c{background:rgba(6,182,212,.1);color:#06b6d4;}
+.gseg-opt.on .gseg-ico.msg-c,.gseg-opt.on .gseg-ico.views-c{background:rgba(255,255,255,.16);color:#fff;}
+.gseg-info{}
+.gseg-title{font-size:15px;font-weight:900;color:var(--dark);letter-spacing:-.3px;transition:color .22s;}
+.gseg-opt.on .gseg-title{color:#fff;}
+.gseg-sub{font-size:10px;color:var(--mt2);margin-top:3px;line-height:1.55;transition:color .22s;}
+.gseg-opt.on .gseg-sub{color:rgba(255,255,255,.58);}
+.gseg-chk{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;transition:all .22s;}
+.gseg-opt.on .gseg-chk{border-color:#fff;background:#fff;color:var(--dark);}
+.gseg-opt.on .gseg-ico{background:rgba(255,255,255,.16);color:#fff;}
 
 .ad-date-card{background:var(--w);border:1.5px solid var(--b1);border-radius:20px;padding:16px 18px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.04);}
 .ad-date-card-top{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
@@ -8484,9 +8490,7 @@ function pickCard(el,id){
     _promoValidated = null;
     document.getElementById('bdDiscountRow').style.display = 'none';
 
-    const { data: promo } = await sb.from('promo_codes')
-      .select('id,code,is_active,expires_at,max_uses,used_count,discount_type,discount_value,restricted_to_user_id')
-      .eq('code', code).single();
+    const { data: promo } = await sb.from('promo_codes').select('*').eq('code', code).single();
     const reset = () => { btn.disabled = false; btn.innerHTML = '<i class="fas fa-tag"></i> دڵنیاکردنەوە'; };
 
     if (!promo)          { showPromoMsg('err', 'کۆدی داشکاندن نادروستە'); reset(); return; }
@@ -8898,7 +8902,7 @@ function renderAds(){
     const spendFmt='$'+(spend>0?spend.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'0.00');
 
     const orderId=_fmtOrderId(ad.ad_number);
-    const adName=ad.title||('ڕیکلام #'+ad.ad_number)||'ڕیکلامی نوێ';
+    const adName=ad.title||('New Ad '+new Date(ad.created_at||Date.now()).toLocaleDateString('en-GB').replace(/\//g,'/'));
 
     let endDateStr='—';
     if(ad.end_date){
@@ -9016,6 +9020,7 @@ function closeAdSheet(){
 }
 
 async function showAdDetail(ad){
+  if(!ad){return;}
   var ov=document.getElementById('adSheetOv');
   var sh=document.getElementById('adDetailSheet');
   var body=document.getElementById('adSheetBody');
@@ -9056,30 +9061,28 @@ async function showAdDetail(ad){
   var budgetIQD=finalTotal;
   var budgetUSD=budgetIQD/internalExchangeRate;
   var estLabel=null,estValue=null;
-  if(ad.goal.toLowerCase()==='messages'||ad.goal==='\u0646\u0627\u0645\u06d5'){
-    // ئامانجی نامە: $0.20 بۆ هەر کلیک
+  var _goal=(ad.goal||'').toLowerCase();
+  if(_goal==='messages'||ad.goal==='\u0646\u0627\u0645\u06d5'){
     estLabel='\u06a9\u0644\u06cc\u06a9\u06cc \u0686\u0627\u0648\u06d5\u0695\u0648\u0627\u0646\u06a9\u0631\u0627\u0648';
     estValue=Math.round(budgetUSD/0.20);
-  }else if(ad.goal.toLowerCase()==='views'||ad.goal==='\u06a4\u06cc\u0648'){
-    // ئامانجی ڤیو: CPM $0.15 بۆ هەر 1000 بینین
+  }else if(_goal==='views'||ad.goal==='\u06a4\u06cc\u0648'){
     estLabel='\u0628\u06cc\u0646\u06cc\u0646\u06cc \u0686\u0627\u0648\u06d5\u0695\u0648\u0627\u0646\u06a9\u0631\u0627\u0648';
     estValue=Math.round((budgetUSD/0.15)*1000);
-  }else if(ad.goal.toLowerCase()==='engagement'){
-    // ئامانجی کارلێک: $0.20 بۆ هەر کلیک
+  }else if(_goal==='engagement'){
     estLabel='\u06a9\u0644\u06cc\u06a9\u06cc \u0686\u0627\u0648\u06d5\u0695\u0648\u0627\u0646\u06a9\u0631\u0627\u0648';
     estValue=Math.round(budgetUSD/0.20);
   }
 
   var sm=statusMap[ad.status]||statusMap.pending;
   var sc=sm[0],sl=sm[1];
-  var ageStr=ad.age_groups?JSON.parse(ad.age_groups).join(' \u00b7 '):null;
+  var ageStr=null;try{ageStr=ad.age_groups?JSON.parse(ad.age_groups).join(' \u00b7 '):null;}catch(e){ageStr=ad.age_groups||null;}
 
   var h='';
   h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">';
   h+='<span class="ad-status '+sc+'">'+sl+'</span>';
   h+='<span style="font-size:11px;color:var(--mt);font-family:Inter,sans-serif">#'+ad.ad_number+'</span>';
   h+='</div>';
-  var _adLabel=ad.title||('ڕیکلام #'+ad.ad_number);
+  var _adLabel=ad.title||('New Ad '+new Date(ad.created_at||Date.now()).toLocaleDateString('en-GB').replace(/\//g,'/'));
   var _adVideoLink=ad.video_link||ad.video_code||'—';
   h+='<div style="font-size:17px;font-weight:900;color:var(--dark);margin-bottom:16px;line-height:1.4;word-break:break-all">'+_adLabel+'</div>';
   h+='<div class="ad-sheet-sec"><i class="fas fa-info-circle" style="margin-left:5px"></i>زانیاری گشتی</div>';
