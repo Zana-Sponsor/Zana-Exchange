@@ -2483,6 +2483,11 @@ function _toWebP(dataUrl,quality){
           <i class="fas fa-at auth-inp-ico"></i>
           <input class="finp" type="text" id="authName" placeholder="یوزەرنەیم (ئینگلیزی، ژمارە، _ یان -)" dir="ltr" style="text-align:left" onkeydown="if(event.key==='Enter')nextAuthStep('name')">
         </div>
+        <!-- یوزەرنەیمی پێشنیارکراو -->
+        <div id="usernameSuggestWrap" style="margin-bottom:12px;display:none">
+          <div style="font-size:11px;color:var(--mt);margin-bottom:7px;font-weight:600">پێشنیارەکان:</div>
+          <div id="usernameSuggestChips" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+        </div>
         <button class="abtn" onclick="nextAuthStep('name')">
           <i class="fas fa-arrow-left"></i>
           <span>دواتر</span>
@@ -5153,6 +5158,9 @@ function goAuthStep(step) {
   if(fl) fl.style.display = (step === 'pass' && aMode === 'login') ? 'block' : 'none';
   const ebb = document.getElementById('authEmailBackBtn');
   if(ebb) ebb.style.display = aMode === 'signup' ? 'flex' : 'none';
+  // terms wrap لە هەردوو login و signup نیشان بدە
+  const tw = document.getElementById('termsAgreeWrap');
+  if(tw) tw.style.display = (step === 'pass') ? 'block' : 'none';
   if(step === 'pass') {
     const bt = document.getElementById('authBtnTxt');
     if(bt) bt.textContent = aMode === 'login' ? 'چوونەژوورەوە' : 'تۆمارکردن';
@@ -5161,7 +5169,7 @@ function goAuthStep(step) {
   }
   _renderStepDots(step);
   setTimeout(() => {
-    if(step === 'name') document.getElementById('authName')?.focus();
+    if(step === 'name') { document.getElementById('authName')?.focus(); _renderUsernameSuggestions(); }
     else if(step === 'email') document.getElementById('authEmail')?.focus();
     else if(step === 'pass') document.getElementById('authPass')?.focus();
   }, 60);
@@ -12861,6 +12869,27 @@ function faqSearch(val, listId, emptyId) {
 
 // ══ TERMS JS ══
 let _termsAgreed = false;
+
+// یوزەرنەیمی پێشنیارکراو
+function _generateUsernameSuggestions() {
+  const adj = ['pro','top','king','star','fast','cool','dark','blue','red','gold'];
+  const suf = ['iq','krd','007','123','x','99','1','kd','_krd'];
+  const base1 = 'user' + Math.floor(Math.random()*9000+1000);
+  const base2 = adj[Math.floor(Math.random()*adj.length)] + '_' + Math.floor(Math.random()*999+1);
+  const base3 = 'proxo_' + Math.floor(Math.random()*999+1);
+  const base4 = adj[Math.floor(Math.random()*adj.length)] + suf[Math.floor(Math.random()*suf.length)];
+  return [base1,base2,base3,base4];
+}
+function _renderUsernameSuggestions() {
+  const wrap = document.getElementById('usernameSuggestWrap');
+  const chips = document.getElementById('usernameSuggestChips');
+  if(!wrap||!chips) return;
+  const sugs = _generateUsernameSuggestions();
+  chips.innerHTML = sugs.map(s =>
+    '<button type="button" onclick="document.getElementById('authName').value='' + s + ''" style="padding:7px 13px;border-radius:20px;border:1.5px solid var(--b1);background:var(--bg);color:var(--dark);font-size:12px;font-family:Inter,sans-serif;cursor:pointer;font-weight:600;transition:all .18s">' + s + '</button>'
+  ).join('');
+  wrap.style.display = 'block';
+}
 function openTermsModal() {
   window.open('https://www.proxopages.com/condition-of-services.html', '_blank');
 }
