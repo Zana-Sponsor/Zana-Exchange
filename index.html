@@ -2481,7 +2481,7 @@ function _toWebP(dataUrl,quality){
         </div>
         <div class="auth-inp-wrap">
           <i class="fas fa-at auth-inp-ico"></i>
-          <input class="finp" type="text" id="authName" placeholder="یوزەرنەیم (تەنها ئینگلیزی، ژمارە، _)" dir="ltr" style="text-align:left" onkeydown="if(event.key==='Enter')nextAuthStep('name')">
+          <input class="finp" type="text" id="authName" placeholder="یوزەرنەیم (ئینگلیزی، ژمارە، _ یان -)" dir="ltr" style="text-align:left" onkeydown="if(event.key==='Enter')nextAuthStep('name')">
         </div>
         <button class="abtn" onclick="nextAuthStep('name')">
           <i class="fas fa-arrow-left"></i>
@@ -5180,12 +5180,19 @@ async function nextAuthStep(from) {
   if(from === 'name') {
     const name = document.getElementById('authName').value.trim();
     if(!name) { _showStepMsg('authMsgName','یوزەرنەیم بنووسە','err'); return; }
-    if(!/^[a-zA-Z0-9_]{3,30}$/.test(name)) { _showStepMsg('authMsgName','یوزەرنەیم دەبێت لە ئینگلیزی، ژمارە، یان _ پێک بێت (٣ تا ٣٠ پیت)','err'); return; }
+    // ناوی کوردی، عەرەبی یان هەر نیشانەیەکی نە-ئینگلیزی ڕەت بکەرەوە
+    if(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(name)) { _showStepMsg('authMsgName','یوزەرنەیم نابێت کوردی یان عەرەبی بێت، تەنها ئینگلیزی بەکاربهێنە','err'); return; }
+    // بۆشایی لەنێوان ڕەت بکەرەوە
+    if(/\s/.test(name)) { _showStepMsg('authMsgName','یوزەرنەیم نابێت بۆشایی تێدا هەبێت','err'); return; }
+    // نیشانەی . ڕەت بکەرەوە
+    if(name.includes('.')) { _showStepMsg('authMsgName','یوزەرنەیم نابێت نیشانەی . تێدا هەبێت، تەنها - یان _ بەکاربهێنە','err'); return; }
+    // تەنها ئینگلیزی، ژمارە، _ و - ڕادەگرێت
+    if(!/^[a-zA-Z0-9_\-]{3,30}$/.test(name)) { _showStepMsg('authMsgName','یوزەرنەیم دەبێت لە ئینگلیزی، ژمارە، _ یان - پێک بێت (٣ تا ٣٠ پیت)','err'); return; }
     // پشکنینی یوزەرنەیمی دووبارە
     _showStepMsg('authMsgName','یوزەرنەیم پشکنراودەکرێت...','ok');
     try {
       const {data:uCheck} = await sb.from('profiles').select('id').ilike('full_name', name).maybeSingle();
-      if(uCheck) { _showStepMsg('authMsgName','ئەم یوزەرنەیمە پێشتر بەکارهاتووە، یوزەرنەیمێکی تر هەڵبژێرە','err'); return; }
+      if(uCheck) { _showStepMsg('authMsgName','ئەم یوزەرە پێشتر تۆمارکراوە !','err'); return; }
     } catch(e) {}
     goAuthStep('email');
   } else if(from === 'email') {
