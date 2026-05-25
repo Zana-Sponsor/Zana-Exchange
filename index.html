@@ -2476,12 +2476,12 @@ function _toWebP(dataUrl,quality){
           <i class="fas fa-user" style="font-size:28px;color:var(--dark)"></i>
         </div>
         <div class="auth-step-label">
-          <h3>ناوی هەژمار</h3>
-          <p>ناوت بنووسە بۆ دروستکردنی هەژمار</p>
+          <h3>یوزەرنەیم</h3>
+          <p>یوزەرنەیمێک هەڵبژێرە بۆ هەژمارەکەت</p>
         </div>
         <div class="auth-inp-wrap">
-          <i class="fas fa-user auth-inp-ico"></i>
-          <input class="finp" type="text" id="authName" placeholder="ناوی هەژمار" onkeydown="if(event.key==='Enter')nextAuthStep('name')">
+          <i class="fas fa-at auth-inp-ico"></i>
+          <input class="finp" type="text" id="authName" placeholder="یوزەرنەیم (تەنها ئینگلیزی، ژمارە، _)" dir="ltr" style="text-align:left" onkeydown="if(event.key==='Enter')nextAuthStep('name')">
         </div>
         <button class="abtn" onclick="nextAuthStep('name')">
           <i class="fas fa-arrow-left"></i>
@@ -5173,13 +5173,20 @@ function _showStepMsg(id, text, type) {
   el.className = 'amsg ' + type;
   el.style.display = 'block';
 }
-function nextAuthStep(from) {
+async function nextAuthStep(from) {
   ['authMsgName','authMsgEmail','authMsg'].forEach(id => {
     const el = document.getElementById(id); if(el) el.style.display = 'none';
   });
   if(from === 'name') {
     const name = document.getElementById('authName').value.trim();
-    if(!name) { _showStepMsg('authMsgName','ناوی هەژمار بنووسە','err'); return; }
+    if(!name) { _showStepMsg('authMsgName','یوزەرنەیم بنووسە','err'); return; }
+    if(!/^[a-zA-Z0-9_]{3,30}$/.test(name)) { _showStepMsg('authMsgName','یوزەرنەیم دەبێت لە ئینگلیزی، ژمارە، یان _ پێک بێت (٣ تا ٣٠ پیت)','err'); return; }
+    // پشکنینی یوزەرنەیمی دووبارە
+    _showStepMsg('authMsgName','یوزەرنەیم پشکنراودەکرێت...','ok');
+    try {
+      const {data:uCheck} = await sb.from('profiles').select('id').ilike('full_name', name).maybeSingle();
+      if(uCheck) { _showStepMsg('authMsgName','ئەم یوزەرنەیمە پێشتر بەکارهاتووە، یوزەرنەیمێکی تر هەڵبژێرە','err'); return; }
+    } catch(e) {}
     goAuthStep('email');
   } else if(from === 'email') {
     const email = document.getElementById('authEmail').value.trim();
