@@ -12886,7 +12886,7 @@ function _renderUsernameSuggestions() {
   if(!wrap||!chips) return;
   const sugs = _generateUsernameSuggestions();
   chips.innerHTML = sugs.map(s =>
-    '<button type="button" onclick="document.getElementById('authName').value='' + s + ''" style="padding:7px 13px;border-radius:20px;border:1.5px solid var(--b1);background:var(--bg);color:var(--dark);font-size:12px;font-family:Inter,sans-serif;cursor:pointer;font-weight:600;transition:all .18s">' + s + '</button>'
+    `<button type="button" onclick="document.getElementById('authName').value='${s}'" style="padding:7px 13px;border-radius:20px;border:1.5px solid var(--b1);background:var(--bg);color:var(--dark);font-size:12px;font-family:Inter,sans-serif;cursor:pointer;font-weight:600;transition:all .18s">${s}</button>`
   ).join('');
   wrap.style.display = 'block';
 }
