@@ -3246,12 +3246,16 @@ async function submitApproval(){
     // FIX: was type:'general' — must be 'ad_approved' so the notification
     // appears correctly in the notification list and routes to /my-ads on tap.
     await sb.from('pa_notifications').insert({
-      user_id: _approveUserId,
-      type: 'ad_approved',
-      title: 'ڕیکلامەکەت چالاک بوو ✅',
-      body: `ئێستا ڕیکلامی ژمارە #${_approveAdNumber || 'نادیار'} چالاکە`,
-      is_read: false
-    });
+  user_id: _approveUserId,
+  type: 'ad_approved',
+  title: 'ڕیکلامەکەت چالاک بوو ✅',
+  body: `ئێستا ڕیکلامی ژمارە #${_approveAdNumber || 'نادیار'} چالاکە`,
+  is_read: false,
+  meta: {                          // ← ئەمە زیاد بکە
+    ad_id: _approveAdId,
+    ad_number: _approveAdNumber
+  }
+});
     // ── Firebase realtime push (پەسەندکردنی ڕیکلام) ──
    _fbPushNotif(_approveUserId,'ڕیکلامەکەت چالاک بوو ✅',`ئێستا ڕیکلامی ژمارە #${_approveAdNumber || 'نادیار'} چالاکە`,'ad_approved');
     _fbTriggerAds(_approveUserId, _approveAdId, 'active');
