@@ -3249,11 +3249,11 @@ async function submitApproval(){
       user_id: _approveUserId,
       type: 'ad_approved',
       title: 'ڕیکلامەکەت چالاک بوو ✅',
-      body: `ئێستا ڕیکلامی ژمارە #${_apAd?.ad_number} چالاکە`,
+      body: `ئێستا ڕیکلامی ژمارە #${ad_number} چالاکە`,
       is_read: false
     });
     // ── Firebase realtime push (پەسەندکردنی ڕیکلام) ──
-    _fbPushNotif(_approveUserId,'ڕیکلامەکەت چالاک بوو ✅',`ئێستا ڕیکلامی ژمارە #${_apAd?.ad_number} چالاکە`,'ad_approved');
+    _fbPushNotif(_approveUserId,'ڕیکلامەکەت چالاک بوو ✅',`ئێستا ڕیکلامی ژمارە #${ad_number} چالاکە`,'ad_approved');
     _fbTriggerAds(_approveUserId, _approveAdId, 'active');
     // ══ ناردنی ئیمەیلی پەسەندکردنی ڕیکلام لە ڕێگای webhook ══
     try{
