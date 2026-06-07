@@ -3175,7 +3175,7 @@ async function loadApprovalWorkflow(){
   wrap.innerHTML = tableHTML + cardsHTML;
 }
 
-let _approveAdId = '', _approveUserId = '', _approveAdBudget = 0;
+let _approveAdId = '', _approveUserId = '', _approveAdBudget = 0, _approveAdNumber = '';
 
 function openApproveModal(adId){
   const ad = allAds.find(a=>a.id===adId) || _approvalPendingAds.find(a=>a.id===adId);
@@ -3183,6 +3183,7 @@ function openApproveModal(adId){
   _approveAdId = ad.id;
   _approveUserId = ad.user_id;
   _approveAdBudget = parseFloat(ad.budget||0);
+  _approveAdNumber = ad.ad_number || '';
   // Populate info
   document.getElementById('approveAdTitle').textContent = ad.title || (ad.ad_number ? 'ڕیکلامی #'+ad.ad_number : '—');
   document.getElementById('approveAdUser').textContent = (ad.profiles?.full_name||'—') + ' · ' + (ad.profiles?.email||'—');
