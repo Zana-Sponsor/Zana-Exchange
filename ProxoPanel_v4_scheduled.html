@@ -2811,7 +2811,14 @@ async function showAdDetail(id){
       if(prof){a={...a,profiles:prof};const idx=allAds.findIndex(x=>x.id===id);if(idx>-1)allAds[idx]={...allAds[idx],profiles:prof};}
     }catch(e){}
   }
-  const ageGroups=a.age_groups?JSON.parse(a.age_groups).join('، '):'هەموو';
+  // age_groups: ئەپ وەک Array، پانێل وەک JSON string پاشەکەوت دەکات — هەر دووکیان مامەڵە پێوەکرێت
+  let ageGroups='هەموو';
+  try{
+    if(a.age_groups){
+      const arr=Array.isArray(a.age_groups)?a.age_groups:JSON.parse(a.age_groups);
+      ageGroups=arr.length?arr.join('، '):'هەموو';
+    }
+  }catch(_){ageGroups=String(a.age_groups||'هەموو');}
   const gs={messages:'نامە',engagement:'کارلێک',views:'ڤیووو'};
   const genKu={all:'هەموو',male:'پیاو',female:'ژن'};
   const locKu={kurdistan:'کوردستان',iraq:'عێراق',all:'کورد و عەرەب'};
