@@ -2853,7 +2853,8 @@ async function showAdDetail(id){
   const adPrice=parseFloat(a.budget||0);
   const serviceFee=serviceFeeFixed>0?serviceFeeFixed:Math.round(adPrice*serviceFeeRate);
   const total=adPrice+serviceFee;
-  const fmtIQD=v=>(Math.round(v)).toLocaleString()+' IQD';
+  const IQD_RATE=1800;
+  const fmtIQD=v=>(Math.round(v*IQD_RATE)).toLocaleString()+' IQD';
 
   const priceBreakdownHTML=`
     <div class="price-breakdown">
