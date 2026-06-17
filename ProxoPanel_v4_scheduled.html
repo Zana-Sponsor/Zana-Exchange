@@ -2823,16 +2823,19 @@ async function showAdDetail(id){
   const genKu={all:'هەموو',male:'پیاو',female:'ژن'};
   const locKu={kurdistan:'کوردستان',iraq:'عێراق',all:'کورد و عەرەب'};
 
-  // بارکردنی نرخی خزمەتگوزاری لە باکەند
-  let serviceFeeRate=0.08;
-  let serviceFeeFixed=0;
+  // بارکردنی داشکاندن لە promo_code_usages
+  let discountIQD=0;
+  let promoCodeUsed='';
   try{
-    const{data:settings}=await sb.from('pa_settings').select('key,value').in('key',['service_fee_percent','service_fee_fixed']);
-    if(settings){
-      settings.forEach(s=>{
-        if(s.key==='service_fee_percent')serviceFeeRate=parseFloat(s.value)||0.08;
-        if(s.key==='service_fee_fixed')serviceFeeFixed=parseFloat(s.value)||0;
-      });
+    const{data:pUsage}=await sb.from('promo_code_usages')
+      .select('discount_applied,promo_codes(code)')
+      .eq('ad_id',String(id))
+      .eq('status','active')
+      .limit(1)
+      .single();
+    if(pUsage){
+      discountIQD=parseFloat(pUsage.discount_applied||0);
+      promoCodeUsed=pUsage.promo_codes?.code||'';
     }
   }catch(e){}
 
@@ -2851,17 +2854,17 @@ async function showAdDetail(id){
   }
 
   const adPrice=parseFloat(a.budget||0);
-  const serviceFee=serviceFeeFixed>0?serviceFeeFixed:Math.round(adPrice*serviceFeeRate);
-  const total=adPrice+serviceFee;
   const IQD_RATE=1800;
   const fmtIQD=v=>(Math.round(v*IQD_RATE)).toLocaleString()+' IQD';
+  const originalIQD=Math.round(adPrice*IQD_RATE);
+  const finalIQD=Math.max(0,originalIQD-Math.round(discountIQD));
 
   const priceBreakdownHTML=`
     <div class="price-breakdown">
       <div class="price-breakdown-title"><i class="fas fa-receipt" style="margin-left:6px;color:var(--mt)"></i>وردەکاری نرخ</div>
-      <div class="price-row"><span class="plbl">نرخی ڕیکلام</span><span class="pval" style="color:var(--bl)">${fmtIQD(adPrice)}</span></div>
-      <div class="price-row"><span class="plbl">کرێی خزمەتگوزاری ${serviceFeeFixed>0?'(ثابت)':`(${Math.round(serviceFeeRate*100)}%)`}</span><span class="pval" style="color:var(--yw)">${fmtIQD(serviceFee)}</span></div>
-      <div class="price-row total"><span class="plbl">کۆی گشتی</span><span class="pval" style="color:var(--gr)">${fmtIQD(total)}</span></div>
+      <div class="price-row"><span class="plbl">نرخی ڕیکلام</span><span class="pval" style="color:var(--bl)">${originalIQD.toLocaleString()+' IQD'}</span></div>
+      ${discountIQD>0?`<div class="price-row"><span class="plbl">داشکاندن${promoCodeUsed?' ('+promoCodeUsed+')':''}</span><span class="pval" style="color:var(--rd)">- ${Math.round(discountIQD).toLocaleString()+' IQD'}</span></div>`:''}
+      <div class="price-row total"><span class="plbl">کۆی گشتی</span><span class="pval" style="color:var(--gr)">${finalIQD.toLocaleString()+' IQD'}</span></div>
     </div>`;
 
   const adViews=parseInt(a.views||a.total_views||0);
