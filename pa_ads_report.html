@@ -1,367 +1,355 @@
 <!DOCTYPE html>
 <html lang="ku" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ڕاپۆرتی ڕیکلامەکان — pa_ads</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ڕاپۆرتی ڕیکلامەکان</title>
+<style>
+:root{
+  --bg:#060d18;
+  --surface:#0b1525;
+  --card:#0e1c30;
+  --card2:#0a1528;
+  --border:#162032;
+  --border2:#0d1a2a;
+  --accent:#3b82f6;
+  --cyan:#06b6d4;
+  --text:#dde6f0;
+  --muted:#4a6080;
+  --muted2:#3a5070;
+  --green:#22c55e;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --purple:#a78bfa;
+  --pink:#ec4899;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;direction:rtl;font-size:15px}
 
-    body {
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      background: #0f172a;
-      color: #e2e8f0;
-      min-height: 100vh;
-      direction: rtl;
-    }
+/* ── scrollbar ── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#162032;border-radius:3px}
 
-    header {
-      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-      border-bottom: 1px solid #334155;
-      padding: 24px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
+/* ════════════════════════════════
+   HEADER
+════════════════════════════════ */
+.hdr{
+  background:linear-gradient(180deg,#0b1828 0%,#060d18 100%);
+  border-bottom:1px solid var(--border);
+  padding:20px 28px 16px;
+  position:sticky;top:0;z-index:200;
+  backdrop-filter:blur(20px);
+}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-ico{
+  width:40px;height:40px;border-radius:10px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--accent) 0%,var(--cyan) 100%);
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+  box-shadow:0 0 24px rgba(59,130,246,.35);
+}
+.brand-txt h1{font-size:1.15rem;font-weight:800;color:#fff;letter-spacing:-.02em;line-height:1.2}
+.brand-txt h1 em{font-style:normal;color:var(--cyan)}
+.brand-txt p{font-size:.7rem;color:var(--muted);margin-top:1px}
 
-    header h1 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: #f8fafc;
-    }
+/* refresh controls */
+.hdr-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.refresh-info{font-size:.72rem;color:var(--muted);text-align:left}
+.refresh-info span{color:var(--cyan)}
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:8px;border:none;cursor:pointer;
+  font-size:.8rem;font-weight:700;transition:all .15s;white-space:nowrap;
+}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#2563eb;transform:translateY(-1px)}
+.btn-primary:disabled{background:#1e3a5f;color:#4a6080;cursor:not-allowed;transform:none}
+.btn-sm{padding:5px 10px;font-size:.72rem}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn-danger{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:var(--red)}
+.btn-danger:hover{background:rgba(239,68,68,.25)}
+.btn-success{background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:var(--green)}
+.btn-success:hover{background:rgba(34,197,94,.25)}
 
-    header h1 span {
-      color: #38bdf8;
-    }
+/* ── stat chips ── */
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.chip{
+  background:rgba(255,255,255,.03);border:1px solid var(--border);
+  border-radius:10px;padding:8px 14px;display:flex;flex-direction:column;
+  align-items:center;min-width:72px;cursor:default;
+  transition:border-color .2s;
+}
+.chip:hover{border-color:var(--accent)}
+.chip .cv{font-size:1.1rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.chip .cl{font-size:.65rem;color:var(--muted);margin-top:3px}
+.c-all{color:var(--cyan)}
+.c-act{color:var(--green)}
+.c-done{color:var(--accent)}
+.c-sched{color:var(--purple)}
+.c-rej{color:var(--red)}
+.c-pause{color:var(--amber)}
+.c-spend{color:var(--pink)}
 
-    #stats {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
+/* ════════════════════════════════
+   FILTER BAR
+════════════════════════════════ */
+.fbar{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:11px 28px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+}
+.fbar select,.fbar input{
+  background:#080f1c;border:1px solid var(--border);border-radius:8px;
+  color:var(--text);padding:7px 12px;font-size:.8rem;outline:none;
+  transition:border-color .15s;
+}
+.fbar select:focus,.fbar input:focus{border-color:var(--accent)}
+.fbar input{min-width:200px;flex:1}
+.fbar label{font-size:.72rem;color:var(--muted);white-space:nowrap}
 
-    .stat-badge {
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 8px 16px;
-      font-size: 0.85rem;
-      color: #94a3b8;
-    }
+/* ── status bar ── */
+#sb{
+  padding:8px 28px;font-size:.8rem;color:var(--muted);
+  display:flex;align-items:center;gap:8px;min-height:34px;
+}
+#sb.err{color:var(--red)}
+#sb.ok{color:var(--green)}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dot-ok{background:var(--green);box-shadow:0 0 6px var(--green)}
+.dot-spin{background:var(--cyan);animation:pulse 1s ease-in-out infinite}
+.dot-err{background:var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
-    .stat-badge strong {
-      color: #f8fafc;
-      font-size: 1.1rem;
-      display: block;
-    }
+/* ════════════════════════════════
+   GRID
+════════════════════════════════ */
+#grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(400px,1fr));
+  gap:18px;
+  padding:18px 28px 60px;
+}
 
-    #config-bar {
-      background: #1e293b;
-      border-bottom: 1px solid #334155;
-      padding: 16px 32px;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
+/* ════════════════════════════════
+   CARD
+════════════════════════════════ */
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;transition:transform .15s,box-shadow .15s,border-color .15s;
+  display:flex;flex-direction:column;
+}
+.card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 16px 48px rgba(0,0,0,.6);
+  border-color:#1e3a5f;
+}
 
-    #config-bar label {
-      font-size: 0.8rem;
-      color: #94a3b8;
-      min-width: 80px;
-    }
+/* card header */
+.ch{
+  background:linear-gradient(135deg,#0f2040 0%,#091528 100%);
+  padding:16px 18px 13px;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+  border-bottom:1px solid var(--border2);
+  position:relative;overflow:hidden;
+}
+.ch::after{
+  content:'';position:absolute;top:-30px;right:-30px;
+  width:90px;height:90px;border-radius:50%;
+  background:radial-gradient(circle,rgba(59,130,246,.12) 0%,transparent 70%);
+}
+.ch-l{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0;position:relative;z-index:1}
+.ad-num{font-size:.68rem;color:var(--muted);font-family:monospace;letter-spacing:.04em}
+.ad-name{
+  font-size:.98rem;font-weight:700;color:#f0f6ff;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  max-width:100%;
+}
+.ad-uuid{font-size:.6rem;color:#1e3a5f;font-family:monospace;margin-top:2px}
 
-    #config-bar input {
-      background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 6px;
-      color: #e2e8f0;
-      padding: 8px 12px;
-      font-size: 0.85rem;
-      flex: 1;
-      min-width: 200px;
-    }
+/* pill */
+.pill{
+  padding:3px 11px;border-radius:20px;font-size:.65rem;
+  font-weight:800;letter-spacing:.07em;white-space:nowrap;flex-shrink:0;
+  position:relative;z-index:1;text-transform:uppercase;
+}
+.p-active   {background:#052e16;color:#4ade80;border:1px solid #166534}
+.p-completed{background:#0c1a40;color:#60a5fa;border:1px solid #1d4ed8}
+.p-scheduled{background:#1e1b4b;color:#a78bfa;border:1px solid #4c1d95}
+.p-rejected {background:#2d0808;color:#f87171;border:1px solid #7f1d1d}
+.p-paused   {background:#27160a;color:#fb923c;border:1px solid #7c2d12}
+.p-default  {background:#0f172a;color:#94a3b8;border:1px solid #1e293b}
 
-    #config-bar input:focus {
-      outline: none;
-      border-color: #38bdf8;
-    }
+/* card body */
+.cb{padding:14px 18px 18px;display:flex;flex-direction:column;gap:0;flex:1}
 
-    #load-btn {
-      background: #0ea5e9;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 9px 20px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: background 0.2s;
-    }
+/* metrics row */
+.metrics{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:7px;
+  margin-bottom:14px;
+}
+.metric{
+  background:#070e1a;border:1px solid var(--border2);border-radius:10px;
+  padding:10px 6px 8px;text-align:center;
+  transition:border-color .15s;
+}
+.metric:hover{border-color:#1e3a5f}
+.metric .ml{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.metric .mv{font-size:1.05rem;font-weight:800;color:#f8fafc;font-variant-numeric:tabular-nums}
 
-    #load-btn:hover { background: #38bdf8; }
-    #load-btn:disabled { background: #334155; cursor: not-allowed; }
+/* budget bar */
+.bbar{margin:2px 0 14px}
+.bbar-labels{display:flex;justify-content:space-between;font-size:.68rem;margin-bottom:4px;color:var(--muted)}
+.bbar-labels span:last-child{color:var(--cyan);font-weight:700}
+.bbar-track{height:5px;background:#07111e;border-radius:3px;overflow:hidden}
+.bbar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--cyan));transition:width .7s ease}
 
-    #filter-bar {
-      padding: 16px 32px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      align-items: center;
-      background: #0f172a;
-    }
+/* section title */
+.st{
+  font-size:.62rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);
+  font-weight:800;margin:12px 0 7px;padding-bottom:5px;
+  border-bottom:1px solid #0b1d30;
+  display:flex;align-items:center;gap:5px;
+}
+.st::before{content:'';display:inline-block;width:3px;height:10px;border-radius:2px;background:var(--accent);flex-shrink:0}
 
-    #filter-bar select, #filter-bar input[type="text"] {
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 6px;
-      color: #e2e8f0;
-      padding: 7px 12px;
-      font-size: 0.85rem;
-    }
+/* field row */
+.fr{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  padding:4px 0;gap:8px;border-bottom:1px solid #07111e;
+}
+.fr:last-child{border-bottom:none}
+.fl{font-size:.72rem;color:var(--muted);min-width:105px;flex-shrink:0;padding-top:1px;line-height:1.4}
+.fv{font-size:.77rem;color:#a0b8d0;text-align:left;direction:ltr;word-break:break-all;flex:1;line-height:1.4}
+.fv.null{color:#162032;font-style:italic;font-size:.72rem}
+.fv.hi  {color:var(--cyan);font-weight:700}
+.fv.grn {color:var(--green);font-weight:600}
+.fv.red {color:var(--red)}
+.fv.pur {color:var(--purple)}
+.fv.mono{font-family:monospace;font-size:.69rem;color:#6a90b0}
+a.vlink{color:var(--cyan);text-decoration:none;font-size:.72rem;direction:ltr}
+a.vlink:hover{text-decoration:underline}
 
-    #filter-bar select:focus, #filter-bar input:focus {
-      outline: none;
-      border-color: #38bdf8;
-    }
+/* reject box */
+.rbox{
+  background:#1a0606;border:1px solid rgba(127,29,29,.5);border-radius:8px;
+  padding:9px 13px;margin-top:10px;font-size:.77rem;color:#fca5a5;line-height:1.5;
+}
 
-    #status-msg {
-      padding: 12px 32px;
-      font-size: 0.9rem;
-      color: #94a3b8;
-      min-height: 40px;
-    }
+/* card actions */
+.card-actions{
+  display:flex;gap:8px;padding:12px 18px 14px;
+  border-top:1px solid var(--border2);
+  background:#080f1c;
+  flex-wrap:wrap;
+}
 
-    #status-msg.error { color: #f87171; }
-    #status-msg.success { color: #4ade80; }
+/* ════════════════════════════════
+   MODAL
+════════════════════════════════ */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.8);
+  display:flex;align-items:center;justify-content:center;
+  z-index:1000;padding:20px;
+  backdrop-filter:blur(6px);
+  opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{
+  background:#0d1b2e;border:1px solid #1e3a5f;border-radius:18px;
+  width:100%;max-width:520px;max-height:90vh;
+  display:flex;flex-direction:column;
+  transform:translateY(20px);transition:transform .2s;
+  box-shadow:0 24px 80px rgba(0,0,0,.8);
+}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal-hdr{
+  padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid #162032;
+}
+.modal-hdr h2{font-size:1rem;font-weight:700;color:#f0f6ff}
+.modal-body{padding:20px 24px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:14px}
+.modal-footer{padding:14px 24px;border-top:1px solid #162032;display:flex;gap:10px;justify-content:flex-end}
 
-    #cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
-      gap: 20px;
-      padding: 0 32px 40px;
-    }
+/* form fields */
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group label{font-size:.75rem;color:var(--muted);font-weight:600}
+.form-group input,.form-group select,.form-group textarea{
+  background:#070e1a;border:1px solid var(--border);border-radius:8px;
+  color:var(--text);padding:9px 13px;font-size:.84rem;outline:none;
+  transition:border-color .15s;font-family:inherit;
+}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent)}
+.form-group textarea{resize:vertical;min-height:70px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
-    .ad-card {
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 14px;
-      overflow: hidden;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
+/* spinner */
+.spin-wrap{display:flex;justify-content:center;padding:80px;grid-column:1/-1}
+.spin{width:42px;height:42px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:rot .7s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
 
-    .ad-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-    }
+.empty{text-align:center;padding:80px 40px;color:var(--muted);grid-column:1/-1}
+.empty .ei{font-size:3rem;margin-bottom:14px;opacity:.4}
 
-    .card-header {
-      padding: 16px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      border-bottom: 1px solid #334155;
-    }
+/* toast */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);
+  background:#0d1b2e;border:1px solid var(--border);border-radius:10px;
+  padding:11px 20px;font-size:.84rem;color:var(--text);
+  box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:2000;
+  transition:transform .25s ease;white-space:nowrap;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.t-ok{border-color:rgba(34,197,94,.4);color:var(--green)}
+.toast.t-err{border-color:rgba(239,68,68,.4);color:var(--red)}
 
-    .card-header-left {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .ad-number {
-      font-size: 0.75rem;
-      color: #64748b;
-      font-family: monospace;
-    }
-
-    .ad-title {
-      font-size: 1rem;
-      font-weight: 700;
-      color: #f1f5f9;
-    }
-
-    .status-pill {
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      white-space: nowrap;
-    }
-
-    .status-active    { background: #14532d; color: #4ade80; border: 1px solid #16a34a; }
-    .status-completed { background: #1e3a5f; color: #60a5fa; border: 1px solid #2563eb; }
-    .status-scheduled { background: #312e81; color: #a78bfa; border: 1px solid #6d28d9; }
-    .status-rejected  { background: #450a0a; color: #f87171; border: 1px solid #b91c1c; }
-    .status-paused    { background: #422006; color: #fb923c; border: 1px solid #c2410c; }
-    .status-default   { background: #1e293b; color: #94a3b8; border: 1px solid #475569; }
-
-    .card-body {
-      padding: 16px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-
-    .section-title {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #475569;
-      font-weight: 700;
-      margin-bottom: 8px;
-      margin-top: 14px;
-      padding-bottom: 4px;
-      border-bottom: 1px solid #1e293b;
-    }
-
-    .field-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding: 5px 0;
-      gap: 12px;
-      border-bottom: 1px solid #0f172a;
-    }
-
-    .field-row:last-child { border-bottom: none; }
-
-    .field-label {
-      font-size: 0.78rem;
-      color: #64748b;
-      min-width: 110px;
-      flex-shrink: 0;
-    }
-
-    .field-value {
-      font-size: 0.82rem;
-      color: #cbd5e1;
-      text-align: left;
-      direction: ltr;
-      word-break: break-all;
-      flex: 1;
-    }
-
-    .field-value.null-val {
-      color: #475569;
-      font-style: italic;
-    }
-
-    .field-value.highlight {
-      color: #38bdf8;
-      font-weight: 600;
-    }
-
-    .field-value.green { color: #4ade80; }
-    .field-value.red   { color: #f87171; }
-
-    .metric-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .metric-box {
-      background: #0f172a;
-      border: 1px solid #1e293b;
-      border-radius: 8px;
-      padding: 10px 12px;
-      text-align: center;
-    }
-
-    .metric-box .m-label {
-      font-size: 0.68rem;
-      color: #64748b;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 4px;
-    }
-
-    .metric-box .m-value {
-      font-size: 1rem;
-      font-weight: 700;
-      color: #f1f5f9;
-    }
-
-    .video-link {
-      display: inline-block;
-      margin-top: 4px;
-      color: #38bdf8;
-      text-decoration: none;
-      font-size: 0.8rem;
-      word-break: break-all;
-      direction: ltr;
-    }
-
-    .video-link:hover { text-decoration: underline; }
-
-    .reject-box {
-      background: #450a0a;
-      border: 1px solid #b91c1c;
-      border-radius: 6px;
-      padding: 8px 12px;
-      margin-top: 8px;
-      font-size: 0.82rem;
-      color: #fca5a5;
-    }
-
-    .loading-spinner {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 60px;
-    }
-
-    .spinner {
-      width: 40px;
-      height: 40px;
-      border: 3px solid #334155;
-      border-top-color: #38bdf8;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .empty-state {
-      text-align: center;
-      padding: 60px 32px;
-      color: #475569;
-    }
-
-    .empty-state .icon { font-size: 3rem; margin-bottom: 16px; }
-  </style>
+@media(max-width:560px){
+  #grid{grid-template-columns:1fr;padding:12px 12px 50px}
+  .hdr,.fbar,#sb{padding-left:14px;padding-right:14px}
+  .stats{gap:6px}
+  .chip{min-width:58px;padding:6px 10px}
+  .chip .cv{font-size:.95rem}
+  .form-row{grid-template-columns:1fr}
+}
+</style>
 </head>
 <body>
 
-<header>
-  <h1>ڕاپۆرتی <span>ڕیکلامەکان</span> — pa_ads</h1>
-  <div id="stats">
-    <div class="stat-badge"><strong id="total-count">—</strong>کۆی ڕیکلام</div>
-    <div class="stat-badge"><strong id="active-count">—</strong>چالاک</div>
-    <div class="stat-badge"><strong id="completed-count">—</strong>تەواوبوو</div>
-    <div class="stat-badge"><strong id="rejected-count">—</strong>ڕەتکراوە</div>
+<!-- ════ HEADER ════ -->
+<header class="hdr">
+  <div class="hdr-top">
+    <div class="brand">
+      <div class="brand-ico">📊</div>
+      <div class="brand-txt">
+        <h1>ڕاپۆرتی <em>ڕیکلامەکان</em></h1>
+        <p>pa_ads — Supabase Dashboard</p>
+      </div>
+    </div>
+    <div class="hdr-right">
+      <div class="refresh-info">
+        ڕیفرێشی ئۆتۆماتیک هەر <span id="ri-sec">30</span>چ<br>
+        کۆتا نوێکردنەوە: <span id="ri-time">—</span>
+      </div>
+      <button class="btn btn-primary btn-sm" id="refresh-btn" onclick="manualRefresh()">🔄 نوێکردنەوە</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="chip"><span class="cv c-all" id="s-total">—</span><span class="cl">کۆی گشتی</span></div>
+    <div class="chip"><span class="cv c-act"  id="s-active">—</span><span class="cl">چالاک</span></div>
+    <div class="chip"><span class="cv c-done" id="s-done">—</span><span class="cl">تەواو</span></div>
+    <div class="chip"><span class="cv c-sched" id="s-sched">—</span><span class="cl">پلانگیراو</span></div>
+    <div class="chip"><span class="cv c-rej" id="s-rej">—</span><span class="cl">ڕەتکراو</span></div>
+    <div class="chip"><span class="cv c-pause" id="s-pause">—</span><span class="cl">وەستاو</span></div>
+    <div class="chip"><span class="cv c-spend" id="s-spend">—</span><span class="cl">$ خەرجکراو</span></div>
   </div>
 </header>
 
-<div id="config-bar">
-  <label>Project URL</label>
-  <input id="inp-url" type="text" placeholder="https://xxxxxxxxxx.supabase.co" />
-  <label>Anon Key</label>
-  <input id="inp-key" type="text" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." />
-  <button id="load-btn" onclick="loadData()">بارکردن</button>
-</div>
-
-<div id="filter-bar">
-  <label style="color:#94a3b8;font-size:.85rem">فلتەر:</label>
-  <select id="filter-status" onchange="renderCards()">
+<!-- ════ FILTER BAR ════ -->
+<div class="fbar">
+  <label>فلتەر:</label>
+  <select id="f-status" onchange="render()">
     <option value="">هەموو حالەتەکان</option>
     <option value="active">چالاک</option>
     <option value="completed">تەواوبوو</option>
@@ -369,213 +357,446 @@
     <option value="rejected">ڕەتکراوە</option>
     <option value="paused">وەستاو</option>
   </select>
-  <select id="filter-goal" onchange="renderCards()">
+  <select id="f-goal" onchange="render()">
     <option value="">هەموو ئامانجەکان</option>
-    <option value="messages">messages</option>
-    <option value="views">views</option>
+    <option value="messages">Messages</option>
+    <option value="views">Views</option>
   </select>
-  <input type="text" id="search-input" placeholder="گەڕان بە ناو یان ژمارەی ڕیکلام..." oninput="renderCards()" style="min-width:220px" />
+  <select id="f-gender" onchange="render()">
+    <option value="">هەموو ژینگەکان</option>
+    <option value="male">نێر</option>
+    <option value="female">مێ</option>
+    <option value="all">هەموو</option>
+  </select>
+  <input type="text" id="f-search" placeholder="گەڕان — ناو، ژمارە، ID..." oninput="render()"/>
 </div>
 
-<div id="status-msg">تکایە URL و Anon Key بنووسە، پاشان کلیکی بارکردن بکە.</div>
-<div id="cards-container"></div>
+<!-- ════ STATUS ════ -->
+<div id="sb"><span class="dot dot-spin" id="sb-dot"></span><span id="sb-msg">بارکردن...</span></div>
+
+<!-- ════ GRID ════ -->
+<div id="grid"></div>
+
+<!-- ════ EDIT MODAL ════ -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2 id="modal-title">دەستکاریکردنی ڕیکلام</h2>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">هەڵوەشاندنەوە</button>
+      <button class="btn btn-primary" id="save-btn" onclick="saveEdit()">💾 پاشەکەوتکردن</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ TOAST ════ -->
+<div class="toast" id="toast"></div>
 
 <script>
-let allAds = [];
+// ═══════════════════════════════════════════════════════
+//  ⚙️  CONFIGURATION  — ئەمانە دەگۆڕیت
+//  SUPABASE_URL و SUPABASE_KEY ی خۆت لێرە بنووسە
+// ═══════════════════════════════════════════════════════
+const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
+const SUPABASE_KEY = 'YOUR_ANON_KEY';
+const AUTO_REFRESH_SEC = 30;       // ڕیفرێشی ئۆتۆماتیک بە چرکە
+// ═══════════════════════════════════════════════════════
 
-async function loadData() {
-  const url = document.getElementById('inp-url').value.trim().replace(/\/$/, '');
-  const key = document.getElementById('inp-key').value.trim();
+let ADS = [];
+let editingId = null;
+let refreshTimer = null;
+let countdown = AUTO_REFRESH_SEC;
 
-  if (!url || !key) {
-    setStatus('تکایە URL و Anon Key بنووسە.', 'error');
-    return;
-  }
-
-  const btn = document.getElementById('load-btn');
-  btn.disabled = true;
-  btn.textContent = 'بارکردن...';
-  setStatus('داتا دەهێنرێت...', '');
-
-  document.getElementById('cards-container').innerHTML = '<div class="loading-spinner"><div class="spinner"></div></div>';
-
-  try {
-    let allRows = [];
-    let from = 0;
-    const pageSize = 1000;
-
-    while (true) {
-      const res = await fetch(`${url}/rest/v1/pa_ads?select=*&order=created_at.desc&offset=${from}&limit=${pageSize}`, {
-        headers: {
-          'apikey': key,
-          'Authorization': `Bearer ${key}`,
-          'Accept': 'application/json',
-          'Range-Unit': 'items',
-          'Range': `${from}-${from + pageSize - 1}`,
-          'Prefer': 'count=exact'
-        }
-      });
-
-      if (!res.ok) {
-        const err = await res.text();
-        throw new Error(`${res.status}: ${err}`);
-      }
-
-      const rows = await res.json();
-      allRows = allRows.concat(rows);
-      if (rows.length < pageSize) break;
-      from += pageSize;
+// ──────────────────────────────
+//  LOAD DATA
+// ──────────────────────────────
+async function load(silent=false){
+  if(!silent){ setStatus('داتا دەهێنرێت...','spin'); }
+  try{
+    let rows=[], from=0, PAGE=1000;
+    while(true){
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/pa_ads?select=*&order=created_at.desc&offset=${from}&limit=${PAGE}`,
+        { headers:{ 'apikey':SUPABASE_KEY, 'Authorization':`Bearer ${SUPABASE_KEY}`, 'Accept':'application/json' }}
+      );
+      if(!res.ok){ const t=await res.text(); throw new Error(res.status+': '+t); }
+      const chunk = await res.json();
+      rows = rows.concat(chunk);
+      if(chunk.length < PAGE) break;
+      from += PAGE;
     }
-
-    allAds = allRows;
+    ADS = rows;
     updateStats();
-    renderCards();
-    setStatus(`✓ ${allAds.length} ڕیکلام بارکرا.`, 'success');
-  } catch (e) {
-    setStatus('هەڵە: ' + e.message, 'error');
-    document.getElementById('cards-container').innerHTML = '';
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'بارکردن';
+    render();
+    const now = new Date().toLocaleTimeString('ku-IQ');
+    document.getElementById('ri-time').textContent = now;
+    setStatus(`✓ ${ADS.length} ڕیکلام بارکرا — ${now}`,'ok');
+  }catch(e){
+    setStatus('هەڵە: '+e.message,'err');
+    if(!ADS.length) document.getElementById('grid').innerHTML='<div class="empty"><div class="ei">⚠️</div><p>'+e.message+'</p></div>';
   }
 }
 
-function setStatus(msg, cls) {
-  const el = document.getElementById('status-msg');
-  el.textContent = msg;
-  el.className = cls;
+function manualRefresh(){
+  clearInterval(refreshTimer);
+  countdown = AUTO_REFRESH_SEC;
+  load(false);
+  startCountdown();
 }
 
-function updateStats() {
-  document.getElementById('total-count').textContent = allAds.length;
-  document.getElementById('active-count').textContent = allAds.filter(a => a.status === 'active').length;
-  document.getElementById('completed-count').textContent = allAds.filter(a => a.status === 'completed').length;
-  document.getElementById('rejected-count').textContent = allAds.filter(a => a.status === 'rejected').length;
+function startCountdown(){
+  clearInterval(refreshTimer);
+  countdown = AUTO_REFRESH_SEC;
+  updateCountdown();
+  refreshTimer = setInterval(()=>{
+    countdown--;
+    updateCountdown();
+    if(countdown<=0){
+      countdown = AUTO_REFRESH_SEC;
+      load(true);
+    }
+  },1000);
 }
 
-function renderCards() {
-  const statusFilter = document.getElementById('filter-status').value;
-  const goalFilter = document.getElementById('filter-goal').value;
-  const search = document.getElementById('search-input').value.toLowerCase();
+function updateCountdown(){
+  const el = document.getElementById('ri-sec');
+  if(el) el.textContent = countdown+'s';
+}
 
-  let filtered = allAds.filter(ad => {
-    if (statusFilter && ad.status !== statusFilter) return false;
-    if (goalFilter && ad.goal !== goalFilter) return false;
-    if (search) {
-      const haystack = [ad.title, ad.ad_number, ad.id, ad.tiktok_ad_id].join(' ').toLowerCase();
-      if (!haystack.includes(search)) return false;
+function setStatus(msg,type){
+  const dot = document.getElementById('sb-dot');
+  const txt = document.getElementById('sb-msg');
+  const sb  = document.getElementById('sb');
+  txt.textContent = msg;
+  dot.className='dot '+(type==='spin'?'dot-spin':type==='ok'?'dot-ok':'dot-err');
+  sb.className = type==='err'?'err':type==='ok'?'ok':'';
+}
+
+function updateStats(){
+  const act  = ADS.filter(a=>a.status==='active').length;
+  const done = ADS.filter(a=>a.status==='completed').length;
+  const sched= ADS.filter(a=>a.status==='scheduled').length;
+  const rej  = ADS.filter(a=>a.status==='rejected').length;
+  const pause= ADS.filter(a=>a.status==='paused').length;
+  const spend= ADS.reduce((s,a)=>s+parseFloat(a.current_spend||a.spend||0),0);
+  document.getElementById('s-total').textContent = ADS.length;
+  document.getElementById('s-active').textContent = act;
+  document.getElementById('s-done').textContent  = done;
+  document.getElementById('s-sched').textContent = sched;
+  document.getElementById('s-rej').textContent   = rej;
+  document.getElementById('s-pause').textContent = pause;
+  document.getElementById('s-spend').textContent = '$'+spend.toFixed(1);
+}
+
+// ──────────────────────────────
+//  RENDER
+// ──────────────────────────────
+function render(){
+  const st  = document.getElementById('f-status').value;
+  const gl  = document.getElementById('f-goal').value;
+  const gen = document.getElementById('f-gender').value;
+  const q   = document.getElementById('f-search').value.toLowerCase();
+
+  const filtered = ADS.filter(a=>{
+    if(st  && a.status!==st)  return false;
+    if(gl  && a.goal!==gl)    return false;
+    if(gen && a.gender!==gen) return false;
+    if(q){
+      const h=[a.title,a.ad_number,a.id,a.tiktok_ad_id,a.tiktok_campaign_id].filter(Boolean).join(' ').toLowerCase();
+      if(!h.includes(q)) return false;
     }
     return true;
   });
 
-  const container = document.getElementById('cards-container');
+  const grid = document.getElementById('grid');
+  grid.innerHTML='';
 
-  if (filtered.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>هیچ ڕیکلامێک نەدۆزرایەوە</p></div>';
+  if(!filtered.length){
+    grid.innerHTML='<div class="empty"><div class="ei">📭</div><p>هیچ ڕیکلامێک نەدۆزرایەوە</p></div>';
     return;
   }
-
-  const grid = document.createElement('div');
-  grid.id = 'cards-grid';
-  filtered.forEach(ad => grid.appendChild(buildCard(ad)));
-  container.innerHTML = '';
-  container.appendChild(grid);
+  filtered.forEach(ad=>grid.appendChild(buildCard(ad)));
 }
 
-function v(val, fallback = '—') {
-  if (val === null || val === undefined || val === '') return `<span class="null-val">${fallback}</span>`;
-  return val;
-}
+// ──────────────────────────────
+//  CARD BUILDER
+// ──────────────────────────────
+const PILL={
+  active:{c:'p-active',l:'چالاک'},
+  completed:{c:'p-completed',l:'تەواوبوو'},
+  scheduled:{c:'p-scheduled',l:'پلانگیراو'},
+  rejected:{c:'p-rejected',l:'ڕەتکراوە'},
+  paused:{c:'p-paused',l:'وەستاو'},
+};
 
-function fmtDate(d) {
-  if (!d) return '<span class="null-val">—</span>';
-  return d.toString().replace('T', ' ').replace(/\.\d+.*$/, '').replace('+00:00', ' UTC');
-}
+function buildCard(ad){
+  const el=document.createElement('div');
+  el.className='card';
 
-function fmtNum(n, decimals = 2) {
-  if (n === null || n === undefined) return '<span class="null-val">—</span>';
-  return parseFloat(n).toFixed(decimals);
-}
+  const title = ad.title||('ڕیکلام #'+(ad.ad_number||ad.id?.slice(0,8)||'?'));
+  const budget= parseFloat(ad.budget||0);
+  const spend = parseFloat(ad.current_spend||ad.spend||0);
+  const pct   = budget>0?Math.min(100,Math.round(spend/budget*100)):0;
+  const pd    = PILL[ad.status]||{c:'p-default',l:ad.status||'نەزانراو'};
 
-function statusClass(s) {
-  const map = { active: 'status-active', completed: 'status-completed', scheduled: 'status-scheduled', rejected: 'status-rejected', paused: 'status-paused' };
-  return map[s] || 'status-default';
-}
+  const ageGroups=(()=>{
+    try{
+      const r=ad.age_groups;
+      if(!r) return ad.target_ages||null;
+      const p=typeof r==='string'?JSON.parse(r):r;
+      return Array.isArray(p)?p.join(', '):String(p);
+    }catch{return ad.target_ages||null;}
+  })();
 
-function buildCard(ad) {
-  const card = document.createElement('div');
-  card.className = 'ad-card';
+  const n=(v,fb='—')=>v===null||v===undefined||v===''?`<span class="fv null">${fb}</span>`:v;
+  const m=(v,d=2)=>v===null||v===undefined?'<span class="fv null">—</span>':parseFloat(v).toFixed(d);
+  const dt=(v)=>!v?'<span class="null">—</span>':String(v).replace('T',' ').replace(/\.\d+.*/,'').replace('+00:00',' UTC');
 
-  const title = ad.title || ('ڕیکلام #' + (ad.ad_number || ad.id?.slice(0,8) || '?'));
-  const statusLabel = { active: 'چالاک', completed: 'تەواوبوو', scheduled: 'پلانگیراو', rejected: 'ڕەتکراوە', paused: 'وەستاو' }[ad.status] || (ad.status || '—');
+  el.innerHTML=`
+  <div class="ch">
+    <div class="ch-l">
+      <span class="ad-num">ژ. ${ad.ad_number||'—'} · ${ad.tiktok_ad_id||'—'}</span>
+      <span class="ad-name" title="${title}">${title}</span>
+      <span class="ad-uuid">${ad.id||''}</span>
+    </div>
+    <span class="pill ${pd.c}">${pd.l}</span>
+  </div>
 
-  card.innerHTML = `
-    <div class="card-header">
-      <div class="card-header-left">
-        <span class="ad-number">#${ad.ad_number || '—'} &nbsp;|&nbsp; ${ad.id?.slice(0,8)}...</span>
-        <span class="ad-title">${title}</span>
-      </div>
-      <span class="status-pill ${statusClass(ad.status)}">${statusLabel}</span>
+  <div class="cb">
+    <div class="metrics">
+      <div class="metric"><div class="ml">Impressions</div><div class="mv">${(ad.impressions??0).toLocaleString()}</div></div>
+      <div class="metric"><div class="ml">Clicks</div><div class="mv">${(ad.clicks??0).toLocaleString()}</div></div>
+      <div class="metric"><div class="ml">Conversions</div><div class="mv">${(ad.conversions??0).toLocaleString()}</div></div>
+      <div class="metric"><div class="ml">Spend $</div><div class="mv">${m(ad.spend)}</div></div>
+      <div class="metric"><div class="ml">CPM $</div><div class="mv">${m(ad.cpm)}</div></div>
+      <div class="metric"><div class="ml">Conv %</div><div class="mv">${m(ad.conversion_rate)}</div></div>
     </div>
 
-    <div class="card-body">
-
-      <div class="section-title">زانیاری بنەڕەتی</div>
-      <div class="field-row"><span class="field-label">ID (UUID)</span><span class="field-value" style="font-size:.75rem;font-family:monospace">${ad.id || '—'}</span></div>
-      <div class="field-row"><span class="field-label">User ID</span><span class="field-value" style="font-size:.75rem;font-family:monospace">${ad.user_id || '—'}</span></div>
-      <div class="field-row"><span class="field-label">ئامانج</span><span class="field-value highlight">${ad.goal || '—'}</span></div>
-      <div class="field-row"><span class="field-label">ژینگە</span><span class="field-value">${ad.gender || '—'}</span></div>
-      <div class="field-row"><span class="field-label">شوێن</span><span class="field-value">${ad.location || '—'}</span></div>
-      <div class="field-row"><span class="field-label">تەمەنی ئامانج</span><span class="field-value">${ad.target_ages || (ad.age_groups ? (typeof ad.age_groups === 'string' ? ad.age_groups : JSON.stringify(ad.age_groups)) : '—')}</span></div>
-
-      <div class="section-title">بودجە و کات</div>
-      <div class="field-row"><span class="field-label">بودجە</span><span class="field-value highlight">$${fmtNum(ad.budget)}</span></div>
-      <div class="field-row"><span class="field-label">ئامانجی بودجە</span><span class="field-value">$${fmtNum(ad.target_budget)}</span></div>
-      <div class="field-row"><span class="field-label">بودجەی ڕۆژانە</span><span class="field-value">${ad.daily_budget !== null ? '$' + fmtNum(ad.daily_budget) : '<span class="null-val">—</span>'}</span></div>
-      <div class="field-row"><span class="field-label">کۆی بودجە</span><span class="field-value">${ad.total_budget !== null ? '$' + fmtNum(ad.total_budget) : '<span class="null-val">—</span>'}</span></div>
-      <div class="field-row"><span class="field-label">خەرجکراو</span><span class="field-value green">$${fmtNum(ad.spend)}</span></div>
-      <div class="field-row"><span class="field-label">خەرجکراوی ئێستا</span><span class="field-value green">$${fmtNum(ad.current_spend)}</span></div>
-      <div class="field-row"><span class="field-label">ڕۆژ</span><span class="field-value">${ad.days ?? '—'} ڕۆژ</span></div>
-      <div class="field-row"><span class="field-label">بەرواری دەستپێک</span><span class="field-value">${ad.start_date || '—'}</span></div>
-      <div class="field-row"><span class="field-label">کاتی دەستپێک</span><span class="field-value">${ad.start_time || '—'}</span></div>
-      <div class="field-row"><span class="field-label">بەرواری کۆتایی</span><span class="field-value">${ad.end_date || '<span class="null-val">—</span>'}</span></div>
-
-      <div class="section-title">ئەنجامەکان</div>
-      <div class="metric-row">
-        <div class="metric-box"><div class="m-label">Impressions</div><div class="m-value">${(ad.impressions ?? 0).toLocaleString()}</div></div>
-        <div class="metric-box"><div class="m-label">Clicks</div><div class="m-value">${(ad.clicks ?? 0).toLocaleString()}</div></div>
-        <div class="metric-box"><div class="m-label">Conversions</div><div class="m-value">${(ad.conversions ?? 0).toLocaleString()}</div></div>
-      </div>
-      <div class="metric-row">
-        <div class="metric-box"><div class="m-label">Spend</div><div class="m-value">$${fmtNum(ad.spend)}</div></div>
-        <div class="metric-box"><div class="m-label">CPM</div><div class="m-value">$${fmtNum(ad.cpm)}</div></div>
-        <div class="metric-box"><div class="m-label">Conv. Rate</div><div class="m-value">${fmtNum(ad.conversion_rate)}%</div></div>
-      </div>
-      <div class="field-row" style="margin-top:8px"><span class="field-label">Cost/Conversion</span><span class="field-value">$${fmtNum(ad.cost_per_conversion)}</span></div>
-
-      <div class="section-title">TikTok زانیاری</div>
-      <div class="field-row"><span class="field-label">Ad ID</span><span class="field-value" style="font-family:monospace;font-size:.78rem">${ad.tiktok_ad_id || '<span class="null-val">—</span>'}</span></div>
-      <div class="field-row"><span class="field-label">Campaign ID</span><span class="field-value" style="font-family:monospace;font-size:.78rem">${ad.tiktok_campaign_id || '<span class="null-val">—</span>'}</span></div>
-      <div class="field-row"><span class="field-label">Video Code</span><span class="field-value" style="font-family:monospace;font-size:.75rem;direction:ltr">${ad.video_code ? ad.video_code.slice(0, 60) + (ad.video_code.length > 60 ? '...' : '') : '<span class="null-val">—</span>'}</span></div>
-      <div class="field-row"><span class="field-label">Video Link</span><span class="field-value">${ad.video_link ? `<a class="video-link" href="${ad.video_link}" target="_blank">${ad.video_link.slice(0,45)}...</a>` : '<span class="null-val">—</span>'}</span></div>
-      <div class="field-row"><span class="field-label">TikTok URL</span><span class="field-value">${ad.tiktok_url ? `<a class="video-link" href="${ad.tiktok_url}" target="_blank">${ad.tiktok_url.slice(0,45)}...</a>` : '<span class="null-val">—</span>'}</span></div>
-      <div class="field-row"><span class="field-label">Asset ID</span><span class="field-value" style="font-size:.75rem;font-family:monospace">${ad.asset_id || '<span class="null-val">—</span>'}</span></div>
-      <div class="field-row"><span class="field-label">Card ID</span><span class="field-value" style="font-size:.75rem;font-family:monospace">${ad.card_id || '<span class="null-val">—</span>'}</span></div>
-
-      <div class="section-title">سیستەم</div>
-      <div class="field-row"><span class="field-label">دروستکرا</span><span class="field-value">${fmtDate(ad.created_at)}</span></div>
-      <div class="field-row"><span class="field-label">نوێکرایەوە</span><span class="field-value">${fmtDate(ad.updated_at)}</span></div>
-      <div class="field-row"><span class="field-label">کۆتا هاوکێشان</span><span class="field-value">${fmtDate(ad.last_sync)}</span></div>
-      <div class="field-row"><span class="field-label">ئاگادارکردنەوە</span><span class="field-value">${ad.notified_admin ? '<span class="green">بەڵێ</span>' : 'نەخێر'}</span></div>
-
-      ${ad.reject_reason && ad.reject_reason !== 'EMPTY' && ad.reject_reason !== 'NULL' ?
-        `<div class="reject-box">⚠️ هۆکاری ڕەتکردنەوە: ${ad.reject_reason}</div>` : ''}
-
+    <div class="bbar">
+      <div class="bbar-labels"><span>خەرجکراو لە بودجە</span><span>${pct}% &nbsp;$${m(spend)} / $${m(budget)}</span></div>
+      <div class="bbar-track"><div class="bbar-fill" style="width:${pct}%"></div></div>
     </div>
-  `;
 
-  return card;
+    <div class="st">زانیاری بنەڕەتی</div>
+    <div class="fr"><span class="fl">ئامانج</span><span class="fv hi">${ad.goal||'—'}</span></div>
+    <div class="fr"><span class="fl">ژینگە</span><span class="fv">${ad.gender||'—'}</span></div>
+    <div class="fr"><span class="fl">شوێن</span><span class="fv">${ad.location||'—'}</span></div>
+    <div class="fr"><span class="fl">تەمەن</span><span class="fv">${ageGroups||'<span class="null">—</span>'}</span></div>
+    <div class="fr"><span class="fl">Cost/Conv</span><span class="fv">$${m(ad.cost_per_conversion)}</span></div>
+
+    <div class="st">بودجە و کات</div>
+    <div class="fr"><span class="fl">بودجە</span><span class="fv grn">$${m(ad.budget)}</span></div>
+    <div class="fr"><span class="fl">ئامانجی بودجە</span><span class="fv">$${m(ad.target_budget)}</span></div>
+    <div class="fr"><span class="fl">بودجەی ڕۆژانە</span><span class="fv">${ad.daily_budget!=null?'$'+m(ad.daily_budget):'<span class="null">—</span>'}</span></div>
+    <div class="fr"><span class="fl">خەرجکراوی ئێستا</span><span class="fv grn">$${m(ad.current_spend)}</span></div>
+    <div class="fr"><span class="fl">ڕۆژ</span><span class="fv">${ad.days??'—'} ڕۆژ</span></div>
+    <div class="fr"><span class="fl">دەستپێک</span><span class="fv">${ad.start_date||'—'} ${ad.start_time?'· '+ad.start_time:''}</span></div>
+    <div class="fr"><span class="fl">کۆتایی</span><span class="fv">${ad.end_date||'<span class="null">—</span>'}</span></div>
+
+    <div class="st">TikTok</div>
+    <div class="fr"><span class="fl">Ad ID</span><span class="fv mono">${ad.tiktok_ad_id||'<span class="null">—</span>'}</span></div>
+    <div class="fr"><span class="fl">Campaign ID</span><span class="fv mono">${ad.tiktok_campaign_id||'<span class="null">—</span>'}</span></div>
+    <div class="fr"><span class="fl">Video</span><span class="fv">${ad.video_link?`<a class="vlink" href="${ad.video_link}" target="_blank">🔗 بینینی ڤیدیۆ</a>`:'<span class="null">—</span>'}</span></div>
+
+    <div class="st">سیستەم</div>
+    <div class="fr"><span class="fl">دروستکرا</span><span class="fv mono" style="font-size:.68rem">${dt(ad.created_at)}</span></div>
+    <div class="fr"><span class="fl">نوێکرایەوە</span><span class="fv mono" style="font-size:.68rem">${dt(ad.updated_at)}</span></div>
+    <div class="fr"><span class="fl">کۆتا هاوکێشان</span><span class="fv mono" style="font-size:.68rem">${dt(ad.last_sync)}</span></div>
+    <div class="fr"><span class="fl">ئاگادارکردنەوە</span><span class="fv ${ad.notified_admin?'grn':''}">${ad.notified_admin?'✓ بەڵێ':'نەخێر'}</span></div>
+
+    ${ad.reject_reason&&ad.reject_reason!=='EMPTY'&&ad.reject_reason!=='NULL'
+      ?`<div class="rbox">⚠️ هۆکاری ڕەتکردنەوە: ${ad.reject_reason}</div>`:''}
+  </div>
+
+  <div class="card-actions">
+    <button class="btn btn-ghost btn-sm" onclick="openEdit('${ad.id}')">✏️ دەستکاری</button>
+    <button class="btn ${ad.status==='active'?'btn-danger':'btn-success'} btn-sm"
+      onclick="toggleStatus('${ad.id}','${ad.status}')">
+      ${ad.status==='active'?'⏸ وەستاندن':'▶ چالاককردن'}
+    </button>
+    <button class="btn btn-danger btn-sm" onclick="deleteAd('${ad.id}')">🗑 سڕینەوە</button>
+  </div>`;
+
+  return el;
 }
+
+// ──────────────────────────────
+//  EDIT MODAL
+// ──────────────────────────────
+function openEdit(id){
+  const ad = ADS.find(a=>a.id===id);
+  if(!ad) return;
+  editingId = id;
+  document.getElementById('modal-title').textContent = 'دەستکاریکردن — '+(ad.title||'ڕیکلام #'+ad.ad_number);
+
+  document.getElementById('modal-body').innerHTML=`
+    <div class="form-group">
+      <label>ناوی ڕیکلام (title)</label>
+      <input id="e-title" value="${ad.title||''}" placeholder="ناوی ڕیکلام"/>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>حالەت (status)</label>
+        <select id="e-status">
+          <option value="active"   ${ad.status==='active'?'selected':''}>چالاک</option>
+          <option value="completed"${ad.status==='completed'?'selected':''}>تەواوبوو</option>
+          <option value="scheduled"${ad.status==='scheduled'?'selected':''}>پلانگیراو</option>
+          <option value="rejected" ${ad.status==='rejected'?'selected':''}>ڕەتکراوە</option>
+          <option value="paused"   ${ad.status==='paused'?'selected':''}>وەستاو</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>ئامانج (goal)</label>
+        <select id="e-goal">
+          <option value="messages"${ad.goal==='messages'?'selected':''}>messages</option>
+          <option value="views"   ${ad.goal==='views'?'selected':''}>views</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>بودجە (budget)</label>
+        <input id="e-budget" type="number" step="0.01" value="${ad.budget||0}"/>
+      </div>
+      <div class="form-group">
+        <label>ڕۆژ (days)</label>
+        <input id="e-days" type="number" value="${ad.days||1}"/>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>ژینگە (gender)</label>
+        <select id="e-gender">
+          <option value="male"  ${ad.gender==='male'?'selected':''}>نێر</option>
+          <option value="female"${ad.gender==='female'?'selected':''}>مێ</option>
+          <option value="all"   ${ad.gender==='all'?'selected':''}>هەموو</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>شوێن (location)</label>
+        <input id="e-location" value="${ad.location||''}"/>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>بەرواری دەستپێک</label>
+        <input id="e-start" type="date" value="${ad.start_date||''}"/>
+      </div>
+      <div class="form-group">
+        <label>بەرواری کۆتایی</label>
+        <input id="e-end" type="date" value="${ad.end_date||''}"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>هۆکاری ڕەتکردنەوە (reject_reason)</label>
+      <textarea id="e-reject">${ad.reject_reason&&ad.reject_reason!=='NULL'?ad.reject_reason:''}</textarea>
+    </div>`;
+
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal(e){
+  if(e && e.target!==document.getElementById('modal')) return;
+  document.getElementById('modal').classList.remove('open');
+  editingId=null;
+}
+
+async function saveEdit(){
+  if(!editingId) return;
+  const btn=document.getElementById('save-btn');
+  btn.disabled=true; btn.textContent='...پاشەکەوتکردن';
+
+  const payload={
+    title:     document.getElementById('e-title').value||null,
+    status:    document.getElementById('e-status').value,
+    goal:      document.getElementById('e-goal').value,
+    budget:    parseFloat(document.getElementById('e-budget').value)||0,
+    days:      parseInt(document.getElementById('e-days').value)||1,
+    gender:    document.getElementById('e-gender').value,
+    location:  document.getElementById('e-location').value||null,
+    start_date:document.getElementById('e-start').value||null,
+    end_date:  document.getElementById('e-end').value||null,
+    reject_reason:document.getElementById('e-reject').value||null,
+  };
+
+  try{
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/pa_ads?id=eq.${editingId}`,
+      { method:'PATCH',
+        headers:{ 'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json','Prefer':'return=minimal' },
+        body:JSON.stringify(payload)
+      }
+    );
+    if(!res.ok){ const t=await res.text(); throw new Error(t); }
+    showToast('✓ پاشەکەوتکرا','ok');
+    document.getElementById('modal').classList.remove('open');
+    await load(true);
+  }catch(e){
+    showToast('هەڵە: '+e.message,'err');
+  }finally{
+    btn.disabled=false; btn.textContent='💾 پاشەکەوتکردن';
+  }
+}
+
+// ──────────────────────────────
+//  TOGGLE STATUS
+// ──────────────────────────────
+async function toggleStatus(id, current){
+  const next = current==='active'?'paused':'active';
+  try{
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/pa_ads?id=eq.${id}`,
+      { method:'PATCH',
+        headers:{ 'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json','Prefer':'return=minimal' },
+        body:JSON.stringify({status:next})
+      }
+    );
+    if(!res.ok){ const t=await res.text(); throw new Error(t); }
+    showToast(next==='active'?'✓ چالاک کرا':'⏸ وەستاندرا','ok');
+    await load(true);
+  }catch(e){ showToast('هەڵە: '+e.message,'err'); }
+}
+
+// ──────────────────────────────
+//  DELETE
+// ──────────────────────────────
+async function deleteAd(id){
+  const ad = ADS.find(a=>a.id===id);
+  const name = ad?.title||'ڕیکلام #'+ad?.ad_number||id.slice(0,8);
+  if(!confirm(`دڵنیایت لە سڕینەوەی "${name}"؟`)) return;
+  try{
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/pa_ads?id=eq.${id}`,
+      { method:'DELETE',
+        headers:{ 'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}` }
+      }
+    );
+    if(!res.ok){ const t=await res.text(); throw new Error(t); }
+    showToast('🗑 سڕایەوە','ok');
+    await load(true);
+  }catch(e){ showToast('هەڵە: '+e.message,'err'); }
+}
+
+// ──────────────────────────────
+//  TOAST
+// ──────────────────────────────
+let toastTimer;
+function showToast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='toast show t-'+(type||'ok');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ──────────────────────────────
+//  INIT
+// ──────────────────────────────
+load();
+startCountdown();
 </script>
 </body>
 </html>
