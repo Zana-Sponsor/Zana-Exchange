@@ -208,6 +208,13 @@ tr:hover td{background:rgba(28,35,51,.015);}
 .act-btn.dark:hover{background:var(--dark);color:#fff;}
 .act-btn.pu{background:rgba(124,58,237,.07);color:var(--pu);border-color:rgba(124,58,237,.2);}
 .act-btn.pu:hover{background:var(--pu);color:#fff;}
+/* ── FEATURED STAR ── */
+.act-btn.star-on{background:rgba(245,158,11,.12);color:#d97706;border-color:rgba(245,158,11,.35);position:relative;}
+.act-btn.star-on:hover{background:#d97706;color:#fff;}
+.act-btn.star-on i{filter:drop-shadow(0 0 4px rgba(245,158,11,.6));}
+.act-btn.star-off{background:rgba(28,35,51,.05);color:#b0b8c8;border-color:var(--b1);}
+.act-btn.star-off:hover{background:rgba(245,158,11,.1);color:#d97706;border-color:rgba(245,158,11,.3);}
+.feat-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:800;background:rgba(245,158,11,.12);color:#d97706;border:1px solid rgba(245,158,11,.3);}
 .act-grp{display:flex;gap:6px;flex-wrap:wrap;}
 
 /* ══ MODAL ══ */
@@ -2750,6 +2757,7 @@ function renderAdsTable(q=''){
       <td style="font-size:11px;color:var(--mt);white-space:nowrap">${new Date(a.created_at).toLocaleDateString('ku')}<br><span style="font-size:10px;color:var(--mt2);font-family:'Inter';direction:ltr">${new Date(a.created_at).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span></td>
       <td onclick="event.stopPropagation()"><div class="act-grp">
         <div class="act-btn dark" onclick="showAdDetail('${a.id}')"><i class="fas fa-eye"></i></div>
+        <div class="act-btn ${a.is_featured?'star-on':'star-off'}" onclick="event.stopPropagation();toggleFeatured('${a.id}',${!!a.is_featured})" title="${a.is_featured?'لابردنی ئەستێرە':'باشترین ئەنجام'}"><i class="fas fa-star"></i></div>
         ${a.status==='pending'?`<div class="act-btn gr" onclick="event.stopPropagation();openApproveModal('${a.id}')"><i class="fas fa-check-circle"></i> Review</div>
           <div class="act-btn rd" onclick="event.stopPropagation();showRejectReason('${a.id}','ad')"><i class="fas fa-times"></i> ڕەت</div>`:''}
         ${a.status==='scheduled'?`<div class="act-btn" style="background:rgba(8,145,178,.08);color:#0891b2;border-color:rgba(8,145,178,.25)" onclick="event.stopPropagation();updateAdStatus('${a.id}','${a.user_id}','active',0)"><i class="fas fa-play"></i> چالاکی ئێستا</div>
@@ -2764,10 +2772,13 @@ function renderAdsTable(q=''){
       <div class="ad-card-top">
         <div class="mini-av" style="background:var(--bl);font-size:10px;font-weight:900">#${a.ad_number||'?'}</div>
         <div class="ad-card-info">
-          <div class="ad-card-name">${a.title||(a.created_at?'New Ad '+new Date(a.created_at).toLocaleDateString('en-GB').replace(/\//g,'/'):'ڕیکلامی #'+(a.ad_number||'?'))}</div>
+          <div class="ad-card-name" style="display:flex;align-items:center;gap:6px">${a.is_featured?'<span class="feat-badge"><i class="fas fa-star" style="font-size:9px"></i> باشترین</span>':''} ${a.title||(a.created_at?'New Ad '+new Date(a.created_at).toLocaleDateString('en-GB').replace(/\//g,'/'):'ڕیکلامی #'+(a.ad_number||'?'))}</div>
           <div class="ad-card-sub">${a.profiles?.full_name||'—'} • ${a.profiles?.email||'—'}</div>
         </div>
-        <span class="badge ${a.status}">${statusKu(a.status)}</span>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0">
+          <span class="badge ${a.status}">${statusKu(a.status)}</span>
+          <div class="act-btn ${a.is_featured?'star-on':'star-off'}" style="padding:5px 8px;font-size:11px" onclick="event.stopPropagation();toggleFeatured('${a.id}',${!!a.is_featured})" title="باشترین ئەنجام"><i class="fas fa-star"></i></div>
+        </div>
       </div>
       <div class="ad-card-meta">
         <div class="user-card-stat rd"><i class="fas fa-coins" style="font-size:10px"></i> ${Math.round(parseFloat(a.budget||0)*1800).toLocaleString()} IQD</div>
@@ -3056,7 +3067,7 @@ function renderAdsDataTable(q=''){
         <td style="font-size:11px">${gs[a.goal]||a.goal||'—'}</td>
         <td><span class="badge ${a.status}">${statusKu(a.status)}</span></td>
         <td style="font-size:10px;color:var(--mt);white-space:nowrap">${new Date(a.created_at).toLocaleDateString('ku')}</td>
-        <td style="font-size:10px;color:var(--mt);white-space:nowrap;direction:ltr">${a.start_date||'—'}<br>${a.end_date||'—'}</td>
+        <td style="font-size:10px;color:var(--mt);white-space:nowrap;direction:ltr">${a.start_date?(()=>{const d=new Date(a.start_date);const hasTime=a.start_date.length>10;return d.toLocaleDateString('en-GB')+(hasTime?'<br><span style="color:#0891b2;font-weight:700">'+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+'</span>':'')})():'—'}<br><span style="opacity:.7">${a.end_date||'—'}</span></td>
       </tr>`;
     }).join('')}</tbody></table>`;
 
@@ -3139,6 +3150,15 @@ async function updateAdStatus(id,userId,newStatus,budget){
   loadAds();loadAdBadge();
 }
 
+// ══ FEATURED / BEST RESULT TOGGLE ══
+async function toggleFeatured(id, current){
+  const newVal = !current;
+  const {error} = await sb.from('pa_ads').update({is_featured: newVal}).eq('id', id);
+  if(error && !isNetHttpErr(error)){showToast('هەڵە: '+error.message,'rd');return;}
+  showToast(newVal ? '⭐ باشترین ئەنجام هەڵبژێردرا' : 'ئەستێرە لابرا','gr');
+  loadAds();
+}
+
 // ══ APPROVAL WORKFLOW ══
 let _approvalPendingAds = [];
 
@@ -3218,6 +3238,7 @@ function openApproveModal(adId){
   document.getElementById('approveCampaignId').value = ad.tiktok_campaign_id || '';
   clearFieldErr('approveCampaignId');
   document.getElementById('approveStartDate').value = ad.start_date ? ad.start_date.substring(0,10) : '';
+  document.getElementById('approveStartTime').value = (ad.start_date && ad.start_date.length > 10) ? ad.start_date.substring(11,16) : '00:00';
   document.getElementById('approveEndDate').value = ad.end_date ? ad.end_date.substring(0,10) : '';
   clearFieldErr('approveTikTokId');
   clearFieldErr('approveStartDate');
@@ -3228,6 +3249,8 @@ function openApproveModal(adId){
 async function submitApproval(){
   const tiktokId = (document.getElementById('approveTikTokId').value||'').trim();
   const startDate = document.getElementById('approveStartDate').value;
+  const startTime = (document.getElementById('approveStartTime').value||'00:00');
+  const startDateTime = startDate ? startDate + 'T' + startTime : '';
   const endDate = document.getElementById('approveEndDate').value;
   let valid = true;
   const campaignId = (document.getElementById('approveCampaignId').value||'').trim();
@@ -3249,7 +3272,7 @@ async function submitApproval(){
       status: 'active',
       tiktok_ad_id: tiktokId,
       tiktok_campaign_id: campaignId,
-      start_date: startDate,
+      start_date: startDateTime,
       end_date: endDate,
       target_budget: targetBudget
     }).eq('id', _approveAdId);
@@ -3300,7 +3323,7 @@ async function submitApproval(){
             name:_apProf.full_name||'',
             ad_number:_apAd?.ad_number||null,
             tiktok_ad_id:tiktokId,
-            start_date:startDate,
+            start_date:startDateTime,
             end_date:endDate,
             timestamp:new Date().toISOString(),
             app:'ProxoPanel'
@@ -6206,10 +6229,14 @@ async function deleteTutorial(id, title) {
         <div class="field-err" id="approveStartDate-err">بەروار دیاری بکە</div>
       </div>
       <div class="field-wrap">
-        <label class="modal-lbl" style="margin-top:0">بەرواری کۆتایی <span style="color:var(--rd)">*</span></label>
-        <input class="minp" type="date" id="approveEndDate" dir="ltr" style="font-family:'Inter'" oninput="clearFieldErr('approveEndDate')">
-        <div class="field-err" id="approveEndDate-err">بەروار دیاری بکە</div>
+        <label class="modal-lbl" style="margin-top:0">کاتی دەستپێکردن <span style="color:var(--rd)">*</span></label>
+        <input class="minp" type="time" id="approveStartTime" dir="ltr" style="font-family:'Inter'" value="00:00">
       </div>
+    </div>
+    <div class="field-wrap" style="margin-top:4px">
+      <label class="modal-lbl" style="margin-top:0">بەرواری کۆتایی <span style="color:var(--rd)">*</span></label>
+      <input class="minp" type="date" id="approveEndDate" dir="ltr" style="font-family:'Inter'" oninput="clearFieldErr('approveEndDate')">
+      <div class="field-err" id="approveEndDate-err">بەروار دیاری بکە</div>
     </div>
     <div class="info-box" style="margin-top:12px;margin-bottom:4px">
       <i class="fas fa-shield-halved" style="margin-left:6px;color:#10b981"></i>
