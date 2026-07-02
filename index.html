@@ -907,8 +907,6 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .sidebar-head{padding:24px 20px 18px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:14px;}
 .sidebar-av{width:52px;height:52px;border-radius:50%;background:var(--dark);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;overflow:hidden;flex-shrink:0;}
 .sidebar-av img{width:100%;height:100%;object-fit:cover;}
-.sidebar-prof-av{width:30px;height:30px;border-radius:50%;background:var(--dark);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;overflow:hidden;flex-shrink:0;}
-.sidebar-prof-av img{width:100%;height:100%;object-fit:cover;}
 .sidebar-user{flex:1;overflow:hidden;}
 .sidebar-name{font-size:15px;font-weight:800;color:var(--dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .sidebar-email{font-size:11px;color:var(--mt);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:ltr;text-align:right;}
@@ -2670,7 +2668,7 @@ function _toWebP(dataUrl,quality){
       </div>
       <!-- ٠ — پرۆفایل -->
       <div class="sidebar-item" onclick="goPage('profile');closeSidebar()">
-        <div class="sidebar-item-ico"><div class="sidebar-prof-av" id="sidebarProfItemAv">P</div></div>
+        <div class="sidebar-item-ico"><i class="fas fa-user-circle"></i></div>
         <div class="sidebar-item-txt">پرۆفایل</div>
       </div>
       <!-- ١ — پارە زیادکردن -->
@@ -4588,21 +4586,34 @@ let _forceUpdate=false;
 // ══ UPDATE PROFILE ══
 let updAvB64New = null;
 
-function showUpdateProfile(){
+async function showUpdateProfile(){
   const name = document.getElementById('profName').textContent;
   document.getElementById('updNameInp').value = name === '—' ? '' : name;
   const updAvEl = document.getElementById('updProfAv');
-  if(avB64){
-    updAvEl.innerHTML = `<img src="${avB64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"><div class="pav-cam"><i class="fas fa-camera"></i></div>`;
-  } else {
-    updAvEl.innerHTML = `${(name||'?')[0].toUpperCase()}<div class="pav-cam"><i class="fas fa-camera"></i></div>`;
-  }
-  updAvB64New = null;
-  sb.from('profiles').select('phone').eq('id', cu.id).single().then(({data}) => {
-    document.getElementById('updPhoneInp').value = data?.phone || '';
-  });
+  // نمایش لەتۆڵ بکە تا وێنە بار دەبێت
+  updAvEl.innerHTML = `<span style="font-size:11px;opacity:.5">...</span><div class="pav-cam"><i class="fas fa-camera"></i></div>`;
   document.getElementById('updProfMsg').style.display = 'none';
   document.getElementById('moUpdateProfile').classList.add('on');
+  updAvB64New = null;
+  // بار کردنی ناو، وێنە و مۆبایل بە ڕاستەوخۆ لەسوپابەیس
+  try {
+    const {data} = await sb.from('profiles').select('full_name,avatar_b64,phone').eq('id', cu.id).single();
+    const fetchedAv = data?.avatar_b64 || avB64 || null;
+    if(fetchedAv){
+      avB64 = fetchedAv;
+      updAvEl.innerHTML = `<img src="${fetchedAv}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"><div class="pav-cam"><i class="fas fa-camera"></i></div>`;
+    } else {
+      const n = data?.full_name || name || '?';
+      updAvEl.innerHTML = `${n[0].toUpperCase()}<div class="pav-cam"><i class="fas fa-camera"></i></div>`;
+    }
+    if(data?.full_name && document.getElementById('updNameInp').value === '—'){
+      document.getElementById('updNameInp').value = data.full_name;
+    }
+    document.getElementById('updPhoneInp').value = data?.phone || '';
+  } catch(_){
+    const n = name || '?';
+    updAvEl.innerHTML = `${n[0].toUpperCase()}<div class="pav-cam"><i class="fas fa-camera"></i></div>`;
+  }
 }
 
 function loadUpdAv(inp){
@@ -6874,11 +6885,6 @@ async function loadSidebarUser(){
     const se = document.getElementById('sidebarEmail');
     if(se) se.textContent = email;
     // نوێکردنەوەی وێنەی بەشی پرۆفایل لەمنیوی سایدبار
-    const profItemAv = document.getElementById('sidebarProfItemAv');
-    if(profItemAv){
-      if(avB64){ profItemAv.innerHTML = `<img src="${avB64}">`; }
-      else { profItemAv.textContent = name[0].toUpperCase(); }
-    }
   } catch(_){}
 }
 function updateSidebarUser(name,email,avB64Src,bal){
@@ -6889,11 +6895,6 @@ function updateSidebarUser(name,email,avB64Src,bal){
   document.getElementById('sidebarEmail').textContent=email||'—';
   document.getElementById('sidebarBal').textContent=Math.round(parseFloat(String(bal).replace(/,/g,''))||0).toLocaleString()+' IQD';
   // نوێکردنەوەی وێنەی بەشی پرۆفایل لەمنیوی سایدبار
-  const _pia=document.getElementById('sidebarProfItemAv');
-  if(_pia){
-    if(avB64Src){ _pia.innerHTML=`<img src="${avB64Src}">`; }
-    else { _pia.textContent=(name||'?')[0].toUpperCase(); }
-  }
 }
 /* ── Load tutorials from Supabase pa_tutorials ── */
 function _extractYtId(url){
