@@ -3330,7 +3330,7 @@ function _toWebP(dataUrl,quality){
     <div id="plFormView" style="display:none">
       <div class="plform">
         <div class="plform-hdr">
-          <h2>پەڕەی نوێ زیادبکە</h2>
+          <h2 id="plFormTitle">پەڕەی نوێ زیادبکە</h2>
           <div class="plform-close" onclick="hidePLForm()"><i class="fas fa-xmark"></i></div>
         </div>
 
@@ -4419,24 +4419,6 @@ function _toWebP(dataUrl,quality){
     <div class="mlbl">ناوی تەواو</div>
     <input class="finp" style="margin-bottom:14px" type="text" id="editNameInp" placeholder="ناوت">
     <button class="save-btn" onclick="saveName()">
-      <i class="fas fa-check"></i> پاشەکەوتکردن
-    </button>
-  </div>
-</div>
-<!-- EDIT PROXO CARD (کەرەستەی پەیوەندی) -->
-<div class="mover" id="moEditProxoCard">
-  <div class="mbox">
-    <div class="mbar"></div>
-    <div class="mhdr">
-      <h3>دەستکاری کەرەستە</h3>
-      <button class="mclose" onclick="closeMo('moEditProxoCard')"><i class="fas fa-xmark"></i></button>
-    </div>
-    <input type="hidden" id="editProxoCardId">
-    <div class="mlbl">ناوی کارت</div>
-    <input class="finp" style="margin-bottom:14px" type="text" id="editProxoCardName" placeholder="ناوی کارت">
-    <div class="mlbl">پێناسە (ئۆپشنی)</div>
-    <textarea class="finp" id="editProxoCardBio" placeholder="پێناسەی کارت..." rows="3" style="margin-bottom:14px;resize:vertical;min-height:70px;font-family:inherit"></textarea>
-    <button class="save-btn" id="editProxoCardSaveBtn" onclick="saveProxoCardEdit()">
       <i class="fas fa-check"></i> پاشەکەوتکردن
     </button>
   </div>
@@ -9263,6 +9245,10 @@ function showPlErr(id,msg){
 }
 
 function showPLForm(){
+  plEditingCardId=null;
+  document.getElementById('plFormTitle').textContent='پەڕەی نوێ زیادبکە';
+  const tgBtn0=document.getElementById('plTgBtn');
+  if(tgBtn0)tgBtn0.innerHTML='<i class="fas fa-file-circle-check"></i>دروستکردنی کەرەستە';
   document.getElementById('plListView').style.display='none';
   document.getElementById('plFormView').style.display='block';
   if(document.getElementById('plPreviewView'))document.getElementById('plPreviewView').style.display='none';
@@ -9270,6 +9256,14 @@ function showPLForm(){
   ['plErrName','plErrBio','plErrTT','plErrVideo','plErrPlatform'].forEach(clearPlErr);
   plChecked=[true,true,false,true,false,false];
   PL_BTNS.forEach(b=>b._val='');
+  plLogoB64='';
+  document.getElementById('plBrandName').value='';
+  if(document.getElementById('plDesc'))document.getElementById('plDesc').value='';
+  if(document.getElementById('plTT'))document.getElementById('plTT').value='';
+  if(document.getElementById('plVideoUrl'))document.getElementById('plVideoUrl').value='';
+  const prev0=document.getElementById('plLogoPrev');if(prev0)prev0.style.display='none';
+  const ico0=document.getElementById('plLogoIco');if(ico0)ico0.style.display='';
+  const txt0=document.getElementById('plLogoTxt');if(txt0)txt0.textContent='وێنە بارکە';
   plRenderCb();
   plRenderContacts();
   plRenderBioChips(false);
@@ -9280,6 +9274,59 @@ function showPLForm(){
   document.querySelectorAll('.theme-dot').forEach(t=>t.classList.toggle('on',t.dataset.color==='purple'));
   updatePLPreview();
 }
+
+// ═══ کردنەوەی فۆرم بۆ دەستکاریکردنی تەواوی کەرەستەیەکی ئەنجامدراو ═══
+function openEditProxoCard(id){
+  const c=myCards.find(x=>x.id===id);
+  if(!c)return;
+  plEditingCardId=id;
+
+  document.getElementById('plListView').style.display='none';
+  document.getElementById('plFormView').style.display='block';
+  if(document.getElementById('plPreviewView'))document.getElementById('plPreviewView').style.display='none';
+  document.getElementById('plFormTitle').textContent='دەستکاریکردنی کەرەستە';
+  const tgBtn=document.getElementById('plTgBtn');
+  if(tgBtn)tgBtn.innerHTML='<i class="fas fa-check"></i>پاشەکەوتکردنی گۆڕانکارییەکان';
+
+  ['plErrName','plErrBio','plErrTT','plErrVideo','plErrPlatform'].forEach(clearPlErr);
+
+  document.getElementById('plBrandName').value=c.name||'';
+  if(document.getElementById('plDesc'))document.getElementById('plDesc').value=c.bio||'';
+  if(document.getElementById('plTT'))document.getElementById('plTT').value=c.tt||'';
+  if(document.getElementById('plVideoUrl'))document.getElementById('plVideoUrl').value='';
+
+  plLogoB64=c.avatar_b64||'';
+  const prev=document.getElementById('plLogoPrev');
+  const ico=document.getElementById('plLogoIco');
+  const txt=document.getElementById('plLogoTxt');
+  if(plLogoB64){
+    if(prev){prev.src=plLogoB64;prev.style.display='block';}
+    if(ico)ico.style.display='none';
+    if(txt)txt.textContent='وێنە گۆڕا';
+  } else {
+    if(prev)prev.style.display='none';
+    if(ico)ico.style.display='';
+    if(txt)txt.textContent='وێنە بارکە';
+  }
+
+  // پلاتفۆرمەکان لە داتای خەزنکراوەوە بگەڕێنەوە
+  const platforms=c.platforms||{};
+  plChecked=PL_BTNS.map(b=>Object.prototype.hasOwnProperty.call(platforms,b.type));
+  if(!plChecked.some(Boolean))plChecked=[true,true,false,true,false,false];
+  PL_BTNS.forEach(b=>{b._val=platforms[b.type]||'';});
+  plRenderCb();
+  plRenderContacts();
+  plRenderBioChips(false);
+  plUpdateBioCount();
+
+  plStyle=c.style||'dark';
+  document.querySelectorAll('#plFormView .style-card').forEach(s=>s.classList.toggle('on',s.dataset.style===plStyle));
+  plTheme=c.color_theme||'purple';
+  document.querySelectorAll('.theme-dot').forEach(t=>t.classList.toggle('on',t.dataset.color===plTheme));
+
+  updatePLPreview();
+  document.getElementById('plFormView').scrollIntoView({behavior:'smooth',block:'start'});
+}
 function hidePLForm(){
   document.getElementById('plListView').style.display='block';
   document.getElementById('plFormView').style.display='none';
@@ -9287,7 +9334,7 @@ function hidePLForm(){
   _plGeneratedHTML='';
 }
 // ═══ PROXOLINK BUILDER ═══
-let plLogoB64='', plStyle='dark', plTheme='purple';
+let plLogoB64='', plStyle='dark', plTheme='purple', plEditingCardId=null;
 // ═══ PL CB-LIST DATA ═══
 const PL_BTNS=[
   {id:'wa', label:'واتسئاپ',    icon:'fab fa-whatsapp',  icCls:'pl-ic-wa', type:'whatsapp',  ph:'9647XXXXXXXXX', mode:'numeric'},
@@ -9614,8 +9661,54 @@ function plBackFromPreview(){
   if(iframe)iframe.src='';
 }
 
+// ═══ پاشەکەوتکردنی گۆڕانکاری تەواوی کەرەستەیەکی ئەنجامدراو (ستایل/بیۆ/دووگمەکان/وێنە...) ═══
+async function plSaveEditedCard(){
+  if(!_plGeneratedHTML){showToast('تکایە سەرەتا پێشبینی بکە','err');return;}
+  if(!cu?.id){showToast('تکایە دووبارە بچۆرە ژوورەوە','err');return;}
+  const id=plEditingCardId;
+  const tgBtn=document.getElementById('plTgBtn');
+  const tgSt=document.getElementById('plTgStatus');
+  if(tgBtn){tgBtn.disabled=true;tgBtn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i>پاشەکەوتکردن...';}
+
+  const name=document.getElementById('plBrandName').value.trim();
+  const bio=document.getElementById('plDesc')?.value.trim()||'';
+  const tt=document.getElementById('plTT')?.value.trim().replace(/^@/,'')||'';
+  const platforms=plGetPlatforms();
+
+  try{
+    const{data,error}=await sb.from('proxolink_cards')
+      .update({
+        name,bio:bio||null,tt:tt||null,platforms,
+        style:plStyle,color_theme:plTheme,
+        avatar_b64:plLogoB64||null,
+        html_content:_plGeneratedHTML,
+      })
+      .eq('id',id)
+      .eq('user_id',cu.id)
+      .select();
+    if(error)throw error;
+    if(!data||!data.length)throw new Error('نوێنەکرایەوە — تکایە دووبارە هەوڵبدەوە');
+
+    if(tgSt){tgSt.style.display='block';tgSt.style.background='rgba(22,163,74,.08)';tgSt.style.border='1px solid rgba(22,163,74,.2)';tgSt.style.color='var(--gr)';tgSt.textContent='کەرەستەکەت نوێکرایەوە!';}
+    if(tgBtn){tgBtn.innerHTML='<i class="fas fa-check"></i>نوێکرایەوە!';}
+
+    setTimeout(()=>{
+      plEditingCardId=null;
+      _plGeneratedHTML='';
+      document.getElementById('plPreviewView').style.display='none';
+      document.getElementById('plListView').style.display='block';
+      document.getElementById('plFormView').style.display='none';
+      loadProxoCards();
+    },1500);
+  }catch(e){
+    if(tgSt){tgSt.style.display='block';tgSt.style.background='rgba(220,38,38,.07)';tgSt.style.border='1px solid rgba(220,38,38,.2)';tgSt.style.color='var(--rd)';tgSt.textContent='هەڵەیەک ڕوویدا: '+e.message;}
+    if(tgBtn){tgBtn.disabled=false;tgBtn.innerHTML='<i class="fas fa-check"></i>پاشەکەوتکردنی گۆڕانکارییەکان';}
+  }
+}
+
 async function plSendToTg(){
   if(!_plGeneratedHTML){showToast('تکایە سەرەتا پێشبینی بکە','err');return;}
+  if(plEditingCardId){await plSaveEditedCard();return;}
   const tgBtn=document.getElementById('plTgBtn');
   const tgSt=document.getElementById('plTgStatus');
   if(tgBtn){tgBtn.disabled=true;tgBtn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i>ناردن...';}
@@ -9654,6 +9747,8 @@ async function plSendToTg(){
       await sb.from('proxolink_cards').insert({
         user_id:cu.id,name,
         bio:document.getElementById('plDesc')?.value.trim()||null,
+        tt:tt||null,
+        platforms:plGetPlatforms(),
         style:plStyle,color_theme:plTheme,
         avatar_b64:plLogoB64||null,
         html_content:_plGeneratedHTML,
@@ -10814,7 +10909,7 @@ function buildPLCardHTML(name, bio, tt, platforms, avatar, style, theme){
 }
 
 async function loadProxoCards(){
-  const{data}=await sb.from('proxolink_cards').select('id,name,style,color_theme,avatar_b64,card_number,html_content').eq('user_id',cu.id).order('created_at',{ascending:false});
+  const{data}=await sb.from('proxolink_cards').select('id,name,bio,tt,platforms,style,color_theme,avatar_b64,card_number,html_content').eq('user_id',cu.id).order('created_at',{ascending:false});
   const list=document.getElementById('proxoCardsList');
   if(!data?.length){
     list.innerHTML=`<div class="empty-box"><div class="empty-box-ico"><i class="fas fa-link"></i></div><h3>هیچ کەرەستەیەک نییە</h3><p>دووگمەی سەرەوە بکە بۆ دروستکردن</p></div>`;
@@ -10840,49 +10935,8 @@ async function loadProxoCards(){
   myCards=data;
 }
 
-// ═══ دەستکاریکردنی زانیاری پەیوەندی (کەرەستە) لەلایەن بەکارهێنەرەوە ═══
-function openEditProxoCard(id){
-  const c=myCards.find(x=>x.id===id);
-  if(!c)return;
-  document.getElementById('editProxoCardId').value=c.id;
-  document.getElementById('editProxoCardName').value=c.name||'';
-  document.getElementById('editProxoCardBio').value=c.bio||'';
-  document.getElementById('moEditProxoCard').classList.add('on');
-}
-
-async function saveProxoCardEdit(){
-  const id=document.getElementById('editProxoCardId').value;
-  const name=document.getElementById('editProxoCardName').value.trim();
-  const bio=document.getElementById('editProxoCardBio').value.trim();
-  if(!name){showToast('ناوی کارت بەتاڵ نەبێت','err');return;}
-  if(!cu?.id){showToast('تکایە دووبارە بچۆرە ژوورەوە','err');return;}
-
-  const btn=document.getElementById('editProxoCardSaveBtn');
-  if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> پاشەکەوتکردن...';}
-
-  try{
-    // eq('user_id', cu.id) زیادکراوە بۆ ئەوەی تەنها خاوەنی ڕاستەقینەی کارتەکە بتوانێت
-    // نوێی بکاتەوە، هاوسەنگ لەگەڵ یاسای RLS ی proxolink_cards.
-    const{data,error}=await sb.from('proxolink_cards')
-      .update({name,bio:bio||null})
-      .eq('id',id)
-      .eq('user_id',cu.id)
-      .select();
-    if(error)throw error;
-    if(!data||!data.length)throw new Error('نوێنەکرایەوە — تکایە دووبارە هەوڵبدەوە');
-
-    const c=myCards.find(x=>x.id===id);
-    if(c){c.name=name;c.bio=bio||null;}
-
-    document.getElementById('moEditProxoCard').classList.remove('on');
-    showToast('✅ زانیارییەکان نوێکرایەوە');
-    loadProxoCards();
-  }catch(e){
-    showToast('هەڵە: '+e.message,'err');
-  }finally{
-    if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-check"></i> پاشەکەوتکردن';}
-  }
-}
+// دەستکاریکردنی تەواوی کەرەستەیەک (ناو/بیۆ/تیکتۆک/دووگمەکان/ستایل/ڕەنگ/وێنە) لە
+// فۆرمی سەرەکی proxolink دەکرێت — بڕوانە openEditProxoCard() سەرەوە.
 
 function previewCard(id){
   const c=myCards.find(x=>x.id===id);
