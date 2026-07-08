@@ -4423,6 +4423,24 @@ function _toWebP(dataUrl,quality){
     </button>
   </div>
 </div>
+<!-- EDIT PROXO CARD (کەرەستەی پەیوەندی) -->
+<div class="mover" id="moEditProxoCard">
+  <div class="mbox">
+    <div class="mbar"></div>
+    <div class="mhdr">
+      <h3>دەستکاری کەرەستە</h3>
+      <button class="mclose" onclick="closeMo('moEditProxoCard')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <input type="hidden" id="editProxoCardId">
+    <div class="mlbl">ناوی کارت</div>
+    <input class="finp" style="margin-bottom:14px" type="text" id="editProxoCardName" placeholder="ناوی کارت">
+    <div class="mlbl">پێناسە (ئۆپشنی)</div>
+    <textarea class="finp" id="editProxoCardBio" placeholder="پێناسەی کارت..." rows="3" style="margin-bottom:14px;resize:vertical;min-height:70px;font-family:inherit"></textarea>
+    <button class="save-btn" id="editProxoCardSaveBtn" onclick="saveProxoCardEdit()">
+      <i class="fas fa-check"></i> پاشەکەوتکردن
+    </button>
+  </div>
+</div>
 <!-- UPDATE PROFILE -->
 <div class="mover" id="moUpdateProfile">
   <div class="mbox">
@@ -10814,11 +10832,56 @@ async function loadProxoCards(){
       </div>
       <div style="display:flex;gap:7px">
         ${c.html_content?`<div onclick="previewCard('${c.id}')" style="width:32px;height:32px;border-radius:10px;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:var(--mt)"><i class="fas fa-eye"></i></div>`:''}
+        <div onclick="openEditProxoCard('${c.id}')" style="width:32px;height:32px;border-radius:10px;background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.18);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:#2563eb"><i class="fas fa-pen"></i></div>
         <div onclick="deleteCard('${c.id}')" style="width:32px;height:32px;border-radius:10px;background:rgba(220,38,38,.06);border:1px solid rgba(220,38,38,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:var(--rd)"><i class="fas fa-trash"></i></div>
       </div>
     </div>`).join('');
   // کارتەکان لەگەڵ proxolink_cards sync بکە بۆ دروستکردنی ڕیکلام
   myCards=data;
+}
+
+// ═══ دەستکاریکردنی زانیاری پەیوەندی (کەرەستە) لەلایەن بەکارهێنەرەوە ═══
+function openEditProxoCard(id){
+  const c=myCards.find(x=>x.id===id);
+  if(!c)return;
+  document.getElementById('editProxoCardId').value=c.id;
+  document.getElementById('editProxoCardName').value=c.name||'';
+  document.getElementById('editProxoCardBio').value=c.bio||'';
+  document.getElementById('moEditProxoCard').classList.add('on');
+}
+
+async function saveProxoCardEdit(){
+  const id=document.getElementById('editProxoCardId').value;
+  const name=document.getElementById('editProxoCardName').value.trim();
+  const bio=document.getElementById('editProxoCardBio').value.trim();
+  if(!name){showToast('ناوی کارت بەتاڵ نەبێت','err');return;}
+  if(!cu?.id){showToast('تکایە دووبارە بچۆرە ژوورەوە','err');return;}
+
+  const btn=document.getElementById('editProxoCardSaveBtn');
+  if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> پاشەکەوتکردن...';}
+
+  try{
+    // eq('user_id', cu.id) زیادکراوە بۆ ئەوەی تەنها خاوەنی ڕاستەقینەی کارتەکە بتوانێت
+    // نوێی بکاتەوە، هاوسەنگ لەگەڵ یاسای RLS ی proxolink_cards.
+    const{data,error}=await sb.from('proxolink_cards')
+      .update({name,bio:bio||null})
+      .eq('id',id)
+      .eq('user_id',cu.id)
+      .select();
+    if(error)throw error;
+    if(!data||!data.length)throw new Error('نوێنەکرایەوە — تکایە دووبارە هەوڵبدەوە');
+
+    const c=myCards.find(x=>x.id===id);
+    if(c){c.name=name;c.bio=bio||null;}
+
+    document.getElementById('moEditProxoCard').classList.remove('on');
+    showToast('✅ زانیارییەکان نوێکرایەوە');
+    loadProxoCards();
+  }catch(e){
+    showToast('هەڵە: '+e.message,'err');
+  }finally{
+    if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-check"></i> پاشەکەوتکردن';}
+  }
 }
 
 function previewCard(id){

@@ -6614,8 +6614,16 @@ async function saveEditCard() {
     if (bio  !== undefined) upd.bio          = bio  || null;
     if (html !== undefined) upd.html_content = html || null;
 
-    const { error } = await sb.from('proxolink_cards').update(upd).eq('id', id);
+    // .select() لێرەدا پێویستە بۆ دڵنیابوون لەوەی ڕیزەکە ڕاستەقینە نوێکرایەوە.
+    // بەبێ ئەوە، ئەگەر یاسای RLS ڕێگری لە نوێکردنەوە بکات، Supabase هیچ هەڵەیەک
+    // ناگەڕێنێتەوە و پەیامی سەرکەوتن بە فێڵ نیشان دەدرێت کەچی هیچ لە داتابەیس
+    // نوێ نابێتەوە.
+    const { data, error } = await sb.from('proxolink_cards').update(upd).eq('id', id).select();
     if (error) { showToast('هەڵە: '+error.message,'rd'); return; }
+    if (!data || !data.length) {
+      showToast('❌ نوێنەکرایەوە — یاسای دەسەڵاتی داتابەیس (RLS) ڕێگری لێدەکات. پرۆفایلی ئەدمین پێویستە is_admin=true بێت و یاسای UPDATE بۆ proxolink_cards ئەم حاڵەتە قبوڵ بکات.','rd');
+      return;
+    }
 
     // نوێکردنەوەی local cache
     const m = _allMaterials.find(x => x.card.id === id);
