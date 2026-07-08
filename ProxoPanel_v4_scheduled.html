@@ -571,6 +571,13 @@ tr:hover td{background:rgba(28,35,51,.015);}
 .sb-notif-badge{position:absolute;top:50%;right:12px;transform:translateY(-50%);min-width:19px;height:19px;border-radius:10px;background:#dc2626;color:#fff;font-size:10px;font-weight:900;font-family:'Inter',sans-serif;display:none;align-items:center;justify-content:center;padding:0 4px;letter-spacing:-.3px;box-shadow:0 2px 6px rgba(220,38,38,.4);}
 .sb-notif-badge.show{display:flex;animation:sbBadgePop .3s cubic-bezier(.175,.885,.32,1.275);}
 @keyframes sbBadgePop{0%{transform:translateY(-50%) scale(0)}100%{transform:translateY(-50%) scale(1)}}
+/* ══ TOGGLE SWITCH ══ */
+.sw-label{position:relative;display:inline-block;width:46px;height:26px;flex-shrink:0;}
+.sw-label input{opacity:0;width:0;height:0;}
+.sw-slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#c8d0de;transition:.3s;border-radius:26px;}
+.sw-slider:before{position:absolute;content:"";height:20px;width:20px;left:3px;bottom:3px;background:#fff;transition:.3s;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.2);}
+.sw-label input:checked+.sw-slider{background:var(--gr);}
+.sw-label input:checked+.sw-slider:before{transform:translateX(20px);}
 </style>
 </head>
 <body>
@@ -632,6 +639,7 @@ tr:hover td{background:rgba(28,35,51,.015);}
     <div class="sb-item" onclick="goPage('revenue')"><i class="fas fa-chart-line" style="color:#16a34a"></i> داهاتی ڕیکلامەکان</div>
     <div class="sb-section">سیستەم</div>
     <div class="sb-item" onclick="goPage('maintenance')"><i class="fas fa-triangle-exclamation" style="color:#ef4444"></i> ڕاگرتنی پەڕەکە</div>
+    <div class="sb-item" onclick="goPage('appAnnouncement')"><i class="fas fa-bullhorn" style="color:#f59e0b"></i> ئاگاداری گشتی</div>
     <div class="sb-section">خەڵات</div>
     <div class="sb-item" onclick="goPage('giveaway')"><i class="fas fa-gift" style="color:#a855f7"></i> خەڵاتی هەفتانە</div>
     <div class="sb-section">فێرکاری</div>
@@ -985,6 +993,105 @@ tr:hover td{background:rgba(28,35,51,.015);}
           • ئەگەر کاتێک دانێیت، دوای تەواوبوونی کاتەکە پەڕەکە ئۆتۆماتیکی دەکرێتەوە<br>
           • ئادمینەکان دەتوانن هەمیشە بچنە ژوورەوە<br>
           • پاشماوەی کاتەکە بە تایمەر لەسەر پەڕەکەی بەکارهێنەر دیارە
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ APP ANNOUNCEMENT ══ -->
+    <div class="pg" id="pgAppAnnouncement">
+      <div class="sec-hdr">
+        <h3><i class="fas fa-bullhorn" style="margin-left:8px;color:#f59e0b"></i>ئاگاداری گشتی بۆ بەکارهێنەران</h3>
+      </div>
+
+      <!-- ── ئاگاداری / ئەپدەیت ── -->
+      <div style="background:var(--w);border:1.5px solid rgba(245,158,11,.2);border-radius:18px;padding:20px;margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
+          <div style="width:42px;height:42px;border-radius:13px;background:rgba(245,158,11,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <i class="fas fa-megaphone" style="color:#f59e0b;font-size:18px"></i>
+          </div>
+          <div>
+            <div style="font-size:15px;font-weight:800;color:var(--dark)">ناردنی ئاگاداری / ئەپدەیت</div>
+            <div style="font-size:11.5px;color:var(--mt);margin-top:2px">دەردەکەوێت لە سەرەوەی پەڕەی سەرەکی بۆ هەموو بەکارهێنەران</div>
+          </div>
+        </div>
+
+        <!-- toggle -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--bg);border:1.5px solid var(--b1);border-radius:13px;margin-bottom:14px">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--dark)">چالاکی ئاگاداری</div>
+            <div style="font-size:11px;color:var(--mt);margin-top:2px" id="annStatusLbl">ئاگاداری ئێستا ناچالاکە</div>
+          </div>
+          <label class="sw-label">
+            <input type="checkbox" id="annActiveChk" onchange="toggleAnnActive(this)">
+            <span class="sw-slider"></span>
+          </label>
+        </div>
+
+        <label class="modal-lbl" style="margin-top:0">ناونیشانی ئاگاداری <span style="color:var(--rd)">*</span></label>
+        <input class="minp" type="text" id="annTitle" placeholder="بۆ نموونە: تازەکاری نوێ 🎉">
+
+        <label class="modal-lbl">دەقی ئاگاداری</label>
+        <textarea class="minp mta" id="annBody" placeholder="تێکستی ئاگاداری بنووسە..." style="min-height:80px"></textarea>
+
+        <label class="modal-lbl">وێنەی ئاگاداری <span style="font-size:10px;color:var(--mt)">(ئارەزووکاری — 16:9 باشترە)</span></label>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+          <label style="flex:1;padding:12px 14px;background:var(--bg);border:1.5px dashed var(--b2);border-radius:12px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mt2);font-weight:600" id="annImgLabel">
+            <i class="fas fa-cloud-upload-alt" style="font-size:16px;color:#f59e0b"></i>
+            <span id="annImgTxt">کلیک بکە بۆ هەڵبژاردنی وێنە</span>
+            <input type="file" accept="image/*" id="annImgInp" style="display:none" onchange="annImgChange(this)">
+          </label>
+          <div id="annImgThumb" style="display:none;width:60px;height:34px;border-radius:8px;overflow:hidden;flex-shrink:0;border:1px solid var(--b1)">
+            <img id="annImgThumbImg" src="" style="width:100%;height:100%;object-fit:cover">
+          </div>
+          <div id="annImgClearBtn" style="display:none;width:34px;height:34px;border-radius:8px;background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);color:var(--rd);display:none;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0" onclick="annClearImg()">
+            <i class="fas fa-xmark"></i>
+          </div>
+        </div>
+        <div id="annImgPreviewWrap" style="display:none;border-radius:14px;overflow:hidden;aspect-ratio:16/9;position:relative;background:var(--bg);border:1px solid var(--b1);margin-bottom:12px">
+          <img id="annImgPreviewImg" src="" style="width:100%;height:100%;object-fit:cover;display:block">
+        </div>
+
+        <button class="modal-btn dark" onclick="saveAppAnnouncement()" style="margin-top:4px;width:100%">
+          <i class="fas fa-save"></i> پاشەکەوتکردن و بڵاوکردنەوە
+        </button>
+        <div id="annMsg" style="display:none;margin-top:10px;padding:9px 12px;border-radius:10px;font-size:12.5px;font-weight:600"></div>
+      </div>
+
+      <!-- ── پێویستی ژمارەی مۆبایل ── -->
+      <div style="background:var(--w);border:1.5px solid rgba(37,99,235,.2);border-radius:18px;padding:20px;margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+          <div style="width:42px;height:42px;border-radius:13px;background:rgba(37,99,235,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <i class="fas fa-mobile-screen" style="color:var(--bl);font-size:18px"></i>
+          </div>
+          <div>
+            <div style="font-size:15px;font-weight:800;color:var(--dark)">پێویستی ژمارەی مۆبایل</div>
+            <div style="font-size:11.5px;color:var(--mt);margin-top:2px">کاتێک چالاک بکرێت بەکارهێنەرانی بێ ژمارە ناتوانن پەڕەکە بەکاربهێنن تا ژمارەیان بنووسن</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--bg);border:1.5px solid var(--b1);border-radius:13px;margin-bottom:14px">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--dark)">پێویستی ژمارەی مۆبایل</div>
+            <div style="font-size:11px;color:var(--mt);margin-top:2px" id="phoneReqStatusLbl">ئێستا ناچالاکە</div>
+          </div>
+          <label class="sw-label">
+            <input type="checkbox" id="phoneReqChk" onchange="savePhoneRequired(this)">
+            <span class="sw-slider"></span>
+          </label>
+        </div>
+        <div class="info-box" style="margin-top:0;border-right-color:var(--bl)">
+          <i class="fas fa-info-circle" style="margin-left:6px;color:var(--bl)"></i>
+          بەکارهێنەرانی کە پێشتر ژمارەیان داوە کاریانپێ نابێت — تەنها بەکارهێنەرانی تازە یان ئەوانەی ژمارەی نەداوە بەستراون.
+        </div>
+      </div>
+
+      <!-- ── ژمارەی بەکارهێنەران بەبێ ژمارەی مۆبایل ── -->
+      <div style="background:var(--w);border:1px solid var(--b1);border-radius:18px;padding:20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <div style="font-size:14px;font-weight:800;color:var(--dark)"><i class="fas fa-users" style="margin-left:8px;color:var(--mt)"></i>بەکارهێنەران بەبێ ژمارەی مۆبایل (<span id="noPhoneCount">—</span>)</div>
+          <div class="act-btn dark" onclick="loadNoPhoneUsers()" style="font-size:12px"><i class="fas fa-rotate-right"></i> نوێکردنەوە</div>
+        </div>
+        <div id="noPhoneList">
+          <div class="empty"><i class="fas fa-mobile-alt"></i><p>کلیک بکە لەسەر نوێکردنەوە</p></div>
         </div>
       </div>
     </div>
@@ -1477,6 +1584,8 @@ tr:hover td{background:rgba(28,35,51,.015);}
     <input class="minp" type="text" id="editUserName" placeholder="ناو">
     <label class="modal-lbl">ئیمەیل</label>
     <input class="minp" type="email" id="editUserEmail" placeholder="ئیمەیل" dir="ltr">
+    <label class="modal-lbl">ژمارەی مۆبایل <span style="font-size:10px;color:var(--mt)">(ئۆپشنی)</span></label>
+    <input class="minp" type="tel" id="editUserPhone" placeholder="07xxxxxxxxx" dir="ltr" style="font-family:'Inter',sans-serif">
     <label class="modal-lbl">پاسۆردی نوێ (ئەگەر دەتەوێت بیگۆڕیت)</label>
     <input class="minp" type="password" id="editUserPass" placeholder="پاسۆردی نوێ" dir="ltr">
     <button class="modal-btn dark" onclick="saveEditUser()"><i class="fas fa-check"></i> پاشەکەوتکردن</button>
@@ -1840,6 +1949,7 @@ const pageConfig={
   requests:{title:'داواکاریەکانی جزدان',sub:'داواکاریەکانی بارکردن و کەمکردنی باڵانس (Firebase)'},
   revenue:{title:'داهاتی ڕیکلامەکان',sub:'پیوانەی داهات، تێچوو و قازانجی ڕیکلامەکان',load:loadRevenue},
   maintenance:{title:'ڕاگرتنی پەڕەکە',sub:'کردنەوە و داخستنی ئەپلیکەیشن بۆ بەکارهێنەران',load:loadMaintenance},
+  appAnnouncement:{title:'ئاگاداری گشتی',sub:'ئاگاداری و ئەپدەیت بۆ هەموو بەکارهێنەران',load:loadAppAnnouncement},
   tutorials:{title:'فێرکارییەکان',sub:'زیادکردن و بەڕێوەبردنی ڤیدیۆکانی فێرکاری',load:loadTutorials},
 };
 
@@ -1950,6 +2060,7 @@ function setupRealtime(){
     })
     .on('postgres_changes',{event:'*',schema:'public',table:'pa_settings'},()=>{
       if(_curPage==='version')loadVersion();
+      if(_curPage==='appAnnouncement')loadAppAnnouncement();
     })
     .on('postgres_changes',{event:'*',schema:'public',table:'pa_support'},()=>{
       if(_curPage==='support'){loadSupportUsers();}
@@ -2196,6 +2307,7 @@ async function showUserDetail(uid){
     <div class="detail-row"><span class="lbl">کۆین</span><span class="val" style="color:#d97706">${parseInt(u.pa_coins?.coins_balance||0).toLocaleString()}</span></div>
     <div class="detail-row"><span class="lbl">باری ئەکاونت</span><span class="val"><span class="badge ${u.is_banned?'banned':'approved'}">${u.is_banned?'بانکراو':'چالاک'}</span></span></div>
     <div class="detail-row"><span class="lbl">بەرواری تۆمارکردن</span><span class="val">${new Date(u.created_at).toLocaleDateString('ku')}</span></div>
+    <div class="detail-row"><span class="lbl">ژمارەی مۆبایل</span><span class="val" style="font-family:'Inter',sans-serif;direction:ltr">${u.phone||'<span style=\"color:var(--rd);font-size:11px\">نەداوە</span>'}</span></div>
     <div class="detail-row"><span class="lbl">User ID</span><span class="val" style="font-family:monospace;font-size:10px">${u.id}</span></div>
     ${ads?.length?`<div class="sep"></div><div style="font-size:12px;font-weight:700;color:var(--mt);margin-bottom:8px">دواترین ڕیکلامەکان</div>${ads.map(a=>`<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:12px;border-bottom:1px solid var(--b1)"><span>#${a.ad_number} — ${a.title}</span><span class="badge ${a.status}">${statusKu(a.status)}</span></div>`).join('')}`:''}
     ${txs?.length?`<div class="sep"></div><div style="font-size:12px;font-weight:700;color:var(--mt);margin-bottom:8px">دواترین مامەڵەکان</div>${txs.map(t=>`<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:12px;border-bottom:1px solid var(--b1)"><span>${Math.round(parseFloat(t.amount)*1800).toLocaleString()} IQD — ${t.method||'—'}</span><span class="badge ${t.status}">${statusKu(t.status)}</span></div>`).join('')}`:''}
@@ -2228,6 +2340,7 @@ function openEditUser(u){
   document.getElementById('editUserId').value=u.id;
   document.getElementById('editUserName').value=u.full_name||'';
   document.getElementById('editUserEmail').value=u.email||'';
+  document.getElementById('editUserPhone').value=u.phone||'';
   document.getElementById('editUserPass').value='';
   openMo('moEditUser');
 }
@@ -2235,9 +2348,12 @@ function openEditUser(u){
 async function saveEditUser(){
   const id=document.getElementById('editUserId').value;
   const name=document.getElementById('editUserName').value.trim();
+  const phone=document.getElementById('editUserPhone').value.trim();
   const pass=document.getElementById('editUserPass').value;
   if(!name){showToast('ناو پڕ بکەرەوە','rd');return;}
-  const{error}=await sb.from('profiles').update({full_name:name}).eq('id',id);
+  const upd={full_name:name};
+  if(phone) upd.phone=phone;
+  const{error}=await sb.from('profiles').update(upd).eq('id',id);
   if(error){showToast('هەڵە: '+error.message,'rd');return;}
   showToast('✅ پرۆفایل نوێکرایەوە','gr');
   _fbTriggerProfile(id);
@@ -6164,6 +6280,123 @@ async function deleteTutorial(id, title) {
 }
 
 // ════════════════════════════════════════════════════════
+
+// ════════════════════════════════════════════════════════════
+// ═══ APP ANNOUNCEMENT & PHONE REQUIRED ═══════════════════
+// ════════════════════════════════════════════════════════════
+let _annImgB64 = null;
+
+function annImgChange(inp) {
+  const f = inp.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = e => {
+    _annImgB64 = e.target.result;
+    document.getElementById('annImgTxt').textContent = f.name.substring(0,30);
+    document.getElementById('annImgThumbImg').src = _annImgB64;
+    document.getElementById('annImgThumb').style.display = 'block';
+    document.getElementById('annImgClearBtn').style.display = 'flex';
+    document.getElementById('annImgPreviewImg').src = _annImgB64;
+    document.getElementById('annImgPreviewWrap').style.display = 'block';
+  };
+  r.readAsDataURL(f);
+}
+
+function annClearImg() {
+  _annImgB64 = null;
+  document.getElementById('annImgTxt').textContent = 'کلیک بکە بۆ هەڵبژاردنی وێنە';
+  document.getElementById('annImgThumb').style.display = 'none';
+  document.getElementById('annImgClearBtn').style.display = 'none';
+  document.getElementById('annImgPreviewWrap').style.display = 'none';
+  document.getElementById('annImgInp').value = '';
+}
+
+async function loadAppAnnouncement() {
+  try {
+    // بارکردنی ئاگاداری
+    const {data: annRow} = await sb.from('pa_settings').select('value').eq('key','app_announcement').single();
+    if (annRow?.value) {
+      try {
+        const ann = JSON.parse(annRow.value);
+        document.getElementById('annTitle').value = ann.title || '';
+        document.getElementById('annBody').value = ann.body || '';
+        document.getElementById('annActiveChk').checked = !!ann.active;
+        document.getElementById('annStatusLbl').textContent = ann.active ? 'ئاگاداری ئێستا چالاکە ✅' : 'ئاگاداری ئێستا ناچالاکە';
+        if (ann.image) {
+          _annImgB64 = ann.image;
+          document.getElementById('annImgTxt').textContent = 'وێنە هەڵبژێردراوە ✓';
+          document.getElementById('annImgThumbImg').src = ann.image;
+          document.getElementById('annImgThumb').style.display = 'block';
+          document.getElementById('annImgClearBtn').style.display = 'flex';
+          document.getElementById('annImgPreviewImg').src = ann.image;
+          document.getElementById('annImgPreviewWrap').style.display = 'block';
+        }
+      } catch(_) {}
+    }
+    // بارکردنی phone_required
+    const {data: phoneRow} = await sb.from('pa_settings').select('value').eq('key','phone_required').single();
+    const isRequired = phoneRow?.value === 'true';
+    document.getElementById('phoneReqChk').checked = isRequired;
+    document.getElementById('phoneReqStatusLbl').textContent = isRequired ? 'چالاکە — بەکارهێنەرانی بێ ژمارە بەستراون ✅' : 'ئێستا ناچالاکە';
+    // بارکردنی ژمارەی بەکارهێنەران بەبێ ژمارەی مۆبایل
+    loadNoPhoneUsers();
+  } catch(e) { console.warn('loadAppAnnouncement', e); }
+}
+
+async function toggleAnnActive(chk) {
+  document.getElementById('annStatusLbl').textContent = chk.checked ? 'ئاگاداری ئێستا چالاکە ✅' : 'ئاگاداری ئێستا ناچالاکە';
+}
+
+async function saveAppAnnouncement() {
+  const title = document.getElementById('annTitle').value.trim();
+  const body = document.getElementById('annBody').value.trim();
+  const active = document.getElementById('annActiveChk').checked;
+  const msgEl = document.getElementById('annMsg');
+  if (!title) { showToast('ناونیشان پڕ بکەرەوە','rd'); return; }
+  const payload = { title, body, active, timestamp: Date.now() };
+  if (_annImgB64) payload.image = _annImgB64;
+  const val = JSON.stringify(payload);
+  const btn = document.querySelector('[onclick="saveAppAnnouncement()"]');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> پاشەکەوتکردن...'; }
+  try {
+    // upsert بە key
+    const {error} = await sb.from('pa_settings').upsert({key:'app_announcement',value:val},{onConflict:'key'});
+    if (error) { showToast('هەڵە: '+error.message,'rd'); return; }
+    msgEl.style.cssText = 'display:block;background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.2);color:var(--gr)';
+    msgEl.textContent = active ? '✅ ئاگاداری بڵاوکرایەوە — بەکارهێنەران یەکسەر دەیبینن' : '✅ پاشەکەوتکرا (ناچالاک)';
+    showToast(active ? '✅ ئاگاداری چالاک بوو' : '✅ پاشەکەوتکرا','gr');
+    setTimeout(()=>{ msgEl.style.display='none'; }, 3000);
+  } catch(e) { showToast('هەڵە: '+e.message,'rd'); }
+  finally { if (btn) { btn.disabled=false; btn.innerHTML='<i class="fas fa-save"></i> پاشەکەوتکردن و بڵاوکردنەوە'; } }
+}
+
+async function savePhoneRequired(chk) {
+  const isOn = chk.checked;
+  try {
+    const {error} = await sb.from('pa_settings').upsert({key:'phone_required',value:isOn?'true':'false'},{onConflict:'key'});
+    if (error) { showToast('هەڵە: '+error.message,'rd'); chk.checked=!isOn; return; }
+    document.getElementById('phoneReqStatusLbl').textContent = isOn ? 'چالاکە — بەکارهێنەرانی بێ ژمارە بەستراون ✅' : 'ئێستا ناچالاکە';
+    showToast(isOn ? '✅ پێویستی ژمارەی مۆبایل چالاک بوو' : '✅ پێویستی ژمارەی مۆبایل ناچالاک بوو','gr');
+  } catch(e) { showToast('هەڵە: '+e.message,'rd'); chk.checked=!isOn; }
+}
+
+async function loadNoPhoneUsers() {
+  const listEl = document.getElementById('noPhoneList');
+  const countEl = document.getElementById('noPhoneCount');
+  listEl.innerHTML = '<div style="text-align:center;padding:16px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin"></i></div>';
+  try {
+    const {data,error} = await sb.from('profiles').select('id,full_name,email,phone').is('phone',null).order('created_at',{ascending:false}).limit(50);
+    if (error) { listEl.innerHTML='<div class="empty"><i class="fas fa-exclamation-circle"></i><p>هەڵە: '+error.message+'</p></div>'; return; }
+    // هەروەها ئەوانەی phone رووناکی (empty string) ← بەکاربهێنە
+    const {data:emptyPhone} = await sb.from('profiles').select('id,full_name,email,phone').eq('phone','').order('created_at',{ascending:false}).limit(50);
+    const combined = [...(data||[]), ...(emptyPhone||[])];
+    const unique = [...new Map(combined.map(u=>[u.id,u])).values()];
+    countEl.textContent = unique.length;
+    if (!unique.length) { listEl.innerHTML='<div class="empty"><i class="fas fa-check-circle" style="color:var(--gr)"></i><p>هەموو بەکارهێنەران ژمارەی مۆبایلیان داوە</p></div>'; return; }
+    listEl.innerHTML = '<div class="tbl-scroll"><table><thead><tr><th>#</th><th>بەکارهێنەر</th><th>ئیمەیل</th></tr></thead><tbody>'+
+      unique.map((u,i)=>`<tr><td style="color:var(--mt);font-size:11px">${i+1}</td><td><div class="user-cell"><div class="mini-av">${(u.full_name||u.email||'?')[0].toUpperCase()}</div><div class="user-cell-name">${u.full_name||'بێ ناو'}</div></div></td><td class="user-cell-email">${u.email||'—'}</td></tr>`).join('')+
+      '</tbody></table></div>';
+  } catch(e) { listEl.innerHTML='<div class="empty"><i class="fas fa-exclamation-circle"></i><p>هەڵە ڕووی دا</p></div>'; }
+}
 </script>
 
 <!-- ══ ADMIN LIVE CHAT — FULLSCREEN OVERLAY ══ -->
