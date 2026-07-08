@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>ئامرازەکان | Proxo</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap">
+<style>
+@font-face{font-family:'R';src:url('https://raw.githubusercontent.com/Zana-Sponsor/Zana-Sponsor/main/Rabar_021.woff2') format('woff2');}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{--bg:#f4f6fb;--w:#fff;--b1:#e8eaf0;--b2:#d0d4de;--dark:#1c2333;--dark2:#2e3a50;--gr:#16a34a;--rd:#dc2626;--yw:#d97706;--bl:#2563eb;--mt:#8b95a8;--mt2:#6b7585;--tx:#1c2333;}
+body{font-family:'R',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;padding-bottom:90px;}
+/* TOPBAR */
+.topbar{padding:10px 14px;background:var(--w);border-bottom:1px solid var(--b1);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;position:sticky;top:0;z-index:200;gap:8px;}
+.topbar-left{display:flex;align-items:center;}
+.topbar-center{display:flex;justify-content:center;}
+.topbar-right-col{display:flex;align-items:center;justify-content:flex-end;gap:6px;}
+.ham-btn-v2{width:34px;height:34px;border-radius:10px;background:var(--dark);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:14px;}
+.notif-btn{width:34px;height:34px;border-radius:10px;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--dark);}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+/* PAGE */
+.pg{padding:20px;animation:fu .22s ease;}
+.pg-title{font-size:24px;font-weight:900;color:var(--dark);}
+.slbl{font-size:11px;font-weight:700;color:var(--mt);letter-spacing:.6px;margin:18px 0 10px;text-transform:uppercase;}
+/* TOOL CATEGORY TABS */
+.tool-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;scrollbar-width:none;}
+.tool-tabs::-webkit-scrollbar{display:none;}
+.ttab{padding:8px 16px;border-radius:20px;font-family:'R',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid var(--b1);background:var(--w);color:var(--mt2);white-space:nowrap;flex-shrink:0;transition:all .18s;}
+.ttab.on{background:var(--dark);color:#fff;border-color:var(--dark);}
+/* PROXO CARD */
+.proxo-card{background:var(--w);border:1.5px solid var(--b1);border-radius:20px;padding:16px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.04);}
+.proxo-card-head{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.proxo-card-ico{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;flex-shrink:0;}
+.proxo-card-ico.wa{background:linear-gradient(135deg,#25D366,#128C7E);}
+.proxo-card-ico.ig{background:linear-gradient(135deg,#E1306C,#833AB4);}
+.proxo-card-ico.ph{background:linear-gradient(135deg,#2563eb,#1d4ed8);}
+.proxo-card-ico.tg{background:linear-gradient(135deg,#229ED9,#0088cc);}
+.proxo-card-ico.tt{background:linear-gradient(135deg,#000,#111);}
+.proxo-card-ico.lk{background:linear-gradient(135deg,#6366f1,#8b5cf6);}
+.proxo-card-name{font-size:14px;font-weight:800;color:var(--dark);}
+.proxo-card-type{font-size:11px;color:var(--mt);margin-top:2px;}
+.proxo-card-val{background:var(--bg);border:1px solid var(--b1);border-radius:10px;padding:8px 12px;font-size:12px;color:var(--dark2);direction:ltr;text-align:left;font-family:monospace;margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.proxo-card-actions{display:flex;gap:6px;justify-content:flex-end;}
+.pc-btn{padding:7px 14px;border-radius:10px;font-family:'R',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border:none;display:flex;align-items:center;gap:5px;transition:opacity .15s;}
+.pc-btn:active{opacity:.8;}
+.pc-btn.copy{background:var(--dark);color:#fff;}
+.pc-btn.del{background:rgba(220,38,38,.07);color:var(--rd);border:1px solid rgba(220,38,38,.15);}
+/* NEW ASSET BTN */
+.proxo-create-btn{width:100%;padding:15px;background:var(--dark);color:#fff;border:none;border-radius:16px;font-family:'R',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:18px;box-shadow:0 4px 16px rgba(28,35,51,.18);}
+.proxo-create-btn:active{opacity:.9;}
+/* TOAST */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(14px);padding:11px 18px;border-radius:50px;font-size:13px;display:none;z-index:9999;opacity:0;transition:opacity .22s,transform .22s;background:#1c2333;color:#fff;box-shadow:0 8px 28px rgba(28,35,51,.35);align-items:center;gap:7px;white-space:nowrap;max-width:88vw;font-weight:600;}
+.toast.show{display:flex;opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.ok{background:#16a34a;}
+/* BNAV */
+.bnav{position:fixed;bottom:14px;left:14px;right:14px;background:rgba(255,255,255,.98);border-radius:32px;display:flex;z-index:300;box-shadow:0 6px 32px rgba(0,0,0,.13);}
+.bnav-inner{display:flex;max-width:500px;margin:0 auto;align-items:center;padding:6px 4px;width:100%;}
+.bn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 2px;border:none;background:transparent;color:#9ba5b7;font-family:'R',sans-serif;font-size:9.5px;cursor:pointer;}
+.bn.on{color:#1c2333;}
+.bn-pip{width:44px;height:34px;border-radius:17px;display:flex;align-items:center;justify-content:center;}
+.bn.on .bn-pip{background:rgba(28,35,51,.08);}
+.bn i{font-size:20px;}
+.bn-lbl{font-weight:600;margin-top:1px;}
+.bn-fab-col{flex:1;display:flex;justify-content:center;align-items:center;}
+.bn-fab{background:#1c2333;border-radius:50%;width:54px;height:54px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(28,35,51,.35);cursor:pointer;}
+.bn-fab i{font-size:22px;color:#fff;}
+/* EMPTY */
+.empty-state{text-align:center;padding:40px 20px;color:var(--mt);}
+.empty-state i{font-size:42px;display:block;margin-bottom:12px;color:var(--b2);}
+.empty-state p{font-size:14px;font-weight:700;}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<div class="topbar">
+  <div class="topbar-left"><div class="ham-btn-v2"><i class="fas fa-bars"></i></div></div>
+  <div class="topbar-center"><span style="font-size:28px;font-weight:900;color:#0E78FF;font-family:'Inter',sans-serif;letter-spacing:-.8px">Proxo</span></div>
+  <div class="topbar-right-col"><div class="notif-btn"><i class="fas fa-bell" style="font-size:15px"></i></div></div>
+</div>
+
+<div class="pg">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+    <div class="pg-title">ئامرازەکان</div>
+  </div>
+
+  <!-- CATEGORY TABS -->
+  <div class="tool-tabs">
+    <div class="ttab on" onclick="filterTools('all',this)">هەموو</div>
+    <div class="ttab" onclick="filterTools('wa',this)"><i class="fab fa-whatsapp" style="color:#25D366"></i> واتسئاپ</div>
+    <div class="ttab" onclick="filterTools('tg',this)"><i class="fab fa-telegram" style="color:#229ED9"></i> تێلێگرام</div>
+    <div class="ttab" onclick="filterTools('ig',this)"><i class="fab fa-instagram" style="color:#E1306C"></i> ئینستاگرام</div>
+    <div class="ttab" onclick="filterTools('ph',this)"><i class="fas fa-phone" style="color:#2563eb"></i> تەلەفۆن</div>
+  </div>
+
+  <!-- CREATE NEW -->
+  <button class="proxo-create-btn" onclick="showCreateForm()">
+    <i class="fas fa-plus"></i> دروستکردنی کەرەستەی نوێ
+  </button>
+
+  <!-- LIST -->
+  <div class="slbl">کەرەستەکانت</div>
+  <div id="toolList">
+
+    <div class="proxo-card" data-type="wa">
+      <div class="proxo-card-head">
+        <div class="proxo-card-ico wa"><i class="fab fa-whatsapp"></i></div>
+        <div>
+          <div class="proxo-card-name">فرۆشگای کچینە</div>
+          <div class="proxo-card-type">واتسئاپ</div>
+        </div>
+      </div>
+      <div class="proxo-card-val">+964 750 000 0000</div>
+      <div class="proxo-card-actions">
+        <button class="pc-btn copy" data-copy="+964 750 000 0000"><i class="fas fa-copy"></i> کۆپی</button>
+        <button class="pc-btn del"><i class="fas fa-trash"></i> سڕینەوە</button>
+      </div>
+    </div>
+
+    <div class="proxo-card" data-type="tg">
+      <div class="proxo-card-head">
+        <div class="proxo-card-ico tg"><i class="fab fa-telegram"></i></div>
+        <div>
+          <div class="proxo-card-name">چەنەڵی تێلێگرام</div>
+          <div class="proxo-card-type">تێلێگرام</div>
+        </div>
+      </div>
+      <div class="proxo-card-val">t.me/my_channel</div>
+      <div class="proxo-card-actions">
+        <button class="pc-btn copy" data-copy="t.me/my_channel"><i class="fas fa-copy"></i> کۆپی</button>
+        <button class="pc-btn del"><i class="fas fa-trash"></i> سڕینەوە</button>
+      </div>
+    </div>
+
+    <div class="proxo-card" data-type="ig">
+      <div class="proxo-card-head">
+        <div class="proxo-card-ico ig"><i class="fab fa-instagram"></i></div>
+        <div>
+          <div class="proxo-card-name">پەیجی ئینستاگرام</div>
+          <div class="proxo-card-type">ئینستاگرام</div>
+        </div>
+      </div>
+      <div class="proxo-card-val">instagram.com/mypage</div>
+      <div class="proxo-card-actions">
+        <button class="pc-btn copy" data-copy="instagram.com/mypage"><i class="fas fa-copy"></i> کۆپی</button>
+        <button class="pc-btn del"><i class="fas fa-trash"></i> سڕینەوە</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- BNAV -->
+<div class="bnav">
+  <div class="bnav-inner">
+    <button class="bn"><div class="bn-pip"><i class="fas fa-house"></i></div><span class="bn-lbl">سەرەتا</span></button>
+    <button class="bn"><div class="bn-pip"><i class="fas fa-bullhorn"></i></div><span class="bn-lbl">ڕیکلامەکان</span></button>
+    <div class="bn-fab-col"><div class="bn-fab"><i class="fas fa-plus"></i></div></div>
+    <button class="bn on"><div class="bn-pip"><i class="fas fa-toolbox"></i></div><span class="bn-lbl">ئامرازەکان</span></button>
+    <button class="bn"><div class="bn-pip"><i class="fas fa-user-circle"></i></div><span class="bn-lbl">پرۆفایل</span></button>
+  </div>
+</div>
+
+<script>
+function showToast(m,c){
+  var t=document.getElementById('toast');
+  t.textContent=m;
+  t.className='toast show'+(c?' '+c:'');
+  clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show');},2800);
+}
+
+// Filter
+function filterTools(type,btn){
+  document.querySelectorAll('.ttab').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  document.querySelectorAll('.proxo-card').forEach(function(c){
+    c.style.display=(type==='all'||c.dataset.type===type)?'block':'none';
+  });
+}
+
+// Copy — safe, using data attribute
+document.getElementById('toolList').addEventListener('click',function(e){
+  var copyBtn=e.target.closest('.pc-btn.copy');
+  var delBtn=e.target.closest('.pc-btn.del');
+  if(copyBtn){
+    var val=copyBtn.dataset.copy||'';
+    if(navigator.clipboard&&window.isSecureContext){
+      navigator.clipboard.writeText(val).then(function(){showToast('کۆپی کرا ✓','ok');}).catch(function(){showToast('لینک: '+val,'');});
+    }else{
+      var ta=document.createElement('textarea');ta.value=val;ta.style.cssText='position:fixed;top:-9999px;opacity:0';
+      document.body.appendChild(ta);ta.focus();ta.select();
+      try{document.execCommand('copy');showToast('کۆپی کرا ✓','ok');}catch(ex){showToast('لینک: '+val,'');}
+      document.body.removeChild(ta);
+    }
+  }
+  if(delBtn){
+    var card=delBtn.closest('.proxo-card');
+    if(card){card.style.opacity='0';card.style.transform='translateX(10px)';card.style.transition='all .25s';setTimeout(function(){card.remove();showToast('سڕایەوە','');},250);}
+  }
+});
+
+function showCreateForm(){
+  showToast('بۆ دروستکردنی کەرەستە → فایلی ٠٦ بکەوە','');
+}
+</script>
+</body>
+</html>

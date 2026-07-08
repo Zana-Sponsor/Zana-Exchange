@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>دروستکردنی کەرەستە | Proxo</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap">
+<style>
+@font-face{font-family:'R';src:url('https://raw.githubusercontent.com/Zana-Sponsor/Zana-Sponsor/main/Rabar_021.woff2') format('woff2');}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{--bg:#f4f6fb;--w:#fff;--b1:#e8eaf0;--b2:#d0d4de;--dark:#1c2333;--dark2:#2e3a50;--gr:#16a34a;--rd:#dc2626;--yw:#d97706;--bl:#2563eb;--mt:#8b95a8;--mt2:#6b7585;--tx:#1c2333;}
+body{font-family:'R',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;padding-bottom:90px;}
+[dir=ltr],input[type=url]{font-family:'Inter',sans-serif!important;}
+.topbar{padding:10px 14px;background:var(--w);border-bottom:1px solid var(--b1);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;position:sticky;top:0;z-index:200;gap:8px;}
+.topbar-left{display:flex;align-items:center;}.topbar-center{display:flex;justify-content:center;}.topbar-right-col{display:flex;align-items:center;justify-content:flex-end;gap:6px;}
+.ham-btn-v2{width:34px;height:34px;border-radius:10px;background:var(--dark);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:14px;}
+.notif-btn{width:34px;height:34px;border-radius:10px;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--dark);}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.pg{padding:20px;animation:fu .22s ease;}
+.pg-title{font-size:24px;font-weight:900;color:var(--dark);margin-bottom:18px;}
+/* PLFORM */
+.plform{background:var(--w);border-radius:22px;padding:20px 18px;margin-bottom:12px;box-shadow:0 2px 14px rgba(28,35,51,.06);}
+.plform-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--b1);}
+.plform-hdr h2{font-size:16px;font-weight:900;color:var(--dark);}
+.plform-lbl{font-size:11.5px;font-weight:700;color:var(--mt2);margin-bottom:7px;margin-top:14px;}
+/* LOGO UPLOAD */
+.logo-upload{width:100%;border:2px dashed var(--b2);border-radius:16px;padding:22px 12px;text-align:center;cursor:pointer;color:var(--mt);font-size:13px;font-weight:600;transition:all .2s;background:var(--bg);}
+.logo-upload:hover{border-color:var(--dark);color:var(--dark);background:rgba(28,35,51,.02);}
+.logo-upload-ico{width:52px;height:52px;border-radius:16px;background:var(--bg);border:1.5px solid var(--b1);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--mt);margin:0 auto 10px;}
+.logo-upload b{display:block;margin-bottom:4px;color:var(--dark);}
+.logo-upload span{font-size:11px;}
+.logo-preview{width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--w);box-shadow:0 4px 16px rgba(28,35,51,.15);margin:0 auto 10px;display:block;}
+/* INPUT */
+.pl-inp{width:100%;padding:13px 15px;background:var(--bg);border:1.5px solid var(--b1);border-radius:13px;color:var(--dark);font-family:'R',sans-serif;font-size:15px;outline:none;transition:all .2s;margin-bottom:4px;box-sizing:border-box;}
+.pl-inp:focus{border-color:var(--dark);background:var(--w);box-shadow:0 0 0 3px rgba(28,35,51,.07);}
+.pl-inp::placeholder{color:var(--mt);}
+.pl-ta{resize:none;height:80px;line-height:1.6;}
+.pl-bio-meta{display:flex;justify-content:space-between;font-size:10.5px;color:var(--mt);margin-bottom:8px;}
+/* ERROR */
+.pl-field-err{display:none;align-items:center;gap:6px;font-size:11.5px;color:var(--rd);margin:3px 0 6px;padding:7px 10px;background:rgba(220,38,38,.05);border-radius:9px;border:1px solid rgba(220,38,38,.15);}
+.pl-field-err.show{display:flex;}
+/* BIO CHIPS */
+.pl-bio-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:4px;}
+.bio-chip{padding:6px 13px;border-radius:20px;font-family:'R',sans-serif;font-size:11.5px;font-weight:700;cursor:pointer;border:1.5px solid var(--b1);background:var(--w);color:var(--mt2);transition:all .18s;}
+.bio-chip.on{background:var(--dark);color:#fff;border-color:var(--dark);}
+/* CB LIST */
+.pl-cb-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.pl-cb-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;border:1.5px solid var(--b1);background:var(--bg);cursor:pointer;transition:all .18s;user-select:none;}
+.pl-cb-item.on{border-color:var(--dark);background:rgba(28,35,51,.03);}
+.pl-cb-ico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;flex-shrink:0;}
+.pl-cb-ico.wa{background:linear-gradient(135deg,#25D366,#128C7E);}
+.pl-cb-ico.ig{background:linear-gradient(135deg,#E1306C,#833AB4);}
+.pl-cb-ico.ph{background:linear-gradient(135deg,#2563eb,#1d4ed8);}
+.pl-cb-ico.tg{background:linear-gradient(135deg,#229ED9,#0088cc);}
+.pl-cb-ico.tt{background:linear-gradient(135deg,#000,#333);}
+.pl-cb-txt{flex:1;}
+.pl-cb-name{font-size:13px;font-weight:700;color:var(--dark);}
+.pl-cb-sub{font-size:10.5px;color:var(--mt);margin-top:2px;}
+.pl-cb-chk{width:22px;height:22px;border-radius:7px;border:2px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;flex-shrink:0;transition:all .18s;}
+.pl-cb-item.on .pl-cb-chk{background:var(--dark);border-color:var(--dark);color:#fff;}
+/* CONTACT FIELD */
+.pl-contact-field{margin-bottom:10px;}
+.pl-contact-lbl{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;color:var(--mt2);margin-bottom:6px;}
+/* STYLE GRID */
+.sec-div{height:1px;background:var(--b1);margin:18px 0;}
+.style-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px;}
+.style-card{border:1.5px solid var(--b1);border-radius:14px;padding:12px 10px;text-align:center;cursor:pointer;background:var(--bg);transition:all .18s;position:relative;}
+.style-card.on{border-color:var(--dark);background:rgba(28,35,51,.04);}
+.sc-chk{position:absolute;top:7px;right:7px;width:20px;height:20px;border-radius:50%;border:2px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:8px;color:transparent;transition:all .18s;background:#fff;}
+.style-card.on .sc-chk{background:var(--dark);border-color:var(--dark);color:#fff;}
+.sc-name{font-size:12px;font-weight:800;color:var(--dark);margin-top:8px;}
+.sc-sub{font-size:10px;color:var(--mt);}
+.sc-preview{width:100%;height:44px;border-radius:9px;margin-bottom:2px;display:flex;align-items:center;justify-content:center;}
+.sc-preview.dark-p{background:linear-gradient(135deg,#1c2333,#2e3a50);}
+.sc-preview.light-p{background:#f8fafc;border:1.5px solid var(--b1);}
+.sc-preview.classic-p{background:linear-gradient(135deg,#6366f1,#8b5cf6);}
+.sc-preview.pill-p{background:#fff;border:1.5px solid var(--b1);gap:5px;}
+.sc-pill-dot{width:24px;height:8px;border-radius:4px;}
+/* THEME */
+.theme-wrap{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.theme-dot{width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;color:transparent;transition:all .18s;border:3px solid transparent;}
+.theme-dot.on{color:#fff;border-color:rgba(0,0,0,.25);box-shadow:0 0 0 2px rgba(0,0,0,.15);}
+/* PREVIEW */
+.pl-live-preview{border:1.5px solid var(--b1);border-radius:16px;overflow:hidden;margin-bottom:16px;background:var(--bg);min-height:90px;display:flex;align-items:center;justify-content:center;}
+/* SUBMIT */
+.submit-btn{width:100%;padding:16px;background:var(--dark);color:#fff;border:none;border-radius:16px;font-family:'R',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 5px 18px rgba(28,35,51,.22);}
+.submit-btn:active{opacity:.9;}
+.submit-btn:disabled{opacity:.5;pointer-events:none;}
+/* PHONE SHELL */
+.pl-phone-shell{background:#fff;border:3px solid #1c2333;border-radius:32px;padding:10px 4px;box-shadow:0 8px 32px rgba(28,35,51,.18);max-width:320px;margin:0 auto;}
+.pl-phone-pill{width:60px;height:6px;border-radius:3px;background:var(--b1);margin:0 auto 10px;}
+/* TOAST */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(14px);padding:11px 18px;border-radius:50px;font-size:13px;display:none;z-index:9999;opacity:0;transition:opacity .22s,transform .22s;background:#1c2333;color:#fff;box-shadow:0 8px 28px rgba(28,35,51,.35);align-items:center;gap:7px;white-space:nowrap;max-width:88vw;font-weight:600;}
+.toast.show{display:flex;opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.ok{background:#16a34a;}.toast.err{background:#dc2626;}
+/* BNAV */
+.bnav{position:fixed;bottom:14px;left:14px;right:14px;background:rgba(255,255,255,.98);border-radius:32px;display:flex;z-index:300;box-shadow:0 6px 32px rgba(0,0,0,.13);}
+.bnav-inner{display:flex;max-width:500px;margin:0 auto;align-items:center;padding:6px 4px;width:100%;}
+.bn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 2px;border:none;background:transparent;color:#9ba5b7;font-family:'R',sans-serif;font-size:9.5px;cursor:pointer;}
+.bn.on{color:#1c2333;}.bn-pip{width:44px;height:34px;border-radius:17px;display:flex;align-items:center;justify-content:center;}.bn.on .bn-pip{background:rgba(28,35,51,.08);}
+.bn i{font-size:20px;}.bn-lbl{font-weight:600;margin-top:1px;}
+.bn-fab-col{flex:1;display:flex;justify-content:center;align-items:center;}
+.bn-fab{background:#1c2333;border-radius:50%;width:54px;height:54px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(28,35,51,.35);cursor:pointer;}
+.bn-fab i{font-size:22px;color:#fff;}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<div class="topbar">
+  <div class="topbar-left"><div class="ham-btn-v2"><i class="fas fa-bars"></i></div></div>
+  <div class="topbar-center"><span style="font-size:28px;font-weight:900;color:#0E78FF;font-family:'Inter',sans-serif;letter-spacing:-.8px">Proxo</span></div>
+  <div class="topbar-right-col"><div class="notif-btn"><i class="fas fa-bell" style="font-size:15px"></i></div></div>
+</div>
+
+<div class="pg" id="mainView">
+  <div class="pg-title">دروستکردنی کەرەستە</div>
+
+  <div class="plform">
+    <div class="plform-hdr">
+      <h2>پەڕەی پەیوەندی نوێ</h2>
+    </div>
+
+    <!-- LOGO -->
+    <div class="plform-lbl">وێنەی پرۆفایل <span style="color:var(--rd)">*</span></div>
+    <div class="logo-upload" onclick="document.getElementById('plLogoFile').click()">
+      <input type="file" id="plLogoFile" accept="image/*" onchange="loadLogo(this)" style="display:none">
+      <img id="plLogoPrev" class="logo-preview" alt="" style="display:none">
+      <div class="logo-upload-ico" id="plLogoIco"><i class="fas fa-camera"></i></div>
+      <b id="plLogoTxt">وێنە بارکە</b>
+      <span>کرتە بکە تا هەڵبژێریت</span>
+    </div>
+
+    <!-- NAME -->
+    <div class="plform-lbl">ناو <span style="color:var(--rd)">*</span></div>
+    <input class="pl-inp" type="text" id="plName" placeholder="ناوت یان ناوی براند" oninput="updatePreview()">
+    <div class="pl-field-err" id="errName"><i class="fas fa-circle-exclamation"></i><span>تکایە ناوت بنووسە</span></div>
+
+    <!-- BIO -->
+    <div class="plform-lbl">بیۆ / دەربارەت <span style="font-size:10px;color:var(--mt)">(کەمتر لە 150 پیت)</span></div>
+    <textarea class="pl-inp pl-ta" id="plBio" placeholder="لەرێگەی دووگمەکانەوە پەیوەندیمان پێوە بکە" maxlength="150" oninput="bioCount();updatePreview()"></textarea>
+    <div class="pl-bio-meta">
+      <small>یەکێک هەڵبژێرە یان خۆت بنووسە</small>
+      <span id="bioCountLbl">0 / 150</span>
+    </div>
+    <div class="pl-bio-chips">
+      <div class="bio-chip" onclick="setBio(this,'فرۆشگای ئۆنلاین')">فرۆشگای ئۆنلاین</div>
+      <div class="bio-chip" onclick="setBio(this,'پەیوەندیمان پێوە بکە')">پەیوەندیمان پێوە بکە</div>
+      <div class="bio-chip" onclick="setBio(this,'خزمەتگوزاریمان ببینە')">خزمەتگوزاریمان ببینە</div>
+      <div class="bio-chip" onclick="setBio(this,'سفارش بدە')">سفارش بدە</div>
+    </div>
+
+    <!-- TIKTOK -->
+    <div class="plform-lbl"><i class="fab fa-tiktok" style="margin-left:5px"></i>ناوی ئەکاونتی تیکتۆک <span style="color:var(--rd)">*</span></div>
+    <div style="position:relative;display:flex;align-items:center;">
+      <span style="position:absolute;left:14px;font-size:16px;color:var(--dark);font-weight:700;font-family:'Inter',sans-serif;z-index:2;pointer-events:none">@</span>
+      <input class="pl-inp" style="direction:ltr;text-align:left;padding-left:34px;width:100%;" type="text" id="plTT" placeholder="username" oninput="updatePreview()">
+    </div>
+    <div class="pl-field-err" id="errTT"><i class="fas fa-circle-exclamation"></i><span>ناوی ئەکاونت بنووسە</span></div>
+
+    <!-- VIDEO URL (optional) -->
+    <div class="plform-lbl"><i class="fab fa-tiktok" style="margin-left:5px;opacity:.5"></i>لینکی ڤیدیۆ <span style="font-size:10px;color:var(--mt)">(ئیختیاری)</span></div>
+    <input class="pl-inp" style="direction:ltr;text-align:left;" type="url" id="plVideoUrl" placeholder="https://www.tiktok.com/@username/video/...">
+
+    <!-- PLATFORMS -->
+    <div class="plform-lbl" style="margin-top:14px">دووگمەکانت هەڵبژێرە</div>
+    <div class="pl-cb-list">
+      <div class="pl-cb-item" onclick="togglePlatform(this,'wa')">
+        <div class="pl-cb-ico wa"><i class="fab fa-whatsapp"></i></div>
+        <div class="pl-cb-txt"><div class="pl-cb-name">واتسئاپ</div><div class="pl-cb-sub">WhatsApp</div></div>
+        <div class="pl-cb-chk"><i class="fas fa-check"></i></div>
+      </div>
+      <div class="pl-cb-item" onclick="togglePlatform(this,'tg')">
+        <div class="pl-cb-ico tg"><i class="fab fa-telegram"></i></div>
+        <div class="pl-cb-txt"><div class="pl-cb-name">تێلێگرام</div><div class="pl-cb-sub">Telegram</div></div>
+        <div class="pl-cb-chk"><i class="fas fa-check"></i></div>
+      </div>
+      <div class="pl-cb-item" onclick="togglePlatform(this,'ig')">
+        <div class="pl-cb-ico ig"><i class="fab fa-instagram"></i></div>
+        <div class="pl-cb-txt"><div class="pl-cb-name">ئینستاگرام</div><div class="pl-cb-sub">Instagram</div></div>
+        <div class="pl-cb-chk"><i class="fas fa-check"></i></div>
+      </div>
+      <div class="pl-cb-item" onclick="togglePlatform(this,'ph')">
+        <div class="pl-cb-ico ph"><i class="fas fa-phone"></i></div>
+        <div class="pl-cb-txt"><div class="pl-cb-name">ژمارەی تەلەفۆن</div><div class="pl-cb-sub">Phone</div></div>
+        <div class="pl-cb-chk"><i class="fas fa-check"></i></div>
+      </div>
+      <div class="pl-cb-item" onclick="togglePlatform(this,'tt')">
+        <div class="pl-cb-ico tt"><i class="fab fa-tiktok"></i></div>
+        <div class="pl-cb-txt"><div class="pl-cb-name">تیکتۆک DM</div><div class="pl-cb-sub">TikTok Direct</div></div>
+        <div class="pl-cb-chk"><i class="fas fa-check"></i></div>
+      </div>
+    </div>
+    <div class="pl-field-err" id="errPlatform"><i class="fas fa-circle-exclamation"></i><span>کەمترین یەک پلاتفۆرم هەڵبژێرە</span></div>
+
+    <!-- CONTACT FIELDS -->
+    <div id="contactFields"></div>
+
+    <!-- STYLE -->
+    <div class="sec-div"></div>
+    <div class="plform-lbl">ستایل</div>
+    <div class="style-grid">
+      <div class="style-card on" data-style="dark" onclick="pickStyle(this)">
+        <div class="sc-chk"><i class="fas fa-check"></i></div>
+        <div class="sc-preview dark-p"><i class="fas fa-moon" style="color:#fff;font-size:16px"></i></div>
+        <div class="sc-name">Dark</div><div class="sc-sub">تاریک</div>
+      </div>
+      <div class="style-card" data-style="light" onclick="pickStyle(this)">
+        <div class="sc-chk"><i class="fas fa-check"></i></div>
+        <div class="sc-preview light-p"><i class="fas fa-sun" style="color:#d97706;font-size:16px"></i></div>
+        <div class="sc-name">Light</div><div class="sc-sub">ڕووناک</div>
+      </div>
+      <div class="style-card" data-style="classic" onclick="pickStyle(this)">
+        <div class="sc-chk"><i class="fas fa-check"></i></div>
+        <div class="sc-preview classic-p"><i class="fas fa-star" style="color:#fff;font-size:16px"></i></div>
+        <div class="sc-name">Classic</div><div class="sc-sub">کلاسیک</div>
+      </div>
+      <div class="style-card" data-style="pill" onclick="pickStyle(this)">
+        <div class="sc-chk"><i class="fas fa-check"></i></div>
+        <div class="sc-preview pill-p">
+          <div class="sc-pill-dot" style="background:#25d366"></div>
+          <div class="sc-pill-dot" style="background:#7360f2"></div>
+          <div class="sc-pill-dot" style="background:#2aabee"></div>
+        </div>
+        <div class="sc-name">Pill</div><div class="sc-sub">پیل گرادیەنت</div>
+      </div>
+    </div>
+
+    <!-- THEME COLOR -->
+    <div class="plform-lbl">ڕەنگی تەم</div>
+    <div class="theme-wrap">
+      <div class="theme-dot on" style="background:#8b5cf6" onclick="pickTheme(this)"><i class="fas fa-check"></i></div>
+      <div class="theme-dot" style="background:#2563eb" onclick="pickTheme(this)"><i class="fas fa-check"></i></div>
+      <div class="theme-dot" style="background:#16a34a" onclick="pickTheme(this)"><i class="fas fa-check"></i></div>
+      <div class="theme-dot" style="background:#dc2626" onclick="pickTheme(this)"><i class="fas fa-check"></i></div>
+      <div class="theme-dot" style="background:#d97706" onclick="pickTheme(this)"><i class="fas fa-check"></i></div>
+      <div class="theme-dot" style="background:#0891b2" onclick="pickTheme(this)"><i class="fas fa-check"></i></div>
+      <div class="theme-dot" style="background:#be185d" onclick="pickTheme(this)"><i class="fas fa-check"></i></div>
+      <div class="theme-dot" style="background:#1c2333" onclick="pickTheme(this)"><i class="fas fa-check"></i></div>
+    </div>
+
+    <!-- LIVE PREVIEW -->
+    <div class="plform-lbl"><i class="fas fa-eye" style="margin-left:5px;color:var(--bl)"></i>پێشبینی زیندوو</div>
+    <div class="pl-live-preview" id="livePrev">
+      <div style="text-align:center;padding:20px;color:var(--mt);font-size:12px">
+        <i class="fas fa-link" style="font-size:22px;display:block;margin-bottom:8px;opacity:.3"></i>
+        ناو بنووسە تا پێشبینی ببینیت
+      </div>
+    </div>
+
+    <button class="submit-btn" id="previewBtn" onclick="doPreview()">
+      <i class="fas fa-eye"></i> پێشبینی و دروستکردن
+    </button>
+  </div>
+
+  <div style="height:10px"></div>
+</div>
+
+<!-- BNAV -->
+<div class="bnav">
+  <div class="bnav-inner">
+    <button class="bn"><div class="bn-pip"><i class="fas fa-house"></i></div><span class="bn-lbl">سەرەتا</span></button>
+    <button class="bn"><div class="bn-pip"><i class="fas fa-bullhorn"></i></div><span class="bn-lbl">ڕیکلامەکان</span></button>
+    <div class="bn-fab-col"><div class="bn-fab"><i class="fas fa-plus"></i></div></div>
+    <button class="bn on"><div class="bn-pip"><i class="fas fa-toolbox"></i></div><span class="bn-lbl">ئامرازەکان</span></button>
+    <button class="bn"><div class="bn-pip"><i class="fas fa-user-circle"></i></div><span class="bn-lbl">پرۆفایل</span></button>
+  </div>
+</div>
+
+<script>
+function showToast(m,c){var t=document.getElementById('toast');t.textContent=m;t.className='toast show'+(c?' '+c:'');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show');},3000);}
+
+var _selPlatforms=new Set();
+var _selStyle='dark';
+var _selTheme='#8b5cf6';
+var _logoB64=null;
+
+// BIO COUNT
+function bioCount(){
+  var v=document.getElementById('plBio').value||'';
+  document.getElementById('bioCountLbl').textContent=v.length+' / 150';
+}
+function setBio(chip,txt){
+  document.querySelectorAll('.bio-chip').forEach(function(c){c.classList.remove('on');});
+  chip.classList.add('on');
+  document.getElementById('plBio').value=txt;
+  bioCount();updatePreview();
+}
+
+// LOGO
+function loadLogo(inp){
+  var file=inp.files&&inp.files[0];
+  if(!file)return;
+  var rd=new FileReader();
+  rd.onload=function(e){
+    _logoB64=e.target.result;
+    var prev=document.getElementById('plLogoPrev');
+    var ico=document.getElementById('plLogoIco');
+    var txt=document.getElementById('plLogoTxt');
+    prev.src=_logoB64;prev.style.display='block';
+    ico.style.display='none';txt.textContent='وێنەکە گۆڕاند';
+    updatePreview();
+  };
+  rd.readAsDataURL(file);
+}
+
+// PLATFORM TOGGLE
+function togglePlatform(el,type){
+  el.classList.toggle('on');
+  if(_selPlatforms.has(type))_selPlatforms.delete(type);
+  else _selPlatforms.add(type);
+  renderContactFields();
+  document.getElementById('errPlatform').classList.remove('show');
+}
+function renderContactFields(){
+  var LABELS={wa:{l:'ژمارەی واتسئاپ',p:'+964 750 000 0000',icon:'fab fa-whatsapp'},tg:{l:'یوزەرنەیمی تێلێگرام',p:'@username',icon:'fab fa-telegram'},ig:{l:'لینکی ئینستاگرام',p:'instagram.com/page',icon:'fab fa-instagram'},ph:{l:'ژمارەی تەلەفۆن',p:'+964 750 000 0000',icon:'fas fa-phone'},tt:{l:'یوزەرنەیمی تیکتۆک',p:'@username',icon:'fab fa-tiktok'}};
+  var html='';
+  _selPlatforms.forEach(function(type){
+    var cfg=LABELS[type];
+    if(!cfg)return;
+    html+='<div class="pl-contact-field">';
+    html+='<div class="pl-contact-lbl"><i class="'+cfg.icon+'"></i>'+cfg.l+'</div>';
+    html+='<input class="pl-inp" type="text" id="cf_'+type+'" placeholder="'+cfg.p+'" dir="ltr" style="text-align:left" oninput="updatePreview()">';
+    html+='</div>';
+  });
+  document.getElementById('contactFields').innerHTML=html;
+}
+
+// STYLE
+function pickStyle(el){
+  document.querySelectorAll('.style-card').forEach(function(c){c.classList.remove('on');});
+  el.classList.add('on');
+  _selStyle=el.dataset.style;
+  updatePreview();
+}
+
+// THEME
+function pickTheme(el){
+  document.querySelectorAll('.theme-dot').forEach(function(d){d.classList.remove('on');});
+  el.classList.add('on');
+  _selTheme=el.style.background;
+  updatePreview();
+}
+
+// ── SAFE HTML ESCAPE (prevents DOM XSS) ──
+function escHtml(s){
+  var d=document.createElement('div');
+  d.appendChild(document.createTextNode(String(s)));
+  return d.innerHTML;
+}
+
+// LIVE PREVIEW — uses createElement/textContent to avoid XSS
+function updatePreview(){
+  var name=(document.getElementById('plName').value||'').trim();
+  var bio=(document.getElementById('plBio').value||'').trim();
+  var prev=document.getElementById('livePrev');
+
+  if(!name){
+    prev.innerHTML='';
+    var empty=document.createElement('div');
+    empty.style.cssText='text-align:center;padding:20px;color:var(--mt);font-size:12px';
+    var ico=document.createElement('i');
+    ico.className='fas fa-link';
+    ico.style.cssText='font-size:22px;display:block;margin-bottom:8px;opacity:.3';
+    var txt=document.createTextNode('ناو بنووسە تا پێشبینی ببینیت');
+    empty.appendChild(ico);empty.appendChild(txt);
+    prev.appendChild(empty);
+    return;
+  }
+
+  var isDark=(_selStyle==='dark'||_selStyle==='classic');
+  var bg=isDark?'#1c2333':'#fff';
+  var fg=isDark?'#fff':'#1c2333';
+  var subFg=isDark?'rgba(255,255,255,.6)':'#8b95a8';
+
+  prev.innerHTML='';
+
+  // outer wrap
+  var wrap=document.createElement('div');
+  wrap.style.cssText='background:'+bg+';padding:18px;text-align:center;width:100%;font-family:R,sans-serif';
+
+  // avatar
+  var avWrap=document.createElement('div');
+  avWrap.style.cssText='width:60px;height:60px;border-radius:50%;background:'+_selTheme+';display:flex;align-items:center;justify-content:center;margin:0 auto 10px;overflow:hidden';
+  if(_logoB64){
+    var img=document.createElement('img');
+    img.src=_logoB64; // data URL from FileReader — safe
+    img.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:50%;display:block';
+    img.alt='';
+    avWrap.appendChild(img);
+  }else{
+    var initSpan=document.createElement('span');
+    initSpan.style.cssText='font-size:18px;font-weight:800;color:#fff';
+    initSpan.textContent=name.charAt(0).toUpperCase();
+    avWrap.appendChild(initSpan);
+  }
+  wrap.appendChild(avWrap);
+
+  // name
+  var nameEl=document.createElement('div');
+  nameEl.style.cssText='font-size:15px;font-weight:800;color:'+fg;
+  nameEl.textContent=name; // textContent — safe
+  wrap.appendChild(nameEl);
+
+  // bio
+  if(bio){
+    var bioEl=document.createElement('div');
+    bioEl.style.cssText='font-size:11px;color:'+subFg+';margin-top:4px;line-height:1.5';
+    bioEl.textContent=bio; // textContent — safe
+    wrap.appendChild(bioEl);
+  }
+
+  // platform buttons
+  var btnRow=document.createElement('div');
+  btnRow.style.cssText='margin-top:10px;display:flex;flex-wrap:wrap;justify-content:center';
+  var ICONS={wa:'fab fa-whatsapp',tg:'fab fa-telegram',ig:'fab fa-instagram',ph:'fas fa-phone',tt:'fab fa-tiktok'};
+  if(_selPlatforms.size===0){
+    var noPlat=document.createElement('div');
+    noPlat.style.cssText='font-size:11px;color:'+subFg;
+    noPlat.textContent='هیچ پلاتفۆرمێک هەڵنەبژێراوە';
+    btnRow.appendChild(noPlat);
+  }else{
+    _selPlatforms.forEach(function(type){
+      var pill=document.createElement('div');
+      pill.style.cssText='display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;background:'+_selTheme+';color:#fff;font-size:11px;font-weight:700;margin:3px';
+      var ic=document.createElement('i');
+      ic.className=(ICONS[type]||'fas fa-link')+' ';
+      ic.style.fontSize='11px';
+      pill.appendChild(ic);
+      btnRow.appendChild(pill);
+    });
+  }
+  wrap.appendChild(btnRow);
+  prev.appendChild(wrap);
+}
+
+// VALIDATE & PREVIEW
+function doPreview(){
+  var name=(document.getElementById('plName').value||'').trim();
+  var tt=(document.getElementById('plTT').value||'').trim();
+  var ok=true;
+  if(!name){document.getElementById('errName').classList.add('show');ok=false;}else{document.getElementById('errName').classList.remove('show');}
+  if(!tt){document.getElementById('errTT').classList.add('show');ok=false;}else{document.getElementById('errTT').classList.remove('show');}
+  if(_selPlatforms.size===0){document.getElementById('errPlatform').classList.add('show');ok=false;}else{document.getElementById('errPlatform').classList.remove('show');}
+  // Validate that each selected platform's contact field is filled
+  var emptyContact=[];
+  _selPlatforms.forEach(function(type){
+    var inp=document.getElementById('cf_'+type);
+    var NAMES={wa:'واتسئاپ',tg:'تێلێگرام',ig:'ئینستاگرام',ph:'تەلەفۆن',tt:'تیکتۆک DM'};
+    if(inp&&!(inp.value||'').trim()) emptyContact.push(NAMES[type]||type);
+  });
+  if(emptyContact.length>0){
+    showToast('تکایە زانیاری پڕ بکەوە: '+emptyContact.join('، '),'err');
+    ok=false;
+  }
+  if(!ok)return;
+  var btn=document.getElementById('previewBtn');
+  btn.disabled=true;
+  btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> دەنێردرێت...';
+  setTimeout(function(){
+    showToast('کەرەستە بەسەرکەوتوویی دروستکرا!','ok');
+    btn.disabled=false;
+    btn.innerHTML='<i class="fas fa-eye"></i> پێشبینی و دروستکردن';
+  },1500);
+}
+</script>
+</body>
+</html>

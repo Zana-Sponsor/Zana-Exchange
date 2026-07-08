@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>چوونەژوورەوە | Proxo</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+<style>
+@font-face{font-family:'R';src:url('https://raw.githubusercontent.com/Zana-Sponsor/Zana-Sponsor/main/Rabar_021.woff2') format('woff2');}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{--bg:#f4f6fb;--w:#fff;--b1:#e8eaf0;--b2:#d0d4de;--dark:#1c2333;--dark2:#2e3a50;--gr:#16a34a;--rd:#dc2626;--yw:#d97706;--bl:#2563eb;--mt:#8b95a8;--mt2:#6b7585;--tx:#1c2333;}
+body{font-family:'R',sans-serif;background:var(--w);color:var(--tx);min-height:100vh;overflow-x:hidden;}
+html{background:var(--w);}
+input[type=email],input[type=password],[dir=ltr]{font-family:'Inter',sans-serif!important;}
+button,a{touch-action:manipulation;}
+@keyframes stepIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:translateX(0)}}
+@keyframes checkDraw{from{stroke-dashoffset:20}to{stroke-dashoffset:0}}
+/* TOAST */
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(14px);padding:11px 18px 11px 16px;border-radius:50px;font-size:13px;display:none;z-index:9999;opacity:0;transition:opacity .22s,transform .22s;background:#1c2333;color:#fff;box-shadow:0 8px 28px rgba(28,35,51,.35);align-items:center;gap:7px;white-space:nowrap;max-width:88vw;font-weight:600;}
+.toast.show{display:flex;opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.err{background:#dc2626;}
+.toast.ok{background:#16a34a;}
+/* AUTH */
+#authWrap{min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:36px 24px 80px;background:var(--w);}
+.auth-inner{width:100%;max-width:400px;}
+.auth-brand{text-align:center;margin-bottom:60px;}
+.auth-brand h1{font-size:22px;font-weight:700;color:var(--dark);letter-spacing:-.3px;font-family:'Inter',sans-serif;}
+.auth-brand h1 span{color:var(--dark2);}
+.auth-brand p{font-size:13px;color:var(--mt);margin-top:6px;}
+.auth-card{background:var(--w);border:1px solid rgba(232,234,240,.75);border-radius:26px;padding:28px 24px;box-shadow:0 4px 24px rgba(0,0,0,.06);}
+.finp{width:100%;padding:16px 18px;background:var(--bg);border:1.5px solid rgba(232,234,240,.9);border-radius:15px;color:var(--tx);font-family:'R',sans-serif;font-size:16px;outline:none;transition:all .25s ease;margin-bottom:12px;}
+.finp:focus{border-color:var(--dark);background:var(--w);}
+.finp::placeholder{color:var(--mt);}
+.finp[dir=ltr]{text-align:left;}
+.abtn{width:100%;padding:17px;background:var(--dark);color:#fff;border:none;border-radius:16px;font-family:'R',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 4px 20px rgba(28,35,51,.2);transition:all .22s ease;}
+.abtn:active{opacity:.9;}
+.abtn:disabled{opacity:.5;pointer-events:none;}
+.amsg{font-size:12.5px;text-align:center;padding:11px 14px;border-radius:11px;display:none;margin-top:10px;}
+.amsg.ok{background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.2);color:var(--gr);}
+.amsg.err{background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);color:var(--rd);}
+/* MULTI-STEP */
+.auth-steps{display:flex;justify-content:center;margin-bottom:20px;}
+.auth-steps-track{display:flex;gap:8px;align-items:center;}
+.auth-step-dot{width:8px;height:8px;border-radius:50%;background:var(--b2);transition:all .35s ease;}
+.auth-step-dot.done{background:var(--dark);width:20px;border-radius:4px;}
+.auth-step-dot.active{background:var(--dark);width:16px;border-radius:4px;}
+.auth-step{animation:stepIn .28s ease;}
+.auth-step-icon{width:68px;height:68px;border-radius:22px;background:var(--bg);border:1.5px solid var(--b1);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 2px 12px rgba(28,35,51,.06);}
+.auth-step-label{text-align:center;margin-bottom:20px;}
+.auth-step-label h3{font-size:18px;font-weight:900;color:var(--dark);margin-bottom:5px;letter-spacing:-.3px;}
+.auth-step-label p{font-size:12.5px;color:var(--mt);}
+.auth-step-back{display:flex;align-items:center;justify-content:center;gap:6px;font-size:12.5px;color:var(--mt);cursor:pointer;margin-top:14px;padding:4px 0;}
+.auth-inp-wrap{position:relative;margin-bottom:12px;}
+.auth-inp-wrap .finp{padding-right:46px;margin-bottom:0;width:100%;}
+.auth-inp-ico{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:var(--mt);font-size:15px;pointer-events:none;}
+/* PASSWORD */
+.pass-wrap{position:relative;display:block;}
+.pass-wrap .finp{padding-right:42px;padding-left:18px;box-sizing:border-box;width:100%;}
+.pass-eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--mt);font-size:16px;padding:0;line-height:1;z-index:2;display:flex;align-items:center;}
+.str-wrap{display:flex;align-items:center;gap:8px;margin:4px 0 10px;}
+.str-bar{height:4px;border-radius:4px;flex:1;background:var(--b1);overflow:hidden;}
+.str-fill{height:100%;border-radius:4px;width:0;transition:width .25s,background .25s;}
+.str-txt{font-size:10.5px;font-weight:800;min-width:38px;color:var(--mt);text-align:right;}
+/* OTP */
+.otp-inputs{display:flex;gap:10px;justify-content:center;margin:16px 0;direction:ltr;}
+.otp-digit{width:46px;height:56px;border-radius:13px;border:1.5px solid var(--b1);background:var(--bg);font-size:22px;font-weight:900;color:var(--dark);text-align:center;font-family:'Inter',sans-serif;outline:none;transition:all .2s;}
+.otp-digit:focus{border-color:var(--dark);background:var(--w);}
+.otp-timer{font-size:12px;color:var(--mt);text-align:center;margin-top:6px;}
+.otp-timer span{font-weight:700;color:var(--dark);}
+.otp-resend{font-size:12px;color:var(--bl);text-align:center;margin-top:8px;cursor:pointer;display:none;}
+/* TERMS */
+.terms-agree-wrap{margin-top:14px;}
+.terms-agree-row{display:flex;align-items:center;gap:11px;padding:13px 15px;background:var(--bg);border:1.5px solid var(--b1);border-radius:15px;cursor:pointer;transition:border-color .22s,background .22s;user-select:none;}
+.terms-agree-row.checked{border-color:#0f172a;background:rgba(15,23,42,.04);box-shadow:0 2px 12px rgba(15,23,42,.1);}
+.terms-agree-box{width:24px;height:24px;min-width:24px;border-radius:8px;border:2px solid var(--b2);background:#fff;display:flex;align-items:center;justify-content:center;transition:all .22s;}
+.terms-agree-box.checked{background:linear-gradient(135deg,#0f172a,#1e3a5f);border-color:transparent;box-shadow:0 3px 10px rgba(15,23,42,.3);}
+.terms-agree-label{font-size:13px;font-weight:700;color:var(--dark);flex:1;line-height:1.45;}
+.terms-agree-label span{color:#1e3a5f;text-decoration:underline;}
+.tms-tick-path{stroke-dasharray:20;stroke-dashoffset:20;animation:checkDraw .25s ease forwards .05s;}
+/* DIVIDER */
+.auth-divider{display:flex;align-items:center;gap:12px;margin:16px 0;}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--b1);}
+.auth-divider span{font-size:11px;color:var(--mt);font-weight:600;white-space:nowrap;}
+/* TABS */
+.atabs{display:flex;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:22px;}
+.atab{flex:1;padding:10px;text-align:center;font-size:13px;border-radius:10px;cursor:pointer;font-family:'R',sans-serif;border:none;background:transparent;color:var(--mt);transition:all .2s;}
+.atab.on{background:var(--dark);color:#fff;font-weight:700;box-shadow:0 2px 8px rgba(28,35,51,.2);}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<div id="authWrap">
+  <div class="auth-inner">
+    <div class="auth-brand">
+      <h1>Proxo <span>App</span></h1>
+      <p>بەڕێوەبردنی ڕیکلامی تیکتۆک — بۆ کوردستان و عێراق</p>
+    </div>
+
+    <!-- ══ TAB TOGGLE ══ -->
+    <div class="auth-card">
+      <div class="atabs">
+        <button class="atab on" id="tabLogin" onclick="switchTab('login')"><i class="fas fa-right-to-bracket" style="margin-left:5px"></i>چوونەژوورەوە</button>
+        <button class="atab" id="tabSignup" onclick="switchTab('signup')"><i class="fas fa-user-plus" style="margin-left:5px"></i>تۆمارکردن</button>
+      </div>
+
+      <!-- ══ LOGIN ══ -->
+      <div id="loginSection">
+        <div class="auth-step-icon" style="margin-bottom:14px">
+          <i class="fas fa-right-to-bracket" style="font-size:28px;color:var(--dark)"></i>
+        </div>
+        <div class="auth-step-label">
+          <h3>بەخێربێی دەرگەش</h3>
+          <p>زانیاریەکانت داخڵ بکە</p>
+        </div>
+        <div class="auth-inp-wrap">
+          <i class="fas fa-envelope auth-inp-ico"></i>
+          <input class="finp" type="email" id="loginEmail" placeholder="ئیمەیلی Gmail" dir="ltr" onkeydown="if(event.key==='Enter')doLogin()">
+        </div>
+        <div class="pass-wrap" style="margin-bottom:12px">
+          <input class="finp" type="password" id="loginPass" placeholder="وشەی نهێنی" dir="ltr" onkeydown="if(event.key==='Enter')doLogin()">
+          <button class="pass-eye" onclick="togglePass('loginPass',this)" type="button"><i class="fas fa-eye-slash"></i></button>
+        </div>
+        <button class="abtn" id="loginBtn" onclick="doLogin()">
+          <i class="fas fa-arrow-left"></i>
+          <span>چوونەژوورەوە</span>
+        </button>
+        <div class="amsg" id="loginMsg"></div>
+        <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--mt)">
+          هەژمارت نییە؟ <span onclick="switchTab('signup')" style="color:var(--dark);font-weight:700;cursor:pointer;text-decoration:underline">تۆمارکردن</span>
+        </div>
+      </div>
+
+      <!-- ══ SIGNUP (MULTI-STEP) ══ -->
+      <div id="signupSection" style="display:none">
+        <div class="auth-steps" id="authStepsWrap">
+          <div class="auth-steps-track" id="authStepsTrack"></div>
+        </div>
+
+        <!-- Step 1: Name -->
+        <div id="stepName" class="auth-step">
+          <div class="auth-step-icon">
+            <i class="fas fa-user" style="font-size:28px;color:var(--dark)"></i>
+          </div>
+          <div class="auth-step-label">
+            <h3>ناوی هەژمار</h3>
+            <p>ناوت بنووسە بۆ دروستکردنی هەژمار</p>
+          </div>
+          <div class="auth-inp-wrap">
+            <i class="fas fa-user auth-inp-ico"></i>
+            <input class="finp" type="text" id="signupName" placeholder="ناوی هەژمار" onkeydown="if(event.key==='Enter')nextStep('name')">
+          </div>
+          <button class="abtn" onclick="nextStep('name')">
+            <i class="fas fa-arrow-left"></i><span>دواتر</span>
+          </button>
+          <div class="amsg" id="msgName"></div>
+          <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--mt)">
+            هەژمارت هەیە؟ <span onclick="switchTab('login')" style="color:var(--dark);font-weight:700;cursor:pointer;text-decoration:underline">چوونەژوورەوە</span>
+          </div>
+        </div>
+
+        <!-- Step 2: Email -->
+        <div id="stepEmail" class="auth-step" style="display:none">
+          <div class="auth-step-icon">
+            <i class="fas fa-envelope" style="font-size:28px;color:var(--dark)"></i>
+          </div>
+          <div class="auth-step-label">
+            <h3>ئیمەیل</h3>
+            <p>ئیمەیلی Gmail داخڵ بکە</p>
+          </div>
+          <div class="auth-inp-wrap">
+            <i class="fas fa-envelope auth-inp-ico"></i>
+            <input class="finp" type="email" id="signupEmail" placeholder="example@gmail.com" dir="ltr" onkeydown="if(event.key==='Enter')nextStep('email')">
+          </div>
+          <button class="abtn" onclick="nextStep('email')">
+            <i class="fas fa-arrow-left"></i><span>دواتر</span>
+          </button>
+          <div class="amsg" id="msgEmail"></div>
+          <div class="auth-step-back" onclick="backStep('name')"><i class="fas fa-arrow-right"></i> گەڕانەوە</div>
+        </div>
+
+        <!-- Step 3: Password -->
+        <div id="stepPass" class="auth-step" style="display:none">
+          <div class="auth-step-icon">
+            <i class="fas fa-lock" style="font-size:28px;color:var(--dark)"></i>
+          </div>
+          <div class="auth-step-label">
+            <h3>وشەی نهێنی</h3>
+            <p>وشەیەکی بەهێز دیاری بکە</p>
+          </div>
+          <div class="pass-wrap" style="margin-bottom:8px">
+            <input class="finp" type="password" id="signupPass" placeholder="کەمترین ٨ پیت" dir="ltr" oninput="checkStr(this.value)" onkeydown="if(event.key==='Enter')nextStep('pass')">
+            <button class="pass-eye" onclick="togglePass('signupPass',this)" type="button"><i class="fas fa-eye-slash"></i></button>
+          </div>
+          <div class="str-wrap">
+            <div class="str-bar"><div class="str-fill" id="strFill"></div></div>
+            <div class="str-bar"><div class="str-fill" id="strFill2"></div></div>
+            <div class="str-bar"><div class="str-fill" id="strFill3"></div></div>
+            <div class="str-txt" id="strTxt">—</div>
+          </div>
+          <button class="abtn" onclick="nextStep('pass')">
+            <i class="fas fa-arrow-left"></i><span>دواتر</span>
+          </button>
+          <div class="amsg" id="msgPass"></div>
+          <div class="auth-step-back" onclick="backStep('email')"><i class="fas fa-arrow-right"></i> گەڕانەوە</div>
+        </div>
+
+        <!-- Step 4: Terms + Submit -->
+        <div id="stepTerms" class="auth-step" style="display:none">
+          <div class="auth-step-icon">
+            <i class="fas fa-shield-halved" style="font-size:28px;color:var(--dark)"></i>
+          </div>
+          <div class="auth-step-label">
+            <h3>پێداچوونەوەی مەرجەکان</h3>
+            <p>تکایە مەرجەکانی ئەپەکە بخوێنەرەوە</p>
+          </div>
+          <div class="terms-agree-wrap">
+            <div class="terms-agree-row" id="termsRow" onclick="toggleTerms()">
+              <div class="terms-agree-box" id="termsBox">
+                <svg width="14" height="10" viewBox="0 0 14 10" fill="none" id="termsCheck" style="display:none">
+                  <path class="tms-tick-path" d="M1 4.5L5.5 9L13 1" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="terms-agree-label">مەرجەکان و دەستوورەکانی Proxo قبوول دەکەم — <span>پاراستنی نهێنی</span></div>
+            </div>
+          </div>
+          <button class="abtn" id="signupSubmitBtn" onclick="doSignup()" style="margin-top:14px" disabled>
+            <i class="fas fa-user-plus"></i><span>دروستکردنی هەژمار</span>
+          </button>
+          <div class="amsg" id="msgTerms"></div>
+          <div class="auth-step-back" onclick="backStep('pass')"><i class="fas fa-arrow-right"></i> گەڕانەوە</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──
+var _name='', _email='', _pass='', _termsOk=false;
+var _curStep='name'; // name → email → pass → terms
+var STEPS=['name','email','pass','terms'];
+
+// ── TOAST ──
+function showToast(m,c){
+  var t=document.getElementById('toast');
+  t.innerHTML='<i class="fas fa-circle-'+(c==='ok'?'check':c==='err'?'xmark':'info')+'"></i> '+m;
+  t.className='toast show'+(c?' '+c:'');
+  clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show');},3200);
+}
+
+// ── TABS ──
+function switchTab(tab){
+  document.getElementById('tabLogin').classList.toggle('on',tab==='login');
+  document.getElementById('tabSignup').classList.toggle('on',tab==='signup');
+  document.getElementById('loginSection').style.display=tab==='login'?'block':'none';
+  document.getElementById('signupSection').style.display=tab==='signup'?'block':'none';
+  if(tab==='signup') renderDots();
+}
+
+// ── PASS EYE ──
+function togglePass(id,btn){
+  var inp=document.getElementById(id);
+  var show=inp.type==='password';
+  inp.type=show?'text':'password';
+  var ic=btn.querySelector('i');
+  if(ic) ic.className=show?'fas fa-eye':'fas fa-eye-slash';
+}
+
+// ── STRENGTH ──
+function checkStr(v){
+  var score=0;
+  if(v.length>=8) score++;
+  if(/[A-Z]/.test(v)) score++;
+  if(/[0-9]/.test(v)||/[^A-Za-z0-9]/.test(v)) score++;
+  var fills=[document.getElementById('strFill'),document.getElementById('strFill2'),document.getElementById('strFill3')];
+  var colors=['#dc2626','#d97706','#16a34a'];
+  var labels=['لاواز','مامناوەند','بەهێز'];
+  fills.forEach(function(f,i){
+    f.style.width=score>i?'100%':'0';
+    f.style.background=colors[score-1]||'';
+  });
+  document.getElementById('strTxt').textContent=v.length?labels[score-1]||'—':'—';
+}
+
+// ── STEPS ──
+function renderDots(){
+  var idx=STEPS.indexOf(_curStep);
+  var html='';
+  STEPS.forEach(function(s,i){
+    var cls=i<idx?'done':i===idx?'active':'';
+    html+='<div class="auth-step-dot '+cls+'"></div>';
+  });
+  document.getElementById('authStepsTrack').innerHTML=html;
+}
+function showStep(step){
+  STEPS.forEach(function(s){
+    var el=document.getElementById('step'+s.charAt(0).toUpperCase()+s.slice(1));
+    if(el) el.style.display=s===step?'block':'none';
+  });
+  _curStep=step;
+  renderDots();
+}
+function backStep(to){showStep(to);}
+function setMsg(id,m,c){
+  var el=document.getElementById(id);
+  if(!el)return;
+  el.textContent=m;
+  el.className='amsg '+(c||'err');
+  el.style.display=m?'block':'none';
+}
+function nextStep(from){
+  if(from==='name'){
+    var v=(document.getElementById('signupName').value||'').trim();
+    if(!v){setMsg('msgName','تکایە ناوت بنووسە','err');return;}
+    if(v.length<2){setMsg('msgName','ناو کەمترین ٢ پیت دەبێت','err');return;}
+    _name=v;setMsg('msgName','','');showStep('email');
+  }else if(from==='email'){
+    var v=document.getElementById('signupEmail').value.trim();
+    if(!v){setMsg('msgEmail','ئیمەیل بنووسە','err');return;}
+    if(!v.endsWith('@gmail.com')){setMsg('msgEmail','تەنها ئیمەیلی Gmail پاشگیری دەکرێت','err');return;}
+    _email=v;setMsg('msgEmail','','');showStep('pass');
+  }else if(from==='pass'){
+    var v=document.getElementById('signupPass').value;
+    if(!v||v.length<8){setMsg('msgPass','وشەی نهێنی کەمترین ٨ پیت دەبێت','err');return;}
+    _pass=v;setMsg('msgPass','','');showStep('terms');
+  }
+}
+
+// ── TERMS ──
+function toggleTerms(){
+  _termsOk=!_termsOk;
+  var row=document.getElementById('termsRow');
+  var box=document.getElementById('termsBox');
+  var chk=document.getElementById('termsCheck');
+  var btn=document.getElementById('signupSubmitBtn');
+  row.classList.toggle('checked',_termsOk);
+  box.classList.toggle('checked',_termsOk);
+  chk.style.display=_termsOk?'block':'none';
+  btn.disabled=!_termsOk;
+}
+
+// ── LOGIN ──
+function doLogin(){
+  var email=document.getElementById('loginEmail').value.trim();
+  var pass=document.getElementById('loginPass').value;
+  if(!email){setMsg('loginMsg','ئیمەیل بنووسە','err');return;}
+  if(!pass){setMsg('loginMsg','وشەی نهێنی بنووسە','err');return;}
+  var btn=document.getElementById('loginBtn');
+  btn.disabled=true;
+  btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i><span>چاوەڕوانبە...</span>';
+  setTimeout(function(){
+    showToast('بەسەرکەوتوویی چوویتە ژوورەوە!','ok');
+    btn.disabled=false;
+    btn.innerHTML='<i class="fas fa-arrow-left"></i><span>چوونەژوورەوە</span>';
+    setMsg('loginMsg','','');
+  },1200);
+}
+
+// ── SIGNUP ──
+function doSignup(){
+  if(!_termsOk){setMsg('msgTerms','تکایە مەرجەکان قبووڵ بکە','err');return;}
+  var btn=document.getElementById('signupSubmitBtn');
+  btn.disabled=true;
+  btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i><span>دروستکردن...</span>';
+  setTimeout(function(){
+    showToast('بەسەرکەوتوویی هەژمار دروستکرا!','ok');
+    btn.disabled=false;
+    btn.innerHTML='<i class="fas fa-user-plus"></i><span>دروستکردنی هەژمار</span>';
+  },1400);
+}
+
+// ── INIT ──
+renderDots();
+</script>
+</body>
+</html>
