@@ -635,6 +635,7 @@ tr:hover td{background:rgba(28,35,51,.015);}
     <div class="sb-item" onclick="goPage('support')"><i class="fas fa-headset"></i> پشتیوانی / چات</div>
     <div class="sb-item" onclick="goPage('liveChat')" id="sbLiveChatItem" style="display:flex;align-items:center;justify-content:space-between"><span><i class="fas fa-comments" style="color:#10b981"></i> پشتگیری ژیوە</span><span class="lca-sb-dot" id="lcaSbDot"></span></div>
     <div class="sb-item" onclick="goPage('requests')"><i class="fas fa-inbox" style="color:#f59e0b"></i> داواکاریەکانی جزدان <span class="sb-badge yw" id="sbReqCount" style="display:none">0</span></div>
+    <div class="sb-item" onclick="goPage('materials')"><i class="fas fa-id-card" style="color:#7c3aed"></i> کەرەستەی پەیوەندی</div>
     <div class="sb-section">دارایی</div>
     <div class="sb-item" onclick="goPage('revenue')"><i class="fas fa-chart-line" style="color:#16a34a"></i> داهاتی ڕیکلامەکان</div>
     <div class="sb-section">سیستەم</div>
@@ -1095,6 +1096,36 @@ tr:hover td{background:rgba(28,35,51,.015);}
         </div>
       </div>
     </div>
+
+    <!-- ══ MATERIALS (PROXOLINK CARDS) ══ -->
+    <div class="pg" id="pgMaterials">
+      <div class="sec-hdr">
+        <h3><i class="fas fa-id-card" style="margin-left:8px;color:#7c3aed"></i>کەرەستەی پەیوەندی</h3>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input class="minp" id="matSearchInp" type="text" placeholder="گەڕان بە ناو / ژمارە..." style="width:180px;font-size:12px;padding:8px 12px;margin:0" oninput="renderMaterials()">
+        </div>
+      </div>
+      <!-- ستاتیستیک -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px">
+        <div class="stat-card">
+          <div class="stat-ico" style="background:rgba(124,58,237,.12);color:#7c3aed"><i class="fas fa-id-card"></i></div>
+          <div class="stat-info"><div class="stat-val" id="matStatTotal">—</div><div class="stat-lbl">کۆی کارتەکان</div></div>
+        </div>
+        <div class="stat-card" style="background:rgba(124,58,237,.04);border-color:rgba(124,58,237,.15)">
+          <div class="stat-ico" style="background:rgba(124,58,237,.12);color:#7c3aed"><i class="fas fa-users"></i></div>
+          <div class="stat-info"><div class="stat-val" id="matStatOwners" style="color:#7c3aed">—</div><div class="stat-lbl">خاوەن</div></div>
+        </div>
+        <div class="stat-card" style="background:rgba(22,163,74,.04);border-color:rgba(22,163,74,.15)">
+          <div class="stat-ico" style="background:rgba(22,163,74,.12);color:#16a34a"><i class="fas fa-calendar-plus"></i></div>
+          <div class="stat-info"><div class="stat-val" id="matStatNew" style="color:#16a34a">—</div><div class="stat-lbl">ئەم مانگەدا</div></div>
+        </div>
+      </div>
+      <!-- تەیبڵ -->
+      <div class="tbl-wrap">
+        <div id="matList"><div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div></div>
+      </div>
+    </div>
+
 
     <!-- ══ VERSION MANAGEMENT ══ -->
     <div class="pg" id="pgVersion">
@@ -1592,6 +1623,25 @@ tr:hover td{background:rgba(28,35,51,.015);}
   </div>
 </div>
 
+<div class="overlay" id="moEditCard">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3><i class="fas fa-id-card-clip" style="margin-left:8px;color:#7c3aed"></i>دەستکاری کەرەستە</h3>
+      <div class="modal-close" onclick="closeMo('moEditCard')"><i class="fas fa-xmark"></i></div>
+    </div>
+    <input type="hidden" id="editCardId">
+    <input type="hidden" id="editCardUserId">
+    <label class="modal-lbl">ناوی کارت</label>
+    <input class="minp" type="text" id="editCardName" placeholder="ناوی کارت">
+    <label class="modal-lbl">پێناسە <span style="font-size:10px;color:var(--mt)">(ئۆپشنی)</span></label>
+    <textarea class="minp" id="editCardBio" placeholder="پێناسەی کارت..." rows="3" style="resize:vertical;min-height:70px;font-family:inherit"></textarea>
+    <label class="modal-lbl" style="margin-top:8px">HTML کارتەکە <span style="font-size:10px;color:var(--mt)">(دەستکاری ڕاستەوخۆ)</span></label>
+    <textarea class="minp" id="editCardHtml" placeholder="HTML content..." rows="7" style="resize:vertical;min-height:110px;font-family:'Courier New',monospace;font-size:11px;direction:ltr"></textarea>
+    <button class="modal-btn dark" style="background:#7c3aed" onclick="saveEditCard()"><i class="fas fa-check"></i> پاشەکەوتکردن و ئاگادارکردنەوە</button>
+  </div>
+</div>
+
+
 <div class="overlay" id="moAddBalance">
   <div class="modal">
     <div class="modal-hdr">
@@ -1950,6 +2000,7 @@ const pageConfig={
   revenue:{title:'داهاتی ڕیکلامەکان',sub:'پیوانەی داهات، تێچوو و قازانجی ڕیکلامەکان',load:loadRevenue},
   maintenance:{title:'ڕاگرتنی پەڕەکە',sub:'کردنەوە و داخستنی ئەپلیکەیشن بۆ بەکارهێنەران',load:loadMaintenance},
   appAnnouncement:{title:'ئاگاداری گشتی',sub:'ئاگاداری و ئەپدەیت بۆ هەموو بەکارهێنەران',load:loadAppAnnouncement},
+  materials:{title:'کەرەستەی پەیوەندی',sub:'هەموو کارتە دروستکراوەکان — دایبەزاندن و دەستکاری',load:loadMaterials},
   tutorials:{title:'فێرکارییەکان',sub:'زیادکردن و بەڕێوەبردنی ڤیدیۆکانی فێرکاری',load:loadTutorials},
 };
 
@@ -6397,6 +6448,238 @@ async function loadNoPhoneUsers() {
       '</tbody></table></div>';
   } catch(e) { listEl.innerHTML='<div class="empty"><i class="fas fa-exclamation-circle"></i><p>هەڵە ڕووی دا</p></div>'; }
 }
+
+// ════════════════════════════════════════════════════════════════
+// ═══ MATERIALS (PROXOLINK CARDS) MANAGEMENT ══════════════════════
+// ════════════════════════════════════════════════════════════════
+
+let _allMaterials = [];   // { card, ownerName, ownerEmail }
+
+async function loadMaterials() {
+  const wrap = document.getElementById('matList');
+  if (!wrap) return;
+  wrap.innerHTML = '<div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
+
+  try {
+    // بارکردنی هەموو کارتەکان لەگەڵ user_id
+    const { data: cards, error } = await sb
+      .from('proxolink_cards')
+      .select('id,user_id,name,bio,style,color_theme,card_number,html_content,created_at')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+
+    // بارکردنی ناوی خاوەنەکان (batch)
+    const userIds = [...new Set((cards||[]).map(x=>x.user_id).filter(Boolean))];
+    let profileMap = {};
+    if (userIds.length) {
+      const { data: profs } = await sb
+        .from('profiles')
+        .select('id,full_name,email')
+        .in('id', userIds);
+      (profs||[]).forEach(p => { profileMap[p.id] = p; });
+    }
+
+    _allMaterials = (cards||[]).map(card => ({
+      card,
+      ownerName:  (profileMap[card.user_id]||{}).full_name || '—',
+      ownerEmail: (profileMap[card.user_id]||{}).email    || '—',
+    }));
+
+    // ستاتیستیک
+    const s1 = document.getElementById('matStatTotal');
+    const s2 = document.getElementById('matStatOwners');
+    const s3 = document.getElementById('matStatNew');
+    if (s1) s1.textContent = _allMaterials.length;
+    if (s2) s2.textContent = userIds.length;
+    if (s3) {
+      const mo = new Date(); mo.setDate(1); mo.setHours(0,0,0,0);
+      s3.textContent = _allMaterials.filter(m => new Date(m.card.created_at) >= mo).length;
+    }
+
+    renderMaterials();
+  } catch(e) {
+    wrap.innerHTML = '<div class="empty"><i class="fas fa-exclamation-triangle"></i><p>هەڵە: ' + e.message + '</p></div>';
+  }
+}
+
+function _esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function renderMaterials() {
+  const wrap = document.getElementById('matList');
+  if (!wrap) return;
+
+  const q = (document.getElementById('matSearchInp')?.value || '').trim().toLowerCase();
+  const list = q
+    ? _allMaterials.filter(function(m){
+        return (m.card.name||'').toLowerCase().includes(q) ||
+               String(m.card.card_number||'').includes(q)  ||
+               (m.ownerName||'').toLowerCase().includes(q);
+      })
+    : _allMaterials;
+
+  if (!list.length) {
+    wrap.innerHTML = '<div class="empty"><i class="fas fa-id-card"></i><p>'
+      + (q ? 'هیچ ئەنجامێک نەدۆزرایەوە' : 'هیچ کەرەستەیەک نییە') + '</p></div>';
+    return;
+  }
+
+  var styleColors = { dark:'#1e293b', neon:'#7c3aed', minimal:'#64748b', card:'#2563eb' };
+  var SAFE_STYLES = Object.keys(styleColors);
+
+  var tableHTML = '<div class="tut-tbl-wrap tbl-scroll"><table>'
+    + '<thead><tr><th>#</th><th>ناوی کارت</th><th>خاوەن</th><th>ژمارە</th><th>شێواز</th><th>بەروار</th><th>کردار</th></tr></thead>'
+    + '<tbody>'
+    + list.map(function(m, i) {
+        var card       = m.card;
+        var safeId     = _esc(card.id||'');
+        var safeName   = _esc(card.name||'بێ ناو');
+        var safeBio    = _esc((card.bio||'').substring(0,40)) + ((card.bio||'').length>40?'...':'');
+        var safeOwner  = _esc(m.ownerName);
+        var safeEmail  = _esc(m.ownerEmail);
+        var safeNum    = _esc(String(card.card_number||'—'));
+        var safeStyle  = SAFE_STYLES.indexOf(card.style) > -1 ? card.style : '';
+        var styleColor = styleColors[safeStyle] || '#7c3aed';
+        var validAv    = (card.avatar_b64 && typeof card.avatar_b64==='string' && card.avatar_b64.startsWith('data:image/')) ? card.avatar_b64 : null;
+        var avHtml     = validAv
+          ? '<img src="'+validAv+'" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--b1)" onerror="this.style.display=\'none\'">'
+          : '<div style="width:36px;height:36px;border-radius:50%;background:rgba(124,58,237,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-id-card" style="font-size:13px;color:#7c3aed"></i></div>';
+        return '<tr>'
+          + '<td style="font-family:monospace;font-size:11px">'+(i+1)+'</td>'
+          + '<td><div style="display:flex;align-items:center;gap:8px">'+avHtml
+          +   '<div><div style="font-size:13px;font-weight:700;color:var(--dark)">'+safeName+'</div>'
+          +   '<div style="font-size:10px;color:var(--mt);max-width:140px">'+safeBio+'</div></div></div></td>'
+          + '<td><div style="font-size:12px;font-weight:600;color:var(--dark)">'+safeOwner+'</div>'
+          +   '<div style="font-size:10px;color:var(--mt);direction:ltr;text-align:right">'+safeEmail+'</div></td>'
+          + '<td style="font-family:monospace;font-size:12px;color:var(--mt2)">#'+safeNum+'</td>'
+          + '<td>'+(safeStyle ? '<span style="display:inline-flex;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;background:'+styleColor+'18;color:'+styleColor+';border:1px solid '+styleColor+'33">'+safeStyle+'</span>' : '—')+'</td>'
+          + '<td style="font-size:11px;color:var(--mt)">'+new Date(card.created_at).toLocaleDateString('ku')+'</td>'
+          + '<td><div class="act-grp">'
+          +   '<div class="act-btn" style="background:rgba(124,58,237,.1);color:#7c3aed;border-color:rgba(124,58,237,.2)" onclick="openEditCard(\''+safeId+'\')" title="دەستکاری"><i class="fas fa-pen-to-square"></i></div>'
+          +   '<div class="act-btn bl" onclick="downloadCard(\''+safeId+'\')" title="دایبەزاندن"><i class="fas fa-download"></i></div>'
+          + '</div></td></tr>';
+      }).join('')
+    + '</tbody></table></div>';
+
+  var cardsHTML = '<div class="user-cards">'
+    + list.map(function(m) {
+        var card    = m.card;
+        var safeId  = _esc(card.id||'');
+        var safeName= _esc(card.name||'بێ ناو');
+        var safeOwn = _esc(m.ownerName);
+        var safeNum = _esc(String(card.card_number||'—'));
+        var validAv = (card.avatar_b64 && typeof card.avatar_b64==='string' && card.avatar_b64.startsWith('data:image/')) ? card.avatar_b64 : null;
+        var avHtml  = validAv
+          ? '<img src="'+validAv+'" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--b1)" onerror="this.style.display=\'none\'">'
+          : '<div style="width:44px;height:44px;border-radius:50%;background:rgba(124,58,237,.12);display:flex;align-items:center;justify-content:center"><i class="fas fa-id-card" style="color:#7c3aed;font-size:16px"></i></div>';
+        return '<div class="user-card">'
+          + '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'+avHtml
+          +   '<div><div style="font-weight:700;font-size:14px;color:var(--dark)">'+safeName+'</div>'
+          +   '<div style="font-size:11px;color:var(--mt)">#'+safeNum+' · '+safeOwn+'</div></div></div>'
+          + '<div style="display:flex;gap:8px;margin-top:6px">'
+          +   '<div class="act-btn" style="flex:1;justify-content:center;background:rgba(124,58,237,.08);color:#7c3aed;border-color:rgba(124,58,237,.2)" onclick="openEditCard(\''+safeId+'\')"><i class="fas fa-pen-to-square"></i> دەستکاری</div>'
+          +   '<div class="act-btn bl" style="flex:1;justify-content:center" onclick="downloadCard(\''+safeId+'\')"><i class="fas fa-download"></i> دایبەزاندن</div>'
+          + '</div></div>';
+      }).join('')
+    + '</div>';
+
+  wrap.innerHTML = tableHTML + cardsHTML;
+}
+
+function openEditCard(id) {
+  const m = _allMaterials.find(x => x.card.id === id);
+  if (!m) return;
+  const card = m.card;
+  document.getElementById('editCardId').value    = card.id;
+  document.getElementById('editCardUserId').value = card.user_id;
+  document.getElementById('editCardName').value   = card.name   || '';
+  document.getElementById('editCardBio').value    = card.bio    || '';
+  document.getElementById('editCardHtml').value   = card.html_content || '';
+  openMo('moEditCard');
+}
+
+async function saveEditCard() {
+  const id       = document.getElementById('editCardId').value;
+  const userId   = document.getElementById('editCardUserId').value;
+  const name     = document.getElementById('editCardName').value.trim();
+  const bio      = document.getElementById('editCardBio').value.trim();
+  const html     = document.getElementById('editCardHtml').value;
+
+  if (!name) { showToast('ناوی کارت پڕ بکەرەوە','rd'); return; }
+
+  const btn = document.querySelector('#moEditCard .modal-btn');
+  if (btn) { btn.disabled=true; btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> پاشەکەوتکردن...'; }
+
+  try {
+    const upd = { name };
+    if (bio  !== undefined) upd.bio          = bio  || null;
+    if (html !== undefined) upd.html_content = html || null;
+
+    const { error } = await sb.from('proxolink_cards').update(upd).eq('id', id);
+    if (error) { showToast('هەڵە: '+error.message,'rd'); return; }
+
+    // نوێکردنەوەی local cache
+    const m = _allMaterials.find(x => x.card.id === id);
+    if (m) { m.card.name=name; m.card.bio=bio||null; m.card.html_content=html||null; }
+
+    showToast('✅ کارتەکە نوێکرایەوە','gr');
+
+    // Telegram ئاگادارکردنەوە
+    try { await _notifyCardEditTelegram(id, name, userId); } catch(_) {}
+
+    closeMo('moEditCard');
+    renderMaterials();
+  } catch(e) {
+    showToast('هەڵە: '+e.message,'rd');
+  } finally {
+    if (btn) { btn.disabled=false; btn.innerHTML='<i class="fas fa-check"></i> پاشەکەوتکردن و ئاگادارکردنەوە'; }
+  }
+}
+
+function downloadCard(id) {
+  const m = _allMaterials.find(x => x.card.id === id);
+  if (!m || !m.card.html_content) { showToast('هیچ HTML نەدۆزرایەوە','rd'); return; }
+  const blob = new Blob([m.card.html_content], { type: 'text/html;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'card_' + (m.card.card_number || m.card.id.slice(-6)) + '_' + (m.card.name||'card').replace(/\s+/g,'_') + '.html';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 1000);
+  showToast('✅ دایبەزاندن دەستپێکرد','gr');
+}
+
+async function _notifyCardEditTelegram(cardId, cardName, userId) {
+  // بارکردنی زانیاری خاوەن
+  let ownerName='—', ownerEmail='—';
+  try {
+    const { data: prof } = await sb.from('profiles').select('full_name,email').eq('id', userId).single();
+    if (prof) { ownerName=prof.full_name||'بێ ناو'; ownerEmail=prof.email||'—'; }
+  } catch(_) {}
+
+  const m = _allMaterials.find(x => x.card.id === cardId);
+  const cardNum = m?.card?.card_number || '—';
+  const dateStr = new Date().toLocaleString('ar-IQ');
+
+  const msg =
+    `✏️ *کەرەستەیەک دەستکاری کرا*\n`+
+    `━━━━━━━━━━━━━━━━━━━━\n`+
+    `🃏 ناوی کارت: *${cardName}*\n`+
+    `🔢 ژمارەی کارت: #${cardNum}\n`+
+    `━━━━━━━━━━━━━━━━━━━━\n`+
+    `👤 خاوەن: ${ownerName}\n`+
+    `📧 ئیمەیل: ${ownerEmail}\n`+
+    `━━━━━━━━━━━━━━━━━━━━\n`+
+    `⚙️ دەستکاریکار: ئادمین\n`+
+    `🕐 کات: ${dateStr}`;
+
+  await fetch(
+    'https://api.telegram.org/bot'+FADM_TG_TOKEN+'/sendMessage',
+    { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ chat_id:FADM_TG_CHAT, text:msg, parse_mode:'Markdown' }) }
+  );
+}
+
 </script>
 
 <!-- ══ ADMIN LIVE CHAT — FULLSCREEN OVERLAY ══ -->
