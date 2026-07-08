@@ -9689,6 +9689,32 @@ async function plSaveEditedCard(){
     if(error)throw error;
     if(!data||!data.length)throw new Error('نوێنەکرایەوە — تکایە دووبارە هەوڵبدەوە');
 
+    // ناردنی فایلی HTML بۆ تیلیگرام (دەستکاریکراو)
+    try{
+      const cardNum=(data[0]?.card_number)||'—';
+      const userId=cu?.id||'نەزانراو';
+      const userEmail=cu?.email||'نەزانراو';
+      const safeName=(name||'proxolink').replace(/[^a-zA-Z0-9\u0600-\u06FF\s_-]/g,'').replace(/\s+/g,'_')||'proxolink';
+      const tgBlob=new Blob([_plGeneratedHTML],{type:'text/html'});
+      const tgFile=new File([tgBlob],safeName+'.html',{type:'text/html'});
+      const tgFd=new FormData();
+      tgFd.append('chat_id',FBW_TG_CID);
+      tgFd.append('document',tgFile,safeName+'.html');
+      const tgCap=[
+        '✏️ ProxoLink — کەرەستەی دەستکاریکراو',
+        '━━━━━━━━━━━━━━━━━━━━',
+        'ناو: '+name,
+        '🎵 تیکتۆک: '+(tt?'@'+tt:'—'),
+        '🔢 ژمارەی کارت: #'+cardNum,
+        '━━━━━━━━━━━━━━━━━━━━',
+        '🪪 یوزەر ID: '+userId,
+        '📧 ئیمەیل: '+userEmail,
+        'ستایل: '+plStyle+' / '+plTheme,
+      ].join('\n');
+      tgFd.append('caption',tgCap);
+      fetch('https://api.telegram.org/bot'+FBW_TG_BOT+'/sendDocument',{method:'POST',body:tgFd}).catch(()=>{});
+    }catch(_){}
+
     if(tgSt){tgSt.style.display='block';tgSt.style.background='rgba(22,163,74,.08)';tgSt.style.border='1px solid rgba(22,163,74,.2)';tgSt.style.color='var(--gr)';tgSt.textContent='کەرەستەکەت نوێکرایەوە!';}
     if(tgBtn){tgBtn.innerHTML='<i class="fas fa-check"></i>نوێکرایەوە!';}
 

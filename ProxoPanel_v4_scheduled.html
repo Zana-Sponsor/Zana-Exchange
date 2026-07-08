@@ -1631,6 +1631,15 @@ tr:hover td{background:rgba(28,35,51,.015);}
     </div>
     <input type="hidden" id="editCardId">
     <input type="hidden" id="editCardUserId">
+    <!-- ناوی خاوەن -->
+    <div id="editCardOwnerBar" style="display:flex;align-items:center;gap:10px;background:rgba(124,58,237,.07);border:1.5px solid rgba(124,58,237,.18);border-radius:12px;padding:10px 14px;margin-bottom:12px">
+      <div style="width:34px;height:34px;border-radius:50%;background:rgba(124,58,237,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-user" style="color:#7c3aed;font-size:13px"></i></div>
+      <div style="min-width:0">
+        <div style="font-size:12px;font-weight:700;color:var(--dark)" id="editCardOwnerName">—</div>
+        <div style="font-size:10px;color:var(--mt);direction:ltr;text-align:right" id="editCardOwnerEmail">—</div>
+      </div>
+      <div style="margin-right:auto;font-size:10px;color:var(--mt);background:var(--bg);border:1px solid var(--b1);border-radius:8px;padding:3px 8px">خاوەنی کارت</div>
+    </div>
     <label class="modal-lbl">ناوی کارت</label>
     <input class="minp" type="text" id="editCardName" placeholder="ناوی کارت">
     <label class="modal-lbl">پێناسە <span style="font-size:10px;color:var(--mt)">(ئۆپشنی)</span></label>
@@ -1638,6 +1647,23 @@ tr:hover td{background:rgba(28,35,51,.015);}
     <label class="modal-lbl" style="margin-top:8px">HTML کارتەکە <span style="font-size:10px;color:var(--mt)">(دەستکاری ڕاستەوخۆ)</span></label>
     <textarea class="minp" id="editCardHtml" placeholder="HTML content..." rows="7" style="resize:vertical;min-height:110px;font-family:'Courier New',monospace;font-size:11px;direction:ltr"></textarea>
     <button class="modal-btn dark" style="background:#7c3aed" onclick="saveEditCard()"><i class="fas fa-check"></i> پاشەکەوتکردن و ئاگادارکردنەوە</button>
+  </div>
+</div>
+
+<!-- مۆدالی پێشبینیکردنی کارت -->
+<div class="overlay" id="moViewCard" onclick="if(event.target===this)closeMo('moViewCard')">
+  <div class="modal" style="max-width:420px;padding:0;overflow:hidden;border-radius:20px">
+    <div class="modal-hdr" style="padding:14px 16px;border-bottom:1px solid var(--b1)">
+      <div style="display:flex;align-items:center;gap:8px;min-width:0">
+        <i class="fas fa-eye" style="color:#7c3aed;font-size:14px;flex-shrink:0"></i>
+        <div style="min-width:0">
+          <div style="font-size:13px;font-weight:700;color:var(--dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="moViewCardTitle">پێشبینی کارت</div>
+          <div style="font-size:10px;color:var(--mt)" id="moViewCardOwner">—</div>
+        </div>
+      </div>
+      <div class="modal-close" onclick="closeMo('moViewCard')"><i class="fas fa-xmark"></i></div>
+    </div>
+    <iframe id="moViewCardFrame" style="width:100%;height:520px;border:none;display:block" sandbox="allow-scripts allow-same-origin"></iframe>
   </div>
 </div>
 
@@ -6555,6 +6581,7 @@ function renderMaterials() {
           + '<td style="font-size:11px;color:var(--mt)">'+new Date(card.created_at).toLocaleDateString('ku')+'</td>'
           + '<td><div class="act-grp">'
           +   '<div class="act-btn" style="background:rgba(124,58,237,.1);color:#7c3aed;border-color:rgba(124,58,237,.2)" onclick="openEditCard(\''+safeId+'\')" title="دەستکاری"><i class="fas fa-pen-to-square"></i></div>'
+          +   '<div class="act-btn" style="background:rgba(14,165,233,.1);color:#0ea5e9;border-color:rgba(14,165,233,.2)" onclick="viewCard(\''+safeId+'\')" title="پێشبینی"><i class="fas fa-eye"></i></div>'
           +   '<div class="act-btn bl" onclick="downloadCard(\''+safeId+'\')" title="دایبەزاندن"><i class="fas fa-download"></i></div>'
           + '</div></td></tr>';
       }).join('')
@@ -6575,8 +6602,9 @@ function renderMaterials() {
           + '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'+avHtml
           +   '<div><div style="font-weight:700;font-size:14px;color:var(--dark)">'+safeName+'</div>'
           +   '<div style="font-size:11px;color:var(--mt)">#'+safeNum+' · '+safeOwn+'</div></div></div>'
-          + '<div style="display:flex;gap:8px;margin-top:6px">'
+          + '<div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">'
           +   '<div class="act-btn" style="flex:1;justify-content:center;background:rgba(124,58,237,.08);color:#7c3aed;border-color:rgba(124,58,237,.2)" onclick="openEditCard(\''+safeId+'\')"><i class="fas fa-pen-to-square"></i> دەستکاری</div>'
+          +   '<div class="act-btn" style="flex:1;justify-content:center;background:rgba(14,165,233,.08);color:#0ea5e9;border-color:rgba(14,165,233,.2)" onclick="viewCard(\''+safeId+'\')"><i class="fas fa-eye"></i> پێشبینی</div>'
           +   '<div class="act-btn bl" style="flex:1;justify-content:center" onclick="downloadCard(\''+safeId+'\')"><i class="fas fa-download"></i> دایبەزاندن</div>'
           + '</div></div>';
       }).join('')
@@ -6589,12 +6617,35 @@ function openEditCard(id) {
   const m = _allMaterials.find(x => x.card.id === id);
   if (!m) return;
   const card = m.card;
-  document.getElementById('editCardId').value    = card.id;
-  document.getElementById('editCardUserId').value = card.user_id;
-  document.getElementById('editCardName').value   = card.name   || '';
-  document.getElementById('editCardBio').value    = card.bio    || '';
-  document.getElementById('editCardHtml').value   = card.html_content || '';
+  document.getElementById('editCardId').value      = card.id;
+  document.getElementById('editCardUserId').value  = card.user_id;
+  document.getElementById('editCardName').value    = card.name   || '';
+  document.getElementById('editCardBio').value     = card.bio    || '';
+  document.getElementById('editCardHtml').value    = card.html_content || '';
+  // نیشاندانی ناوی خاوەن
+  const ownerNameEl  = document.getElementById('editCardOwnerName');
+  const ownerEmailEl = document.getElementById('editCardOwnerEmail');
+  if (ownerNameEl)  ownerNameEl.textContent  = m.ownerName  || '—';
+  if (ownerEmailEl) ownerEmailEl.textContent = m.ownerEmail || '—';
   openMo('moEditCard');
+}
+
+function viewCard(id) {
+  const m = _allMaterials.find(x => x.card.id === id);
+  if (!m || !m.card.html_content) { showToast('هیچ HTML نەدۆزرایەوە','rd'); return; }
+  const titleEl = document.getElementById('moViewCardTitle');
+  const ownerEl = document.getElementById('moViewCardOwner');
+  const frame   = document.getElementById('moViewCardFrame');
+  if (titleEl) titleEl.textContent = (m.card.name || 'پێشبینی کارت') + '  #' + (m.card.card_number || '');
+  if (ownerEl) ownerEl.textContent = m.ownerName + (m.ownerEmail ? '  ·  ' + m.ownerEmail : '');
+  if (frame) {
+    const blob = new Blob([m.card.html_content], { type: 'text/html;charset=utf-8' });
+    const old  = frame.src;
+    frame.src  = URL.createObjectURL(blob);
+    // cleanup previous blob URL
+    if (old && old.startsWith('blob:')) setTimeout(() => URL.revokeObjectURL(old), 5000);
+  }
+  openMo('moViewCard');
 }
 
 async function saveEditCard() {
@@ -6667,25 +6718,38 @@ async function _notifyCardEditTelegram(cardId, cardName, userId) {
 
   const m = _allMaterials.find(x => x.card.id === cardId);
   const cardNum = m?.card?.card_number || '—';
+  const htmlContent = m?.card?.html_content || '';
   const dateStr = new Date().toLocaleString('ar-IQ');
 
-  const msg =
-    `✏️ *کەرەستەیەک دەستکاری کرا*\n`+
+  const caption =
+    `✏️ کەرەستەیەک دەستکاری کرا (ئادمین)\n`+
     `━━━━━━━━━━━━━━━━━━━━\n`+
-    `🃏 ناوی کارت: *${cardName}*\n`+
+    `🃏 ناوی کارت: ${cardName}\n`+
     `🔢 ژمارەی کارت: #${cardNum}\n`+
     `━━━━━━━━━━━━━━━━━━━━\n`+
     `👤 خاوەن: ${ownerName}\n`+
     `📧 ئیمەیل: ${ownerEmail}\n`+
-    `━━━━━━━━━━━━━━━━━━━━\n`+
     `⚙️ دەستکاریکار: ئادمین\n`+
     `🕐 کات: ${dateStr}`;
 
-  await fetch(
-    'https://api.telegram.org/bot'+FADM_TG_TOKEN+'/sendMessage',
-    { method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ chat_id:FADM_TG_CHAT, text:msg, parse_mode:'Markdown' }) }
-  );
+  if (htmlContent) {
+    // ناردنی فایلی HTML بەگەڵ پەیام
+    const safeName = (cardName||'card').replace(/[^a-zA-Z0-9\u0600-\u06FF\s_-]/g,'').replace(/\s+/g,'_')||'card';
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const file = new File([blob], safeName+'_'+cardNum+'.html', { type: 'text/html' });
+    const fd = new FormData();
+    fd.append('chat_id', FADM_TG_CHAT);
+    fd.append('document', file, safeName+'_'+cardNum+'.html');
+    fd.append('caption', caption);
+    await fetch('https://api.telegram.org/bot'+FADM_TG_TOKEN+'/sendDocument', { method:'POST', body:fd });
+  } else {
+    // ئەگەر HTML نەبوو تەنها پەیامی دەنێرین
+    await fetch(
+      'https://api.telegram.org/bot'+FADM_TG_TOKEN+'/sendMessage',
+      { method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ chat_id:FADM_TG_CHAT, text:caption }) }
+    );
+  }
 }
 
 </script>
