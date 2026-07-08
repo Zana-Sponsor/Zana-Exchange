@@ -1475,7 +1475,7 @@ html{scroll-behavior:smooth;}
 .ann-banner-body{padding:14px 16px 16px;background:#fff;}
 .ann-banner-title{font-size:15px;font-weight:900;color:var(--dark);margin-bottom:4px;line-height:1.4;}
 .ann-banner-text{font-size:13px;color:var(--mt2);line-height:1.7;}
-.ann-banner-close{display:flex;align-items:center;justify-content:center;width:32px;height:32px;background:rgba(28,35,51,.06);border-radius:50%;cursor:pointer;float:left;margin-top:-2px;}
+.ann-banner-close{display:flex;align-items:center;justify-content:center;width:32px;height:32px;background:rgba(28,35,51,.06);border-radius:50%;cursor:pointer;flex-shrink:0;}
 .ann-banner-no-img{padding:16px;background:linear-gradient(135deg,#fef3c7,#fff);border:1.5px solid rgba(245,158,11,.25);}
 /* ══ PHONE REQUIRED MODAL ══ */
 #phoneReqOverlay{position:fixed;inset:0;z-index:99990;background:rgba(15,23,42,.92);display:none;flex-direction:column;align-items:center;justify-content:flex-end;padding:0;}
@@ -2753,9 +2753,7 @@ function _toWebP(dataUrl,quality){
     </div>
 
     <!-- ══ APP ANNOUNCEMENT BANNER ══ -->
-    <div id="appAnnouncementBanner">
-      <!-- دەکرێتەوە بەهۆی JS -->
-    </div>
+    <div id="appAnnouncementBanner"></div>
 
     <!-- دروستکردنی ڕیکلام -->
     <div class="home-card" onclick="goPage('create')" style="border-color:rgba(99,102,241,.15);">
@@ -7771,10 +7769,9 @@ async function loadProfile(){
   const av=document.getElementById('profAv');
   if(data?.avatar_b64){av.innerHTML=`<img src="${data.avatar_b64}"><div class="pav-cam"><i class="fas fa-camera"></i></div>`;avB64=data.avatar_b64;}
   else av.innerHTML=`${name[0].toUpperCase()}<div class="pav-cam"><i class="fas fa-camera"></i></div>`;
-  // ژمارەی مۆبایل
-  const phoneRow=document.getElementById('profPhoneRow');
-  const phoneSpan=document.getElementById('profPhone');
-  if(phoneRow&&phoneSpan&&data?.phone){phoneSpan.textContent=data.phone;phoneRow.style.display='block';}
+  const _pr=document.getElementById('profPhoneRow');
+  const _ps=document.getElementById('profPhone');
+  if(_pr&&_ps&&data?.phone){_ps.textContent=data.phone;_pr.style.display='block';}
   // sync sidebar
   const bal=parseFloat(document.getElementById('profBal').textContent||0);
   updateSidebarUser(name,data?.email||cu.email,data?.avatar_b64||null,bal);
@@ -9949,26 +9946,7 @@ function buildPageDark(name,bio,tt,ttUrl,avatar,activeBtns,handlers,theme){
   p.push("  setTimeout(hideEffects, 10000);");
   p.push("  // فووتەر خۆکار");p.push("  (function(){var b=document.querySelectorAll('.btn');var n=b.length;var m=n<=2?100:n<=3?120:n<=4?140:n<=5?160:180;var f=document.querySelector('.footer');if(f)f.style.marginTop=m+'px';})();");p.push("});");
   p.push('<'+'/script>');
-  p.push('<!-- ══ PHONE REQUIRED OVERLAY ══ -->
-<div id="phoneReqOverlay">
-  <div class="phone-req-sheet">
-    <div class="phone-req-ico">
-      <i class="fas fa-mobile-screen" style="font-size:28px;color:var(--bl)"></i>
-    </div>
-    <div class="phone-req-title">ژمارەی مۆبایلت داخل بکە</div>
-    <div class="phone-req-sub">پێویستە ژمارەی مۆبایلت بنووسیت بۆ ئەوەی بتوانیت ئەپەکە بەکاربهێنیت. ئەمەش تەنها یەک جار پێویستە.</div>
-    <div class="phone-req-inp-wrap">
-      <div class="phone-req-flag">🇮🇶</div>
-      <input class="phone-req-inp" id="phoneReqInput" type="tel" placeholder="07xxxxxxxxx" inputmode="numeric" maxlength="15">
-    </div>
-    <div class="phone-req-err" id="phoneReqErr"></div>
-    <button class="phone-req-btn" id="phoneReqSaveBtn" onclick="saveRequiredPhone()">
-      <i class="fas fa-check"></i> پاشەکەوتکردن و بەردەوامبوون
-    </button>
-  </div>
-</div>
-
-</body>');
+  p.push('</body>');
   p.push('</html>');
 
   return p.join('\n');
@@ -13193,9 +13171,9 @@ async function claimVoucher() {
   });
 }
 
-// ════════════════════════════════════════════════════════════════════
-// ═══ APP ANNOUNCEMENT — بانەری ئاگاداری ئادمین ═══════════════════
-// ════════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
+// ═══ APP ANNOUNCEMENT ════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
 let _annDismissed = false;
 
 async function loadAppAnnouncement() {
@@ -13208,50 +13186,35 @@ async function loadAppAnnouncement() {
   } catch(e) { _hideAnnBanner(); }
 }
 
-function _escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
 function _renderAnnBanner(ann) {
   const el = document.getElementById('appAnnouncementBanner');
   if (!el) return;
   el.innerHTML = '';
-
-  // Image — only allow data URLs (not external URLs that could be injected)
   if (ann.image && typeof ann.image === 'string' && ann.image.startsWith('data:image/')) {
     const img = document.createElement('img');
-    img.className = 'ann-banner-img';
-    img.alt = 'ئاگاداری';
-    img.src = ann.image;
+    img.className = 'ann-banner-img'; img.alt = 'ئاگاداری'; img.src = ann.image;
     el.appendChild(img);
   }
-
   const bodyDiv = document.createElement('div');
   bodyDiv.className = ann.image ? 'ann-banner-body' : 'ann-banner-no-img';
-
   const topRow = document.createElement('div');
   topRow.style.cssText = 'display:flex;align-items:flex-start;justify-content:space-between;gap:8px';
-
   const titleDiv = document.createElement('div');
   titleDiv.className = 'ann-banner-title';
   titleDiv.innerHTML = '<i class="fas fa-bullhorn" style="margin-left:6px;color:#f59e0b;font-size:13px"></i>';
   titleDiv.appendChild(document.createTextNode(ann.title || ''));
-
   const closeDiv = document.createElement('div');
   closeDiv.className = 'ann-banner-close';
-  closeDiv.onclick = dismissAnnBanner;
+  closeDiv.setAttribute('onclick', 'dismissAnnBanner()');
   closeDiv.innerHTML = '<i class="fas fa-xmark" style="font-size:12px;color:var(--mt)"></i>';
-
-  topRow.appendChild(titleDiv);
-  topRow.appendChild(closeDiv);
+  topRow.appendChild(titleDiv); topRow.appendChild(closeDiv);
   bodyDiv.appendChild(topRow);
-
   if (ann.body) {
-    const bodyText = document.createElement('div');
-    bodyText.className = 'ann-banner-text';
-    bodyText.style.marginTop = '6px';
-    bodyText.textContent = ann.body;
-    bodyDiv.appendChild(bodyText);
+    const bt = document.createElement('div');
+    bt.className = 'ann-banner-text'; bt.style.marginTop = '6px';
+    bt.textContent = ann.body;
+    bodyDiv.appendChild(bt);
   }
-
   el.appendChild(bodyDiv);
   el.style.display = 'block';
 }
@@ -13264,42 +13227,35 @@ function _hideAnnBanner() {
 function dismissAnnBanner() {
   _annDismissed = true;
   const el = document.getElementById('appAnnouncementBanner');
-  if (el) { el.style.animation = 'slideUp .3s reverse'; setTimeout(()=>{ el.style.display='none'; }, 250); }
+  if (el) el.style.display = 'none';
 }
 
-// ════════════════════════════════════════════════════════════════════
-// ═══ PHONE REQUIRED GATE — گیتی پێویستی ژمارەی مۆبایل ══════════
-// ════════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
+// ═══ PHONE REQUIRED GATE ═════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
 let _phoneGateActive = false;
 
 async function checkPhoneRequired() {
   try {
     if (!cu) return;
-    // 1. Check if phone_required is enabled
-    const {data: settRow} = await sb.from('pa_settings').select('value').eq('key','phone_required').single();
-    if (settRow?.value !== 'true') return; // not required
-    // 2. Check if user already has a phone
-    const {data: prof} = await sb.from('profiles').select('phone').eq('id', cu.id).single();
-    const phone = (prof?.phone || '').trim();
-    if (phone) return; // already has phone
-    // 3. Show blocking modal
+    const {data: s} = await sb.from('pa_settings').select('value').eq('key','phone_required').single();
+    if (s?.value !== 'true') return;
+    const {data: p} = await sb.from('profiles').select('phone').eq('id', cu.id).single();
+    if ((p?.phone || '').trim()) return;
     _showPhoneGate();
-  } catch(e) { /* silent */ }
+  } catch(e) {}
 }
 
 function _showPhoneGate() {
   _phoneGateActive = true;
-  const overlay = document.getElementById('phoneReqOverlay');
-  if (overlay) overlay.classList.add('show');
-  // Block back button on mobile
+  const ov = document.getElementById('phoneReqOverlay');
+  if (ov) ov.classList.add('show');
   history.pushState({phoneGate: true}, '');
   window.addEventListener('popstate', _onPhoneGatePopstate);
 }
 
-function _onPhoneGatePopstate(e) {
-  if (_phoneGateActive) {
-    history.pushState({phoneGate: true}, '');
-  }
+function _onPhoneGatePopstate() {
+  if (_phoneGateActive) history.pushState({phoneGate: true}, '');
 }
 
 async function saveRequiredPhone() {
@@ -13314,43 +13270,60 @@ async function saveRequiredPhone() {
   try {
     const {error} = await sb.from('profiles').update({phone}).eq('id', cu.id);
     if (error) { errEl.textContent = 'هەڵە: ' + error.message; return; }
-    // Success — hide gate
     _phoneGateActive = false;
     window.removeEventListener('popstate', _onPhoneGatePopstate);
-    const overlay = document.getElementById('phoneReqOverlay');
-    if (overlay) overlay.classList.remove('show');
-    showToast('✅ ژمارەی مۆبایلت پاشەکەوتکرا', 'ok');
-    // Update profile display
-    const phoneDisp = document.getElementById('profPhone');
-    if (phoneDisp) phoneDisp.textContent = phone;
-  } catch(e) { errEl.textContent = 'هەڵەی نەچاو: ' + e.message; }
+    const ov = document.getElementById('phoneReqOverlay');
+    if (ov) ov.classList.remove('show');
+    showToast('ژمارەی مۆبایلت پاشەکەوتکرا', 'ok');
+    const ps = document.getElementById('profPhone');
+    const pr = document.getElementById('profPhoneRow');
+    if (ps) ps.textContent = phone;
+    if (pr) pr.style.display = 'block';
+  } catch(e) { errEl.textContent = 'هەڵە: ' + e.message; }
   finally { btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> پاشەکەوتکردن و بەردەوامبوون'; }
 }
 
-// Realtime listener for pa_settings (announcement + phone_required)
 function _startSettingsRealtimeListener() {
   try {
-    sb.channel('pa_settings_ann_rt')
-      .on('postgres_changes', {event: '*', schema: 'public', table: 'pa_settings', filter: 'key=eq.app_announcement'}, () => {
+    sb.channel('pa_settings_rt_v2')
+      .on('postgres_changes', {event:'*', schema:'public', table:'pa_settings', filter:'key=eq.app_announcement'}, () => {
         if (!_annDismissed) loadAppAnnouncement();
       })
-      .on('postgres_changes', {event: '*', schema: 'public', table: 'pa_settings', filter: 'key=eq.phone_required'}, async () => {
-        // Always re-check so disabling phone_required hides the gate immediately
+      .on('postgres_changes', {event:'*', schema:'public', table:'pa_settings', filter:'key=eq.phone_required'}, async () => {
         try {
           const {data} = await sb.from('pa_settings').select('value').eq('key','phone_required').single();
-          if (data?.value === 'true') {
-            checkPhoneRequired();
-          } else if (_phoneGateActive) {
-            // Admin disabled phone_required — release the gate
+          if (data?.value === 'true') { checkPhoneRequired(); }
+          else if (_phoneGateActive) {
             _phoneGateActive = false;
             window.removeEventListener('popstate', _onPhoneGatePopstate);
-            const overlay = document.getElementById('phoneReqOverlay');
-            if (overlay) overlay.classList.remove('show');
+            const ov = document.getElementById('phoneReqOverlay');
+            if (ov) ov.classList.remove('show');
           }
         } catch(e) {}
       })
       .subscribe();
   } catch(e) {}
 }
+
 </script>
+
+<!-- ══ PHONE REQUIRED OVERLAY ══ -->
+<div id="phoneReqOverlay">
+  <div class="phone-req-sheet">
+    <div class="phone-req-ico">
+      <i class="fas fa-mobile-screen" style="font-size:28px;color:var(--bl)"></i>
+    </div>
+    <div class="phone-req-title">ژمارەی مۆبایلت داخل بکە</div>
+    <div class="phone-req-sub">پێویستە ژمارەی مۆبایلت بنووسیت بۆ ئەوەی بتوانیت ئەپەکە بەکاربهێنیت. ئەمەش تەنها یەک جار پێویستە.</div>
+    <div class="phone-req-inp-wrap">
+      <div class="phone-req-flag">🇮🇶</div>
+      <input class="phone-req-inp" id="phoneReqInput" type="tel" placeholder="07xxxxxxxxx" inputmode="numeric" maxlength="15">
+    </div>
+    <div class="phone-req-err" id="phoneReqErr"></div>
+    <button class="phone-req-btn" id="phoneReqSaveBtn" onclick="saveRequiredPhone()">
+      <i class="fas fa-check"></i> پاشەکەوتکردن و بەردەوامبوون
+    </button>
+  </div>
+</div>
+
 </html>
