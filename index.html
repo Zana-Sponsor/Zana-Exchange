@@ -6594,13 +6594,8 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 function showAuth(){
-  const sl=document.getElementById('sessionLoader');if(sl)sl.style.display='none';
-  document.getElementById('authWrap').style.display='flex';
-  document.getElementById('app').style.display='none';
-  document.getElementById('bnav').style.display='none';
-  const avb=document.getElementById('authVersionBar');if(avb)avb.style.display='block';
-  // Initialize multi-step to first step
-  goAuthStep(aMode==='login'?'email':'name');
+  // ئێستا login.html جیاکراوەتەوە — بگوازرێتەوە
+  window.location.href = '/login';
 }
 
 async function boot(){
