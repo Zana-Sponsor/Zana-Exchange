@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>چوونەژوورەوە | Proxo App</title>
+<meta name="description" content="بچۆ ژوورەوە بۆ Proxo — ئەپی بەڕێوەبردنی ڕیکلامی تیکتۆک بۆ کوردستان و عێراق.">
+<meta name="robots" content="index, follow">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.proxopages.com/login">
+<meta property="og:title" content="چوونەژوورەوە | Proxo App">
+<meta property="og:description" content="بچۆ ژوورەوە بۆ Proxo — ئەپی بەڕێوەبردنی ڕیکلامی تیکتۆک بۆ کوردستان و عێراق.">
+<meta property="og:image" content="https://image2url.com/r2/default/images/1772248056478-a5a04d98-be5f-4ee9-8f08-09db2be8fd1a.jpg">
+<meta property="og:locale" content="ckb_IQ">
+
+<!-- Favicon -->
+<link rel="icon" type="image/jpeg" href="https://image2url.com/r2/default/images/1772248056478-a5a04d98-be5f-4ee9-8f08-09db2be8fd1a.jpg">
+<link rel="apple-touch-icon" href="https://image2url.com/r2/default/images/1772248056478-a5a04d98-be5f-4ee9-8f08-09db2be8fd1a.jpg">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+@font-face{font-family:'R';src:url('https://raw.githubusercontent.com/Zana-Sponsor/Zana-Sponsor/main/Rabar_021.woff2') format('woff2');}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#f4f6fb;--w:#fff;--card:#fff;
+  scroll-behavior:smooth;
+  --b1:#e8eaf0;--b2:#d0d4de;
+  --dark:#1c2333;--dark2:#2e3a50;
+  --pri:#1c2333;--acc:#1c2333;
+  --gr:#16a34a;--rd:#dc2626;--yw:#d97706;--bl:#2563eb;
+  --mt:#8b95a8;--mt2:#6b7585;
+  --tx:#1c2333;
+}
+body{font-family:'R',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;min-height:-webkit-fill-available;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:none;scroll-behavior:smooth;}
+html{background:var(--w);}
+input[type=email],input[type=password],[dir=ltr]{font-family:'Inter',sans-serif !important;}
+button,a{touch-action:manipulation;}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes stepIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:translateX(0)}}
+
+/* ══ OFFLINE BANNER ══ */
+#offlineBanner{display:none;position:fixed;top:0;left:0;right:0;z-index:99999;background:var(--rd);color:#fff;font-size:13px;font-family:'R',sans-serif;text-align:center;padding:10px 16px;font-weight:700;}
+#offlineBanner.show{display:block;}
+
+/* ══ TOAST ══ */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(14px);padding:11px 18px 11px 16px;border-radius:50px;font-size:13px;display:none;z-index:19999;opacity:0;transition:opacity .22s,transform .22s;background:#1c2333;color:#fff;box-shadow:0 8px 28px rgba(28,35,51,.35);align-items:center;gap:7px;white-space:nowrap;max-width:88vw;font-weight:600;}
+.toast.show{display:flex;opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.err{background:#dc2626;}
+.toast.ok{background:#16a34a;}
+
+/* ══ AUTH ══ */
+#authWrap{min-height:100vh;min-height:-webkit-fill-available;display:flex;align-items:flex-start;justify-content:center;padding:36px 24px 80px;background:var(--w);}
+.auth-inner{width:100%;max-width:400px;}
+.auth-brand{text-align:center;margin-bottom:60px;}
+.auth-brand h1{font-size:22px;font-weight:700;color:var(--dark);letter-spacing:-.3px;font-family:"Inter",sans-serif;}
+.auth-brand h1 span{color:var(--dark2);}
+.auth-brand p{font-size:13px;color:var(--mt);margin-top:6px;}
+.auth-card{background:var(--w);border:1px solid rgba(232,234,240,.75);border-radius:26px;padding:28px 24px;box-shadow:0 4px 24px rgba(0,0,0,.06);}
+.finp{width:100%;padding:16px 18px;background:var(--bg);border:1.5px solid rgba(232,234,240,.9);border-radius:15px;color:var(--tx);font-family:'R',sans-serif;font-size:16px;outline:none;transition:all .25s ease;margin-bottom:12px;}
+.finp:focus{border-color:var(--dark);background:var(--w);}
+.finp::placeholder{color:var(--mt);}
+.finp[dir=ltr]{text-align:left;}
+.abtn{width:100%;padding:17px;background:var(--dark);color:#fff;border:none;border-radius:16px;font-family:'R',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 4px 20px rgba(28,35,51,.2);transition:all .22s ease;}
+.abtn:active{opacity:.9;}
+.abtn:disabled{opacity:.5;pointer-events:none;}
+.amsg{font-size:12.5px;text-align:center;padding:11px 14px;border-radius:11px;display:none;margin-top:10px;}
+.amsg.ok{background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.2);color:var(--gr);}
+.amsg.err{background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);color:var(--rd);}
+
+/* ══ AUTH MULTI-STEP ══ */
+.auth-steps{display:flex;justify-content:center;margin-bottom:20px;}
+.auth-steps-track{display:flex;gap:8px;align-items:center;}
+.auth-step-dot{width:8px;height:8px;border-radius:50%;background:var(--b2);transition:all .35s ease;}
+.auth-step-dot.done{background:var(--dark);width:20px;border-radius:4px;}
+.auth-step-dot.active{background:var(--dark);width:16px;border-radius:4px;}
+.auth-step{animation:stepIn .28s ease;}
+.auth-step-icon{width:68px;height:68px;border-radius:22px;background:var(--bg);border:1.5px solid var(--b1);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 2px 12px rgba(28,35,51,.06);}
+.auth-step-label{text-align:center;margin-bottom:20px;}
+.auth-step-label h3{font-size:18px;font-weight:900;color:var(--dark);margin-bottom:5px;letter-spacing:-.3px;}
+.auth-step-label p{font-size:12.5px;color:var(--mt);}
+.auth-step-back{display:flex;align-items:center;justify-content:center;gap:6px;font-size:12.5px;color:var(--mt);cursor:pointer;margin-top:14px;padding:4px 0;user-select:none;}
+.auth-step-back:active{opacity:.7;}
+.auth-inp-wrap{position:relative;margin-bottom:12px;}
+.auth-inp-wrap .finp{padding-right:46px;margin-bottom:0;width:100%;}
+.auth-inp-ico{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:var(--mt);font-size:15px;pointer-events:none;}
+
+/* ══ PASSWORD ══ */
+.pass-wrap{position:relative;display:block;}
+.pass-wrap .finp{padding-right:42px;padding-left:18px;box-sizing:border-box;width:100%;}
+.pass-eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--mt);font-size:16px;padding:0;line-height:1;z-index:2;display:flex;align-items:center;}
+
+/* ══ OTP ══ */
+.otp-inputs{display:flex;gap:10px;justify-content:center;margin:16px 0;direction:ltr;}
+.otp-digit{width:46px;height:56px;border-radius:13px;border:1.5px solid var(--b1);background:var(--bg);font-size:22px;font-weight:900;color:var(--dark);text-align:center;font-family:'Inter',sans-serif;outline:none;transition:all .2s;}
+.otp-digit:focus{border-color:var(--dark);background:var(--w);}
+.otp-timer{font-size:12px;color:var(--mt);text-align:center;margin-top:6px;}
+.otp-timer span{font-weight:700;color:var(--dark);}
+.otp-resend{font-size:12px;color:var(--bl);text-align:center;margin-top:8px;cursor:pointer;display:none;}
+</style>
+
+<!-- ══ RESOURCE CACHE — فۆنتی Rabar لە localStorage پاشەکەوت دەبێت بۆ کارکردن بەبێ ئینتەرنێت ══ -->
+<script>
+(function(){
+  var RC_RABAR = 'proxo_rc_rabar_v1';
+  var cachedRabar; try { cachedRabar = localStorage.getItem(RC_RABAR); } catch(e) { cachedRabar = null; }
+  if(cachedRabar){
+    var s = document.createElement('style');
+    s.id = 'rabar-cached';
+    s.textContent = "@font-face{font-family:'R';src:url('" + cachedRabar + "') format('woff2');}";
+    document.head.insertBefore(s, document.head.firstChild);
+  }
+  window.addEventListener('load', function(){
+    var _rcHas; try{_rcHas=localStorage.getItem(RC_RABAR);}catch(e){_rcHas=true;}
+    if(!_rcHas){
+      fetch('https://raw.githubusercontent.com/Zana-Sponsor/Zana-Sponsor/main/Rabar_021.woff2')
+        .then(function(r){return r.blob();})
+        .then(function(blob){return new Promise(function(res){var fr=new FileReader();fr.onload=function(){res(fr.result);};fr.readAsDataURL(blob);});})
+        .then(function(b64){
+          try{
+            localStorage.setItem(RC_RABAR, b64);
+            var s=document.getElementById('rabar-cached');
+            if(!s){s=document.createElement('style');s.id='rabar-cached';document.head.insertBefore(s,document.head.firstChild);}
+            s.textContent="@font-face{font-family:'R';src:url('"+b64+"') format('woff2');}";
+          }catch(e){}
+        }).catch(function(){});
+    }
+  });
+})();
+</script>
+
+</head>
+<body>
+
+<div id="offlineBanner"><i class="fas fa-wifi-slash"></i> ئینتەرنێت پچڕاوە — تکایە پەیوەندی بکەرەوە</div>
+<div class="toast" id="toast"></div>
+
+<!-- ══ LOGIN SCREEN ══ -->
+<div id="authWrap">
+  <div class="auth-inner">
+    <div class="auth-brand">
+      <h1>Proxo <span>App</span></h1>
+      <p>بەڕێوەبردنی ڕیکلامەکانی تیکتۆک</p>
+    </div>
+    <div class="auth-card">
+
+      <!-- Step Indicator -->
+      <div class="auth-steps" id="authStepsWrap">
+        <div class="auth-steps-track" id="authStepsTrack"></div>
+      </div>
+
+      <!-- Step: Email -->
+      <div class="auth-step" id="authStepEmail">
+        <div class="auth-step-icon">
+          <i class="fas fa-envelope" style="font-size:28px;color:var(--dark)"></i>
+        </div>
+        <div class="auth-step-label">
+          <h3>چوونەژوورەوە</h3>
+          <p>ئیمەیڵەکەت بنووسە</p>
+        </div>
+        <div class="auth-inp-wrap">
+          <i class="fas fa-envelope auth-inp-ico"></i>
+          <input class="finp" type="email" id="authEmail" placeholder="example@gmail.com" dir="ltr" onkeydown="if(event.key==='Enter')nextAuthStep('email')">
+        </div>
+        <button class="abtn" onclick="nextAuthStep('email')">
+          <i class="fas fa-arrow-left"></i>
+          <span>دواتر</span>
+        </button>
+        <div class="amsg" id="authMsgEmail"></div>
+        <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--mt)">
+          هەژمارت نییە؟ <span onclick="window.location.href='/signup.html'" style="color:var(--dark);font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:2px">هەژمارێک دروست بکە</span>
+        </div>
+      </div>
+
+      <!-- Step: Password -->
+      <div class="auth-step" id="authStepPass" style="display:none">
+        <div class="auth-step-icon">
+          <i class="fas fa-lock" style="font-size:28px;color:var(--dark)"></i>
+        </div>
+        <div class="auth-step-label">
+          <h3>وشەی نهێنی</h3>
+          <p>وشەی نهێنیت بنووسە بۆ چوونەژوورەوە</p>
+        </div>
+        <div class="pass-wrap">
+          <input class="finp" type="password" id="authPass" placeholder="وشەی نهێنی" dir="ltr"
+            onkeydown="if(event.key==='Enter')nextAuthStep('pass')">
+          <button type="button" class="pass-eye" onclick="togglePass('authPass',this)"><i class="fas fa-eye-slash"></i></button>
+        </div>
+        <button class="abtn" id="authBtn" onclick="nextAuthStep('pass')">
+          <i class="fas fa-arrow-left"></i>
+          <span id="authBtnTxt">چوونەژوورەوە</span>
+        </button>
+        <div class="amsg" id="authMsg"></div>
+        <div id="forgotLinkWrap" style="text-align:center;margin-top:10px">
+          <span onclick="showForgotStep()" style="font-size:12px;color:var(--mt);cursor:pointer;text-decoration:underline">وشەی نهێنیم لەبیرکردووە</span>
+        </div>
+        <div class="auth-step-back" onclick="goAuthStep('email')">
+          <i class="fas fa-arrow-right"></i> گەڕانەوە
+        </div>
+      </div>
+
+      <!-- Forgot Password Step -->
+      <div id="forgotStep" style="display:none">
+
+        <!-- FP Step A: Email input -->
+        <div id="fpStepA">
+          <div style="text-align:center;margin-bottom:16px">
+            <div style="width:56px;height:56px;border-radius:18px;background:rgba(28,35,51,.06);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px"><i class="fas fa-key" style="color:var(--dark)"></i></div>
+            <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px">ڕێستکردنەوەی وشەی نهێنی</div>
+            <div style="font-size:12px;color:var(--mt)">ئیمەیلت بنووسە، کۆدی دڵنیاکردنەوە دەنێرینە</div>
+          </div>
+          <div class="auth-inp-wrap">
+            <i class="fas fa-envelope auth-inp-ico"></i>
+            <input class="finp" type="email" id="forgotEmail" placeholder="ئیمەیل" dir="ltr" onkeydown="if(event.key==='Enter')doForgotSendOtp()">
+          </div>
+          <button class="abtn" id="forgotSendBtn" onclick="doForgotSendOtp()">
+            <i class="fas fa-paper-plane"></i>
+            <span>ناردنی کۆدی دڵنیاکردنەوە</span>
+          </button>
+          <div class="amsg" id="fpMsgA"></div>
+          <div style="text-align:center;margin-top:12px">
+            <span onclick="cancelForgotStep()" style="font-size:12px;color:var(--mt);cursor:pointer"><i class="fas fa-arrow-right" style="margin-left:5px"></i>گەڕانەوە</span>
+          </div>
+        </div>
+
+        <!-- FP Step B: OTP input -->
+        <div id="fpStepB" style="display:none">
+          <div style="text-align:center;margin-bottom:16px">
+            <div style="width:56px;height:56px;border-radius:18px;background:rgba(28,35,51,.06);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px"><i class="fas fa-shield-halved" style="color:var(--dark)"></i></div>
+            <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px">کۆدی دڵنیاکردنەوە</div>
+            <div style="font-size:12px;color:var(--mt)" id="fpOtpLbl">کۆدی ٦ ژمارە بۆ ئیمەیلەکەت نێردرا</div>
+          </div>
+          <div class="otp-inputs">
+            <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="fp1" oninput="fpOtpMove(this,null,'fp2')" onkeydown="fpOtpBack(event,this,null)">
+            <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="fp2" oninput="fpOtpMove(this,'fp1','fp3')" onkeydown="fpOtpBack(event,this,'fp1')">
+            <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="fp3" oninput="fpOtpMove(this,'fp2','fp4')" onkeydown="fpOtpBack(event,this,'fp2')">
+            <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="fp4" oninput="fpOtpMove(this,'fp3','fp5')" onkeydown="fpOtpBack(event,this,'fp3')">
+            <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="fp5" oninput="fpOtpMove(this,'fp4','fp6')" onkeydown="fpOtpBack(event,this,'fp4')">
+            <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="fp6" oninput="fpOtpMove(this,'fp5',null)" onkeydown="fpOtpBack(event,this,'fp5')">
+          </div>
+          <div class="otp-timer" id="fpTimerWrap" style="margin-top:10px">ماوەی ئەم کۆدە: <span id="fpTimerVal">10:00</span></div>
+          <div class="otp-resend" id="fpResendBtn" onclick="fpResendOtp()"><i class="fas fa-rotate-right" style="margin-left:5px"></i>کۆدی نوێ بنێرە</div>
+          <div class="amsg" id="fpMsgB" style="display:none;margin-top:10px"></div>
+          <button class="abtn" id="fpVerifyBtn" onclick="doForgotVerifyOtp()" style="margin-top:12px">
+            <i class="fas fa-check"></i>
+            <span>دڵنیاکردنەوە</span>
+          </button>
+          <div style="text-align:center;margin-top:10px">
+            <span onclick="fpBackToA()" style="font-size:12px;color:var(--mt);cursor:pointer"><i class="fas fa-arrow-right" style="margin-left:5px"></i>گەڕانەوە</span>
+          </div>
+        </div>
+
+        <!-- FP Step C: New password -->
+        <div id="fpStepC" style="display:none">
+          <div style="text-align:center;margin-bottom:18px">
+            <div style="width:56px;height:56px;border-radius:18px;background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px"><i class="fas fa-circle-check" style="color:#16a34a"></i></div>
+            <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px">ناسنامەت دڵنیاکرایەوە</div>
+            <div style="font-size:12px;color:var(--mt)">ئێستا وشەی نهێنیی نوێت بنووسە</div>
+          </div>
+          <div class="pass-wrap" style="margin-bottom:0">
+            <input class="finp" type="password" id="fpNewPass" placeholder="وشەی نهێنیی نوێ — کەمترین ٦ پیت" dir="ltr"
+              oninput="updateStrength('fpNewPass','fpStrFill','fpStrTxt')">
+            <button type="button" class="pass-eye" onclick="togglePass('fpNewPass',this)"><i class="fas fa-eye-slash"></i></button>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin:4px 0 10px;">
+            <div style="height:4px;border-radius:4px;flex:1;background:var(--b1);overflow:hidden"><div id="fpStrFill" style="height:100%;border-radius:4px;width:0;transition:width .25s,background .25s"></div></div>
+            <div id="fpStrTxt" style="font-size:10.5px;font-weight:800;min-width:38px;color:var(--mt);text-align:right"></div>
+          </div>
+          <div class="pass-wrap" style="margin-bottom:14px">
+            <input class="finp" type="password" id="fpConfirmPass" placeholder="دووبارە وشەی نهێنیی نوێ" dir="ltr">
+            <button type="button" class="pass-eye" onclick="togglePass('fpConfirmPass',this)"><i class="fas fa-eye-slash"></i></button>
+          </div>
+          <div class="amsg" id="fpMsgC" style="display:none;margin-bottom:12px"></div>
+          <button class="abtn" id="fpSaveBtn" onclick="doForgotSavePass()">
+            <i class="fas fa-lock"></i>
+            <span>پاشەکەوتکردنی وشەی نهێنیی نوێ</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- OTP Step -->
+      <div id="otpStep" style="display:none">
+        <div style="text-align:center;margin-bottom:16px">
+          <div style="width:56px;height:56px;border-radius:18px;background:rgba(28,35,51,.06);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px"><i class="fas fa-shield-halved" style="color:var(--dark)"></i></div>
+          <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px">کۆدی دڵنیاکردنەوە</div>
+          <div style="font-size:12px;color:var(--mt)" id="otpEmailLbl">کۆدی ٦ ژمارەی بۆ ئیمەیلەکەت نێردرا</div>
+        </div>
+        <div class="otp-inputs">
+          <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="otp1" oninput="otpMove(this,null,'otp2')" onkeydown="otpBack(event,this,null)">
+          <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="otp2" oninput="otpMove(this,'otp1','otp3')" onkeydown="otpBack(event,this,'otp1')">
+          <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="otp3" oninput="otpMove(this,'otp2','otp4')" onkeydown="otpBack(event,this,'otp2')">
+          <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="otp4" oninput="otpMove(this,'otp3','otp5')" onkeydown="otpBack(event,this,'otp3')">
+          <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="otp5" oninput="otpMove(this,'otp4','otp6')" onkeydown="otpBack(event,this,'otp4')">
+          <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="otp6" oninput="otpMove(this,'otp5',null)" onkeydown="otpBack(event,this,'otp5')">
+        </div>
+        <div class="otp-timer" id="otpTimerWrap">ماوەی ئەم کۆدە: <span id="otpTimerVal">10:00</span></div>
+        <div class="otp-resend" id="otpResendBtn" onclick="resendOtp()"><i class="fas fa-rotate-right" style="margin-left:5px"></i>کۆدی نوێ بنێرە</div>
+        <button class="abtn" id="otpVerifyBtn" onclick="verifyOtp()" style="margin-top:12px">
+          <i class="fas fa-check"></i>
+          <span>دڵنیاکردنەوە</span>
+        </button>
+        <div class="amsg" id="otpMsg"></div>
+        <div style="text-align:center;margin-top:12px">
+          <span onclick="cancelOtp()" style="font-size:12px;color:var(--mt);cursor:pointer"><i class="fas fa-arrow-right" style="margin-left:5px"></i>گەڕانەوە</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Version bar -->
+<div id="authVersionBar" style="position:fixed;bottom:0;left:0;right:0;text-align:center;padding:14px 0;font-size:11px;color:var(--mt);font-family:'Inter',sans-serif;letter-spacing:.5px;background:var(--w);border-top:1px solid var(--b1)">App Version v<span id="authVersionLbl">1.0.1</span></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// ═══ SUPABASE + GLOBAL STATE ═════════════════════════════════
+// ══════════════════════════════════════════════════════════════
+const SB_URL=atob('aHR0cHM6Ly9jb2pjaGt3c3NtYXNpZWpjZ3Ziay5zdXBhYmFzZS5jbw==');
+const SB_KEY=atob('ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnBjM01pT2lKemRYQmhZbUZ6WlNJc0luSmxaaUk2SW1OdmFtTm9hM2R6YzIxaGMybGxhbU5uZG1Kcklpd2ljbTlzWlNJNkltRnViMjRpTENKcFlYUWlPakUzTnpjek1URTFNVElzSW1WNGNDSTZNakE1TWpnNE56VXhNbjAuUkNBTHkzd3BLSEdBa21YV2NCcUViX1FGRVVtaDZFcmRSYmZyQm1hZ3Z0dw==');
+let sb;
+
+// ══ OFFLINE ══
+function checkOnline(){const b=document.getElementById('offlineBanner');if(b)b.classList.remove('show');}
+window.addEventListener('online',checkOnline);
+window.addEventListener('offline',()=>{const b=document.getElementById('offlineBanner');if(b)b.classList.add('show');});
+
+// ══ TOAST ══
+function showToast(m,c){
+  const t=document.getElementById('toast');
+  const ico=c==='ok'?'<i class="fas fa-circle-check"></i>':c==='err'?'<i class="fas fa-circle-xmark"></i>':'<i class="fas fa-info-circle" style="opacity:.75"></i>';
+  t.innerHTML=ico+m;t.className='toast show'+(c?' '+c:'');
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ══════════════════════════════════════════════════════════════
+// ═══ OTP SYSTEM ═══════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════
+const N8N_WEBHOOK = 'https://email.proxopages.com/webhook/send_otp';
+let _otpEmail = '';
+let _otpPendingData = null;
+let _otpTimer = null;
+let _otpPurpose = 'login';
+
+const OTP_MAX_ATTEMPTS = 5;
+const OTP_BAN_MS = 10 * 60 * 1000;
+const OTP_SEND_MAX = 3;
+
+function _rlKey(email) { return 'otp_rl_' + btoa(email.toLowerCase().trim()); }
+function _sendKey(email) { return 'otp_send_' + btoa(email.toLowerCase().trim()); }
+
+function otpSendCheck(email) {
+  try {
+    const raw = localStorage.getItem(_sendKey(email));
+    if (!raw) return { ok: true };
+    const d = JSON.parse(raw);
+    const now = Date.now();
+    if (d.banUntil && d.banUntil > now) {
+      const rem = Math.ceil((d.banUntil - now) / 1000);
+      const m = Math.floor(rem / 60), s = rem % 60;
+      return { ok: false, remaining: m + ':' + (s < 10 ? '0' : '') + s };
+    }
+    if (d.banUntil && d.banUntil <= now) { localStorage.removeItem(_sendKey(email)); }
+    return { ok: true };
+  } catch(_) { return { ok: true }; }
+}
+function otpSendRecord(email) {
+  try {
+    const now = Date.now();
+    const raw = localStorage.getItem(_sendKey(email));
+    let d = raw ? JSON.parse(raw) : { sends: 0 };
+    if (d.banUntil && d.banUntil > now) return { ok: false };
+    d.sends = (d.sends || 0) + 1;
+    if (d.sends >= OTP_SEND_MAX) { d.banUntil = now + OTP_BAN_MS; d.sends = 0; }
+    localStorage.setItem(_sendKey(email), JSON.stringify(d));
+    return { ok: true };
+  } catch(_) { return { ok: true }; }
+}
+function otpSendClear(email) { try { localStorage.removeItem(_sendKey(email)); } catch(_) {} }
+
+function otpRateCheck(email) {
+  try {
+    const raw = localStorage.getItem(_rlKey(email));
+    if (!raw) return { ok: true };
+    const d = JSON.parse(raw);
+    const now = Date.now();
+    if (d.banUntil && d.banUntil > now) {
+      const rem = Math.ceil((d.banUntil - now) / 1000);
+      const m = Math.floor(rem / 60), s = rem % 60;
+      return { ok: false, remaining: m + ':' + (s < 10 ? '0' : '') + s, banUntil: d.banUntil };
+    }
+    if (d.banUntil && d.banUntil <= now) { localStorage.removeItem(_rlKey(email)); }
+    return { ok: true };
+  } catch(_) { return { ok: true }; }
+}
+function otpRateRecord(email) {
+  try {
+    const now = Date.now();
+    const raw = localStorage.getItem(_rlKey(email));
+    let d = raw ? JSON.parse(raw) : { attempts: 0 };
+    if (d.banUntil && d.banUntil > now) {
+      const rem = Math.ceil((d.banUntil - now) / 1000);
+      const m = Math.floor(rem / 60), s = rem % 60;
+      return { ok: false, remaining: m + ':' + (s < 10 ? '0' : '') + s };
+    }
+    d.attempts = (d.attempts || 0) + 1;
+    if (d.attempts >= OTP_MAX_ATTEMPTS) {
+      d.banUntil = now + OTP_BAN_MS; d.attempts = 0;
+      localStorage.setItem(_rlKey(email), JSON.stringify(d));
+      return { ok: false, remaining: '10:00' };
+    }
+    localStorage.setItem(_rlKey(email), JSON.stringify(d));
+    return { ok: true, attemptsLeft: OTP_MAX_ATTEMPTS - d.attempts };
+  } catch(_) { return { ok: true }; }
+}
+function otpRateClear(email) { try { localStorage.removeItem(_rlKey(email)); } catch(_) {} }
+
+async function requestOtp(email, purpose='login') {
+  const sendChk = otpSendCheck(email);
+  if (!sendChk.ok) {
+    return { success: false, message: 'ناردنی کۆد بۆ ئەم ئیمەیلە قفڵکراوە — تکایە ' + sendChk.remaining + ' خولەکی تر هەوڵ بدەرەوە' };
+  }
+  try {
+    const res = await fetch(N8N_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'request_otp', email, purpose })
+    });
+    let data = {};
+    try { const txt = await res.text(); if(txt.trim()) data = JSON.parse(txt); } catch(_) {}
+    if(res.ok && data.success !== false) {
+      otpSendRecord(email);
+      return { success: true, message: data.message || 'کۆدەکە نێردرا' };
+    }
+    return { success: false, message: data.message || 'هەڵەی ناردنی کۆد' };
+  } catch(e) {
+    return { success: false, message: 'هەڵەی تۆڕ: ' + e.message };
+  }
+}
+
+async function verifyOtpCode(email, code) {
+  try {
+    if (!sb) return { success: false, message: 'سیستەم ئامادە نییە، دووبارە هەوڵ بدەرەوە' };
+    const codeStr = String(code).trim();
+    const emailStr = String(email).trim();
+    const { data: rows, error } = await sb
+      .from('otp_codes')
+      .select('*')
+      .eq('email', emailStr)
+      .order('created_at', { ascending: false })
+      .limit(5);
+    if (error) {
+      const res = await fetch(N8N_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'verify_otp', email: emailStr, code: codeStr })
+      });
+      let data = {};
+      try { const txt = await res.text(); if(txt.trim()) data = JSON.parse(txt); } catch(_) {}
+      const _raw = Array.isArray(data) ? data[0] : data;
+      const payload = (_raw && _raw.json) ? _raw.json : _raw;
+      if(res.ok && payload.success === true) {
+        otpRateClear(email); otpSendClear(email);
+        return { success: true, message: payload.message || 'دڵنیاکراوە' };
+      }
+      return { success: false, message: payload.message || 'کۆدی هەڵە' };
+    }
+    if (!rows || rows.length === 0) { return { success: false, message: 'کۆدی تازە داواکە' }; }
+    const row = rows.find(r => String(r.code).trim() === codeStr) || null;
+    if (!row) { return { success: false, message: 'کۆدی هەڵە' }; }
+    if (new Date(row.expires_at) < new Date()) {
+      await sb.from('otp_codes').delete().eq('id', row.id);
+      return { success: false, message: 'کاتی کۆدەکە تێپەڕیوە — کۆدی نوێ داواکە' };
+    }
+    await sb.from('otp_codes').delete().eq('id', row.id);
+    otpRateClear(email); otpSendClear(email);
+    return { success: true, message: 'دڵنیاکراوە' };
+  } catch(e) {
+    return { success: false, message: 'هەڵەی تۆڕ: ' + e.message };
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// ═══ PASSWORD EYE TOGGLE & STRENGTH ═══
+// ══════════════════════════════════════════════════════════════
+function togglePass(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  if (!inp) return;
+  const show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  const ic = btn.querySelector('i');
+  if (ic) { ic.className = show ? 'fas fa-eye' : 'fas fa-eye-slash'; }
+}
+function passStrength(pass) {
+  if (!pass || pass.length < 4) return 1;
+  let score = 0;
+  if (pass.length >= 8)  score++;
+  if (pass.length >= 12) score++;
+  if (/[A-Z]/.test(pass)) score++;
+  if (/[0-9]/.test(pass)) score++;
+  if (/[^A-Za-z0-9]/.test(pass)) score++;
+  if (score <= 1) return 1;
+  if (score <= 3) return 2;
+  return 3;
+}
+function updateStrength(inputId, fillId, txtId) {
+  const val = document.getElementById(inputId)?.value || '';
+  const fill = document.getElementById(fillId);
+  const txt  = document.getElementById(txtId);
+  if (!fill || !txt) return;
+  if (!val) { fill.style.width = '0'; txt.textContent = ''; return; }
+  const levels = [
+    { w: '33%',  c: '#ef4444', t: 'ئاسان' },
+    { w: '66%',  c: '#f97316', t: 'مامناوەند' },
+    { w: '100%', c: '#22c55e', t: 'بەهێز' }
+  ];
+  const lvl = levels[passStrength(val) - 1];
+  fill.style.width = lvl.w; fill.style.background = lvl.c;
+  txt.style.color = lvl.c; txt.textContent = lvl.t;
+}
+
+// ══════════════════════════════════════════════════════════════
+// ═══ STEP NAVIGATION (Email → Password) ═══════════════════════
+// ══════════════════════════════════════════════════════════════
+let authCurrentStep = 'email';
+
+function _renderStepDots(currentStep) {
+  const steps = ['email','pass'];
+  const track = document.getElementById('authStepsTrack');
+  if(!track) return;
+  const currentIdx = steps.indexOf(currentStep);
+  track.innerHTML = steps.map((s, i) => {
+    let cls = 'auth-step-dot';
+    if(i < currentIdx) cls += ' done';
+    else if(i === currentIdx) cls += ' active';
+    return '<div class="' + cls + '"></div>';
+  }).join('');
+}
+
+function goAuthStep(step) {
+  authCurrentStep = step;
+  ['authStepEmail','authStepPass'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = 'none';
+  });
+  const capStep = step.charAt(0).toUpperCase() + step.slice(1);
+  const stepEl = document.getElementById('authStep' + capStep);
+  if(stepEl) {
+    stepEl.style.display = 'block';
+    void stepEl.offsetWidth;
+    stepEl.style.animation='none';
+    void stepEl.offsetWidth;
+    stepEl.style.animation='';
+  }
+  _renderStepDots(step);
+  setTimeout(() => {
+    if(step === 'email') document.getElementById('authEmail')?.focus();
+    else if(step === 'pass') document.getElementById('authPass')?.focus();
+  }, 60);
+}
+
+function _showStepMsg(id, text, type) {
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.textContent = text;
+  el.className = 'amsg ' + type;
+  el.style.display = 'block';
+}
+
+function nextAuthStep(from) {
+  ['authMsgEmail','authMsg'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.style.display = 'none';
+  });
+  if(from === 'email') {
+    const email = document.getElementById('authEmail').value.trim();
+    if(!email) { _showStepMsg('authMsgEmail','ئیمەیل بنووسە','err'); return; }
+    if(!email.toLowerCase().endsWith('@gmail.com')) { _showStepMsg('authMsgEmail','تەنها ئیمەیلی Gmail پاشگیری دەکرێت','err'); return; }
+    goAuthStep('pass');
+  } else if(from === 'pass') {
+    doAuth();
+  }
+}
+
+// ══ نیشاندانی/شاردنەوەی فۆرم ══
+function _hideAuthForm() {
+  ['authStepsWrap','authStepEmail','authStepPass'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = 'none';
+  });
+}
+function _restoreAuthForm() {
+  const asw = document.getElementById('authStepsWrap');
+  if(asw) asw.style.display = '';
+  const am = document.getElementById('authMsg');
+  if(am) am.style.display = 'none';
+  goAuthStep('email');
+}
+
+// ══ OTP STEP SHOW/HIDE ══
+function showOtpStep(email) {
+  _otpEmail = email;
+  document.getElementById('otpEmailLbl').textContent = 'کۆدی ٦ ژمارە بۆ ' + email + ' نێردرا';
+  _hideAuthForm();
+  document.getElementById('forgotStep').style.display = 'none';
+  document.getElementById('otpStep').style.display = 'block';
+  ['otp1','otp2','otp3','otp4','otp5','otp6'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  document.getElementById('otpMsg').style.display = 'none';
+  document.getElementById('otpResendBtn').style.display = 'none';
+  document.getElementById('otp1').focus();
+  startOtpTimer(600);
+}
+
+function cancelOtp() {
+  clearInterval(_otpTimer);
+  document.getElementById('otpStep').style.display = 'none';
+  document.getElementById('forgotStep').style.display = 'none';
+  _restoreAuthForm();
+  _otpPendingData = null;
+}
+
+// ══ OTP TIMER ══
+function startOtpTimer(seconds) {
+  clearInterval(_otpTimer);
+  let remaining = seconds;
+  function tick() {
+    if(remaining <= 0) {
+      clearInterval(_otpTimer);
+      document.getElementById('otpTimerVal').textContent = '0:00';
+      document.getElementById('otpTimerWrap').style.color = 'var(--rd)';
+      document.getElementById('otpResendBtn').style.display = 'block';
+      return;
+    }
+    const m = Math.floor(remaining / 60);
+    const s = remaining % 60;
+    const el = document.getElementById('otpTimerVal');
+    if(el) el.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+    remaining--;
+  }
+  tick();
+  _otpTimer = setInterval(tick, 1000);
+}
+
+function otpMove(el, prevId, nextId) {
+  el.value = el.value.replace(/[^0-9]/g, '').slice(-1);
+  if(el.value && nextId) document.getElementById(nextId)?.focus();
+  const code = ['otp1','otp2','otp3','otp4','otp5','otp6'].map(id => document.getElementById(id)?.value || '').join('');
+  if(code.length === 6) verifyOtp();
+}
+function otpBack(e, el, prevId) {
+  if(e.key === 'Backspace' && !el.value && prevId) document.getElementById(prevId)?.focus();
+}
+
+// ══ BAN COUNTDOWN ══
+let _banIntervals = {};
+function startBanCountdown(email, msgElId, resendBtnId) {
+  if (_banIntervals[msgElId]) clearInterval(_banIntervals[msgElId]);
+  const btn = resendBtnId ? document.getElementById(resendBtnId) : null;
+  if (btn) btn.style.display = 'none';
+  function tick() {
+    const c = otpRateCheck(email);
+    const el = document.getElementById(msgElId);
+    if (!el) { clearInterval(_banIntervals[msgElId]); return; }
+    if (!c.ok) {
+      el.textContent = 'تکایە ' + c.remaining + ' خولەکی تر هەوڵ بدەرەوە';
+      el.className = 'amsg err'; el.style.display = 'block';
+    } else {
+      clearInterval(_banIntervals[msgElId]);
+      el.textContent = 'ئێستا دەتوانیت دووبارە کۆد داوا بکەیت';
+      el.className = 'amsg ok';
+      if (btn) btn.style.display = 'block';
+    }
+  }
+  tick();
+  _banIntervals[msgElId] = setInterval(tick, 1000);
+}
+
+// ══ VERIFY OTP ══
+let _otpVerifying = false;
+async function verifyOtp() {
+  if(_otpVerifying) return;
+  const code = ['otp1','otp2','otp3','otp4','otp5','otp6'].map(id => document.getElementById(id)?.value || '').join('');
+  if(code.length < 6) { showOtpMsg('کۆدەکە تەواو بنووسە', 'err'); return; }
+
+  const rlChk = otpRateCheck(_otpEmail);
+  if(!rlChk.ok) {
+    showOtpMsg('قفڵکراوە — تکایە ' + rlChk.remaining + ' خولەکی تر هەوڵ بدەرەوە', 'err');
+    startBanCountdown(_otpEmail, 'otpMsg', 'otpResendBtn');
+    return;
+  }
+
+  _otpVerifying = true;
+  const btn = document.getElementById('otpVerifyBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> پشکنین...';
+
+  const result = await verifyOtpCode(_otpEmail, code);
+  _otpVerifying = false;
+
+  if(!result.success) {
+    const rl = otpRateRecord(_otpEmail);
+    if(rl && !rl.ok) {
+      showOtpMsg('زۆر جار هەوڵت دا — تکایە ' + rl.remaining + ' خولەکی تر هەوڵ بدەرەوە', 'err');
+      startBanCountdown(_otpEmail, 'otpMsg', 'otpResendBtn');
+    } else {
+      showOtpMsg(result.message || 'کۆدی هەڵە', 'err');
+    }
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-check"></i> دڵنیاکردنەوە';
+    return;
+  }
+
+  clearInterval(_otpTimer);
+  showOtpMsg('سەرکەوتوو بوو! چوونەژوورەوە...', 'ok');
+
+  setTimeout(async () => {
+    try {
+      // LOGIN
+      const { data, error } = await sb.auth.signInWithPassword({ email: _otpEmail, password: _otpPendingData.pass });
+      if(!error && data?.user) {
+        // چوونەژوورەوە سەرکەوت — بگوازرێتەوە بۆ پەڕەی سەرەکی
+        window.location.href = '/';
+      } else {
+        cancelOtp();
+        showAmsg(kuErr(error?.message) || 'هەڵەیەک ڕووی دا، دووبارە هەوڵ بدەرەوە', 'err');
+      }
+    } catch(e) {
+      showOtpMsg(kuErr(e.message) || 'هەڵەیەک ڕووی دا', 'err');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-check"></i> دڵنیاکردنەوە';
+    }
+  }, 800);
+}
+
+// ══ RESEND OTP ══
+async function resendOtp() {
+  const chk = otpRateCheck(_otpEmail);
+  if (!chk.ok) {
+    showOtpMsg('تکایە ' + chk.remaining + ' خولەکی تر هەوڵ بدەرەوە', 'err');
+    startBanCountdown(_otpEmail, 'otpMsg', 'otpResendBtn');
+    return;
+  }
+  document.getElementById('otpResendBtn').style.display = 'none';
+  document.getElementById('otpTimerWrap').style.color = '';
+  showOtpMsg('ناردن...', 'ok');
+  const result = await requestOtp(_otpEmail, 'login');
+  if(result.success) {
+    showOtpMsg('کۆدی نوێ نێردرا', 'ok');
+    ['otp1','otp2','otp3','otp4','otp5','otp6'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+    document.getElementById('otp1')?.focus();
+    startOtpTimer(600);
+  } else {
+    showOtpMsg(result.message || 'هەڵە', 'err');
+    document.getElementById('otpResendBtn').style.display = 'block';
+  }
+}
+
+function showOtpMsg(t, c) {
+  const el = document.getElementById('otpMsg');
+  el.textContent = t; el.className = 'amsg ' + c; el.style.display = 'block';
+}
+
+// ══════════════════════════════════════════════════════════════
+// ═══ FORGOT PASSWORD (OTP Flow) ═══════════════════════════════
+// ══════════════════════════════════════════════════════════════
+let _fpTimer=null, _fpEmail='', _fpVerifiedCode='';
+
+function showForgotStep(){
+  _hideAuthForm();
+  document.getElementById('otpStep').style.display='none';
+  document.getElementById('forgotStep').style.display='block';
+  document.getElementById('fpStepA').style.display='block';
+  document.getElementById('fpStepB').style.display='none';
+  document.getElementById('fpStepC').style.display='none';
+  document.getElementById('forgotEmail').value='';
+  document.getElementById('fpMsgA').style.display='none';
+  document.getElementById('forgotEmail').focus();
+}
+function cancelForgotStep(){
+  clearInterval(_fpTimer);
+  document.getElementById('forgotStep').style.display='none';
+  document.getElementById('otpStep').style.display='none';
+  _restoreAuthForm();
+}
+function fpBackToA(){
+  clearInterval(_fpTimer);
+  document.getElementById('fpStepB').style.display='none';
+  document.getElementById('fpStepA').style.display='block';
+  document.getElementById('fpMsgA').style.display='none';
+}
+function fpShowMsg(step,t,c){
+  const el=document.getElementById('fpMsg'+step);
+  el.textContent=t; el.className='amsg '+c; el.style.display='block';
+}
+function fpStartTimer(sec){
+  clearInterval(_fpTimer);
+  let rem=sec;
+  function tick(){
+    if(rem<=0){clearInterval(_fpTimer);document.getElementById('fpTimerVal').textContent='0:00';document.getElementById('fpTimerWrap').style.color='var(--rd)';document.getElementById('fpResendBtn').style.display='block';return;}
+    const m=Math.floor(rem/60),s=rem%60;
+    const el=document.getElementById('fpTimerVal');if(el)el.textContent=m+':'+(s<10?'0':'')+s;rem--;
+  }
+  tick(); _fpTimer=setInterval(tick,1000);
+}
+function fpOtpMove(el,prevId,nextId){
+  el.value=el.value.replace(/[^0-9]/g,'').slice(-1);
+  if(el.value&&nextId)document.getElementById(nextId)?.focus();
+  const code=['fp1','fp2','fp3','fp4','fp5','fp6'].map(id=>document.getElementById(id)?.value||'').join('');
+  if(code.length===6)doForgotVerifyOtp();
+}
+function fpOtpBack(e,el,prevId){if(e.key==='Backspace'&&!el.value&&prevId)document.getElementById(prevId)?.focus();}
+
+async function fpResendOtp(){
+  const chk = otpRateCheck(_fpEmail);
+  if (!chk.ok) {
+    fpShowMsg('B','تکایە ' + chk.remaining + ' خولەکی تر هەوڵ بدەرەوە','err');
+    startBanCountdown(_fpEmail, 'fpMsgB', 'fpResendBtn');
+    return;
+  }
+  document.getElementById('fpResendBtn').style.display='none';
+  document.getElementById('fpTimerWrap').style.color='';
+  fpShowMsg('B','ناردن...','ok');
+  const result=await requestOtp(_fpEmail,'reset_password');
+  if(result.success){
+    fpShowMsg('B','کۆدی نوێ نێردرا','ok');
+    ['fp1','fp2','fp3','fp4','fp5','fp6'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    document.getElementById('fp1')?.focus();
+    fpStartTimer(600);
+  } else {
+    fpShowMsg('B',result.message||'هەڵەی ناردن','err');
+    document.getElementById('fpResendBtn').style.display='block';
+  }
+}
+
+async function doForgotSendOtp(){
+  const email=document.getElementById('forgotEmail').value.trim();
+  if(!email){fpShowMsg('A','ئیمەیلەکەت بنووسە','err');return;}
+  const btn=document.getElementById('forgotSendBtn');
+  btn.disabled=true;
+  btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> پشکنین...';
+  try{
+    const {data,error}=await sb.from('profiles').select('id').eq('email',email).maybeSingle();
+    if(error&&error.code!=='PGRST116') throw {message:'هەڵەی پشکنین، دووبارە هەوڵ بدەرەوە'};
+    if(!data){fpShowMsg('A','ئەم ئیمەیلە تۆمارنەکراوە','err');btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> ناردنی کۆدی دڵنیاکردنەوە';return;}
+  }catch(e){
+    fpShowMsg('A',e.message||'هەڵەی پشکنین','err');
+    btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> ناردنی کۆدی دڵنیاکردنەوە';return;
+  }
+  btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> دەنێردرێت...';
+  const result=await requestOtp(email,'reset_password');
+  btn.disabled=false;
+  btn.innerHTML='<i class="fas fa-paper-plane"></i> ناردنی کۆدی دڵنیاکردنەوە';
+  if(!result.success){fpShowMsg('A',result.message||'هەڵەی ناردنی کۆد','err');return;}
+  _fpEmail=email;
+  document.getElementById('fpOtpLbl').textContent='کۆدی ٦ ژمارە بۆ '+email+' نێردرا';
+  ['fp1','fp2','fp3','fp4','fp5','fp6'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('fpMsgB').style.display='none';
+  document.getElementById('fpResendBtn').style.display='none';
+  document.getElementById('fpTimerWrap').style.color='';
+  document.getElementById('fpStepA').style.display='none';
+  document.getElementById('fpStepB').style.display='block';
+  fpStartTimer(600);
+  document.getElementById('fp1')?.focus();
+}
+
+let _fpVerifying = false;
+async function doForgotVerifyOtp(){
+  if(_fpVerifying) return;
+  const code=['fp1','fp2','fp3','fp4','fp5','fp6'].map(id=>document.getElementById(id)?.value||'').join('');
+  if(code.length<6){fpShowMsg('B','کۆدەکە تەواو بنووسە','err');return;}
+
+  const rlChk = otpRateCheck(_fpEmail);
+  if(!rlChk.ok){
+    fpShowMsg('B','قفڵکراوە — تکایە ' + rlChk.remaining + ' خولەکی تر هەوڵ بدەرەوە','err');
+    startBanCountdown(_fpEmail, 'fpMsgB', 'fpResendBtn');
+    return;
+  }
+
+  _fpVerifying = true;
+  const btn=document.getElementById('fpVerifyBtn');
+  btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> پشکنین...';
+  const result=await verifyOtpCode(_fpEmail,code);
+  _fpVerifying = false;
+  if(!result.success){
+    const rl = otpRateRecord(_fpEmail);
+    if(rl && !rl.ok){
+      fpShowMsg('B','زۆر جار هەوڵت دا — تکایە ' + rl.remaining + ' خولەکی تر هەوڵ بدەرەوە','err');
+      startBanCountdown(_fpEmail, 'fpMsgB', 'fpResendBtn');
+    } else {
+      fpShowMsg('B',result.message||'کۆدی هەڵە','err');
+    }
+    btn.disabled=false;btn.innerHTML='<i class="fas fa-check"></i> دڵنیاکردنەوە';return;
+  }
+  clearInterval(_fpTimer);
+  _fpVerifiedCode=code;
+  document.getElementById('fpStepB').style.display='none';
+  document.getElementById('fpStepC').style.display='block';
+  document.getElementById('fpNewPass').value='';
+  document.getElementById('fpConfirmPass').value='';
+  document.getElementById('fpMsgC').style.display='none';
+  document.getElementById('fpNewPass').focus();
+}
+
+async function doForgotSavePass(){
+  const np=document.getElementById('fpNewPass').value;
+  const cp=document.getElementById('fpConfirmPass').value;
+  if(!np||np.length<6){fpShowMsg('C','وشەی نهێنی دەبێت کەمترین ٦ پیت بێت','err');return;}
+  if(np!==cp){fpShowMsg('C','وشەی نهێنیەکان یەکسان نین','err');return;}
+  const btn=document.getElementById('fpSaveBtn');
+  btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> گۆڕین...';
+  try{
+    const{data:rData,error:rErr}=await sb.rpc('reset_user_password',{
+      user_email:_fpEmail,
+      new_pass:np
+    });
+    if(rErr){fpShowMsg('C',rErr.message||'هەڵەی گۆڕینی پاسۆرد','err');return;}
+    if(rData&&rData.success===false){fpShowMsg('C',rData.message||'هەڵەیەک ڕووی دا','err');return;}
+    fpShowMsg('C','وشەی نهێنیەکە گۆڕدرا، چوونەژوورەوە...','ok');
+    try{await sb.auth.signOut();}catch(_){}
+    await new Promise(r=>setTimeout(r,1000));
+    const{data:ld,error:le}=await sb.auth.signInWithPassword({email:_fpEmail,password:np});
+    if(!le&&ld?.user){
+      window.location.href = '/';
+    } else {
+      cancelForgotStep();
+      document.getElementById('authEmail').value=_fpEmail;
+      document.getElementById('authPass').value=np;
+      goAuthStep('pass');
+      setTimeout(()=>showAmsg('✅ وشەی نهێنیەکەت گۆڕدرا — کلیک لە چوونەژوورەوە بکە','ok'),100);
+    }
+  }catch(e){
+    fpShowMsg('C',kuErr(e.message)||'هەڵەی تۆڕ','err');
+  }finally{
+    btn.disabled=false;btn.innerHTML='<i class="fas fa-lock"></i> پاشەکەوتکردنی وشەی نهێنیی نوێ';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// ═══ DO AUTH (Login) ══════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════
+async function doAuth(){
+  const email=document.getElementById('authEmail').value.trim();
+  const pass=document.getElementById('authPass').value;
+  const btn=document.getElementById('authBtn');
+  if(!email){showAmsg('ئیمەیل بنووسە','err');return;}
+  if(!pass){showAmsg('وشەی نهێنی بنووسە','err');return;}
+  if(pass.length<6){showAmsg('وشەی نهێنی کەمترین ٦ پیت دەبێت','err');return;}
+  btn.disabled=true;
+  btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> پشکنین...';
+  try{
+    // ئایا ئیمەیلەکە تۆمارکراوە؟
+    const {data:emailExist}=await sb.from('profiles').select('id').eq('email',email).maybeSingle();
+    if(!emailExist){
+      showAmsg('ئەم ئیمەیلە تۆمارنەکراوە — یەکسەر دەگوازرێتەوە بۆ تۆمارکردن','err');
+      btn.disabled=false;
+      btn.innerHTML='<i class="fas fa-arrow-left"></i><span id="authBtnTxt">چوونەژوورەوە</span>';
+      setTimeout(()=>{window.location.href='/signup.html';},1800);
+      return;
+    }
+    // پاسۆرد پشکنین پێش نێردنی OTP
+    try{ await sb.auth.signOut(); }catch(_){}
+    const{error:chkErr}=await sb.auth.signInWithPassword({email,password:pass});
+    if(chkErr){
+      showAmsg('ئیمەیل یان وشەی نهێنی هەڵەیە','err');
+      btn.innerHTML='<i class="fas fa-arrow-left"></i> دواتر';
+      btn.disabled=false;
+      return;
+    }
+    try{ await sb.auth.signOut(); }catch(_){}
+    btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> کۆد دەنێردرێت...';
+    _otpPendingData={pass};
+    _otpPurpose='login';
+    const result=await requestOtp(email,'login');
+    if(!result.success){
+      showAmsg(result.message||'هەڵەی ناردنی کۆد','err');
+      btn.disabled=false;
+      btn.innerHTML='<i class="fas fa-arrow-left"></i><span id="authBtnTxt">چوونەژوورەوە</span>';
+      return;
+    }
+    showOtpStep(email);
+  }catch(e){
+    showAmsg(kuErr(e.message)||'هەڵەیەک ڕووی دا','err');
+  }finally{
+    btn.disabled=false;
+    btn.innerHTML='<i class="fas fa-arrow-left"></i><span id="authBtnTxt">چوونەژوورەوە</span>';
+  }
+}
+
+function showAmsg(t,c){
+  const el=document.getElementById('authMsg');
+  el.textContent=t; el.className='amsg '+c; el.style.display='block';
+}
+
+// ══════════════════════════════════════════════════════════════
+// ═══ KURDISH ERROR MESSAGES ═══════════════════════════════════
+// ══════════════════════════════════════════════════════════════
+function kuErr(msg){
+  const m={
+    'Invalid login credentials':'ئیمەیل یان وشەی نهێنی هەڵەیە',
+    'Email already registered':'ئەم ئیمەیلە پێشتر تۆمارکراوە',
+    'User already registered':'ئەم ئیمەیلە پێشتر تۆمارکراوە',
+    'Password should be at least 6 characters':'وشەی نهێنی دەبێت کەمترین ٦ پیت بێت',
+    'Unable to validate email address: invalid format':'فۆرماتی ئیمەیل هەڵەیە',
+    'Email not confirmed':'ئیمەیلەکەت دڵنیانەکراوەتەوە',
+    'Too many requests':'زۆر جار هەوڵت دا، کەمێک چاوەڕوان بە',
+    'Network request failed':'کێشەی تۆڕ، دووبارە هەوڵ بدەرەوە',
+    'User not found':'بەکارهێنەر نەدۆزرایەوە',
+    'Invalid email':'ئیمەیل هەڵەیە',
+    'Email rate limit exceeded':'زۆر جار ئیمەیل نێردرا، کەمێک چاوەڕوان بە',
+    'New password should be different from the old password':'وشەی نهێنیی نوێ دەبێت جیاوازی لە وشەی نهێنیی کۆن بێت',
+    'Auth session missing':'تکایە دووبارە بچۆ ژوورەوە',
+  };
+  return m[msg] || msg;
+}
+
+// ══════════════════════════════════════════════════════════════
+// ═══ INIT ═════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function(){
+  checkOnline();
+  document.addEventListener('touchstart',()=>{},{passive:true});
+  document.addEventListener('touchmove',()=>{},{passive:true});
+
+  if(!window.supabase){
+    showAmsg('هەڵەی بارکردنی سیستەم، پەڕەکە نوێ بکەرەوە','err');
+    return;
+  }
+  sb = window.supabase.createClient(SB_URL, SB_KEY, {
+    auth:{persistSession:true, autoRefreshToken:true, storageKey:'proxo_sb_session'}
+  });
+
+  // ئەگەر پێشتر چووبووەوەژوورەوە — بگوازرێتەوە
+  sb.auth.getSession().then(({data:{session}})=>{
+    if(session?.user){
+      window.location.href = '/';
+    } else {
+      goAuthStep('email');
+    }
+  }).catch(()=>{ goAuthStep('email'); });
+});
+</script>
+
+</body>
+</html>
