@@ -16,7 +16,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 <link rel="stylesheet" href="css/main.css">
-<title>پرۆفایل | Proxo App</title>
+<title>ژمێرکاری گەیشتن | Proxo App</title>
 <script>
 !function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -62,7 +62,7 @@ src="https://www.facebook.com/tr?id=986943520933161&ev=PageView&noscript=1"
 </script>
 </head>
 
-<script>window.PROXO_INIT_PAGE = 'profile';</script>
+<script>window.PROXO_INIT_PAGE = 'adcalc';</script>
 
 <body>
 <body>
@@ -401,115 +401,147 @@ src="https://www.facebook.com/tr?id=986943520933161&ev=PageView&noscript=1"
   </div>
 
 
-  <div class="pg" id="pgProfile">
-
-    <!-- ── Profile Hero ── -->
-    <div class="prof-hero">
-      <div class="pav" id="profAv" onclick="document.getElementById('avFile').click()">P
-        <div class="pav-cam"><i class="fas fa-camera"></i></div>
+    <div class="pg" id="pgAdcalc">
+      <div class="pg-hdr">
+        <div class="pg-title" style="font-size:20px"><i class="fas fa-calculator" style="margin-left:9px;opacity:.7"></i>ژمێرکاری گەیشتن</div>
       </div>
-      <input type="file" id="avFile" accept="image/*" style="display:none" onchange="loadAv(this)">
-      <div class="prof-hero-name" id="profName">—</div>
-      <div class="prof-hero-email" id="profEmail">—</div>
-      <div id="profPhoneRow" style="display:none;margin-top:5px;font-size:12px;color:var(--mt);font-family:'Inter',sans-serif;direction:ltr"><i class="fas fa-mobile-screen" style="margin-left:4px;opacity:.5"></i><span id="profPhone">—</span></div>
-    </div>
 
-    <!-- ── Balance Card ── -->
-    <div class="pcard2">
-      <div class="pcard2-label"><i class="fas fa-wallet" style="margin-left:6px;opacity:.6"></i>باڵانسەکەت</div>
-      <div class="pcard2-bal-row">
-        <div class="bal-num" id="profBal">0.00</div>
-        <div class="pcard2-cur">IQD</div>
-      </div>
-      <div class="pcard2-actions">
-        <button class="pcard2-btn-main" onclick="openDeposit()">
-          <i class="fas fa-plus"></i> شارژکردن
+      <!-- INPUT CARD -->
+      <div style="background:var(--w);border:1px solid var(--b1);border-radius:22px;padding:22px 20px;margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+          <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#4f6ef7,#7c5cfc);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;flex-shrink:0;box-shadow:0 4px 12px rgba(79,110,247,.3)"><i class="fas fa-wallet"></i></div>
+          <span style="font-size:15px;font-weight:800;color:var(--dark)">بودجەی ڕیکلام</span>
+        </div>
+
+        <!-- Budget Input -->
+        <div style="font-size:11px;font-weight:700;color:var(--mt2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px">
+          <i class="fas fa-coins" style="color:#4f6ef7;font-size:10px"></i> بڕ بە دیناری عێراقی (IQD)
+        </div>
+        <div style="position:relative;margin-bottom:8px">
+          <input type="number" id="arcBudget" placeholder="0" min="0" oninput="arcOnBudget()"
+            style="width:100%;padding:16px 110px 16px 60px;background:var(--bg);border:1.5px solid var(--b1);border-radius:14px;color:var(--dark);font-family:'Inter',sans-serif;font-size:22px;font-weight:700;outline:none;transition:border-color .2s,box-shadow .2s;text-align:right;direction:ltr;-moz-appearance:textfield;"
+            onfocus="this.style.borderColor='#4f6ef7';this.style.boxShadow='0 0 0 4px rgba(79,110,247,.15)'"
+            onblur="this.style.borderColor='';this.style.boxShadow=''">
+          <span style="position:absolute;left:16px;top:50%;transform:translateY(-50%);font-family:'Inter',sans-serif;font-size:12px;font-weight:700;color:#4f6ef7;background:rgba(79,110,247,.1);padding:4px 8px;border-radius:7px;pointer-events:none">IQD</span>
+          <span id="arcUsd" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:var(--mt2);pointer-events:none;white-space:nowrap;transition:color .2s">≈ $0</span>
+        </div>
+        <div style="font-size:11px;color:var(--mt);text-align:center;margin-bottom:16px;font-family:'Inter',sans-serif">نرخی گۆڕینەوە: 1 USD = 1,800 IQD</div>
+
+        <!-- Quick Amounts -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px">
+          <button class="arc-qa" onclick="arcSetAmt(50000)">50K</button>
+          <button class="arc-qa" onclick="arcSetAmt(100000)">100K</button>
+          <button class="arc-qa" onclick="arcSetAmt(250000)">250K</button>
+          <button class="arc-qa" onclick="arcSetAmt(500000)">500K</button>
+        </div>
+
+        <!-- Category -->
+        <div style="font-size:11px;font-weight:700;color:var(--mt2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px">
+          <i class="fas fa-layer-group" style="color:#4f6ef7;font-size:10px"></i> جۆری ڕیکلام
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px">
+          <label style="cursor:pointer;position:relative">
+            <input type="radio" name="arcCat" value="A" id="arcCatA" checked onchange="arcOnCat()" style="position:absolute;opacity:0;width:0;height:0">
+            <div class="arc-cat-card" id="arcCardA" style="border-color:#4f6ef7;background:rgba(79,110,247,.06)">
+              <div class="arc-cat-ico" style="background:linear-gradient(135deg,#4f6ef7,#7c5cfc);box-shadow:0 4px 10px rgba(79,110,247,.3)"><i class="fas fa-comments" style="color:#fff"></i></div>
+              <div style="font-size:13px;font-weight:800;color:#4f6ef7;line-height:1.3">فرۆشتن و پەیام</div>
+              <div style="font-family:'Inter',sans-serif;font-size:10.5px;font-weight:600;color:var(--mt2)">CPM: $0.15 – $0.20</div>
+            </div>
+          </label>
+          <label style="cursor:pointer;position:relative">
+            <input type="radio" name="arcCat" value="B" id="arcCatB" onchange="arcOnCat()" style="position:absolute;opacity:0;width:0;height:0">
+            <div class="arc-cat-card" id="arcCardB">
+              <div class="arc-cat-ico"><i class="fas fa-eye"></i></div>
+              <div style="font-size:13px;font-weight:800;color:var(--dark);line-height:1.3">ئینگێجمنت و بینین</div>
+              <div style="font-family:'Inter',sans-serif;font-size:10.5px;font-weight:600;color:var(--mt2)">CPM: $0.12 – $0.15</div>
+            </div>
+          </label>
+        </div>
+
+        <!-- Calculate Button -->
+        <button onclick="arcCalc()" id="arcBtn" style="width:100%;padding:18px;background:linear-gradient(135deg,#4f6ef7,#7c5cfc);border:none;border-radius:16px;color:#fff;font-family:'R',sans-serif;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 24px rgba(79,110,247,.3);transition:all .2s;position:relative;overflow:hidden">
+          <i class="fas fa-calculator" id="arcBtnIco"></i>
+          <span id="arcBtnTxt">ژمێرکاری بکە</span>
         </button>
-        <button class="pcard2-btn-sec" onclick="goPage('txhistory')">
-          <i class="fas fa-clock-rotate-left"></i> مامەڵەکان
-        </button>
       </div>
-    </div>
 
-    <!-- ── Coins Card ── -->
-    <div class="pcard2 pcard2-coins" id="profileCoinsCard">
-      <div class="pcard2-coins-top">
-        <div>
-          <div class="pcard2-label" style="color:#92400e"><i class="fas fa-coins" style="margin-left:6px"></i>کۆینی پرۆکسۆ</div>
-          <div class="pcard2-bal-row" style="margin-top:6px">
-            <div class="bal-num" id="profCoins" style="color:#b45309;font-size:28px">0</div>
-            <div class="pcard2-cur" style="color:#b45309">کۆین</div>
+      <!-- RESULTS CARD -->
+      <div id="arcResults" style="display:none;background:var(--w);border:1px solid var(--b1);border-radius:22px;padding:22px 20px;margin-bottom:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#16a34a,#15803d);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;flex-shrink:0;box-shadow:0 4px 12px rgba(22,163,74,.3)"><i class="fas fa-chart-bar"></i></div>
+            <span style="font-size:15px;font-weight:800;color:var(--dark)">ئەنجامەکان</span>
+          </div>
+          <span style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;padding:5px 10px;border-radius:20px;background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.2);color:#16a34a;display:flex;align-items:center;gap:5px"><span style="width:7px;height:7px;border-radius:50%;background:#16a34a;display:inline-block"></span>Summary</span>
+        </div>
+
+        <!-- Summary rows -->
+        <div style="background:var(--bg);border-radius:13px;padding:12px 14px;margin-bottom:10px;border:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:12.5px;color:var(--mt2);display:flex;align-items:center;gap:7px"><i class="fas fa-money-bill" style="color:#4f6ef7;font-size:11px"></i>بودجەی دانراو</span>
+          <span id="arcResIQD" style="font-family:'Inter',sans-serif;font-size:14px;font-weight:800;color:var(--dark)">—</span>
+        </div>
+        <div style="background:var(--bg);border-radius:13px;padding:12px 14px;margin-bottom:10px;border:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:12.5px;color:var(--mt2);display:flex;align-items:center;gap:7px"><i class="fas fa-dollar-sign" style="color:#4f6ef7;font-size:11px"></i>بە دۆلار</span>
+          <span id="arcResUSD" style="font-family:'Inter',sans-serif;font-size:14px;font-weight:800;color:#16a34a">—</span>
+        </div>
+        <div style="background:var(--bg);border-radius:13px;padding:12px 14px;margin-bottom:18px;border:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:12.5px;color:var(--mt2);display:flex;align-items:center;gap:7px"><i class="fas fa-tag" style="color:#4f6ef7;font-size:11px"></i>جۆری ڕیکلام</span>
+          <span id="arcResCat" style="font-size:13px;font-weight:800;color:var(--dark)">—</span>
+        </div>
+
+        <!-- Reach Range -->
+        <div style="background:linear-gradient(135deg,rgba(79,110,247,.07),rgba(124,92,252,.05));border:1px solid rgba(79,110,247,.18);border-radius:18px;padding:20px 18px;margin-bottom:14px;position:relative;overflow:hidden">
+          <div style="position:absolute;top:-24px;right:-24px;width:90px;height:90px;background:radial-gradient(circle,rgba(79,110,247,.12),transparent 70%);pointer-events:none"></div>
+          <div style="font-size:11px;color:var(--mt2);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:6px">
+            <i class="fas fa-users" style="color:#4f6ef7;font-size:10px"></i>
+            گەیشتنی خەمڵاندراو (Estimated Reach)
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+            <div style="text-align:center;flex:1">
+              <div style="font-size:10.5px;color:var(--mt);font-weight:600;letter-spacing:.3px;text-transform:uppercase;margin-bottom:6px">کەمترین</div>
+              <div id="arcMinReach" style="font-family:'Inter',sans-serif;font-size:26px;font-weight:900;color:#d97706;letter-spacing:-.5px;line-height:1">—</div>
+              <div style="font-size:10px;color:var(--mt2);font-weight:600;margin-top:4px">کەس / Person</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--mt);flex-shrink:0">
+              <i class="fas fa-arrows-left-right" style="font-size:15px"></i>
+              <span style="font-size:9.5px;font-weight:700;letter-spacing:1px">RANGE</span>
+            </div>
+            <div style="text-align:center;flex:1">
+              <div style="font-size:10.5px;color:var(--mt);font-weight:600;letter-spacing:.3px;text-transform:uppercase;margin-bottom:6px">زۆرترین</div>
+              <div id="arcMaxReach" style="font-family:'Inter',sans-serif;font-size:26px;font-weight:900;color:#16a34a;letter-spacing:-.5px;line-height:1">—</div>
+              <div style="font-size:10px;color:var(--mt2);font-weight:600;margin-top:4px">کەس / Person</div>
+            </div>
           </div>
         </div>
-        <button class="pcard2-coins-exch" onclick="openCoinsModal()">
-          <i class="fas fa-arrow-right-arrow-left"></i> گۆڕینەوە
-        </button>
+
+        <!-- CPM Breakdown -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+          <div style="background:var(--bg);border:1px solid var(--b1);border-radius:13px;padding:12px 14px">
+            <div style="font-size:10.5px;color:var(--mt);font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:5px"><span style="width:6px;height:6px;border-radius:50%;background:#d97706;display:inline-block;flex-shrink:0"></span>CPM ئەرزانترین</div>
+            <div id="arcCpmLowVal" style="font-family:'Inter',sans-serif;font-size:16px;font-weight:800;color:var(--dark);margin-bottom:3px">—</div>
+            <div id="arcCpmLowRate" style="font-family:'Inter',sans-serif;font-size:10.5px;color:var(--mt)">—</div>
+          </div>
+          <div style="background:var(--bg);border:1px solid var(--b1);border-radius:13px;padding:12px 14px">
+            <div style="font-size:10.5px;color:var(--mt);font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:5px"><span style="width:6px;height:6px;border-radius:50%;background:#16a34a;display:inline-block;flex-shrink:0"></span>CPM گرانترین</div>
+            <div id="arcCpmHighVal" style="font-family:'Inter',sans-serif;font-size:16px;font-weight:800;color:var(--dark);margin-bottom:3px">—</div>
+            <div id="arcCpmHighRate" style="font-family:'Inter',sans-serif;font-size:10.5px;color:var(--mt)">—</div>
+          </div>
+        </div>
+
+        <!-- Formula -->
+        <div style="display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--b1);border-radius:11px;padding:10px 14px;font-family:'Inter',sans-serif;font-size:11px;color:var(--mt2)">
+          <i class="fas fa-function" style="color:#7c5cfc;font-size:12px;flex-shrink:0"></i>
+          <span>فۆرمیولا: (Budget_USD ÷ CPM) × 1000 = Reach</span>
+        </div>
       </div>
-      <div class="pcard2-coins-info">
-        <i class="fas fa-circle-info" style="flex-shrink:0;font-size:11px"></i>
-        هەر ٥٠ کۆین = ٥٠٠ IQD &nbsp;·&nbsp; کەمترین ٥٠٠ کۆین بۆ گۆڕینەوە
+
+      <div style="font-size:11.5px;color:var(--mt);text-align:center;padding:0 8px 14px;line-height:1.7">
+        ئەم ژمێرکاریە بۆ خەمڵاندنی گەیشتنی ڕیکلامەکەت بەکاردێت.<br>ئەنجامەکان تەنها خەمڵاندنن و دەتوانن جیاواز بن.
       </div>
     </div>
-
-    <!-- ── Referral Card ── -->
-    <div class="pcard2" id="referralCard">
-      <div class="pcard2-ref-top">
-        <div class="pcard2-label"><i class="fas fa-gift" style="margin-left:6px;color:#d97706"></i>بانگێشتکردنی هاوڕێ</div>
-        <span class="pcard2-ref-earn" id="refEarnedLbl"></span>
-      </div>
-      <div class="pcard2-ref-desc">
-        هاوڕێیەکت بانگێشت بکە — کاتێک خۆی تۆمار کرد
-        <b style="color:var(--dark)">+٥٠ <i class="fas fa-coins" style="color:#d97706"></i></b> وەردەگریت،
-        ئەوەش <b style="color:var(--dark)">+٥٠ <i class="fas fa-coins" style="color:#d97706"></i></b> وەردەگرێت
-      </div>
-      <div class="pcard2-ref-link">
-        <div class="pcard2-ref-url" id="refLinkDisp">چوارچێوەکردن...</div>
-        <button onclick="copyRefLink()" class="pcard2-ref-copy" id="refCopyBtn">
-          <i class="fas fa-copy"></i>
-        </button>
-      </div>
-      <button onclick="shareRefLink()" class="pcard2-share-btn">
-        <i class="fas fa-share-nodes"></i> هاوبەشکردن
-      </button>
-    </div>
-
-    <!-- ── Settings Card ── -->
-    <div class="pcard2">
-      <div class="pcard2-sec-title">ڕێکخستنەکان</div>
-      <button id="setupDbBtn" onclick="setupDatabase()" style="display:none;width:100%;padding:13px;background:rgba(37,99,235,.08);border:1.5px solid rgba(37,99,235,.2);border-radius:13px;color:var(--bl);font-family:'R',sans-serif;font-size:13px;font-weight:700;cursor:pointer;align-items:center;justify-content:center;gap:7px;margin-bottom:10px">
-        <i class="fas fa-database"></i> دانانی فەنکشنی داتابەیس
-      </button>
-      <div class="plist-item" onclick="showUpdateProfile()">
-        <div class="plist-ico"><i class="fas fa-user-pen"></i></div>
-        <div class="plist-txt">دەستکاری پرۆفایل</div>
-        <i class="fas fa-chevron-left plist-arr"></i>
-      </div>
-      <div class="plist-item" onclick="openChangePass()">
-        <div class="plist-ico"><i class="fas fa-lock"></i></div>
-        <div class="plist-txt">گۆڕینی وشەی نهێنی</div>
-        <i class="fas fa-chevron-left plist-arr"></i>
-      </div>
-      <div class="plist-item green" onclick="openWA()">
-        <div class="plist-ico"><i class="fab fa-whatsapp"></i></div>
-        <div class="plist-txt">گفتوگۆ لەگەڵ ئەدمین</div>
-        <i class="fas fa-chevron-left plist-arr" style="color:var(--gr)"></i>
-      </div>
-      <div class="plist-item red" onclick="doLogout()">
-        <div class="plist-ico"><i class="fas fa-right-from-bracket"></i></div>
-        <div class="plist-txt">چوونەدەرەوە</div>
-        <i class="fas fa-chevron-left plist-arr" style="color:var(--rd)"></i>
-      </div>
-    </div>
-
-    <!-- ── TX History (hidden, shown by JS) ── -->
-    <div class="pcard2" id="txPanel" style="display:none">
-      <div class="pcard2-sec-title">مێژووی مامەڵەکان</div>
-      <div id="txList"><div style="text-align:center;padding:16px;color:var(--mt);font-size:12px"><i class="fas fa-circle-notch fa-spin"></i></div></div>
-    </div>
-
-    <div style="height:20px"></div>
-  </div>
-
+  
+  <!-- ── کۆدی داشکاندن ── -->
+  <div class="pg" id="pgPromocodes">
 
 </div><!-- /app -->
 

@@ -724,7 +724,7 @@ async function verifyOtp() {
       const { data, error } = await sb.auth.signInWithPassword({ email: _otpEmail, password: _otpPendingData.pass });
       if(!error && data?.user) {
         // چوونەژوورەوە سەرکەوت — بگوازرێتەوە بۆ پەڕەی سەرەکی
-        window.location.href = '/';
+        window.location.href = '/home';
       } else {
         cancelOtp();
         showAmsg(kuErr(error?.message) || 'هەڵەیەک ڕووی دا، دووبارە هەوڵ بدەرەوە', 'err');
@@ -925,7 +925,7 @@ async function doForgotSavePass(){
     await new Promise(r=>setTimeout(r,1000));
     const{data:ld,error:le}=await sb.auth.signInWithPassword({email:_fpEmail,password:np});
     if(!le&&ld?.user){
-      window.location.href = '/';
+      window.location.href = '/home';
     } else {
       cancelForgotStep();
       document.getElementById('authEmail').value=_fpEmail;
@@ -1037,7 +1037,7 @@ document.addEventListener('DOMContentLoaded', function(){
   // ئەگەر پێشتر چووبووەوەژوورەوە — بگوازرێتەوە
   sb.auth.getSession().then(({data:{session}})=>{
     if(session?.user){
-      window.location.href = '/';
+      window.location.href = '/home';
     } else {
       goAuthStep('email');
     }

@@ -16,7 +16,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 <link rel="stylesheet" href="css/main.css">
-<title>پرۆفایل | Proxo App</title>
+<title>کەرەستەی پەیوەندی | Proxo App</title>
 <script>
 !function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -62,7 +62,7 @@ src="https://www.facebook.com/tr?id=986943520933161&ev=PageView&noscript=1"
 </script>
 </head>
 
-<script>window.PROXO_INIT_PAGE = 'profile';</script>
+<script>window.PROXO_INIT_PAGE = 'proxolink';</script>
 
 <body>
 <body>
@@ -401,115 +401,170 @@ src="https://www.facebook.com/tr?id=986943520933161&ev=PageView&noscript=1"
   </div>
 
 
-  <div class="pg" id="pgProfile">
-
-    <!-- ── Profile Hero ── -->
-    <div class="prof-hero">
-      <div class="pav" id="profAv" onclick="document.getElementById('avFile').click()">P
-        <div class="pav-cam"><i class="fas fa-camera"></i></div>
+  <!-- PROXOLINK -->
+  <div class="pg" id="pgProxolink">
+    <div id="plListView">
+      <div class="pg-title" style="margin-bottom:14px">کەرەستەی پەیوەندی</div>
+      <button class="proxo-create-btn" onclick="showPLForm()">
+        <i class="fas fa-plus"></i>دروستکردنی کەرەستەی نوێ
+      </button>
+      <div class="slbl">کەرەستەکانت</div>
+      <div class="proxo-cards" id="proxoCardsList">
+        <div style="text-align:center;padding:20px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin"></i></div>
       </div>
-      <input type="file" id="avFile" accept="image/*" style="display:none" onchange="loadAv(this)">
-      <div class="prof-hero-name" id="profName">—</div>
-      <div class="prof-hero-email" id="profEmail">—</div>
-      <div id="profPhoneRow" style="display:none;margin-top:5px;font-size:12px;color:var(--mt);font-family:'Inter',sans-serif;direction:ltr"><i class="fas fa-mobile-screen" style="margin-left:4px;opacity:.5"></i><span id="profPhone">—</span></div>
+      <div style="height:14px"></div>
     </div>
+    <div id="plFormView" style="display:none">
+      <div class="plform">
+        <div class="plform-hdr">
+          <h2 id="plFormTitle">پەڕەی نوێ زیادبکە</h2>
+          <div class="plform-close" onclick="hidePLForm()"><i class="fas fa-xmark"></i></div>
+        </div>
 
-    <!-- ── Balance Card ── -->
-    <div class="pcard2">
-      <div class="pcard2-label"><i class="fas fa-wallet" style="margin-left:6px;opacity:.6"></i>باڵانسەکەت</div>
-      <div class="pcard2-bal-row">
-        <div class="bal-num" id="profBal">0.00</div>
-        <div class="pcard2-cur">IQD</div>
-      </div>
-      <div class="pcard2-actions">
-        <button class="pcard2-btn-main" onclick="openDeposit()">
-          <i class="fas fa-plus"></i> شارژکردن
-        </button>
-        <button class="pcard2-btn-sec" onclick="goPage('txhistory')">
-          <i class="fas fa-clock-rotate-left"></i> مامەڵەکان
-        </button>
-      </div>
-    </div>
+        <!-- وێنە -->
+        <div class="plform-lbl">وێنەی پرۆفایل <span style="color:var(--rd)">*</span> <span style="font-size:10px;color:var(--mt)">(پێویستە بۆ Dark/Light)</span></div>
+        <div class="logo-upload" id="logoUploadZone" onclick="document.getElementById('plLogoFile').click()" style="cursor:pointer">
+          <input type="file" id="plLogoFile" accept="image/*" onchange="loadPlLogo(this)" style="display:none">
+          <img id="plLogoPrev" class="logo-preview" alt="وێنە" style="display:none">
+          <div class="logo-upload-ico" id="plLogoIco"><i class="fas fa-camera"></i></div>
+          <b id="plLogoTxt">وێنە بارکە</b>
+          <span>کرتە بکە تا هەڵبژێریت</span>
+        </div>
 
-    <!-- ── Coins Card ── -->
-    <div class="pcard2 pcard2-coins" id="profileCoinsCard">
-      <div class="pcard2-coins-top">
-        <div>
-          <div class="pcard2-label" style="color:#92400e"><i class="fas fa-coins" style="margin-left:6px"></i>کۆینی پرۆکسۆ</div>
-          <div class="pcard2-bal-row" style="margin-top:6px">
-            <div class="bal-num" id="profCoins" style="color:#b45309;font-size:28px">0</div>
-            <div class="pcard2-cur" style="color:#b45309">کۆین</div>
+        <!-- ناو -->
+        <div class="plform-lbl" style="margin-top:8px">ناو <span style="color:var(--rd)">*</span></div>
+        <input class="pl-inp" type="text" id="plBrandName" placeholder="ناوت یان ناوی براند" oninput="updatePLPreview()">
+        <div class="pl-field-err" id="plErrName" style="display:none"><i class="fas fa-circle-exclamation"></i><span>تکایە ناوت بنووسە</span></div>
+
+        <!-- بیۆ -->
+        <div class="plform-lbl">بیۆ / دەربارەت <span style="font-size:10px;color:var(--mt)">(کەمتر لە 150 پیت)</span></div>
+        <textarea class="pl-inp pl-ta" id="plDesc" placeholder="لەرێگەی دووگمەکانەوە پەیوەندیمان پێوە بکە" maxlength="150" oninput="plUpdateBioCount();updatePLPreview()"></textarea>
+        <div class="pl-field-err" id="plErrBio" style="display:none"><i class="fas fa-circle-exclamation"></i><span id="plErrBioMsg"></span></div>
+        <div class="pl-bio-meta">
+          <small>یەکێک هەڵبژێرە یان خۆت بنووسە</small>
+          <span id="plBioCount">0 / 150</span>
+        </div>
+        <div class="pl-bio-chips" id="plBioChips"></div>
+
+        <!-- تیکتۆک -->
+        <div class="plform-lbl"><i class="fab fa-tiktok" style="margin-left:5px"></i>ناوی ئەکاونتی تیکتۆک <span style="color:var(--rd)">*</span></div>
+        <div style="position:relative;display:flex;align-items:center;">
+          <span style="position:absolute;left:14px;font-size:16px;color:var(--dark);font-weight:700;font-family:'Inter',sans-serif;z-index:2;-webkit-user-select:none;user-select:none;pointer-events:none">@</span>
+          <input class="pl-inp" style="direction:ltr;text-align:left;padding-left:34px;width:100%;margin-bottom:14px" type="text" id="plTT" placeholder="username" oninput="updatePLPreview()">
+        </div>
+        <div class="pl-field-err" id="plErrTT" style="display:none"><i class="fas fa-circle-exclamation"></i><span id="plErrTTMsg"></span></div>
+
+        <!-- لینکی ڤیدیۆ -->
+        <div class="plform-lbl"><i class="fab fa-tiktok" style="margin-left:5px;opacity:.5"></i>لینکی ڤیدیۆی تیکتۆک <span style="font-size:10px;color:var(--mt)">(ئیختیاری)</span></div>
+        <input class="pl-inp" style="direction:ltr;text-align:left;margin-bottom:4px" type="text" id="plVideoUrl" placeholder="https://www.tiktok.com/@username/video/...">
+        <div class="pl-field-err" id="plErrVideo" style="display:none"><i class="fas fa-circle-exclamation"></i><span>لینکەکە دەبێت بە https:// دەستپێبکات</span></div>
+
+        <!-- پلاتفۆرمەکان -->
+        <div class="plform-lbl" style="margin-top:14px">دووگمەکانت هەڵبژێرە</div>
+        <div class="pl-cb-list" id="plCbList"></div>
+        <div class="pl-field-err" id="plErrPlatform" style="display:none"><i class="fas fa-circle-exclamation"></i><span>کەمترین یەک پلاتفۆرم پڕ بکەرەوە</span></div>
+        <div class="pl-contact-fields" id="plContactFields"></div>
+
+        <!-- ستایل -->
+        <div class="sec-div"></div>
+        <div class="plform-lbl">ستایل</div>
+        <div class="style-grid">
+          <div class="style-card on" data-style="dark" onclick="pickStyle(this)">
+            <div class="sc-chk"><i class="fas fa-check"></i></div>
+            <div class="sc-classic"><div class="sc-classic-inner"><div class="sc-classic-av"></div><div class="sc-classic-line"></div><div class="sc-classic-line" style="width:28px;opacity:.6"></div></div></div>
+            <div class="sc-name">Dark</div><div class="sc-sub">تاریک</div>
+          </div>
+          <div class="style-card" data-style="light" onclick="pickStyle(this)">
+            <div class="sc-chk"><i class="fas fa-check"></i></div>
+            <div class="sc-minimal"><div class="sc-minimal-inner"><div class="sc-minimal-av"></div><div class="sc-minimal-lines"><div class="sc-minimal-line1"></div><div class="sc-minimal-line2"></div></div></div></div>
+            <div class="sc-name">Light</div><div class="sc-sub">ڕووناک</div>
+          </div>
+          <div class="style-card" data-style="classic" onclick="pickStyle(this)">
+            <div class="sc-chk"><i class="fas fa-check"></i></div>
+            <div class="sc-gradient"><div class="sc-gradient-inner"><div class="sc-gradient-av"></div><div class="sc-gradient-line"></div><div class="sc-gradient-line" style="width:28px;opacity:.6"></div></div></div>
+            <div class="sc-name">Classic</div><div class="sc-sub">کلاسیک</div>
+          </div>
+          <div class="style-card" data-style="pill" onclick="pickStyle(this)">
+            <div class="sc-chk"><i class="fas fa-check"></i></div>
+            <div class="sc-pill"><div class="sc-pill-btn" style="background:linear-gradient(135deg,#25d366,#128c7e)"></div><div class="sc-pill-btn" style="background:linear-gradient(135deg,#7360f2,#5c4fd6)"></div><div class="sc-pill-btn" style="background:linear-gradient(135deg,#2aabee,#229ed9)"></div></div>
+            <div class="sc-name">Pill</div><div class="sc-sub">پیل گرادیەنت</div>
+          </div>
+          <div class="style-card" data-style="card" onclick="pickStyle(this)">
+            <div class="sc-chk"><i class="fas fa-check"></i></div>
+            <div class="sc-card"><div class="sc-card-row"><div class="sc-card-accent" style="background:#25d366"></div><div class="sc-card-line"></div></div><div class="sc-card-row"><div class="sc-card-accent" style="background:#7360f2"></div><div class="sc-card-line"></div></div><div class="sc-card-row"><div class="sc-card-accent" style="background:#2aabee"></div><div class="sc-card-line"></div></div></div>
+            <div class="sc-name">Card</div><div class="sc-sub">کارد ئاکسنت</div>
+          </div>
+          <div class="style-card" data-style="neon" onclick="pickStyle(this)">
+            <div class="sc-chk"><i class="fas fa-check"></i></div>
+            <div class="sc-neon"><div class="sc-neon-row" style="border-color:#25d366"><div class="sc-neon-dot" style="background:#25d366"></div><div class="sc-neon-line" style="background:#25d366"></div></div><div class="sc-neon-row" style="border-color:#7360f2"><div class="sc-neon-dot" style="background:#7360f2"></div><div class="sc-neon-line" style="background:#7360f2"></div></div><div class="sc-neon-row" style="border-color:#2aabee"><div class="sc-neon-dot" style="background:#2aabee"></div><div class="sc-neon-line" style="background:#2aabee"></div></div></div>
+            <div class="sc-name">Neon</div><div class="sc-sub">نیۆن ئاوتلاین</div>
+          </div>
+          <div class="style-card" data-style="zoom" onclick="pickStyle(this)">
+            <div class="sc-chk"><i class="fas fa-check"></i></div>
+            <div class="sc-zoom"><div class="sc-zoom-inner"><div class="sc-zoom-av"></div><div class="sc-zoom-btn"></div><div class="sc-zoom-btn" style="width:70%;opacity:.6"></div></div></div>
+            <div class="sc-name">Zoom</div><div class="sc-sub">زووم — نزیک</div>
+          </div>
+          <div class="style-card" data-style="banner" onclick="pickStyle(this)">
+            <div class="sc-chk"><i class="fas fa-check"></i></div>
+            <div class="sc-banner"><div class="sc-banner-btn"></div><div class="sc-banner-btn" style="width:75%;opacity:.7"></div></div>
+            <div class="sc-name">Banner</div><div class="sc-sub">بانەر — گرادیێنت</div>
           </div>
         </div>
-        <button class="pcard2-coins-exch" onclick="openCoinsModal()">
-          <i class="fas fa-arrow-right-arrow-left"></i> گۆڕینەوە
+
+        <!-- ڕەنگی تەم -->
+        <div class="plform-lbl">ڕەنگی تەم</div>
+        <div class="theme-wrap" id="themeWrap">
+          <div class="theme-dot on" style="background:#8b5cf6" data-color="purple" onclick="pickTheme(this)"><i class="fas fa-check"></i></div>
+          <div class="theme-dot" style="background:#2563eb" data-color="blue" onclick="pickTheme(this)"><i class="fas fa-check"></i></div>
+          <div class="theme-dot" style="background:#16a34a" data-color="green" onclick="pickTheme(this)"><i class="fas fa-check"></i></div>
+          <div class="theme-dot" style="background:#dc2626" data-color="red" onclick="pickTheme(this)"><i class="fas fa-check"></i></div>
+          <div class="theme-dot" style="background:#d97706" data-color="yellow" onclick="pickTheme(this)"><i class="fas fa-check"></i></div>
+          <div class="theme-dot" style="background:#0891b2" data-color="cyan" onclick="pickTheme(this)"><i class="fas fa-check"></i></div>
+          <div class="theme-dot" style="background:#be185d" data-color="pink" onclick="pickTheme(this)"><i class="fas fa-check"></i></div>
+          <div class="theme-dot" style="background:#1c2333" data-color="dark" onclick="pickTheme(this)"><i class="fas fa-check"></i></div>
+        </div>
+
+        <!-- پێشبینی زیندوو -->
+        <div class="plform-lbl" style="margin-top:16px"><i class="fas fa-eye" style="margin-left:5px;color:var(--bl)"></i>پێشبینی زیندوو</div>
+        <div id="plLivePreview" style="border:1.5px solid var(--b1);border-radius:16px;overflow:hidden;margin-bottom:16px;background:var(--bg);min-height:80px;display:flex;align-items:center;justify-content:center">
+          <div style="text-align:center;padding:20px;color:var(--mt);font-size:12px">
+            <i class="fas fa-link" style="font-size:22px;display:block;margin-bottom:8px;opacity:.3"></i>
+            ناو بنووسە تا پێشبینی ببینیت
+          </div>
+        </div>
+
+        <button class="submit-btn" onclick="plGeneratePreview()">
+          <i class="fas fa-eye"></i>پێشبینی و دروستکردن
         </button>
       </div>
-      <div class="pcard2-coins-info">
-        <i class="fas fa-circle-info" style="flex-shrink:0;font-size:11px"></i>
-        هەر ٥٠ کۆین = ٥٠٠ IQD &nbsp;·&nbsp; کەمترین ٥٠٠ کۆین بۆ گۆڕینەوە
-      </div>
+      <div style="height:14px"></div>
     </div>
 
-    <!-- ── Referral Card ── -->
-    <div class="pcard2" id="referralCard">
-      <div class="pcard2-ref-top">
-        <div class="pcard2-label"><i class="fas fa-gift" style="margin-left:6px;color:#d97706"></i>بانگێشتکردنی هاوڕێ</div>
-        <span class="pcard2-ref-earn" id="refEarnedLbl"></span>
+    <!-- ── پێشبینی تەلەفۆن ── -->
+    <div id="plPreviewView" style="display:none">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <button onclick="plBackFromPreview()" style="padding:10px 16px;background:var(--bg);border:1px solid var(--b1);border-radius:12px;font-family:'R',sans-serif;font-size:13px;color:var(--mt);cursor:pointer;display:flex;align-items:center;gap:6px"><i class="fas fa-arrow-right"></i>گەڕانەوە</button>
+        <div style="font-size:15px;font-weight:800;color:var(--dark);flex:1;text-align:center">پێشبینی کەرەستە</div>
       </div>
-      <div class="pcard2-ref-desc">
-        هاوڕێیەکت بانگێشت بکە — کاتێک خۆی تۆمار کرد
-        <b style="color:var(--dark)">+٥٠ <i class="fas fa-coins" style="color:#d97706"></i></b> وەردەگریت،
-        ئەوەش <b style="color:var(--dark)">+٥٠ <i class="fas fa-coins" style="color:#d97706"></i></b> وەردەگرێت
+      <!-- phone shell -->
+      <div class="pl-phone-shell">
+        <div class="pl-phone-pill"></div>
+        <iframe id="plPreviewFrame" title="پێشبینی" style="width:100%;height:600px;border:none;display:block;border-radius:0 0 28px 28px"></iframe>
       </div>
-      <div class="pcard2-ref-link">
-        <div class="pcard2-ref-url" id="refLinkDisp">چوارچێوەکردن...</div>
-        <button onclick="copyRefLink()" class="pcard2-ref-copy" id="refCopyBtn">
-          <i class="fas fa-copy"></i>
-        </button>
+      <!-- action buttons -->
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button onclick="plBackFromPreview()" style="flex:1;padding:14px;background:var(--bg);border:1px solid var(--b1);border-radius:14px;font-family:'R',sans-serif;font-size:13px;color:var(--mt);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px"><i class="fas fa-arrow-right"></i>گەڕانەوە</button>
+        <button id="plTgBtn" onclick="plSendToTg()" style="flex:1.5;padding:14px;background:var(--dark);color:#fff;border:none;border-radius:14px;font-family:'R',sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px"><i class="fas fa-file-circle-check"></i>دروستکردنی کەرەستە</button>
       </div>
-      <button onclick="shareRefLink()" class="pcard2-share-btn">
-        <i class="fas fa-share-nodes"></i> هاوبەشکردن
-      </button>
+      <div id="plTgStatus" style="display:none;margin-top:10px;padding:12px 16px;border-radius:12px;font-size:12.5px;text-align:center"></div>
+      <div style="height:20px"></div>
     </div>
-
-    <!-- ── Settings Card ── -->
-    <div class="pcard2">
-      <div class="pcard2-sec-title">ڕێکخستنەکان</div>
-      <button id="setupDbBtn" onclick="setupDatabase()" style="display:none;width:100%;padding:13px;background:rgba(37,99,235,.08);border:1.5px solid rgba(37,99,235,.2);border-radius:13px;color:var(--bl);font-family:'R',sans-serif;font-size:13px;font-weight:700;cursor:pointer;align-items:center;justify-content:center;gap:7px;margin-bottom:10px">
-        <i class="fas fa-database"></i> دانانی فەنکشنی داتابەیس
-      </button>
-      <div class="plist-item" onclick="showUpdateProfile()">
-        <div class="plist-ico"><i class="fas fa-user-pen"></i></div>
-        <div class="plist-txt">دەستکاری پرۆفایل</div>
-        <i class="fas fa-chevron-left plist-arr"></i>
-      </div>
-      <div class="plist-item" onclick="openChangePass()">
-        <div class="plist-ico"><i class="fas fa-lock"></i></div>
-        <div class="plist-txt">گۆڕینی وشەی نهێنی</div>
-        <i class="fas fa-chevron-left plist-arr"></i>
-      </div>
-      <div class="plist-item green" onclick="openWA()">
-        <div class="plist-ico"><i class="fab fa-whatsapp"></i></div>
-        <div class="plist-txt">گفتوگۆ لەگەڵ ئەدمین</div>
-        <i class="fas fa-chevron-left plist-arr" style="color:var(--gr)"></i>
-      </div>
-      <div class="plist-item red" onclick="doLogout()">
-        <div class="plist-ico"><i class="fas fa-right-from-bracket"></i></div>
-        <div class="plist-txt">چوونەدەرەوە</div>
-        <i class="fas fa-chevron-left plist-arr" style="color:var(--rd)"></i>
-      </div>
-    </div>
-
-    <!-- ── TX History (hidden, shown by JS) ── -->
-    <div class="pcard2" id="txPanel" style="display:none">
-      <div class="pcard2-sec-title">مێژووی مامەڵەکان</div>
-      <div id="txList"><div style="text-align:center;padding:16px;color:var(--mt);font-size:12px"><i class="fas fa-circle-notch fa-spin"></i></div></div>
-    </div>
-
-    <div style="height:20px"></div>
   </div>
 
+  <!-- ═══════════════════════════════════════════════
+       ٥. NOTIFICATIONS PAGE
+  ════════════════════════════════════════════════ -->
+  <div class="pg" id="pgNotifications">
 
 </div><!-- /app -->
 

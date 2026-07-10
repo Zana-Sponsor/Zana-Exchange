@@ -16,7 +16,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 <link rel="stylesheet" href="css/main.css">
-<title>پرۆفایل | Proxo App</title>
+<title>مێژووی مامەڵەکان | Proxo App</title>
 <script>
 !function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -62,7 +62,7 @@ src="https://www.facebook.com/tr?id=986943520933161&ev=PageView&noscript=1"
 </script>
 </head>
 
-<script>window.PROXO_INIT_PAGE = 'profile';</script>
+<script>window.PROXO_INIT_PAGE = 'txhistory';</script>
 
 <body>
 <body>
@@ -401,115 +401,76 @@ src="https://www.facebook.com/tr?id=986943520933161&ev=PageView&noscript=1"
   </div>
 
 
-  <div class="pg" id="pgProfile">
-
-    <!-- ── Profile Hero ── -->
-    <div class="prof-hero">
-      <div class="pav" id="profAv" onclick="document.getElementById('avFile').click()">P
-        <div class="pav-cam"><i class="fas fa-camera"></i></div>
-      </div>
-      <input type="file" id="avFile" accept="image/*" style="display:none" onchange="loadAv(this)">
-      <div class="prof-hero-name" id="profName">—</div>
-      <div class="prof-hero-email" id="profEmail">—</div>
-      <div id="profPhoneRow" style="display:none;margin-top:5px;font-size:12px;color:var(--mt);font-family:'Inter',sans-serif;direction:ltr"><i class="fas fa-mobile-screen" style="margin-left:4px;opacity:.5"></i><span id="profPhone">—</span></div>
+  <div class="pg" id="pgTxhistory">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <div class="pg-title">مێژووی مامەڵەکان</div>
     </div>
 
-    <!-- ── Balance Card ── -->
-    <div class="pcard2">
-      <div class="pcard2-label"><i class="fas fa-wallet" style="margin-left:6px;opacity:.6"></i>باڵانسەکەت</div>
-      <div class="pcard2-bal-row">
-        <div class="bal-num" id="profBal">0.00</div>
-        <div class="pcard2-cur">IQD</div>
-      </div>
-      <div class="pcard2-actions">
-        <button class="pcard2-btn-main" onclick="openDeposit()">
-          <i class="fas fa-plus"></i> شارژکردن
-        </button>
-        <button class="pcard2-btn-sec" onclick="goPage('txhistory')">
-          <i class="fas fa-clock-rotate-left"></i> مامەڵەکان
-        </button>
-      </div>
-    </div>
-
-    <!-- ── Coins Card ── -->
-    <div class="pcard2 pcard2-coins" id="profileCoinsCard">
-      <div class="pcard2-coins-top">
-        <div>
-          <div class="pcard2-label" style="color:#92400e"><i class="fas fa-coins" style="margin-left:6px"></i>کۆینی پرۆکسۆ</div>
-          <div class="pcard2-bal-row" style="margin-top:6px">
-            <div class="bal-num" id="profCoins" style="color:#b45309;font-size:28px">0</div>
-            <div class="pcard2-cur" style="color:#b45309">کۆین</div>
+    <!-- ── کاوتداون بانەر ── -->
+    <div id="reviewCountdownBanner" style="display:none;margin-bottom:14px">
+      <div style="background:linear-gradient(135deg,#0f2218,#1a3a28);border:1.5px solid rgba(22,163,74,.3);border-radius:18px;padding:16px 18px;position:relative;overflow:hidden">
+        <div style="position:absolute;top:-15px;left:-15px;width:60px;height:60px;background:rgba(22,163,74,.08);border-radius:50%"></div>
+        <div style="position:absolute;bottom:-10px;right:-10px;width:45px;height:45px;background:rgba(22,163,74,.06);border-radius:50%"></div>
+        <div style="display:flex;align-items:center;gap:12px;position:relative">
+          <div id="cdIcoWrap" style="width:44px;height:44px;border-radius:50%;background:rgba(22,163,74,.15);border:2px solid rgba(22,163,74,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px">
+            
+          </div>
+          <div style="flex:1">
+            <div id="cdTitle" style="font-size:13px;font-weight:800;color:#fff;margin-bottom:3px">داواکاریت نێردرا — چاوەڕوانی وردبینی</div>
+            <div id="cdSub" style="font-size:11px;color:rgba(255,255,255,.5);line-height:1.6">لە ناوماوەی <strong style="color:rgba(255,255,255,.75)">٥ خولەک</strong>دا بابچێتە وردبینی ئادمین</div>
+          </div>
+          <div id="cdTimerBadge" style="flex-shrink:0;text-align:center">
+            <div id="cdTimerNum" style="font-size:22px;font-weight:900;color:#4ade80;font-family:'Inter',sans-serif;line-height:1;direction:ltr">5:00</div>
+            <div style="font-size:9px;color:rgba(255,255,255,.4);margin-top:2px">خولەک</div>
           </div>
         </div>
-        <button class="pcard2-coins-exch" onclick="openCoinsModal()">
-          <i class="fas fa-arrow-right-arrow-left"></i> گۆڕینەوە
-        </button>
-      </div>
-      <div class="pcard2-coins-info">
-        <i class="fas fa-circle-info" style="flex-shrink:0;font-size:11px"></i>
-        هەر ٥٠ کۆین = ٥٠٠ IQD &nbsp;·&nbsp; کەمترین ٥٠٠ کۆین بۆ گۆڕینەوە
-      </div>
-    </div>
-
-    <!-- ── Referral Card ── -->
-    <div class="pcard2" id="referralCard">
-      <div class="pcard2-ref-top">
-        <div class="pcard2-label"><i class="fas fa-gift" style="margin-left:6px;color:#d97706"></i>بانگێشتکردنی هاوڕێ</div>
-        <span class="pcard2-ref-earn" id="refEarnedLbl"></span>
-      </div>
-      <div class="pcard2-ref-desc">
-        هاوڕێیەکت بانگێشت بکە — کاتێک خۆی تۆمار کرد
-        <b style="color:var(--dark)">+٥٠ <i class="fas fa-coins" style="color:#d97706"></i></b> وەردەگریت،
-        ئەوەش <b style="color:var(--dark)">+٥٠ <i class="fas fa-coins" style="color:#d97706"></i></b> وەردەگرێت
-      </div>
-      <div class="pcard2-ref-link">
-        <div class="pcard2-ref-url" id="refLinkDisp">چوارچێوەکردن...</div>
-        <button onclick="copyRefLink()" class="pcard2-ref-copy" id="refCopyBtn">
-          <i class="fas fa-copy"></i>
-        </button>
-      </div>
-      <button onclick="shareRefLink()" class="pcard2-share-btn">
-        <i class="fas fa-share-nodes"></i> هاوبەشکردن
-      </button>
-    </div>
-
-    <!-- ── Settings Card ── -->
-    <div class="pcard2">
-      <div class="pcard2-sec-title">ڕێکخستنەکان</div>
-      <button id="setupDbBtn" onclick="setupDatabase()" style="display:none;width:100%;padding:13px;background:rgba(37,99,235,.08);border:1.5px solid rgba(37,99,235,.2);border-radius:13px;color:var(--bl);font-family:'R',sans-serif;font-size:13px;font-weight:700;cursor:pointer;align-items:center;justify-content:center;gap:7px;margin-bottom:10px">
-        <i class="fas fa-database"></i> دانانی فەنکشنی داتابەیس
-      </button>
-      <div class="plist-item" onclick="showUpdateProfile()">
-        <div class="plist-ico"><i class="fas fa-user-pen"></i></div>
-        <div class="plist-txt">دەستکاری پرۆفایل</div>
-        <i class="fas fa-chevron-left plist-arr"></i>
-      </div>
-      <div class="plist-item" onclick="openChangePass()">
-        <div class="plist-ico"><i class="fas fa-lock"></i></div>
-        <div class="plist-txt">گۆڕینی وشەی نهێنی</div>
-        <i class="fas fa-chevron-left plist-arr"></i>
-      </div>
-      <div class="plist-item green" onclick="openWA()">
-        <div class="plist-ico"><i class="fab fa-whatsapp"></i></div>
-        <div class="plist-txt">گفتوگۆ لەگەڵ ئەدمین</div>
-        <i class="fas fa-chevron-left plist-arr" style="color:var(--gr)"></i>
-      </div>
-      <div class="plist-item red" onclick="doLogout()">
-        <div class="plist-ico"><i class="fas fa-right-from-bracket"></i></div>
-        <div class="plist-txt">چوونەدەرەوە</div>
-        <i class="fas fa-chevron-left plist-arr" style="color:var(--rd)"></i>
+        <!-- progress bar -->
+        <div style="margin-top:12px;height:4px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;position:relative">
+          <div id="cdProgressBar" style="height:100%;background:linear-gradient(90deg,#16a34a,#4ade80);border-radius:4px;width:100%;transition:width 1s linear"></div>
+        </div>
+        <!-- steps -->
+        <div style="display:flex;align-items:center;gap:6px;margin-top:12px;position:relative">
+          <div id="cdStep1" style="flex:1;text-align:center;font-size:9.5px;color:#4ade80;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div style="width:20px;height:20px;border-radius:50%;background:rgba(74,222,128,.2);border:1.5px solid #4ade80;display:flex;align-items:center;justify-content:center;font-size:9px;color:#4ade80"><i class="fas fa-check"></i></div>
+            نێردرا
+          </div>
+          <div style="flex:1;height:2px;background:rgba(255,255,255,.12);border-radius:2px;position:relative;overflow:hidden">
+            <div id="cdLine1" style="height:100%;background:#4ade80;border-radius:2px;width:0%;transition:width 1s linear"></div>
+          </div>
+          <div id="cdStep2" style="flex:1;text-align:center;font-size:9.5px;color:rgba(255,255,255,.35);font-weight:700;display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div id="cdStep2Ico" style="width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:9px;color:rgba(255,255,255,.3)"><i class="fas fa-magnifying-glass"></i></div>
+            وردبینی
+          </div>
+          <div style="flex:1;height:2px;background:rgba(255,255,255,.12);border-radius:2px"></div>
+          <div id="cdStep3" style="flex:1;text-align:center;font-size:9.5px;color:rgba(255,255,255,.35);font-weight:700;display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div style="width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:9px;color:rgba(255,255,255,.3)"><i class="fas fa-wallet"></i></div>
+            پەسەندکردن
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- ── TX History (hidden, shown by JS) ── -->
-    <div class="pcard2" id="txPanel" style="display:none">
-      <div class="pcard2-sec-title">مێژووی مامەڵەکان</div>
-      <div id="txList"><div style="text-align:center;padding:16px;color:var(--mt);font-size:12px"><i class="fas fa-circle-notch fa-spin"></i></div></div>
+    <!-- فیلتەر -->
+    <div style="display:flex;gap:7px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px">
+      <div class="fchip on" data-txf="all" onclick="filterTxHistory(this)">هەموو</div>
+      <div class="fchip" data-txf="deposit" onclick="filterTxHistory(this)">زیادکردن</div>
+      <div class="fchip" data-txf="spend" onclick="filterTxHistory(this)">خەرجکردن</div>
+      <div class="fchip" data-txf="refund" onclick="filterTxHistory(this)"><i class="fas fa-rotate-left" style="font-size:10px"></i> گەڕانەوە</div>
+      <div class="fchip" data-txf="coin_exchange" onclick="filterTxHistory(this)"><i class="fas fa-coins" style="font-size:10px"></i> کۆین گۆڕین</div>
     </div>
 
-    <div style="height:20px"></div>
+    <div class="pcard" id="txHistoryPanel">
+      <div id="txHistoryList">
+        <div style="text-align:center;padding:20px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin"></i></div>
+      </div>
+    </div>
+    <div style="height:14px"></div>
   </div>
 
+  <!-- ═══════════════════════════════════════════════
+       TUTORIALS PAGE
+  ════════════════════════════════════════════════ -->
+  <div class="pg" id="pgTutorials">
 
 </div><!-- /app -->
 

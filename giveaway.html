@@ -16,7 +16,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 <link rel="stylesheet" href="css/main.css">
-<title>پرۆفایل | Proxo App</title>
+<title>خەڵاتی هەفتانە | Proxo App</title>
 <script>
 !function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -62,7 +62,7 @@ src="https://www.facebook.com/tr?id=986943520933161&ev=PageView&noscript=1"
 </script>
 </head>
 
-<script>window.PROXO_INIT_PAGE = 'profile';</script>
+<script>window.PROXO_INIT_PAGE = 'giveaway';</script>
 
 <body>
 <body>
@@ -401,115 +401,110 @@ src="https://www.facebook.com/tr?id=986943520933161&ev=PageView&noscript=1"
   </div>
 
 
-  <div class="pg" id="pgProfile">
+  <div class="pg" id="pgGiveaway">
+    <!-- هێرۆی نوێکراو -->
+    <div class="gw-hero">
+      <!-- دەکۆراسیۆنی شەپۆلی دواوە -->
+      <div class="gw-hero-deco" style="top:-30px;left:-30px;width:120px;height:120px;background:rgba(255,255,255,.06);border-radius:50%"></div>
+      <div class="gw-hero-deco" style="top:-10px;left:50px;width:60px;height:60px;background:rgba(255,255,255,.04);border-radius:50%"></div>
+      <div class="gw-hero-deco" style="bottom:-20px;right:-20px;width:100px;height:100px;background:rgba(0,0,0,.12);border-radius:50%"></div>
+      <div class="gw-hero-deco" style="bottom:30px;right:80px;width:40px;height:40px;background:rgba(255,255,255,.05);border-radius:50%"></div>
+      <!-- ستاری بڵاوکراوە -->
+      <div class="gw-hero-deco" style="top:18px;right:20px;font-size:10px;color:rgba(255,255,255,.4)">✦</div>
+      <div class="gw-hero-deco" style="top:40px;right:50px;font-size:7px;color:rgba(255,255,255,.3)">✦</div>
+      <div class="gw-hero-deco" style="top:22px;right:80px;font-size:13px;color:rgba(255,255,255,.2)">✦</div>
 
-    <!-- ── Profile Hero ── -->
-    <div class="prof-hero">
-      <div class="pav" id="profAv" onclick="document.getElementById('avFile').click()">P
-        <div class="pav-cam"><i class="fas fa-camera"></i></div>
-      </div>
-      <input type="file" id="avFile" accept="image/*" style="display:none" onchange="loadAv(this)">
-      <div class="prof-hero-name" id="profName">—</div>
-      <div class="prof-hero-email" id="profEmail">—</div>
-      <div id="profPhoneRow" style="display:none;margin-top:5px;font-size:12px;color:var(--mt);font-family:'Inter',sans-serif;direction:ltr"><i class="fas fa-mobile-screen" style="margin-left:4px;opacity:.5"></i><span id="profPhone">—</span></div>
-    </div>
+      <!-- ناوەڕۆکی سەرەوە -->
+      <div style="position:relative;padding:22px 20px 18px">
+        <!-- باجی خەڵات -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div class="gw-prize-badge"><i class="fas fa-gift" style="font-size:10px"></i> خەڵاتی هەفتانە</div>
+          <div class="gw-prize-badge" style="background:rgba(251,191,36,.25);border-color:rgba(251,191,36,.4)"><i class="fas fa-trophy" style="font-size:10px;color:#fbbf24"></i> <span style="color:#fde68a">هەفتانە</span></div>
+        </div>
 
-    <!-- ── Balance Card ── -->
-    <div class="pcard2">
-      <div class="pcard2-label"><i class="fas fa-wallet" style="margin-left:6px;opacity:.6"></i>باڵانسەکەت</div>
-      <div class="pcard2-bal-row">
-        <div class="bal-num" id="profBal">0.00</div>
-        <div class="pcard2-cur">IQD</div>
+        <!-- بڕی خەڵات — پرۆمینێنت -->
+        <div style="text-align:center;margin-bottom:20px">
+          <div style="font-size:11px;color:rgba(255,255,255,.6);font-weight:600;letter-spacing:.5px;margin-bottom:6px;text-transform:uppercase">خەڵاتی کۆتا</div>
+          <div style="font-size:42px;font-weight:900;color:#fff;font-family:'Inter',sans-serif;line-height:1;text-shadow:0 4px 20px rgba(0,0,0,.25);letter-spacing:-1px">18,000</div>
+          <div style="font-size:16px;font-weight:700;color:rgba(255,255,255,.8);font-family:'Inter',sans-serif;margin-top:2px">IQD</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:6px">هەر هەفتە یەک برنامەدەری خۆشبەخت</div>
+        </div>
       </div>
-      <div class="pcard2-actions">
-        <button class="pcard2-btn-main" onclick="openDeposit()">
-          <i class="fas fa-plus"></i> شارژکردن
-        </button>
-        <button class="pcard2-btn-sec" onclick="goPage('txhistory')">
-          <i class="fas fa-clock-rotate-left"></i> مامەڵەکان
-        </button>
-      </div>
-    </div>
 
-    <!-- ── Coins Card ── -->
-    <div class="pcard2 pcard2-coins" id="profileCoinsCard">
-      <div class="pcard2-coins-top">
-        <div>
-          <div class="pcard2-label" style="color:#92400e"><i class="fas fa-coins" style="margin-left:6px"></i>کۆینی پرۆکسۆ</div>
-          <div class="pcard2-bal-row" style="margin-top:6px">
-            <div class="bal-num" id="profCoins" style="color:#b45309;font-size:28px">0</div>
-            <div class="pcard2-cur" style="color:#b45309">کۆین</div>
+      <!-- شمارگری کات — دەرەوەی باکگراوند تاریکتر -->
+      <div style="background:rgba(0,0,0,.2);border-top:1px solid rgba(255,255,255,.1);padding:16px 20px">
+        <div style="font-size:10px;color:rgba(255,255,255,.55);margin-bottom:12px;font-weight:700;letter-spacing:.8px;text-align:center;text-transform:uppercase">ماوەی مایەوە تا قورعەی داهاتوو</div>
+        <div style="display:flex;gap:8px;justify-content:center;align-items:flex-start">
+          <div class="gw-countdown-box">
+            <div id="gwDays" class="gw-countdown-num">00</div>
+            <div class="gw-countdown-lbl">ڕۆژ</div>
+          </div>
+          <div class="gw-countdown-sep">:</div>
+          <div class="gw-countdown-box">
+            <div id="gwHours" class="gw-countdown-num">00</div>
+            <div class="gw-countdown-lbl">کاتژمێر</div>
+          </div>
+          <div class="gw-countdown-sep">:</div>
+          <div class="gw-countdown-box">
+            <div id="gwMins" class="gw-countdown-num">00</div>
+            <div class="gw-countdown-lbl">خولەک</div>
+          </div>
+          <div class="gw-countdown-sep">:</div>
+          <div class="gw-countdown-box">
+            <div id="gwSecs" class="gw-countdown-num">00</div>
+            <div class="gw-countdown-lbl">چرکە</div>
           </div>
         </div>
-        <button class="pcard2-coins-exch" onclick="openCoinsModal()">
-          <i class="fas fa-arrow-right-arrow-left"></i> گۆڕینەوە
-        </button>
-      </div>
-      <div class="pcard2-coins-info">
-        <i class="fas fa-circle-info" style="flex-shrink:0;font-size:11px"></i>
-        هەر ٥٠ کۆین = ٥٠٠ IQD &nbsp;·&nbsp; کەمترین ٥٠٠ کۆین بۆ گۆڕینەوە
+        <div style="margin-top:10px;font-size:10px;color:rgba(255,255,255,.35);text-align:center">قورعە هەموو هەفتەیەک ئینجام دەدرێت — کاتی ڕۆژی هەینی</div>
       </div>
     </div>
 
-    <!-- ── Referral Card ── -->
-    <div class="pcard2" id="referralCard">
-      <div class="pcard2-ref-top">
-        <div class="pcard2-label"><i class="fas fa-gift" style="margin-left:6px;color:#d97706"></i>بانگێشتکردنی هاوڕێ</div>
-        <span class="pcard2-ref-earn" id="refEarnedLbl"></span>
-      </div>
-      <div class="pcard2-ref-desc">
-        هاوڕێیەکت بانگێشت بکە — کاتێک خۆی تۆمار کرد
-        <b style="color:var(--dark)">+٥٠ <i class="fas fa-coins" style="color:#d97706"></i></b> وەردەگریت،
-        ئەوەش <b style="color:var(--dark)">+٥٠ <i class="fas fa-coins" style="color:#d97706"></i></b> وەردەگرێت
-      </div>
-      <div class="pcard2-ref-link">
-        <div class="pcard2-ref-url" id="refLinkDisp">چوارچێوەکردن...</div>
-        <button onclick="copyRefLink()" class="pcard2-ref-copy" id="refCopyBtn">
-          <i class="fas fa-copy"></i>
-        </button>
-      </div>
-      <button onclick="shareRefLink()" class="pcard2-share-btn">
-        <i class="fas fa-share-nodes"></i> هاوبەشکردن
-      </button>
-    </div>
-
-    <!-- ── Settings Card ── -->
-    <div class="pcard2">
-      <div class="pcard2-sec-title">ڕێکخستنەکان</div>
-      <button id="setupDbBtn" onclick="setupDatabase()" style="display:none;width:100%;padding:13px;background:rgba(37,99,235,.08);border:1.5px solid rgba(37,99,235,.2);border-radius:13px;color:var(--bl);font-family:'R',sans-serif;font-size:13px;font-weight:700;cursor:pointer;align-items:center;justify-content:center;gap:7px;margin-bottom:10px">
-        <i class="fas fa-database"></i> دانانی فەنکشنی داتابەیس
-      </button>
-      <div class="plist-item" onclick="showUpdateProfile()">
-        <div class="plist-ico"><i class="fas fa-user-pen"></i></div>
-        <div class="plist-txt">دەستکاری پرۆفایل</div>
-        <i class="fas fa-chevron-left plist-arr"></i>
-      </div>
-      <div class="plist-item" onclick="openChangePass()">
-        <div class="plist-ico"><i class="fas fa-lock"></i></div>
-        <div class="plist-txt">گۆڕینی وشەی نهێنی</div>
-        <i class="fas fa-chevron-left plist-arr"></i>
-      </div>
-      <div class="plist-item green" onclick="openWA()">
-        <div class="plist-ico"><i class="fab fa-whatsapp"></i></div>
-        <div class="plist-txt">گفتوگۆ لەگەڵ ئەدمین</div>
-        <i class="fas fa-chevron-left plist-arr" style="color:var(--gr)"></i>
-      </div>
-      <div class="plist-item red" onclick="doLogout()">
-        <div class="plist-ico"><i class="fas fa-right-from-bracket"></i></div>
-        <div class="plist-txt">چوونەدەرەوە</div>
-        <i class="fas fa-chevron-left plist-arr" style="color:var(--rd)"></i>
+    <!-- بازنەدەرهاتووی ئێستا -->
+    <div id="gwMyEntry" style="display:none;background:rgba(168,85,247,.08);border:1.5px solid rgba(168,85,247,.25);border-radius:16px;padding:14px 16px;margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:36px;height:36px;border-radius:50%;background:rgba(168,85,247,.15);border:1.5px solid rgba(168,85,247,.3);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0"><i class="fas fa-check" style="color:#8b5cf6;font-size:14px"></i></div>
+        <div>
+          <div style="font-size:13px;font-weight:800;color:#7c3aed">تۆ بەشداری ئەم هەفتەیەتی!</div>
+          <div style="font-size:11px;color:var(--mt);margin-top:2px">ڕیکلامت ($٢٠ یان زیاتر) پەسەند کرا — خۆت دانراویت بۆ قورعەی هەفتانە</div>
+        </div>
       </div>
     </div>
 
-    <!-- ── TX History (hidden, shown by JS) ── -->
-    <div class="pcard2" id="txPanel" style="display:none">
-      <div class="pcard2-sec-title">مێژووی مامەڵەکان</div>
-      <div id="txList"><div style="text-align:center;padding:16px;color:var(--mt);font-size:12px"><i class="fas fa-circle-notch fa-spin"></i></div></div>
+    <!-- برنامەدەری بازنەدەرهاتوو -->
+    <div class="pcard" style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div style="font-size:14px;font-weight:800;color:var(--dark)"><i class="fas fa-users" style="margin-left:7px;color:#a855f7"></i>بەشداران ئەم هەفتەیە</div>
+        <div id="gwEntryCount" style="font-size:12px;font-weight:700;color:#a855f7;font-family:'Inter',sans-serif">0 کەس</div>
+      </div>
+      <div id="gwParticipantsList">
+        <div style="text-align:center;padding:20px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin"></i></div>
+      </div>
     </div>
 
-    <div style="height:20px"></div>
+    <!-- برنامەدەری پێشوو -->
+    <div class="pcard" style="margin-bottom:14px" id="gwLastWinnerCard">
+      <div style="font-size:14px;font-weight:800;color:var(--dark);margin-bottom:12px"><i class="fas fa-trophy" style="margin-left:7px;color:#f59e0b"></i>برنامەدەری کاتی پێشوو</div>
+      <div id="gwLastWinnerContent">
+        <div style="text-align:center;padding:16px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin"></i></div>
+      </div>
+    </div>
+
+    <!-- ئایتەم چۆن دانرێیت -->
+    <div style="background:var(--bg);border:1.5px dashed var(--b2);border-radius:16px;padding:16px;margin-bottom:100px">
+      <div style="font-size:12px;font-weight:800;color:var(--dark);margin-bottom:10px"><i class="fas fa-circle-info" style="margin-left:6px;color:#a855f7"></i>چۆن بەشداری دەکەیت؟</div>
+      <div style="font-size:12px;color:var(--mt);line-height:2">
+        ١. ڕیکلامێک دروست بکە بە بودجەی <strong style="color:var(--dark)">36,000 IQD یان زیاتر</strong><br>
+        ٢. ئادمین ڕیکلامەکەت پەسەند دەکات<br>
+        ٣. خۆت بە شێوەی ئۆتۆماتیک دادەنرێیت بۆ قورعەی هەفتانە<br>
+        ٤. هەموو هەفتەیەک یەک کەسی خۆشبەختی هەڵدەبژێرێت و 18,000 IQD وەردەگرێت
+      </div>
+    </div>
   </div>
 
+
+  <!-- ══ WALLET PAGE (Firebase) ══ -->
+  <div class="pg" id="pgWallet">
+    <div class="pg-hdr">
 
 </div><!-- /app -->
 
