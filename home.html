@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>هۆم | Proxo App</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#fff;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;}
+.loader{text-align:center;color:#8b95a8;font-size:14px;display:flex;flex-direction:column;align-items:center;gap:14px;}
+.spin{width:32px;height:32px;border:3px solid #e8eaf0;border-top-color:#1c2333;border-radius:50%;animation:sp .7s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="loader"><div class="spin"></div>چاوەڕوان بە...</div>
+<script>
+const SB_URL=atob('aHR0cHM6Ly9jb2pjaGt3c3NtYXNpZWpjZ3Ziay5zdXBhYmFzZS5jbw==');
+const SB_KEY=atob('ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnBjM01pT2lKemRYQmhZbUZ6WlNJc0luSmxaaUk2SW1OdmFtTm9hM2R6YzIxaGMybGxhbU5uZG1Kcklpd2ljbTlzWlNJNkltRnViMjRpTENKcFlYUWlPakUzTnpjek1URTFNVElzSW1WNGNDSTZNakE1TWpnNE56VXhNbjAuUkNBTHkzd3BLSEdBa21YV2NCcUViX1FGRVVtaDZFcmRSYmZyQm1hZ3Z0dw==');
+const sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,storageKey:'proxo_sb_session'}});
+sb.auth.getSession().then(({data:{session}})=>{
+  if(session?.user) window.location.href='/?p=home';
+  else window.location.href='/login';
+}).catch(()=>{ window.location.href='/login'; });
+setTimeout(()=>{ window.location.href='/login'; }, 8000);
+</script>
+</body>
+</html>
