@@ -6624,7 +6624,9 @@ async function boot(){
   loadProfile();
   loadSidebarUser();
   loadMyCards();
-  goPage('home');
+  // ئەگەر URL پارامێتری ?p= هەبوو، ئەو بەشە بکرەوە
+  var _urlPage = new URLSearchParams(location.search).get('p');
+  goPage(_urlPage && ['home','create','myads','proxolink','tutorials','profile','txhistory','wallet','giveaway','promocodes','notifications','support'].includes(_urlPage) ? _urlPage : 'home');
   loadHomeBanner();
   startNotifListener(); // ── Firebase realtime notifications ──
   startWalletListener(); // ── Firebase balance realtime ──
@@ -7672,6 +7674,13 @@ function goPage(p){
   if(_currentPage==='tutplayer' && p!=='tutplayer'){
     const fr=document.getElementById('tvpIframe');
     if(fr) fr.src='';
+  }
+
+  // بەروەردکردنی URL بە ناوی بەشەکە
+  const _urlMap={home:'/home',myads:'/ads',create:'/create-ad',proxolink:'/tools',tutorials:'/tutorials',tutplayer:'/tutorials',profile:'/profile',txhistory:'/txhistory',wallet:'/wallet',giveaway:'/giveaway',promocodes:'/promocodes',notifications:'/notifications',support:'/support',adcalc:'/adcalc'};
+  const _newUrl=_urlMap[p];
+  if(_newUrl && location.pathname!==_newUrl){
+    history.pushState({page:p},'' ,_newUrl);
   }
 
   _currentPage=p;
