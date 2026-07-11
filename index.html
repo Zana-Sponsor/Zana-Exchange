@@ -2881,14 +2881,11 @@ function _toWebP(dataUrl,quality){
         v<span id="sidebarVersionLbl">1.0.1</span>
       </div>
     </div>
-    <!-- Sidebar Footer Logout -->
-    <div style="padding:12px 12px 16px;border-top:1px solid var(--b1);flex-shrink:0;">
-      <div onclick="doLogout()" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:rgba(220,38,38,.06);border:1.5px solid rgba(220,38,38,.12);cursor:pointer;transition:all .18s;" onmousedown="this.style.background='rgba(220,38,38,.12)'" onmouseup="this.style.background='rgba(220,38,38,.06)'">
-        <div style="width:34px;height:34px;border-radius:11px;background:rgba(220,38,38,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <i class="fas fa-right-from-bracket" style="color:#dc2626;font-size:14px"></i>
-        </div>
-        <span style="font-size:13px;font-weight:700;color:#dc2626;flex:1">چوونەدەرەوە</span>
-        <i class="fas fa-chevron-left" style="font-size:10px;color:rgba(220,38,38,.5)"></i>
+    <div style="padding:10px 12px 14px;border-top:1px solid var(--b1);flex-shrink:0;">
+      <div class="sidebar-item red" onclick="closeSidebar();setTimeout(doLogout,160);" style="-webkit-tap-highlight-color:transparent">
+        <div class="sidebar-item-ico"><i class="fas fa-right-from-bracket"></i></div>
+        <div class="sidebar-item-txt">چوونەدەرەوە</div>
+        <i class="fas fa-chevron-left" style="font-size:10px;color:rgba(220,38,38,.35);margin-right:2px"></i>
       </div>
     </div>
   </div>
@@ -2944,12 +2941,11 @@ function _toWebP(dataUrl,quality){
       </div>
       <input type="file" id="avFile" accept="image/*" style="display:none" onchange="loadAv(this)">
       <div class="prof-hero-name" id="profName">—</div>
+      <div id="profLastLoginRow" style="display:none;margin-top:8px;background:rgba(99,102,241,.07);border:1px solid rgba(99,102,241,.12);border-radius:20px;padding:4px 13px;font-size:11px;color:var(--mt2);font-family:'R',sans-serif;font-weight:600;position:relative;">
+        <i class="fas fa-clock" style="margin-left:5px;color:#6366f1;font-size:10px"></i>دوایین چوونەژوورەوە: <span id="profLastLogin" style="color:var(--dark);font-weight:800">—</span>
+      </div>
       <div class="prof-hero-email" id="profEmail">—</div>
       <div id="profPhoneRow" style="display:none;margin-top:5px;font-size:12px;color:var(--mt);font-family:'Inter',sans-serif;direction:ltr"><i class="fas fa-mobile-screen" style="margin-left:4px;opacity:.5"></i><span id="profPhone">—</span></div>
-      <div id="profLastLoginRow" style="display:none;margin-top:10px;background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.1);border-radius:20px;padding:5px 14px;font-size:11px;color:var(--mt2);font-family:'Inter',sans-serif;direction:rtl;font-weight:600">
-        <i class="fas fa-clock" style="margin-left:5px;color:#6366f1;opacity:.7;font-size:10px"></i>
-        کاتی دوایین چوونەژوورەوە: <span id="profLastLogin" style="color:var(--dark);font-weight:700">—</span>
-      </div>
     </div>
 
     <!-- ── Balance Card ── -->
@@ -2966,26 +2962,6 @@ function _toWebP(dataUrl,quality){
         <button class="pcard2-btn-sec" onclick="goPage('txhistory')">
           <i class="fas fa-clock-rotate-left"></i> مامەڵەکان
         </button>
-      </div>
-    </div>
-
-    <!-- ── Coins Card ── -->
-    <div class="pcard2 pcard2-coins" id="profileCoinsCard">
-      <div class="pcard2-coins-top">
-        <div>
-          <div class="pcard2-label" style="color:#92400e"><i class="fas fa-coins" style="margin-left:6px"></i>کۆینی پرۆکسۆ</div>
-          <div class="pcard2-bal-row" style="margin-top:6px">
-            <div class="bal-num" id="profCoins" style="color:#b45309;font-size:28px">0</div>
-            <div class="pcard2-cur" style="color:#b45309">کۆین</div>
-          </div>
-        </div>
-        <button class="pcard2-coins-exch" onclick="openCoinsModal()">
-          <i class="fas fa-arrow-right-arrow-left"></i> گۆڕینەوە
-        </button>
-      </div>
-      <div class="pcard2-coins-info">
-        <i class="fas fa-circle-info" style="flex-shrink:0;font-size:11px"></i>
-        هەر ٥٠ کۆین = ٥٠٠ IQD &nbsp;·&nbsp; کەمترین ٥٠٠ کۆین بۆ گۆڕینەوە
       </div>
     </div>
 
@@ -7804,6 +7780,7 @@ async function loadProfile(){
     else _llStr=_llDate.toLocaleDateString('ku',{year:'numeric',month:'short',day:'numeric'});
     _llVal.textContent=_llStr;
     _llRow.style.display='inline-flex';
+    _llRow.style.alignItems='center';
   }
 }
 function loadAv(inp){

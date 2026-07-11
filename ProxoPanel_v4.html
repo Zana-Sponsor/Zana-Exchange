@@ -4090,20 +4090,10 @@ async function loadVersion(){
   // Pre-fill form
   document.getElementById('vNewVer').value=ver==='—'?'':ver;
   document.getElementById('vNewMsg').value=msg==='هیچ تێبینییەک نییە'?'':msg;
-  // Sync force-update button visual state
   _vForceUpdate=force;
   document.getElementById('vForceUpdate').value=String(force);
   const _grp=document.getElementById('vForceGroup');
-  if(_grp){
-    const _btns=_grp.querySelectorAll('div[onclick]');
-    _btns.forEach(d=>{d.style.background='';d.style.color='';d.style.borderColor='var(--b2)';});
-    const _target=_btns[force?1:0];
-    if(_target){
-      _target.style.background=force?'var(--rd)':'var(--dark)';
-      _target.style.color='#fff';
-      _target.style.borderColor=force?'var(--rd)':'var(--dark)';
-    }
-  }
+  if(_grp){const _btns=_grp.querySelectorAll('div[onclick]');_btns.forEach(d=>{d.style.background='';d.style.color='';d.style.borderColor='var(--b2)';});const _t=_btns[force?1:0];if(_t){_t.style.background=force?'var(--rd)':'var(--dark)';_t.style.color='#fff';_t.style.borderColor=force?'var(--rd)':'var(--dark)';}}
 }
 
 async function saveVersion(){
