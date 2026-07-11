@@ -2471,7 +2471,7 @@ async function showUserDetail(uid){
         <div style="font-size:11px;color:var(--mt);margin-bottom:2px">خاڵ</div>
         <div style="font-family:'Inter';font-weight:800;font-size:16px;color:#a855f7" id="udetLevelPts_${u.id}">—</div>
       </div>
-      <div class="act-btn pu" style="padding:6px 12px;font-size:12px" onclick="openEditUserLevel('${u.id}','${(u.full_name||u.email||\'\').replace(/'/g,"\\'")}')" ><i class="fas fa-pen"></i> دەستکاری</div>
+      <div class="act-btn pu" style="padding:6px 12px;font-size:12px" onclick="openEditUserLevel('${u.id}')"><i class="fas fa-pen"></i> دەستکاری</div>
     </div>
     <div class="sep"></div>
     <div class="act-grp" style="flex-wrap:wrap">
@@ -4747,133 +4747,84 @@ async function loadVouchers(){
 }
 
 function renderGiftHistory(){
-  const wrap=document.getElementById('giftHistoryWrap');
+  var wrap=document.getElementById('giftHistoryWrap');
   if(!wrap)return;
-  const gifts=_allVouchers.filter(v=>v.is_signup_bonus);
-  const countEl=document.getElementById('giftHistoryCount');
+  var gifts=_allVouchers.filter(function(v){return v.is_signup_bonus;});
+  var countEl=document.getElementById('giftHistoryCount');
   if(countEl)countEl.textContent='('+gifts.length+')';
   if(!gifts.length){
     wrap.innerHTML='<div class="empty" style="padding:20px"><i class="fas fa-gift"></i><p>هیچ دیاریەک نەنێردراوە بۆ کڕیاری نوێ</p></div>';
     return;
   }
-  const tableHTML=`<table>
-    <thead><tr><th>بەکارهێنەر (گیراوی دیاری)</th><th>کۆد</th><th>بڕ (IQD)</th><th>بار</th><th>بەکارهێنراو لەلایەن</th><th>کاتی بەکارهێنان</th><th>کۆتایی</th><th>دروستکراو</th></tr></thead>
-    <tbody>${gifts.map(v=>{
-      const expired=v.expires_at&&new Date(v.expires_at)<new Date();
-      const claimed=!!v.used_by;
-      const aProf=v._assignedProfile;
-      const uProf=v._usedByProfile;
-      const statusLabel=claimed?'بەکارهێنراو':!v.is_active?'ناچالاک':expired?'بەسەرچووە':'چاوەڕوانە';
-      const statusClass=claimed?'approved':!v.is_active||expired?'rejected':'pending';
-      const usedTime=v.used_at?new Date(v.used_at).toLocaleString('ku',{year:'2-digit',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
-      return\`<tr>
-        <td>\${aProf?\`<div class="user-cell"><div class="mini-av" style="width:26px;height:26px;font-size:10px;background:#f59e0b">\${(aProf.full_name||aProf.email||'?')[0].toUpperCase()}</div><div><div style="font-size:12px;font-weight:700">\${aProf.full_name||'—'}</div><div style="font-size:10px;color:var(--mt)">\${aProf.email||'—'}</div></div></div>\`:'<span style="color:var(--mt);font-size:11px">نازانراو</span>'}</td>
-        <td><span style="font-family:'Inter';font-weight:800;letter-spacing:1.5px;color:var(--dark)">\${v.code}</span></td>
-        <td><span style="font-weight:800;color:#f59e0b;font-family:'Inter'">\${Math.round(v.amount_iqd||0).toLocaleString()} IQD</span></td>
-        <td><span class="badge \${statusClass}">\${statusLabel}</span></td>
-        <td>\${claimed&&uProf?\`<div class="user-cell"><div class="mini-av" style="width:24px;height:24px;font-size:9px;background:#16a34a">\${(uProf.full_name||uProf.email||'?')[0].toUpperCase()}</div><div style="font-size:11px;font-weight:700">\${uProf.full_name||'—'}</div></div>\`:claimed?'<span style="font-size:11px;color:var(--mt)">بەکارهێنراوە</span>':'<span style="color:var(--mt);font-size:11px">—</span>'}</td>
-        <td style="font-size:11px;color:var(--mt);white-space:nowrap">\${usedTime}</td>
-        <td style="font-size:11px;color:var(--mt)">\${v.expires_at?(expired?'<span style="color:var(--rd)">⛔ ':'<span>✅ ')+new Date(v.expires_at).toLocaleDateString('ku')+'</span>':'—'}</td>
-        <td style="font-size:11px;color:var(--mt)">\${v.created_at?new Date(v.created_at).toLocaleDateString('ku'):'—'}</td>
-      </tr>\`;
-    }).join('')}</tbody></table>`;
-  const cardsHTML=`<div class="user-cards">\${gifts.map(v=>{
-    const expired=v.expires_at&&new Date(v.expires_at)<new Date();
-    const claimed=!!v.used_by;
-    const aProf=v._assignedProfile;
-    const uProf=v._usedByProfile;
-    const statusLabel=claimed?'بەکارهێنراو':!v.is_active?'ناچالاک':expired?'بەسەرچووە':'چاوەڕوانە';
-    const statusClass=claimed?'approved':!v.is_active||expired?'rejected':'pending';
-    const usedTime=v.used_at?new Date(v.used_at).toLocaleString('ku',{year:'2-digit',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
-    return\`<div class="user-card">
-      <div class="user-card-top">
-        <div class="mini-av" style="background:#f59e0b;font-size:10px"><i class="fas fa-gift" style="font-size:13px"></i></div>
-        <div class="user-card-info">
-          <div class="user-card-name" style="font-family:'Inter';letter-spacing:1.5px">\${v.code}</div>
-          <div class="user-card-email" style="font-weight:800;color:#f59e0b">\${Math.round(v.amount_iqd||0).toLocaleString()} IQD</div>
-        </div>
-        <span class="badge \${statusClass}">\${statusLabel}</span>
-      </div>
-      <div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15);border-radius:10px;padding:8px 12px;margin-bottom:8px">
-        <div style="font-size:11px;color:var(--mt);margin-bottom:4px;font-weight:700"><i class="fas fa-user-plus" style="margin-left:4px;font-size:10px;color:#f59e0b"></i>گیراوی دیاری</div>
-        \${aProf?\`<div style="font-size:12px;font-weight:700;color:var(--dark)">\${aProf.full_name||'—'}</div><div style="font-size:10px;color:var(--mt)">\${aProf.email||'—'}</div>\`:'<div style="font-size:11px;color:var(--mt)">نازانراو</div>'}
-      </div>
-      \${claimed?\`<div style="background:rgba(22,163,74,.06);border:1px solid rgba(22,163,74,.15);border-radius:10px;padding:8px 12px;margin-bottom:8px">
-        <div style="font-size:11px;color:var(--mt);margin-bottom:4px;font-weight:700"><i class="fas fa-check-circle" style="margin-left:4px;font-size:10px;color:var(--gr)"></i>بەکارهێنراو لەلایەن</div>
-        \${uProf?\`<div style="font-size:12px;font-weight:700;color:var(--dark)">\${uProf.full_name||'—'}</div><div style="font-size:10px;color:var(--mt)">\${uProf.email||'—'}</div><div style="font-size:10px;color:var(--mt);margin-top:3px">\${usedTime}</div>\`:'<div style="font-size:11px;color:var(--mt)">بەکارهێنراوە</div>'}
-      </div>\`:''}
-      <div class="user-card-meta">
-        <div class="user-card-date"><i class="fas fa-calendar-plus" style="font-size:9px;opacity:.5;margin-left:3px"></i>\${v.created_at?new Date(v.created_at).toLocaleDateString('ku'):'—'}</div>
-      </div>
-    </div>\`;
-  }).join('')}</div>`;
-  wrap.innerHTML=tableHTML+cardsHTML;
+  var thead='<table><thead><tr><th>بەکارهێنەر (گیراوی دیاری)</th><th>کۆد</th><th>بڕ (IQD)</th><th>بار</th><th>بەکارهێنراو لەلایەن</th><th>کاتی بەکارهێنان</th><th>کۆتایی</th><th>دروستکراو</th></tr></thead><tbody>';
+  var tbody='';
+  var cards='<div class="user-cards">';
+  for(var i=0;i<gifts.length;i++){
+    var v=gifts[i];
+    var expired=!!(v.expires_at&&new Date(v.expires_at)<new Date());
+    var claimed=!!v.used_by;
+    var ap=v._assignedProfile;
+    var up=v._usedByProfile;
+    var slabel=claimed?'بەکارهێنراو':(!v.is_active?'ناچالاک':(expired?'بەسەرچووە':'چاوەڕوانە'));
+    var sclass=claimed?'approved':((!v.is_active||expired)?'rejected':'pending');
+    var utime=v.used_at?new Date(v.used_at).toLocaleString('ku',{year:'2-digit',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
+    var aname=ap?(ap.full_name||ap.email||'—'):'نازانراو';
+    var aemail=ap?(ap.email||'—'):'';
+    var ainit=ap?((ap.full_name||ap.email||'?')[0].toUpperCase()):'?';
+    var acell=ap
+      ?('<div class="user-cell"><div class="mini-av" style="width:26px;height:26px;font-size:10px;background:#f59e0b">'+ainit+'</div><div><div style="font-size:12px;font-weight:700">'+aname+'</div><div style="font-size:10px;color:var(--mt)">'+aemail+'</div></div></div>')
+      :'<span style="color:var(--mt);font-size:11px">نازانراو</span>';
+    var uinit=up?((up.full_name||up.email||'?')[0].toUpperCase()):'?';
+    var uname=up?(up.full_name||up.email||'—'):'';
+    var ucell=(claimed&&up)
+      ?('<div class="user-cell"><div class="mini-av" style="width:24px;height:24px;font-size:9px;background:#16a34a">'+uinit+'</div><div style="font-size:11px;font-weight:700">'+uname+'</div></div>')
+      :(claimed?'<span style="font-size:11px;color:var(--mt)">بەکارهێنراوە</span>':'<span style="color:var(--mt);font-size:11px">—</span>');
+    var ecell=v.expires_at
+      ?((expired?'<span style="color:var(--rd)">⛔ ':'<span>✅ ')+new Date(v.expires_at).toLocaleDateString('ku')+'</span>')
+      :'—';
+    var cdate=v.created_at?new Date(v.created_at).toLocaleDateString('ku'):'—';
+    var amt=Math.round(v.amount_iqd||0).toLocaleString();
+    tbody+='<tr><td>'+acell+'</td><td><b style="font-family:Inter;font-weight:800;letter-spacing:1.5px">'+v.code+'</b></td><td><b style="color:#f59e0b;font-family:Inter">'+amt+' IQD</b></td><td><span class="badge '+sclass+'">'+slabel+'</span></td><td>'+ucell+'</td><td style="font-size:11px;color:var(--mt);white-space:nowrap">'+utime+'</td><td style="font-size:11px;color:var(--mt)">'+ecell+'</td><td style="font-size:11px;color:var(--mt)">'+cdate+'</td></tr>';
+    cards+='<div class="user-card"><div class="user-card-header"><div class="user-card-info"><div class="user-card-name">'+v.code+'</div><div class="user-card-date">'+aname+'</div></div><span class="badge '+sclass+'">'+slabel+'</span></div><div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--b1);margin-bottom:8px"><div style="font-size:12px;color:var(--mt)">بڕ</div><b style="color:#f59e0b;font-family:Inter">'+amt+' IQD</b></div>'+(claimed&&up?'<div style="font-size:11px;color:var(--mt);margin-bottom:6px">بەکارهێنراو لەلایەن: <strong>'+uname+'</strong></div>':'')+'<div class="user-card-date">'+ecell+'</div></div>';
+  }
+  wrap.innerHTML=thead+tbody+'</tbody></table><div class="user-cards">'+cards.slice('<div class="user-cards">'.length)+'</div>';
 }
 
 function renderVouchers(){
-  const wrap=document.getElementById('voucherWrap');
+  var wrap=document.getElementById('voucherWrap');
   if(!wrap)return;
-  // تەنها ڤاوچەرەکانی ئادمین نیشان بدە (نە دیاریەکانی بەخێرهاتن)
-  const adminVouchers=_allVouchers.filter(v=>!v.is_signup_bonus);
-  if(!adminVouchers.length){
-    wrap.innerHTML='<div class="empty"><i class="fas fa-ticket"></i><p>هیچ ڤاوچەرێک نییە — ڤاوچەری نوێ دروست بکە</p></div>';
+  var av=_allVouchers.filter(function(v){return !v.is_signup_bonus;});
+  if(!av.length){
+    wrap.innerHTML='<div class="empty"><i class="fas fa-ticket"></i><p>هیچ کۆدێک دروست نەکراوە</p></div>';
     return;
   }
-  const tableHTML=`<table>
-    <thead><tr><th>کۆد</th><th>بڕی IQD</th><th>بار</th><th>بەکارهێنەر</th><th>کاتی بەکارهێنان</th><th>بەرواری کۆتایی</th><th>دروستکراو</th><th>کردار</th></tr></thead>
-    <tbody>${adminVouchers.map(v=>{
-      const expired=v.expires_at&&new Date(v.expires_at)<new Date();
-      const claimed=!!v.used_by;
-      const statusLabel=claimed?'بەکارهێنراو':!v.is_active?'ناچالاک':expired?'بەسەرچووە':'بەردەست';
-      const statusClass=claimed||!v.is_active||expired?'rejected':'approved';
-      const uProf=v._usedByProfile;
-      const usedTime=v.used_at?new Date(v.used_at).toLocaleString('ku',{year:'2-digit',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
-      return`<tr>
-        <td><span style="font-family:'Inter';font-weight:800;font-size:13px;letter-spacing:1.5px;color:var(--dark)">${v.code}</span></td>
-        <td><span style="font-weight:800;color:#f59e0b;font-family:'Inter'">${Math.round(v.amount_iqd||0).toLocaleString()} IQD</span></td>
-        <td><span class="badge ${statusClass}">${statusLabel}</span></td>
-        <td>${claimed&&uProf?`<div class="user-cell"><div class="mini-av" style="width:28px;height:28px;font-size:11px;background:#f59e0b">${(uProf.full_name||uProf.email||'?')[0].toUpperCase()}</div><div><div style="font-size:12px;font-weight:700">${uProf.full_name||'—'}</div><div style="font-size:10px;color:var(--mt)">${uProf.email||'—'}</div></div></div>`:claimed?'<span style="font-size:11px;color:var(--mt)">بەکارهێنراوە</span>':'<span style="color:var(--mt);font-size:11px">—</span>'}</td>
-        <td style="font-size:11px;color:var(--mt);white-space:nowrap">${usedTime||'—'}</td>
-        <td style="font-size:11px;color:var(--mt)">${v.expires_at?(expired?'<span style="color:var(--rd)">⛔ ':'<span>✅ ')+new Date(v.expires_at).toLocaleDateString('ku')+'</span>':'—'}</td>
-        <td style="font-size:11px;color:var(--mt)">${v.created_at?new Date(v.created_at).toLocaleDateString('ku'):'—'}</td>
-        <td><div class="act-grp">
-          ${!claimed?`<div class="act-btn ${v.is_active?'yw':'gr'}" onclick="toggleVoucher('${v.id}',${v.is_active})" title="${v.is_active?'ناچالاک بکە':'چالاک بکە'}"><i class="fas fa-toggle-${v.is_active?'on':'off'}"></i></div>`:''}
-          <div class="act-btn rd" onclick="deleteVoucher('${v.id}','${v.code}')"><i class="fas fa-trash"></i></div>
-        </div></td>
-      </tr>`;
-    }).join('')}</tbody></table>`;
-  const cardsHTML=`<div class="user-cards">${adminVouchers.map(v=>{
-    const expired=v.expires_at&&new Date(v.expires_at)<new Date();
-    const claimed=!!v.used_by;
-    const statusLabel=claimed?'بەکارهێنراو':!v.is_active?'ناچالاک':expired?'بەسەرچووە':'بەردەست';
-    const statusClass=claimed||!v.is_active||expired?'rejected':'approved';
-    const uProf=v._usedByProfile;
-    const usedTime=v.used_at?new Date(v.used_at).toLocaleString('ku',{year:'2-digit',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
-    return`<div class="user-card">
-      <div class="user-card-top">
-        <div class="mini-av" style="background:${claimed?'#6b7280':'#f59e0b'};font-size:10px;letter-spacing:0;font-weight:900"><i class="fas fa-ticket" style="font-size:14px"></i></div>
-        <div class="user-card-info">
-          <div class="user-card-name" style="font-family:'Inter';letter-spacing:1.5px">${v.code}</div>
-          <div class="user-card-email" style="font-weight:800;color:#f59e0b">${Math.round(v.amount_iqd||0).toLocaleString()} IQD</div>
-        </div>
-        <span class="badge ${statusClass}">${statusLabel}</span>
-      </div>
-      ${claimed?`<div style="background:${uProf?'rgba(245,158,11,.07)':'var(--bg)'};border:1px solid ${uProf?'rgba(245,158,11,.2)':'var(--b1)'};border-radius:10px;padding:8px 12px;margin-bottom:8px">
-        ${uProf?`<div style="display:flex;align-items:center;gap:8px"><div class="mini-av" style="width:26px;height:26px;font-size:10px;background:#f59e0b;flex-shrink:0">${(uProf.full_name||uProf.email||'?')[0].toUpperCase()}</div><div><div style="font-size:12px;font-weight:700;color:var(--dark)">${uProf.full_name||'—'}</div><div style="font-size:10px;color:var(--mt)">${uProf.email||'—'}</div></div></div>`:'<span style="font-size:11px;color:var(--mt)">بەکارهێنراوە</span>'}
-        ${usedTime?`<div style="font-size:10px;color:var(--mt);margin-top:5px"><i class="fas fa-clock" style="font-size:9px;margin-left:3px"></i>${usedTime}</div>`:''}
-      </div>`:''}
-      <div class="user-card-meta">
-        ${!claimed?'<div class="user-card-stat gr"><i class="fas fa-circle-check" style="font-size:10px"></i> بەردەست</div>':''}
-        <div class="user-card-date"><i class="fas fa-calendar-plus" style="font-size:9px;opacity:.5;margin-left:3px"></i>${v.created_at?new Date(v.created_at).toLocaleDateString('ku'):'—'}</div>
-      </div>
-      ${v.expires_at?`<div style="font-size:10.5px;color:${expired?'var(--rd)':'var(--mt)'};margin-bottom:8px;padding:5px 10px;background:${expired?'rgba(220,38,38,.06)':'var(--bg)'};border-radius:8px;border:1px solid ${expired?'rgba(220,38,38,.15)':'var(--b1)'}"><i class="fas fa-clock" style="margin-left:4px;font-size:9px"></i>کۆتایی: ${new Date(v.expires_at).toLocaleDateString('ku')} ${expired?'⛔':''}</div>`:''}
-      <div class="user-card-actions">
-        ${!claimed?`<div class="act-btn ${v.is_active?'yw':'gr'}" style="flex:1" onclick="toggleVoucher('${v.id}',${v.is_active})"><i class="fas fa-toggle-${v.is_active?'on':'off'}"></i> ${v.is_active?'ناچالاک':'چالاک'}</div>`:''}
-        <div class="act-btn rd" style="flex:1" onclick="deleteVoucher('${v.id}','${v.code}')"><i class="fas fa-trash"></i> سڕینەوە</div>
-      </div>
-    </div>`;
-  }).join('')}</div>`;
-  wrap.innerHTML=tableHTML+cardsHTML;
+  var thead='<table><thead><tr><th>کۆد</th><th>بڕ (IQD)</th><th>بار</th><th>بەکارهێنراو لەلایەن</th><th>کۆتایی</th><th>دروستکراو</th><th>کردارەکان</th></tr></thead><tbody>';
+  var tbody='';
+  var cards='<div class="user-cards">';
+  for(var i=0;i<av.length;i++){
+    var v=av[i];
+    var expired=!!(v.expires_at&&new Date(v.expires_at)<new Date());
+    var claimed=!!v.used_by;
+    var up=v._usedByProfile;
+    var slabel=claimed?'بەکارهێنراو':(!v.is_active?'ناچالاک':(expired?'بەسەرچووە':'چاوەڕوانە'));
+    var sclass=claimed?'approved':((!v.is_active||expired)?'rejected':'pending');
+    var uinit=up?((up.full_name||up.email||'?')[0].toUpperCase()):'?';
+    var uname=up?(up.full_name||up.email||'—'):'';
+    var ucell=(claimed&&up)
+      ?('<div class="user-cell"><div class="mini-av" style="width:24px;height:24px;font-size:9px;background:#16a34a">'+uinit+'</div><div style="font-size:11px;font-weight:700">'+uname+'</div></div>')
+      :(claimed?'<span style="font-size:11px;color:var(--mt)">بەکارهێنراوە</span>':'<span style="color:var(--mt);font-size:11px">—</span>');
+    var ecell=v.expires_at
+      ?((expired?'<span style="color:var(--rd)">⛔ ':'<span>✅ ')+new Date(v.expires_at).toLocaleDateString('ku')+'</span>')
+      :'—';
+    var cdate=v.created_at?new Date(v.created_at).toLocaleDateString('ku'):'—';
+    var amt=Math.round(v.amount_iqd||0).toLocaleString();
+    var vid=v.id; var vcode=v.code; var vactive=v.is_active;
+    var tbtn=!claimed?('<div class="act-btn '+(vactive?'yw':'gr')+'" style="flex:1" data-id="'+vid+'" data-active="'+vactive+'" onclick="toggleVoucher(this.dataset.id,this.dataset.active===\'true\')"><i class="fas fa-toggle-'+(vactive?'on':'off')+'"></i> '+(vactive?'ناچالاككردن':'چالاككردن')+'</div>'):'';
+    var dbtn='<div class="act-btn rd" style="'+(claimed?'flex:1;':'')+'padding:4px 8px;font-size:11px" data-id="'+vid+'" data-code="'+vcode+'" onclick="deleteVoucher(this.dataset.id,this.dataset.code)"><i class="fas fa-trash"></i></div>';
+    tbody+='<tr><td><b style="font-family:Inter;font-weight:800;letter-spacing:2px">'+vcode+'</b></td><td><b style="color:#f59e0b;font-family:Inter">'+amt+' IQD</b></td><td><span class="badge '+sclass+'">'+slabel+'</span></td><td>'+ucell+'</td><td style="font-size:11px;color:var(--mt)">'+ecell+'</td><td style="font-size:11px;color:var(--mt)">'+cdate+'</td><td>'+dbtn+'</td></tr>';
+    cards+='<div class="user-card"><div class="user-card-header"><div class="user-card-info"><div class="user-card-name">'+vcode+'</div><div class="user-card-date"><i class="fas fa-calendar-plus" style="font-size:9px;opacity:.5;margin-left:3px"></i>'+cdate+'</div></div><span class="badge '+sclass+'">'+slabel+'</span></div>'+(v.expires_at?'<div style="font-size:10.5px;color:'+(expired?'var(--rd)':'var(--mt)')+';margin-bottom:8px;padding:5px 10px;background:'+(expired?'rgba(220,38,38,.06)':'var(--bg)')+';border-radius:8px;border:1px solid '+(expired?'rgba(220,38,38,.15)':'var(--b1)')+'"><i class="fas fa-clock" style="margin-left:4px;font-size:9px"></i>کۆتایی: '+new Date(v.expires_at).toLocaleDateString('ku')+'</div>':'')+'<div class="user-card-actions">'+tbtn+dbtn.replace('padding:4px 8px;font-size:11px','flex:1')+'</div></div>';
+  }
+  wrap.innerHTML=thead+tbody+'</tbody></table>'+cards+'</div>';
 }
 
 async function createVoucherCode(){
