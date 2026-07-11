@@ -12647,12 +12647,14 @@ function lcRenderMessages(msgs){
   // پەیامی ڕاستەقینە لە Firebase دابین بێت — ئینجا لادەبرێت بۆ ئەوەی دووبارە نەبێتەوە
   const _hasRealBotMsg=msgs.some(m=>m.isBot);
   if(lcGreetingActive&&!_hasRealBotMsg)lcAppendGreeting(area);
-  // پەیامی سیستەمی "[ناو] هاتە ناو چات" بە ڕیزبەندی کاتی خۆی لەگەڵ باقی پەیامەکان تێکەڵ دەکرێت
+  // پەیامی بەشداربوون یەک میلیچرکە پێش یەکەمین پەیامی مرۆڤی ئادمین دادەنرێت
   let renderList=msgs.slice();
   if(lcAgentJoinedName){
-    renderList.push({type:'system',text:lcAgentJoinedName+' بەشداربوو لەچاتەکە',timestamp:lcAgentJoinTimestamp||Date.now()});
-    renderList.sort((a,b)=>a.timestamp-b.timestamp);
+    const _fa=msgs.filter(m=>m.sender==='admin'&&!m.isBot).sort((a,b)=>a.timestamp-b.timestamp)[0];
+    const _jts=_fa?_fa.timestamp-1:(lcAgentJoinTimestamp||Date.now());
+    renderList.push({type:'system',text:lcAgentJoinedName+' بەشداربوو لەچاتەکە',timestamp:_jts});
   }
+  renderList.sort((a,b)=>a.timestamp-b.timestamp);
   // ── فتنکشنی تیک‌ی پەیام ──
   function lcTickHtml(status,sender){
     if(sender!=='user')return '';
