@@ -8821,6 +8821,9 @@ function pickCard(el,id){
         }
       }
 
+      // ژمارەی ڕیکلام (بۆ هەردوو ڕێگای RPC و فالبەک) — بەکاردێت بۆ تۆمارکردنی داشکاندن
+      const _adNumFinal = _fallbackAdNum || (typeof data === 'string' ? data : (data?.ad_number || data?.id || null));
+
       // ── تۆمارکردنی بەکارهێنانی کۆدی داشکاندن ──────────────────
       // data === null کاتێک فالبەک بووە، بۆیە تەنها _promoValidated پشکن دەکەین
       if(_promoValidated){
@@ -8853,8 +8856,19 @@ function pickCard(el,id){
       await loadBal();
       // Award 50 Proxo Coins for submitting an ad
       await addCoins(COINS_PER_AD, 'ناردنی ڕیکلام — کۆینی پاداشت');
-      // ── خاڵ بۆ ئاست و پێشکەوتنی چاڵنجەکان (١ خاڵ بۆ هەر ١ دۆلار خەرجکراو) ──
+      // ── خاڵ بۆ ئاست و پێشکەوتنی چاڵنجەکان (ڕێژەکە لە لایەن ئادمینەوە دیاریدەکرێت) ──
       try{ await sb.rpc('register_ad_activity',{p_user_id:cu.id,p_usd:finalTotal/1800}); }catch(e){}
+
+      // ── تۆمارکردنی زانیاری داشکاندنی ئاست بۆ ئەم ڕیکلامە (بۆ نیشاندان لە پانێڵی ئادمین) ──
+      if(_levelDiscountPercent>0 && _adNumFinal){
+        try{
+          await sb.from('pa_ads').update({
+            level_discount_percent : Math.round(_levelDiscountPercent*100),
+            level_discount_iqd     : levelDiscIQD,
+            level_name_at_purchase : _levelDiscountName||null
+          }).eq('ad_number', String(_adNumFinal));
+        }catch(e){}
+      }
       showToast('داواکاری ڕیکلامەکەت نێردرا! +50 کۆینت وەرگرت','ok');
       try {
         const _adNum    = typeof data === 'string' ? data : (data?.ad_number || data?.id || _fallbackAdNum || '—');
@@ -13596,7 +13610,11 @@ async function _getLevelThresholds(){
     const { data } = await sb.from('pa_settings').select('value').eq('key', 'level_thresholds').single();
     if (data?.value) {
       const t = typeof data.value === 'string' ? JSON.parse(data.value) : data.value;
-      _levelThresholds = LEVEL_DEFS.map(l => ({ ...l, min: (t[l.key] ?? l.min) }));
+      _levelThresholds = LEVEL_DEFS.map(l => ({
+        ...l,
+        min: (t[l.key] ?? l.min),
+        discount: (t[l.key + 'Discount'] != null ? t[l.key + 'Discount'] / 100 : l.discount)
+      }));
       return _levelThresholds;
     }
   } catch (e) {}

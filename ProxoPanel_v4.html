@@ -1389,7 +1389,7 @@ tr:hover td{background:rgba(28,35,51,.015);}
       </div>
       <div class="info-box" style="margin-bottom:14px">
         <i class="fas fa-circle-info" style="margin-left:8px;color:#a855f7"></i>
-        بەکارهێنەران بەپێی خەرجکردن خاڵ کۆدەکەنەوە — <strong>١ خاڵ بۆ هەر ١ دۆلاری خەرجکراو لە ڕیکلامدا</strong>. کەمترین خاڵی هەر ئاست لێرە دیاری بکە.
+        بەکارهێنەران بەپێی خەرجکردن خاڵ کۆدەکەنەوە. کەمترین خاڵی هەر ئاست و ڕێژەی داشکاندنی ڕیکلام بۆ هەر ئاست لێرە دیاری بکە.
       </div>
       <div class="tbl-wrap" style="padding:16px;margin-bottom:24px">
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
@@ -1410,7 +1410,42 @@ tr:hover td{background:rgba(28,35,51,.015);}
             <input class="minp" type="number" id="lvlDiamond" value="500" dir="ltr" style="font-family:'Inter'">
           </div>
         </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px">
+          <div class="field-wrap" style="margin-bottom:0">
+            <label class="modal-lbl">داشکاندنی بڕۆنز (%)</label>
+            <input class="minp" type="number" id="lvlBronzeDiscount" value="0" dir="ltr" style="font-family:'Inter'">
+          </div>
+          <div class="field-wrap" style="margin-bottom:0">
+            <label class="modal-lbl">داشکاندنی زیو (%)</label>
+            <input class="minp" type="number" id="lvlSilverDiscount" value="5" dir="ltr" style="font-family:'Inter'">
+          </div>
+          <div class="field-wrap" style="margin-bottom:0">
+            <label class="modal-lbl">داشکاندنی پلاتینیۆم (%)</label>
+            <input class="minp" type="number" id="lvlPlatinumDiscount" value="10" dir="ltr" style="font-family:'Inter'">
+          </div>
+          <div class="field-wrap" style="margin-bottom:0">
+            <label class="modal-lbl">داشکاندنی ئەڵماس (%)</label>
+            <input class="minp" type="number" id="lvlDiamondDiscount" value="15" dir="ltr" style="font-family:'Inter'">
+          </div>
+        </div>
         <div class="act-btn dark" onclick="saveLevelThresholds()" style="padding:8px 16px;margin-top:14px;display:inline-flex;background:#a855f7;border-color:#a855f7"><i class="fas fa-floppy-disk"></i> پاشەکەوتکردن</div>
+      </div>
+
+      <div class="sec-hdr" style="flex-wrap:wrap;gap:10px">
+        <h3><i class="fas fa-coins" style="margin-left:8px;color:#a855f7"></i>ڕێژەی خاڵ بۆ خەرجکردن</h3>
+      </div>
+      <div class="info-box" style="margin-bottom:14px">
+        <i class="fas fa-circle-info" style="margin-left:8px;color:#a855f7"></i>
+        دیاریکردنی چەند خاڵ بەکارهێنەر وەردەگرێت بەرامبەر هەر ١ دۆلاری خەرجکراو لە ڕیکلامدا.
+      </div>
+      <div class="tbl-wrap" style="padding:16px;margin-bottom:24px">
+        <div style="display:grid;grid-template-columns:1fr;max-width:260px;gap:12px">
+          <div class="field-wrap" style="margin-bottom:0">
+            <label class="modal-lbl">خاڵ بۆ هەر ١ دۆلار</label>
+            <input class="minp" type="number" id="ptsPerDollar" value="1" min="0" step="0.1" dir="ltr" style="font-family:'Inter'">
+          </div>
+        </div>
+        <div class="act-btn dark" onclick="savePointsPerDollar()" style="padding:8px 16px;margin-top:14px;display:inline-flex;background:#a855f7;border-color:#a855f7"><i class="fas fa-floppy-disk"></i> پاشەکەوتکردن</div>
       </div>
 
       <div class="sec-hdr" style="flex-wrap:wrap;gap:10px">
@@ -3186,11 +3221,17 @@ async function showAdDetail(id){
   const originalIQD=Math.round(adPrice*IQD_RATE);
   const finalIQD=Math.max(0,originalIQD-Math.round(discountIQD));
 
+  // داشکاندنی ئاست (بروَنز/زیو/پلاتینیۆم/ئەڵماس) — تۆمارکراوە لەگەڵ ڕیکلامەکە خۆی (ستوونی level_discount_*)
+  const levelDiscPercent=parseFloat(a.level_discount_percent||0);
+  const levelDiscIQD=parseFloat(a.level_discount_iqd||0);
+  const levelDiscName=a.level_name_at_purchase||'';
+
   const priceBreakdownHTML=`
     <div class="price-breakdown">
       <div class="price-breakdown-title"><i class="fas fa-receipt" style="margin-left:6px;color:var(--mt)"></i>وردەکاری نرخ</div>
       <div class="price-row"><span class="plbl">نرخی ڕیکلام</span><span class="pval" style="color:var(--bl)">${originalIQD.toLocaleString()+' IQD'}</span></div>
-      ${discountIQD>0?`<div class="price-row"><span class="plbl">داشکاندن${promoCodeUsed?' ('+promoCodeUsed+')':''}</span><span class="pval" style="color:var(--rd)">- ${Math.round(discountIQD).toLocaleString()+' IQD'}</span></div>`:''}
+      ${levelDiscIQD>0?`<div class="price-row"><span class="plbl"><i class="fas fa-medal" style="margin-left:4px;color:#a855f7"></i>داشکاندنی ئاست${levelDiscName?' ('+levelDiscName+' - %'+levelDiscPercent+')':''}</span><span class="pval" style="color:var(--rd)">- ${Math.round(levelDiscIQD).toLocaleString()+' IQD'}</span></div>`:''}
+      ${discountIQD>0?`<div class="price-row"><span class="plbl">داشکاندنی کۆد${promoCodeUsed?' ('+promoCodeUsed+')':''}</span><span class="pval" style="color:var(--rd)">- ${Math.round(discountIQD).toLocaleString()+' IQD'}</span></div>`:''}
       <div class="price-row total"><span class="plbl">کۆی گشتی</span><span class="pval" style="color:var(--gr)">${finalIQD.toLocaleString()+' IQD'}</span></div>
     </div>`;
 
@@ -4950,6 +4991,10 @@ async function loadLevelThresholds(){
     document.getElementById('lvlSilver').value=t.silver??50;
     document.getElementById('lvlPlatinum').value=t.platinum??200;
     document.getElementById('lvlDiamond').value=t.diamond??500;
+    document.getElementById('lvlBronzeDiscount').value=t.bronzeDiscount??0;
+    document.getElementById('lvlSilverDiscount').value=t.silverDiscount??5;
+    document.getElementById('lvlPlatinumDiscount').value=t.platinumDiscount??10;
+    document.getElementById('lvlDiamondDiscount').value=t.diamondDiscount??15;
   }
 }
 async function saveLevelThresholds(){
@@ -4958,10 +5003,29 @@ async function saveLevelThresholds(){
     silver:parseFloat(document.getElementById('lvlSilver').value)||0,
     platinum:parseFloat(document.getElementById('lvlPlatinum').value)||0,
     diamond:parseFloat(document.getElementById('lvlDiamond').value)||0,
+    bronzeDiscount:parseFloat(document.getElementById('lvlBronzeDiscount').value)||0,
+    silverDiscount:parseFloat(document.getElementById('lvlSilverDiscount').value)||0,
+    platinumDiscount:parseFloat(document.getElementById('lvlPlatinumDiscount').value)||0,
+    diamondDiscount:parseFloat(document.getElementById('lvlDiamondDiscount').value)||0,
   };
   const{error}=await sb.from('pa_settings').upsert({key:'level_thresholds',value:val},{onConflict:'key'});
   if(error){showToast('هەڵە: '+error.message,'rd');return;}
   showToast('✅ ئاستەکان پاشەکەوتکران','gr');
+}
+
+// ══ POINTS PER DOLLAR ══
+async function loadPointsPerDollar(){
+  const{data}=await sb.from('pa_settings').select('value').eq('key','points_per_dollar').single();
+  const t=data?.value?(typeof data.value==='string'?JSON.parse(data.value):data.value):{};
+  const el=document.getElementById('ptsPerDollar');
+  if(el)el.value=t.rate??1;
+}
+async function savePointsPerDollar(){
+  const rate=parseFloat(document.getElementById('ptsPerDollar').value);
+  if(!(rate>0)){showToast('ڕێژەیەکی دروست بنووسە','rd');return;}
+  const{error}=await sb.from('pa_settings').upsert({key:'points_per_dollar',value:{rate}},{onConflict:'key'});
+  if(error){showToast('هەڵە: '+error.message,'rd');return;}
+  showToast('✅ ڕێژەی خاڵ پاشەکەوتکرا','gr');
 }
 
 // ── User Level Edit ──
@@ -5028,6 +5092,7 @@ async function saveUserLevel(){
 let _allChallenges=[];
 async function loadChallenges(){
   await loadLevelThresholds();
+  await loadPointsPerDollar();
   const wrap=document.getElementById('challengesWrap');
   wrap.innerHTML='<div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
   const{data,error}=await sb.from('pa_challenges').select('*').order('created_at',{ascending:false});
@@ -5921,6 +5986,67 @@ function getAdPricing(budgetUSD){
     return {type:'$20 Ad', sale:36000, cost:28000, profit:8000};
   }
   return {type:'$10 Ad', sale:18000, cost:14000, profit:4000};
+}
+
+// ══════════════════════════════════════════════════════════════
+// ══ SPONSORSHIP TIER PRICING — نرخی سپۆنسەری بەپێی پلە ══
+// ڕێژەی گۆڕینەوە: ١٠ دۆلار = ١٨,٥٠٠ دینار (١ دۆلار = ١,٨٥٠ دینار)
+// پلەکان: Bronze (بێ داشکاندن) / Silver (%٥) / Diamond (%١٠) / Diamond+ (%١٥)
+// ══════════════════════════════════════════════════════════════
+const SPONSOR_EXCHANGE_RATE_IQD = 1850; // 1 USD = 1,850 IQD (10 USD = 18,500 IQD)
+
+const SPONSOR_TIER_DISCOUNTS = {
+  'Bronze':   0,
+  'Silver':   0.05,
+  'Diamond':  0.10,
+  'Diamond+': 0.15,
+};
+
+/**
+ * Calculates the final sponsorship price in IQD for a given user tier and
+ * sponsorship amount (in USD), applying the tier's discount on top of the
+ * fixed 1,850 IQD/USD exchange rate.
+ *
+ * @param {'Bronze'|'Silver'|'Diamond'|'Diamond+'} tier - the user's membership tier
+ * @param {number} amountUSD - the sponsorship amount in USD
+ * @returns {{
+ *   tier: string,
+ *   amountUSD: number,
+ *   exchangeRate: number,
+ *   discountPercent: number,
+ *   basePriceIQD: number,
+ *   discountIQD: number,
+ *   finalPriceIQD: number,
+ *   formatted: string
+ * }}
+ */
+function calculateSponsorshipPrice(tier, amountUSD){
+  const normalizedTier = SPONSOR_TIER_DISCOUNTS.hasOwnProperty(tier) ? tier : 'Bronze';
+  const discountPercent = SPONSOR_TIER_DISCOUNTS[normalizedTier];
+
+  const usd = Math.max(0, parseFloat(amountUSD) || 0);
+  const basePriceIQD = usd * SPONSOR_EXCHANGE_RATE_IQD;
+  const discountIQD = basePriceIQD * discountPercent;
+  const finalPriceIQD = Math.round(basePriceIQD - discountIQD);
+
+  return {
+    tier: normalizedTier,
+    amountUSD: usd,
+    exchangeRate: SPONSOR_EXCHANGE_RATE_IQD,
+    discountPercent: discountPercent * 100,
+    basePriceIQD: Math.round(basePriceIQD),
+    discountIQD: Math.round(discountIQD),
+    finalPriceIQD,
+    formatted: finalPriceIQD.toLocaleString('en-US') + ' IQD',
+  };
+}
+
+/**
+ * Convenience helper — returns just the clearly formatted final price string
+ * shown to the user, e.g. "17,575 IQD".
+ */
+function getSponsorshipPriceDisplay(tier, amountUSD){
+  return calculateSponsorshipPrice(tier, amountUSD).formatted;
 }
 
 // تۆمارکردن لە Supabase + ئاگاداری Telegram
