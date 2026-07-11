@@ -1282,6 +1282,7 @@ textarea.lc-inp{resize:none;}
 .lc-msg-time{font-size:10px;margin-top:3px;opacity:.65;display:flex;align-items:center;gap:3px;}
 .lc-ticks{font-size:10.5px;font-weight:900;letter-spacing:-1.5px;line-height:1;}
 .lc-bubble.user .lc-ticks-sent{color:#b0b0b8;}
+.lc-bubble.user .lc-ticks-delivered{color:#a1a1a6;}
 .lc-bubble.user .lc-ticks-read{color:#2196f3;}
 .lc-bubble.admin .lc-ticks-sent{color:rgba(255,255,255,.45);}
 .lc-bubble.admin .lc-ticks-read{color:#7ee8fa;}
@@ -12209,8 +12210,12 @@ let lcLastMsgs=[];
 
 // دەستکاریکردنی ناوی سەرووی چات — سەرەتا "Proxo Bot"، دوای هاتنی ئەدمین دەبێتە ناوی ئەو ئەدمینە
 function lcSetHeadName(name){
+  const _n=name||LC_BOT_NAME;
   const el=document.getElementById('lcHeadName');
-  if(el)el.textContent=name||LC_BOT_NAME;
+  if(el)el.textContent=_n;
+  // نوێکردنەوەی ناوی ئەدمین لە بارەکەی ئاگاداری
+  const _it=document.getElementById('lcInfoText');
+  if(_it&&name&&name!==LC_BOT_NAME)_it.textContent=name+' ئێستا لەسەر هێڵە لەگەڵتە';
 }
 
 // وا پرسیاری یەکەمی Proxo Bot بەردەوام دەردەکەوێت هەتا ئەو پەیامە ڕاستەقینەیە بگاتە Firebase —
@@ -12356,6 +12361,10 @@ async function lcInitDirectChat(){
 }
 
 window.lcOpenChatDirect=function(){ lcInitDirectChat(); };
+// مارک کردنی خوێندراو کاتێک ئۆڤەرلەی دەردەکەوێت
+document.getElementById('lcOverlay').addEventListener('transitionend',function(){
+  if(this.classList.contains('show'))setTimeout(lcMarkAdminMsgsRead,200);
+},{passive:true});
 window.lcOpenChat=function(){ lcInitDirectChat(); };
 window.lcShowHistoryOrForm=function(){ lcInitDirectChat(); };
 
@@ -12555,14 +12564,19 @@ function lcDetachListeners(){
   lcUnsubscribeAgentStatus();
 }
 
-// ══ مارک کردنی پەیامەکانی ئەدمین بە خوێندراو کاتێک بەکارهێنەر چاتەکە دەکاتەوە ══
+// ══ مارک کردنی پەیامەکانی ئەدمین بە خوێندراو + پەیامەکانی بەکارهێنەر بە گەیشتووە ══
 function lcMarkAdminMsgsRead(){
   if(!lcSessionId||!lcDb)return;
   lcDb.ref('messages/'+lcSessionId).once('value',snap=>{
     if(!snap.val())return;
-    const updates={};
-    snap.forEach(child=>{const m=child.val();if(m.sender==='admin'&&m.status!=='read')updates[child.key+'/status']='read';});
-    if(Object.keys(updates).length)lcDb.ref('messages/'+lcSessionId).update(updates).catch(()=>{});
+    const admUpd={},usrUpd={};
+    snap.forEach(child=>{
+      const m=child.val();
+      if(m.sender==='admin'&&m.status!=='read')admUpd[child.key+'/status']='read';
+      if(m.sender==='user'&&m.status==='sent')usrUpd[child.key+'/status']='delivered';
+    });
+    if(Object.keys(admUpd).length)lcDb.ref('messages/'+lcSessionId).update(admUpd).catch(()=>{});
+    if(Object.keys(usrUpd).length)lcDb.ref('messages/'+lcSessionId).update(usrUpd).catch(()=>{});
   });
 }
 
@@ -12642,6 +12656,7 @@ function lcRenderMessages(msgs){
   function lcTickHtml(status,sender){
     if(sender!=='user')return '';
     if(status==='read')return '<span class="lc-ticks lc-ticks-read" title="خوێندرایەوە">✓✓</span>';
+    if(status==='delivered')return '<span class="lc-ticks lc-ticks-delivered" title="گەیشتووە">✓✓</span>';
     return '<span class="lc-ticks lc-ticks-sent" title="نێردرا">✓</span>';
   }
   let _lcPrevSender=null;
@@ -12654,13 +12669,13 @@ function lcRenderMessages(msgs){
       _lcPrevSender=null;
       return;
     }
-    // ── ئاڤاتاری ئەدمین — تەنها کاتی یەکەمین پەیام لە هر گرووپێک ──
-    if(m.sender==='admin'&&_lcPrevSender!=='admin'&&lcCurrentAdminName){
+    // ── ئاڤاتاری ئەدمین — تەنها بۆ مرۆڤ-ئەدمین، بەکارهێنانی senderName لە پەیامەکەوە ──
+    const _aDispName=m.senderName||(m.isBot?null:lcCurrentAdminName);
+    if(m.sender==='admin'&&_lcPrevSender!=='admin'&&!m.isBot&&_aDispName&&_aDispName!==LC_BOT_NAME){
       const _ar=document.createElement('div');
       _ar.className='lc-admin-row';
-      const _aName=m.senderName||lcCurrentAdminName||LC_BOT_NAME;
-      _ar.innerHTML='<div class="lc-admin-av-sm">'+lcEsc(_aName.charAt(0).toUpperCase())+'</div>'
-        +'<span class="lc-admin-name-sm">'+lcEsc(_aName)+'</span>';
+      _ar.innerHTML='<div class="lc-admin-av-sm">'+lcEsc(_aDispName.charAt(0).toUpperCase())+'</div>'
+        +'<span class="lc-admin-name-sm">'+lcEsc(_aDispName)+'</span>';
       area.appendChild(_ar);
     }
     _lcPrevSender=m.sender;
