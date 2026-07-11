@@ -527,15 +527,14 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .prof-email{font-size:11px;color:var(--mt);margin-top:2px;direction:ltr;text-align:right;}
 .pcard{background:var(--w);border:1px solid var(--b1);border-radius:18px;padding:20px;margin-bottom:10px;}
 /* ══ GIFTS / PRIZES PAGE ══ */
-@keyframes giftsGlowBreathe{0%,100%{transform:scale(1) translate(0,0);opacity:.7}50%{transform:scale(1.35) translate(10px,10px);opacity:1}}
+@keyframes giftsGlowBreathe{0%,100%{transform:scale(1) translate(0,0);opacity:.55}50%{transform:scale(1.2) translate(6px,6px);opacity:.85}}
+@keyframes giftsGlowDrift{0%,100%{transform:translate(0,0) scale(1);opacity:.35}50%{transform:translate(-14px,8px) scale(1.15);opacity:.55}}
 @keyframes giftsIcoPulse{0%,100%{transform:scale(1);box-shadow:0 4px 14px rgba(0,0,0,.1),0 0 0 0 rgba(255,255,255,.3)}50%{transform:scale(1.06);box-shadow:0 4px 16px rgba(0,0,0,.12),0 0 0 7px rgba(255,255,255,0)}}
 @keyframes giftsIcoSpin{0%,92%{transform:rotate(0deg)}96%{transform:rotate(-12deg)}100%{transform:rotate(0deg)}}
-@keyframes giftsSheen{0%{transform:translateX(-120%) skewX(-18deg)}55%,100%{transform:translateX(220%) skewX(-18deg)}}
-@keyframes giftsSparklePop{0%,100%{opacity:0;transform:scale(.4) translateY(0)}50%{opacity:1;transform:scale(1) translateY(-4px)}}
-.gifts-level-card{--lvl-c1:#f59e0b;--lvl-c2:#ec4899;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--lvl-c1) 0%,var(--lvl-c2) 100%);border-radius:20px;padding:20px;margin-bottom:14px;box-shadow:0 10px 26px -6px color-mix(in srgb,var(--lvl-c2) 55%,transparent);transition:background .4s ease;}
-.gifts-level-glow{position:absolute;top:-40px;left:-30px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.28),transparent 70%);pointer-events:none;animation:giftsGlowBreathe 5.5s ease-in-out infinite;}
-.gifts-level-sheen{position:absolute;top:0;bottom:0;left:0;width:65px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent);pointer-events:none;animation:giftsSheen 6.5s ease-in-out infinite;animation-delay:1.4s;filter:blur(1px);}
-.gifts-level-spark{position:absolute;font-size:10px;color:rgba(255,255,255,.85);pointer-events:none;animation:giftsSparklePop 3s ease-in-out infinite;}
+.gifts-level-card{--lvl-c1:#f59e0b;--lvl-c2:#ec4899;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--lvl-c1) 0%,var(--lvl-c2) 100%);border-radius:20px;padding:20px;margin-bottom:14px;box-shadow:0 10px 24px -8px rgba(0,0,0,.28);transition:background .4s ease;}
+.gifts-level-glow{position:absolute;top:-40px;left:-30px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.22),transparent 72%);pointer-events:none;animation:giftsGlowBreathe 5.5s ease-in-out infinite;}
+.gifts-level-sheen{position:absolute;bottom:-50px;right:-20px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.18),transparent 72%);pointer-events:none;animation:giftsGlowDrift 7s ease-in-out infinite;filter:blur(2px);}
+.gifts-level-spark{display:none;}
 .gifts-level-ico{width:58px;height:58px;border-radius:16px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;flex-shrink:0;box-shadow:0 4px 14px rgba(0,0,0,.1);animation:giftsIcoPulse 2.8s ease-in-out infinite;}
 .gifts-level-ico i{display:inline-block;animation:giftsIcoSpin 4.2s ease-in-out infinite;}
 .gifts-voucher-card{position:relative;overflow:hidden;display:none;background:linear-gradient(135deg,rgba(6,182,212,.09),rgba(6,182,212,.02));border:1.5px solid rgba(6,182,212,.25);border-radius:18px;padding:16px;margin-bottom:16px;}
@@ -1386,17 +1385,19 @@ textarea.lc-inp{resize:none;}
 @keyframes lcFabFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 @keyframes lcRipple{0%{transform:scale(1);opacity:.6}100%{transform:scale(2.3);opacity:0}}
 @keyframes lcRipple2{0%{transform:scale(1);opacity:.4}100%{transform:scale(2.8);opacity:0}}
-.lc-fab-wrap{display:none;position:fixed;left:16px;bottom:96px;z-index:850;align-items:flex-end;gap:0;}
+.lc-fab-wrap{display:none;position:fixed;left:16px;bottom:96px;z-index:850;align-items:flex-end;gap:0;touch-action:none;user-select:none;-webkit-user-select:none;}
 .lc-fab-wrap.show{display:flex;animation:lcFabIn .52s cubic-bezier(.34,1.56,.64,1) both;}
 .lc-fab-wrap.hide{animation:lcFabOut .28s ease-in both;}
+.lc-fab-wrap.dragging{animation:none!important;transition:none!important;}
 .lc-fab-ring{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(10,132,255,.5);animation:lcRipple 2.4s ease-out infinite;}
 .lc-fab-ring2{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(10,132,255,.3);animation:lcRipple2 2.4s ease-out .8s infinite;}
-.lc-fab{width:54px;height:54px;border-radius:50%;background:linear-gradient(145deg,#1a8cff,#0a6ce8);align-items:center;justify-content:center;color:#fff;font-size:20px;cursor:pointer;box-shadow:0 8px 24px rgba(10,132,255,.42),0 2px 8px rgba(10,132,255,.22);transition:transform .22s var(--lc-ease),box-shadow .22s;animation:lcFabFloat 3.2s ease-in-out infinite;position:relative;display:flex;flex-shrink:0;}
-.lc-fab:active{transform:scale(.91);box-shadow:0 4px 12px rgba(10,132,255,.35);}
-.lc-fab-ico{font-size:20px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.2));transition:transform .2s;}
+.lc-fab{width:44px;height:44px;border-radius:50%;background:linear-gradient(145deg,#1a8cff,#0a6ce8);align-items:center;justify-content:center;color:#fff;font-size:16px;cursor:grab;box-shadow:0 8px 24px rgba(10,132,255,.42),0 2px 8px rgba(10,132,255,.22);transition:transform .22s var(--lc-ease),box-shadow .22s;animation:lcFabFloat 3.2s ease-in-out infinite;position:relative;display:flex;flex-shrink:0;touch-action:none;}
+.lc-fab:active{transform:scale(.91);box-shadow:0 4px 12px rgba(10,132,255,.35);cursor:grabbing;}
+.lc-fab-wrap.dragging .lc-fab{cursor:grabbing;transform:scale(1.08);}
+.lc-fab-ico{font-size:16px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.2));transition:transform .2s;}
 .lc-fab:hover .lc-fab-ico{transform:scale(1.12) rotate(-8deg);}
-.lc-fab-dot{position:absolute;top:2px;right:2px;width:12px;height:12px;border-radius:50%;background:#30d158;border:2.5px solid #0a6ce8;animation:lc-pulse 2s infinite;}
-.lc-fab-dismiss{position:absolute;top:-7px;right:-7px;width:20px;height:20px;border-radius:50%;background:#fff;border:none;color:#6e6e73;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;box-shadow:0 1px 6px rgba(0,0,0,.18);transition:all .18s;z-index:1;padding:0;line-height:1;}
+.lc-fab-dot{position:absolute;top:1px;right:1px;width:10px;height:10px;border-radius:50%;background:#30d158;border:2px solid #0a6ce8;animation:lc-pulse 2s infinite;}
+.lc-fab-dismiss{position:absolute;top:-6px;right:-6px;width:17px;height:17px;border-radius:50%;background:#fff;border:none;color:#6e6e73;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px;box-shadow:0 1px 6px rgba(0,0,0,.18);transition:all .18s;z-index:1;padding:0;line-height:1;}
 .lc-fab-dismiss:hover{background:#ff3b30;color:#fff;transform:scale(1.12);}
 @media(min-width:600px){.lc-fab-wrap{left:24px;bottom:110px;}}
 
@@ -3623,9 +3624,6 @@ function _toWebP(dataUrl,quality){
     <div id="giftsLevelCard" class="gifts-level-card">
       <div class="gifts-level-glow"></div>
       <div class="gifts-level-sheen"></div>
-      <div class="gifts-level-spark" style="top:14px;left:36%;animation-delay:.3s"><i class="fas fa-star"></i></div>
-      <div class="gifts-level-spark" style="top:34px;left:52%;animation-delay:1.4s"><i class="fas fa-star"></i></div>
-      <div class="gifts-level-spark" style="top:20px;left:66%;animation-delay:2.1s"><i class="fas fa-star"></i></div>
       <div style="display:flex;align-items:center;gap:14px;position:relative;z-index:1">
         <div id="giftsLevelIco" class="gifts-level-ico"><i class="fas fa-medal"></i></div>
         <div style="flex:1;min-width:0">
@@ -3934,7 +3932,7 @@ function _toWebP(dataUrl,quality){
 <div class="lc-fab-wrap" id="lcFabWrap">
   <span class="lc-fab-ring"></span>
   <span class="lc-fab-ring2"></span>
-  <div class="lc-fab" id="lcFab" onclick="lcOpenChatDirect()" title="پشتگیری ڕاستەوخۆ">
+  <div class="lc-fab" id="lcFab" onclick="lcFabClick(event)" title="پشتگیری ڕاستەوخۆ — گرتن و ڕاکێشان بۆ گواستنەوە">
     <i class="fas fa-headset lc-fab-ico"></i>
     <span class="lc-fab-dot" id="lcFabDot" style="display:none"></span>
   </div>
@@ -11610,7 +11608,7 @@ async function loadTxHistory(){
     label: t.kind==='refund'
       ? `گەڕانەوەی پارە${t.ad_number?' — ڕیکلام #'+t.ad_number:''}`
       : t.type==='withdrawal'&&(t.note||'').includes('ئادمین')?'بڕدرا لەلایەن ئادمینەوە'
-      : t.type==='reward'?'خەڵاتی تیروپشکی هەفتانە'
+      : t.type==='reward'?'چاڵنجی هەفتانە'
       : t.status==='approved'&&t.type!=='withdrawal'?'زیادکردنی باڵانس لەلایەن ئادمینەوە':(mn[t.method]||t.method||'—'),
     amount:parseFloat(t.amount),
     status:t.status,
@@ -11700,14 +11698,14 @@ function renderTxHistory(){
     if(isRefund){icoName='fa-rotate-left';}
     if(isCoinExchange){icoName='fa-coins';amtColor='#d97706';amtPrefix='+';icoBg='rgba(245,158,11,.1)';icoBorder='rgba(245,158,11,.25)';icoColor='#d97706';}
     if(isAdminDeduct){icoName='fa-arrow-up-long';amtColor='var(--rd)';amtPrefix='-';icoBg='rgba(220,38,38,.06)';icoBorder='rgba(220,38,38,.12)';icoColor='var(--rd)';}
-    if(isReward){icoName='fa-trophy';amtColor='#d97706';amtPrefix='+';icoBg='rgba(245,158,11,.1)';icoBorder='rgba(245,158,11,.25)';icoColor='#d97706';}
+    if(isReward){icoName='fa-trophy';amtColor='var(--gr)';amtPrefix='+';icoBg='rgba(22,163,74,.08)';icoBorder='rgba(22,163,74,.15)';icoColor='var(--gr)';}
 
     // ناو کورت
     let label=t.label||'—';
     if(isCoinExchange) label='کۆین گۆڕدرا بۆ باڵانس';
     else if(isRefund) label='گەڕانەوەی پارە'+(t.ad_number?' #'+t.ad_number:'');
     else if(isAdminDeduct) label='بڕدرا لەلایەن ئادمینەوە';
-    else if(isReward) label='خەڵاتی تیروپشکی هەفتانە';
+    else if(isReward) label='چاڵنجی هەفتانە';
 
     // بەروار — تەنها کات و بەروار، بەبێ زیادە
     const d=new Date(t.date);
@@ -12543,6 +12541,80 @@ window.lcDismissFab=function(e){
     setTimeout(()=>{_fw.classList.remove('show','hide');},320);
   }
 };
+
+// ══ گواستنەوەی ئایکۆنی پشتگیری ڕاستەوخۆ بە ڕاکێشان (Drag) ══
+window.lcFabClick=function(e){
+  if(window._lcFabWasDragged){ window._lcFabWasDragged=false; if(e){e.preventDefault();e.stopPropagation();} return; }
+  lcOpenChatDirect();
+};
+(function initLcFabDrag(){
+  const POS_KEY='lc_fab_pos_v1';
+  function clamp(v,min,max){ return Math.min(Math.max(v,min),max); }
+  function applyPos(wrap,left,top){
+    const r=wrap.getBoundingClientRect();
+    const maxL=window.innerWidth-r.width-4, maxT=window.innerHeight-r.height-4;
+    left=clamp(left,4,Math.max(4,maxL));
+    top=clamp(top,4,Math.max(4,maxT));
+    wrap.style.left=left+'px';
+    wrap.style.top=top+'px';
+    wrap.style.bottom='auto';
+    wrap.style.right='auto';
+  }
+  function restorePos(wrap){
+    try{
+      const saved=JSON.parse(localStorage.getItem(POS_KEY)||'null');
+      if(saved&&typeof saved.left==='number'&&typeof saved.top==='number'){
+        applyPos(wrap,saved.left,saved.top);
+      }
+    }catch(e){}
+  }
+  function setup(){
+    const wrap=document.getElementById('lcFabWrap');
+    const fab=document.getElementById('lcFab');
+    if(!wrap||!fab||wrap._dragInit)return;
+    wrap._dragInit=true;
+    restorePos(wrap);
+    let sx=0,sy=0,startLeft=0,startTop=0,dragging=false,moved=false;
+    function onDown(e){
+      const pt=e.touches?e.touches[0]:e;
+      const r=wrap.getBoundingClientRect();
+      sx=pt.clientX; sy=pt.clientY; startLeft=r.left; startTop=r.top;
+      dragging=true; moved=false;
+      wrap.classList.add('dragging');
+      document.addEventListener('mousemove',onMove);
+      document.addEventListener('mouseup',onUp);
+      document.addEventListener('touchmove',onMove,{passive:false});
+      document.addEventListener('touchend',onUp);
+    }
+    function onMove(e){
+      if(!dragging)return;
+      const pt=e.touches?e.touches[0]:e;
+      const dx=pt.clientX-sx, dy=pt.clientY-sy;
+      if(Math.abs(dx)>6||Math.abs(dy)>6)moved=true;
+      if(moved&&e.cancelable)e.preventDefault();
+      applyPos(wrap,startLeft+dx,startTop+dy);
+    }
+    function onUp(){
+      if(!dragging)return;
+      dragging=false;
+      wrap.classList.remove('dragging');
+      document.removeEventListener('mousemove',onMove);
+      document.removeEventListener('mouseup',onUp);
+      document.removeEventListener('touchmove',onMove);
+      document.removeEventListener('touchend',onUp);
+      if(moved){
+        window._lcFabWasDragged=true;
+        const r=wrap.getBoundingClientRect();
+        try{localStorage.setItem(POS_KEY,JSON.stringify({left:r.left,top:r.top}));}catch(e){}
+      }
+    }
+    fab.addEventListener('mousedown',onDown);
+    fab.addEventListener('touchstart',onDown,{passive:true});
+    window.addEventListener('resize',()=>{ restorePos(wrap); });
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);
+  else setup();
+})();
 
 let _lcLang=null,_lcCat=null;
 window.lcPickLang=function(el){
