@@ -913,8 +913,9 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .sidebar-item{display:flex;align-items:center;gap:13px;padding:13px 14px;border-radius:14px;cursor:pointer;transition:all .18s;margin-bottom:4px;}
 .sidebar-item:active,.sidebar-item:hover{background:var(--bg);}
 .sidebar-item.active{background:rgba(28,35,51,.06);}
-.sidebar-item-ico{width:30px;height:30px;border-radius:0;background:transparent;border:none;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--mt2);flex-shrink:0;transition:color .18s;}
-.sidebar-item:active .sidebar-item-ico,.sidebar-item:hover .sidebar-item-ico{background:transparent;color:var(--dark);}
+.sidebar-item-ico{width:36px;height:36px;border-radius:12px;background:rgba(28,35,51,.06);border:none;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--mt2);flex-shrink:0;transition:transform .18s,box-shadow .18s;}
+.sidebar-item:active .sidebar-item-ico{transform:scale(.92);}
+.sidebar-item:hover .sidebar-item-ico{box-shadow:0 2px 10px rgba(0,0,0,.08);}
 .sidebar-item-txt{font-size:14px;font-weight:700;color:var(--dark);flex:1;}
 .sidebar-item.red .sidebar-item-ico{background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.12);}
 .sidebar-item.red .sidebar-item-ico i{color:var(--rd);}
@@ -1062,23 +1063,56 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .str-txt{font-size:10.5px;font-weight:800;min-width:38px;color:var(--mt);text-align:right;}
 
 /* ── کۆدی داشکاندن ── */
-.promo-card-list{display:flex;flex-direction:column;gap:12px}
-.promo-item-card{background:var(--w);border:1.5px solid var(--b1);border-radius:18px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,.04)}
-.promo-item-card.expired-card{opacity:.55}
+/* ══ DISCOUNT CODES — REDESIGN ══ */
+.promo-hero{position:relative;overflow:hidden;padding:22px 18px 46px;background:linear-gradient(135deg,#d97706,#ca8a04);border-radius:0 0 26px 26px;box-shadow:0 10px 24px rgba(202,138,4,.22)}
+.promo-hero-blob{position:absolute;border-radius:50%;background:rgba(255,255,255,.13)}
+.promo-hero-blob.b1{width:130px;height:130px;top:-55px;right:-40px}
+.promo-hero-blob.b2{width:80px;height:80px;bottom:-36px;left:10px;background:rgba(255,255,255,.08)}
+.promo-hero-ico{position:relative;z-index:1;width:50px;height:50px;border-radius:15px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;margin-bottom:12px}
+.promo-hero-title{position:relative;z-index:1;font-size:17px;font-weight:900;color:#fff}
+.promo-hero-sub{position:relative;z-index:1;font-size:12px;color:rgba(255,255,255,.82);margin-top:4px}
+.promo-card-list{display:flex;flex-direction:column;gap:14px}
+.promo-item-card{position:relative;background:var(--w);border:none;border-radius:18px;padding:16px 16px 16px 20px;box-shadow:0 6px 18px rgba(0,0,0,.06);overflow:hidden}
+.promo-item-card:before{content:'';position:absolute;top:0;bottom:0;right:0;width:6px;background:linear-gradient(180deg,#f59e0b,#ca8a04)}
+.promo-item-card.expired-card{opacity:.5}
+.promo-item-card.expired-card:before{background:var(--b2)}
 .promo-item-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.promo-item-code{font-family:'Inter',monospace;font-size:16px;font-weight:900;color:var(--dark);letter-spacing:1px}
-.promo-item-badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px}
+.promo-item-code{font-family:'Inter',monospace;font-size:16px;font-weight:900;color:var(--dark);letter-spacing:1px;display:flex;align-items:center;gap:7px}
+.promo-item-code:before{content:'\f02b';font-family:'Font Awesome 6 Free';font-weight:900;color:#ca8a04;font-size:13px}
+.promo-item-badge{font-size:11px;font-weight:700;padding:4px 11px;border-radius:20px}
 .promo-item-badge.active{background:rgba(22,163,74,.1);color:#15803d}
 .promo-item-badge.expired{background:rgba(220,38,38,.08);color:var(--rd)}
 .promo-item-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-.promo-item-cell{background:var(--bg);border-radius:10px;padding:8px 10px}
+.promo-item-cell{background:linear-gradient(135deg,rgba(202,138,4,.06),rgba(202,138,4,.02));border-radius:12px;padding:9px 11px}
 .promo-item-cell-lbl{font-size:10px;color:var(--mt);margin-bottom:3px}
 .promo-item-cell-val{font-size:13px;font-weight:800;color:var(--dark);font-family:'Inter',sans-serif}
-.promo-copy-btn{width:100%;padding:10px;border-radius:12px;border:1.5px dashed rgba(202,138,4,.5);background:rgba(234,179,8,.06);color:#92400e;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .18s}
-.promo-copy-btn:active{background:rgba(234,179,8,.15)}
+.promo-copy-btn{width:100%;padding:11px;border-radius:12px;border:none;background:linear-gradient(135deg,#f59e0b,#ca8a04);color:#fff;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .18s;box-shadow:0 6px 14px rgba(202,138,4,.25)}
+.promo-copy-btn:active{transform:scale(.98)}
 .promo-list-empty{text-align:center;padding:60px 20px;color:var(--mt)}
 .promo-list-empty i{font-size:42px;margin-bottom:12px;display:block;color:var(--b2)}
 .promo-list-empty p{font-size:14px;font-weight:600}
+
+/* ══ VOUCHER (فاوچەر) — REDESIGN ══ */
+.vch-hero{position:relative;overflow:hidden;border-radius:22px;padding:22px 20px 46px;margin-bottom:0;background:linear-gradient(135deg,#4f46e5,#7c3aed);box-shadow:0 14px 30px rgba(79,70,229,.28)}
+.vch-hero-blob{position:absolute;border-radius:50%;background:rgba(255,255,255,.14)}
+.vch-hero-blob.b1{width:130px;height:130px;top:-50px;left:-40px}
+.vch-hero-blob.b2{width:90px;height:90px;bottom:-40px;right:-20px;background:rgba(255,255,255,.09)}
+.vch-hero-ico{position:relative;z-index:1;width:52px;height:52px;border-radius:15px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;margin-bottom:14px}
+.vch-hero-title{position:relative;z-index:1;font-size:16.5px;font-weight:900;color:#fff}
+.vch-hero-sub{position:relative;z-index:1;font-size:12px;color:rgba(255,255,255,.78);margin-top:5px;line-height:1.6}
+.vch-ticket{position:relative;background:#fff;border-radius:18px;margin:-30px 4px 14px;box-shadow:0 12px 26px rgba(79,70,229,.16);border:1px solid rgba(79,70,229,.08)}
+.vch-ticket:before,.vch-ticket:after{content:'';position:absolute;top:50%;width:20px;height:20px;border-radius:50%;background:var(--bg);transform:translateY(-50%);z-index:2}
+.vch-ticket:before{left:-10px}
+.vch-ticket:after{right:-10px}
+.vch-ticket-row{display:flex;align-items:center;gap:0;position:relative;z-index:1}
+.vch-ticket-ico{padding:0 14px;color:#7c3aed;font-size:17px;flex-shrink:0}
+.vch-ticket-dash{width:1.5px;align-self:stretch;margin:12px 0;background:repeating-linear-gradient(to bottom,rgba(124,58,237,.28) 0 6px,transparent 6px 12px)}
+.vch-inp{flex:1;border:none;outline:none;background:transparent;font-family:'Inter',monospace;font-size:16px;font-weight:800;letter-spacing:2px;color:var(--dark);text-align:center;padding:17px 6px;text-transform:uppercase;caret-color:#7c3aed}
+.vch-paste-btn{padding:0 14px;background:none;border:none;color:#7c3aed;cursor:pointer;font-size:15px;height:100%;display:flex;align-items:center}
+.vch-hint{text-align:center;margin-top:9px;font-size:10.5px;color:var(--mt);font-family:'Inter';letter-spacing:.4px}
+.vch-btn{width:100%;margin-top:14px;padding:15px;border:none;border-radius:15px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;font-family:'R',sans-serif;font-size:14.5px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 18px rgba(79,70,229,.28);transition:transform .15s,opacity .15s}
+.vch-btn:active{transform:scale(.98)}
+.vch-btn:disabled{opacity:.55;pointer-events:none}
 
 
 /* ═══ AD DETAIL SHEET ═══ */
@@ -1113,13 +1147,11 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .lc-topbar-btn .lc-online-dot.on{background:#4ade80;animation:lc-pulse 2s infinite;}
 @keyframes lc-pulse{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.5);}70%{box-shadow:0 0 0 6px rgba(74,222,128,0);}}
 /* ئۆڤەرلەی چات */
-#lcOverlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;inset:0;z-index:99990;background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);align-items:flex-end;justify-content:center;padding:0;}
+#lcOverlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;inset:0;z-index:99990;background:var(--w);align-items:stretch;justify-content:stretch;padding:0;}
 #lcOverlay.show{display:flex;}
-@media(min-width:600px){#lcOverlay{align-items:center;justify-content:flex-end;padding:20px;}}
-/* ویجێتی چات */
-.lc-widget{width:100%;max-width:390px;height:88vh;max-height:620px;background:#fff;border-radius:22px 22px 0 0;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35);animation:lc-slideUp .28s ease-out;}
-@media(min-width:600px){.lc-widget{border-radius:22px;}}
-@keyframes lc-slideUp{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
+/* ویجێتی چات — وەکوو پەڕەیەکی ناوەکی ئەپ دەکرێتەوە، نەک پۆپ‌ئەپ */
+.lc-widget{width:100%;max-width:100%;height:100vh;height:100dvh;max-height:100vh;background:#fff;border-radius:0;display:flex;flex-direction:column;overflow:hidden;box-shadow:none;animation:lc-pageIn .24s cubic-bezier(.25,.46,.45,.94);}
+@keyframes lc-pageIn{from{opacity:0;transform:translateX(14px);}to{opacity:1;transform:translateX(0);}}
 /* سەری چات */
 .lc-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:linear-gradient(135deg,#1c2333,#2e3a50);flex-shrink:0;}
 .lc-head-left{display:flex;align-items:center;gap:11px;}
@@ -1232,24 +1264,6 @@ textarea.lc-inp{resize:none;}
 .fb-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.45);border:none;padding:0;cursor:pointer;transition:background .2s,transform .2s;}
 .fb-dot.on{background:#fff;transform:scale(1.25);}
 
-/* ══ LIVE CHAT FULLSCREEN ══ */
-.lc-widget.lc-fs{
-  max-width:100vw!important;width:100vw!important;
-  height:100vh!important;height:100dvh!important;
-  max-height:100vh!important;border-radius:0!important;
-}
-#lcOverlay.lc-fs-mode{
-  padding:0!important;align-items:stretch!important;justify-content:stretch!important;
-  background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;
-}
-.lc-fs-btn{
-  width:32px;height:32px;border-radius:50%;
-  background:rgba(255,255,255,.12);border:none;
-  color:rgba(255,255,255,.8);cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  font-size:13px;transition:all .18s;flex-shrink:0;
-}
-.lc-fs-btn:hover{background:rgba(255,255,255,.25);}
 
   /* ══ AD REACH CALCULATOR ══ */
   .arc-qa{padding:10px 6px;background:var(--bg);border:1.5px solid var(--b1);border-radius:11px;color:var(--mt2);font-family:'Inter',sans-serif;font-size:11.5px;font-weight:700;cursor:pointer;text-align:center;transition:all .18s;outline:none;}
@@ -2657,48 +2671,43 @@ function _toWebP(dataUrl,quality){
       <div class="sb-sect">هەژمار</div>
       <!-- ٠ — پرۆفایل -->
       <div class="sidebar-item" onclick="goPage('profile');closeSidebar()">
-        <div class="sidebar-item-ico"><i class="fas fa-circle-user"></i></div>
+        <div class="sidebar-item-ico" style="background:rgba(14,120,255,.12);color:#0E78FF"><i class="fas fa-user-gear"></i></div>
         <div class="sidebar-item-txt">پرۆفایل</div>
       </div>
       <!-- ١ — پارە زیادکردن -->
       <div class="sidebar-item" onclick="openDeposit();closeSidebar()">
-        <div class="sidebar-item-ico"><i class="fas fa-circle-plus"></i></div>
+        <div class="sidebar-item-ico" style="background:rgba(22,163,74,.12);color:#16a34a"><i class="fas fa-wallet"></i></div>
         <div class="sidebar-item-txt">پارە زیادکردن</div>
       </div>
       <!-- ٢ — مێژووی مامەڵەکان -->
       <div class="sidebar-item" onclick="goPage('txhistory');closeSidebar()">
-        <div class="sidebar-item-ico"><i class="fas fa-clock-rotate-left"></i></div>
+        <div class="sidebar-item-ico" style="background:rgba(99,102,241,.12);color:#6366f1"><i class="fas fa-receipt"></i></div>
         <div class="sidebar-item-txt">مێژووی مامەڵەکان</div>
       </div>
       <div class="sb-sect">خزمەتگوزاری</div>
       <!-- ٤ — کۆدی داشکاندن -->
       <div class="sidebar-item" onclick="goPage('promocodes');closeSidebar()">
-        <div class="sidebar-item-ico"><i class="fas fa-tag"></i></div>
+        <div class="sidebar-item-ico" style="background:rgba(202,138,4,.13);color:#ca8a04"><i class="fas fa-percent"></i></div>
         <div class="sidebar-item-txt">کۆدی داشکاندن</div>
       </div>
-      <!-- ٤b — ڤووچەر کۆد -->
+      <!-- ٤b — فاوچەر کۆد -->
       <div class="sidebar-item" onclick="openVoucherModal();closeSidebar()">
-        <div class="sidebar-item-ico"><i class="fas fa-ticket"></i></div>
-        <div class="sidebar-item-txt">ڤووچەر کۆد</div>
+        <div class="sidebar-item-ico" style="background:rgba(6,182,212,.13);color:#06b6d4"><i class="fas fa-ticket-simple"></i></div>
+        <div class="sidebar-item-txt">فاوچەر کۆد</div>
       </div>
-      <!-- ٤c — دیاریەکان (ئاست، چاڵنج، ڤووچەری بەخۆڕایی) -->
+      <!-- ٤c — دیاریەکان (ئاست، چاڵنج، فاوچەری بەخۆڕایی) -->
       <div class="sidebar-item" onclick="goPage('gifts');closeSidebar()">
-        <div class="sidebar-item-ico"><i class="fas fa-gift"></i></div>
+        <div class="sidebar-item-ico" style="background:rgba(219,39,119,.12);color:#db2777"><i class="fas fa-gifts"></i></div>
         <div class="sidebar-item-txt">دیاریەکان</div>
       </div>
       <div class="sb-sect">یارمەتی</div>
       <!-- ٤ — پشتگیری ڕاستەوخۆ -->
       <div class="sidebar-item" id="lcSidebarItem" onclick="lcOpenChatDirect();closeSidebar();">
-        <div class="sidebar-item-ico" style="position:relative">
-          <i class="fas fa-headset"></i>
-          <span id="lcSideNavDot" style="display:none;position:absolute;top:4px;right:4px;width:9px;height:9px;border-radius:50%;background:#4ade80;border:2px solid #fff"></span>
+        <div class="sidebar-item-ico" style="position:relative;background:rgba(28,35,51,.9);color:#fff">
+          <i class="fas fa-comment-dots"></i>
+          <span id="lcSideNavDot" style="display:none;position:absolute;top:2px;right:2px;width:9px;height:9px;border-radius:50%;background:#4ade80;border:2px solid #fff"></span>
         </div>
         <div class="sidebar-item-txt">پشتگیری ڕاستەوخۆ</div>
-      </div>
-      <!-- ٥ — مەرجەکان -->
-      <div class="sidebar-item terms" onclick="openTermsModal();closeSidebar()">
-        <div class="sidebar-item-ico"><i class="fas fa-file-lines"></i></div>
-        <div class="sidebar-item-txt">مەرجەکان</div>
       </div>
       <div style="text-align:center;padding:14px 0 4px;font-size:11px;color:var(--mt);font-family:'Inter',sans-serif;letter-spacing:.5px;font-weight:500">
         v<span id="sidebarVersionLbl">1.0.1</span>
@@ -2834,6 +2843,11 @@ function _toWebP(dataUrl,quality){
       <div class="plist-item" onclick="openChangePass()">
         <div class="plist-ico"><i class="fas fa-lock"></i></div>
         <div class="plist-txt">گۆڕینی وشەی نهێنی</div>
+        <i class="fas fa-chevron-left plist-arr"></i>
+      </div>
+      <div class="plist-item" onclick="openTermsModal()">
+        <div class="plist-ico"><i class="fas fa-file-lines"></i></div>
+        <div class="plist-txt">مەرج و یاساکان</div>
         <i class="fas fa-chevron-left plist-arr"></i>
       </div>
       <div class="plist-item green" onclick="openWA()">
@@ -3523,7 +3537,7 @@ function _toWebP(dataUrl,quality){
     <div id="giftsVoucherBox" style="display:none;background:linear-gradient(135deg,rgba(6,182,212,.08),rgba(6,182,212,.02));border:1.5px dashed rgba(6,182,212,.4);border-radius:16px;padding:14px 16px;margin-bottom:14px">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
         <i class="fas fa-ticket" style="color:#06b6d4;font-size:16px"></i>
-        <div style="font-size:13px;font-weight:800;color:var(--dark)">ڤووچەری بەخێرهاتن بۆ تۆیە</div>
+        <div style="font-size:13px;font-weight:800;color:var(--dark)">فاوچەری بەخێرهاتن بۆ تۆیە</div>
       </div>
       <div id="giftsVoucherDesc" style="font-size:12px;color:var(--mt);line-height:1.7">—</div>
       <div id="giftsVoucherCode" style="margin-top:10px;font-family:'Inter',sans-serif;font-weight:800;letter-spacing:2px;font-size:15px;color:#06b6d4;direction:ltr;text-align:center;background:#fff;border-radius:10px;padding:8px"></div>
@@ -3757,15 +3771,15 @@ function _toWebP(dataUrl,quality){
     </div>
   
   <!-- ── کۆدی داشکاندن ── -->
-  <div class="pg" id="pgPromocodes">
-    <div style="padding:18px 16px 6px;display:flex;align-items:center;gap:10px">
-      <div style="width:42px;height:42px;border-radius:14px;background:rgba(234,179,8,.1);border:1.5px solid rgba(234,179,8,.25);display:flex;align-items:center;justify-content:center;font-size:18px;color:#ca8a04;flex-shrink:0"><i class="fas fa-tags"></i></div>
-      <div>
-        <div style="font-size:17px;font-weight:900;color:var(--dark)">کۆدەکانی داشکاندن</div>
-        <div style="font-size:12px;color:var(--mt);margin-top:2px">هەموو کۆدی داشکاندنی چالاک</div>
-      </div>
+  <div class="pg" id="pgPromocodes" style="padding:0">
+    <div class="promo-hero">
+      <div class="promo-hero-blob b1"></div>
+      <div class="promo-hero-blob b2"></div>
+      <div class="promo-hero-ico"><i class="fas fa-percent"></i></div>
+      <div class="promo-hero-title">کۆدەکانی داشکاندن</div>
+      <div class="promo-hero-sub">هەموو کۆدی داشکاندنی چالاک بۆ کڕینی ئاسانتر</div>
     </div>
-    <div id="promoListWrap" style="padding:10px 14px 100px"></div>
+    <div id="promoListWrap" style="padding:18px 14px 100px;margin-top:-26px"></div>
   </div>
 
 </div>
@@ -4316,40 +4330,38 @@ function _toWebP(dataUrl,quality){
   <div class="mbox">
     <div class="mbar"></div>
     <div class="mhdr">
-      <h3><i class="fas fa-ticket" style="margin-left:8px;color:#06b6d4"></i>ڤووچەر کۆد</h3>
+      <h3><i class="fas fa-ticket" style="margin-left:8px;color:#06b6d4"></i>فاوچەر کۆد</h3>
       <button class="mclose" onclick="closeMo('moVoucher')"><i class="fas fa-xmark"></i></button>
     </div>
 
     <!-- input state -->
     <div id="voucherInputState">
-      <div style="text-align:center;margin-bottom:22px">
-        <div style="width:68px;height:68px;border-radius:22px;background:rgba(6,182,212,.1);border:2px solid rgba(6,182,212,.25);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:28px;color:#06b6d4"><i class="fas fa-ticket"></i></div>
-        <div style="font-size:16px;font-weight:800;color:var(--dark)">ڤووچەرەکەت بنووسە</div>
-        <div style="font-size:12px;color:var(--mt);margin-top:5px">کۆدی ڤووچەرەکەت بنووسە بۆ وەرگرتنی باڵانس</div>
+      <div class="vch-hero">
+        <div class="vch-hero-blob b1"></div>
+        <div class="vch-hero-blob b2"></div>
+        <div class="vch-hero-ico"><i class="fas fa-ticket-simple"></i></div>
+        <div class="vch-hero-title">فاوچەرەکەت بنووسە</div>
+        <div class="vch-hero-sub">کۆدی فاوچەرەکەت بنووسە بۆ وەرگرتنی باڵانسی خۆرایی بۆ هەژمارەکەت</div>
       </div>
 
-      <div style="position:relative;margin-bottom:12px">
-        <div style="background:linear-gradient(135deg,rgba(6,182,212,.06),rgba(6,182,212,.02));border:2px dashed rgba(6,182,212,.35);border-radius:18px;padding:4px;transition:border-color .2s" id="voucherInpWrap">
-          <div style="display:flex;align-items:center;gap:0;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(6,182,212,.08)">
-            <div style="padding:0 14px;color:#06b6d4;font-size:18px;flex-shrink:0;border-left:1.5px solid rgba(6,182,212,.15)">
-              <i class="fas fa-ticket" style="transform:rotate(-15deg);display:inline-block"></i>
-            </div>
-            <input type="text" id="voucherCodeInp" placeholder="PRXO-XXXX-XXXX" dir="ltr"
-              style="flex:1;border:none;outline:none;background:transparent;font-family:'Inter',monospace;font-size:17px;font-weight:800;letter-spacing:2px;color:var(--dark);text-align:center;padding:16px 6px;text-transform:uppercase;caret-color:#06b6d4"
-              oninput="this.value=this.value.toUpperCase();document.getElementById('voucherInpWrap').style.borderColor=this.value?'rgba(6,182,212,.6)':'rgba(6,182,212,.35)'">
-            <button onclick="pasteToField('voucherCodeInp');document.getElementById('voucherInpWrap').style.borderColor='rgba(6,182,212,.6)'" style="padding:0 14px;background:none;border:none;border-right:1.5px solid rgba(6,182,212,.15);color:#06b6d4;cursor:pointer;font-size:15px;height:100%;display:flex;align-items:center" title="لکاندن">
-              <i class="fas fa-clipboard-check"></i>
-            </button>
-          </div>
+      <div class="vch-ticket" id="voucherInpWrap">
+        <div class="vch-ticket-row">
+          <div class="vch-ticket-ico"><i class="fas fa-ticket-simple" style="transform:rotate(-15deg);display:inline-block"></i></div>
+          <input type="text" id="voucherCodeInp" class="vch-inp" placeholder="PRXO-XXXX-XXXX" dir="ltr"
+            oninput="this.value=this.value.toUpperCase();document.getElementById('voucherInpWrap').style.boxShadow=this.value?'0 12px 26px rgba(79,70,229,.3)':'0 12px 26px rgba(79,70,229,.16)'">
+          <div class="vch-ticket-dash"></div>
+          <button onclick="pasteToField('voucherCodeInp')" class="vch-paste-btn" title="لکاندن">
+            <i class="fas fa-clipboard-check"></i>
+          </button>
         </div>
-        <div style="text-align:center;margin-top:7px;font-size:10.5px;color:var(--mt);font-family:'Inter';letter-spacing:.5px">کۆدەکەت بنووسە یان لکبدە</div>
       </div>
+      <div class="vch-hint">کۆدەکەت بنووسە یان لکبدە</div>
 
-      <div id="voucherMsg" style="display:none;font-size:12.5px;font-weight:600;padding:10px 14px;border-radius:12px;margin-bottom:12px;text-align:center"></div>
+      <div id="voucherMsg" style="display:none;font-size:12.5px;font-weight:600;padding:10px 14px;border-radius:12px;margin:12px 4px;text-align:center"></div>
 
-      <button class="abtn" id="voucherBtn" onclick="claimVoucher()" style="margin-top:4px">
+      <button class="vch-btn" id="voucherBtn" onclick="claimVoucher()" style="margin-top:16px">
         <i class="fas fa-ticket" id="voucherBtnIco"></i>
-        <span id="voucherBtnTxt">بەکارهێنانی ڤووچەر</span>
+        <span id="voucherBtnTxt">بەکارهێنانی فاوچەر</span>
       </button>
     </div>
 
@@ -4358,12 +4370,12 @@ function _toWebP(dataUrl,quality){
       <div style="text-align:center;padding:10px 0 20px">
         <div style="width:80px;height:80px;border-radius:50%;background:rgba(22,163,74,.12);border:2px solid rgba(22,163,74,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:34px;color:var(--gr);animation:pulse 1s ease 1"><i class="fas fa-circle-check"></i></div>
         <div style="font-size:18px;font-weight:900;color:var(--dark);margin-bottom:6px">پیرۆزبایت! 🎉</div>
-        <div style="font-size:13px;color:var(--mt)">ڤووچەرەکەت بەسەرکەوتوویی بەکارهێنرا</div>
+        <div style="font-size:13px;color:var(--mt)">فاوچەرەکەت بەسەرکەوتوویی بەکارهێنرا</div>
       </div>
 
-      <div style="background:rgba(6,182,212,.07);border:1.5px solid rgba(6,182,212,.2);border-radius:16px;padding:16px;margin-bottom:14px">
+      <div style="background:rgba(124,58,237,.06);border:1.5px solid rgba(124,58,237,.18);border-radius:16px;padding:16px;margin-bottom:14px">
         <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--b1)">
-          <span style="font-size:12px;color:var(--mt)">کۆدی ڤووچەر</span>
+          <span style="font-size:12px;color:var(--mt)">کۆدی فاوچەر</span>
           <span style="font-family:'Inter',monospace;font-size:14px;font-weight:900;color:var(--dark)" id="vSuccCode">—</span>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--b1)">
@@ -4376,7 +4388,7 @@ function _toWebP(dataUrl,quality){
         </div>
       </div>
 
-      <button class="abtn" onclick="closeMo('moVoucher')" style="background:var(--dark)">
+      <button class="vch-btn" onclick="closeMo('moVoucher')">
         <i class="fas fa-check"></i> باشە
       </button>
     </div>
@@ -5144,7 +5156,7 @@ async function verifyOtp() {
         cu = newUser;
         // ── تۆمارکردنی دیوایس دوای سەرکەوتن ──
         try{ await registerDeviceFingerprint(); }catch(e){}
-        // ── ڤووچەری بەخێرهاتنی ٧ ڕۆژ — تەنها بۆ خۆی ──
+        // ── فاوچەری بەخێرهاتنی ٧ ڕۆژ — تەنها بۆ خۆی ──
         try{ await createSignupVoucher(cu.id); }catch(e){}
         // ── referral (چێکی هەمان دیوایس) ──
         const refCode = localStorage.getItem('proxo_ref');
@@ -11588,7 +11600,7 @@ async function checkDbReady(){
           <div id="lcHeadStatus" class="lc-head-status off">● ئۆفلاین</div>
         </div>
       </div>
-      <div style="display:flex;align-items:center;gap:6px"><button id="lcBackHistBtn" onclick="lcGoToHistory()" style="display:none;padding:5px 10px;background:rgba(28,35,51,.08);border:none;border-radius:8px;cursor:pointer;font-family:'R',sans-serif;font-size:11px;color:#1c2333;align-items:center;gap:4px"><i class="fas fa-arrow-right" style="font-size:11px"></i> مێژوو</button><button class="lc-fs-btn" id="lcFsBtn" onclick="lcToggleFS()" title="فووڵ سکرین"><i class="fas fa-expand"></i></button><button class="lc-close-btn" onclick="lcCloseChat()"><i class="fas fa-times"></i></button></div>
+      <div style="display:flex;align-items:center;gap:6px"><button id="lcBackHistBtn" onclick="lcGoToHistory()" style="display:none;padding:5px 10px;background:rgba(28,35,51,.08);border:none;border-radius:8px;cursor:pointer;font-family:'R',sans-serif;font-size:11px;color:#1c2333;align-items:center;gap:4px"><i class="fas fa-arrow-right" style="font-size:11px"></i> مێژوو</button><button class="lc-close-btn" onclick="lcCloseChat()" title="گەڕانەوە"><i class="fas fa-arrow-right"></i></button></div>
     </div>
     <!-- جەستە -->
     <div class="lc-body">
@@ -12505,28 +12517,6 @@ window.lcSubmitFeedback=async function(){
 
 })();
 
-// ══ FULLSCREEN TOGGLE ══
-window.lcToggleFS = function(){
-  const widget = document.querySelector('.lc-widget');
-  const overlay = document.getElementById('lcOverlay');
-  const btn = document.getElementById('lcFsBtn');
-  const isFs = widget.classList.toggle('lc-fs');
-  overlay.classList.toggle('lc-fs-mode', isFs);
-  if(btn) btn.innerHTML = isFs
-    ? '<i class="fas fa-compress"></i>'
-    : '<i class="fas fa-expand"></i>';
-  // کاتی داخستنی ئۆڤەرلەی — فووڵ سکرین بگەڕێنەوە
-  const origClose = window.lcCloseChat;
-  window.lcCloseChat = function(){
-    if(widget.classList.contains('lc-fs')){
-      widget.classList.remove('lc-fs');
-      overlay.classList.remove('lc-fs-mode');
-      if(btn)btn.innerHTML='<i class="fas fa-expand"></i>';
-    }
-    origClose && origClose();
-  };
-};
-
 // ══ FAQ ACCORDION ══
 function faqToggle(el) {
   const isOpen = el.classList.contains('open');
@@ -12806,7 +12796,7 @@ function openVoucherModal() {
   const btn = document.getElementById('voucherBtn');
   btn.disabled = false;
   document.getElementById('voucherBtnIco').className = 'fas fa-ticket';
-  document.getElementById('voucherBtnTxt').textContent = 'بەکارهێنانی ڤووچەر';
+  document.getElementById('voucherBtnTxt').textContent = 'بەکارهێنانی فاوچەر';
   document.getElementById('moVoucher').classList.add('on');
 }
 
@@ -12824,7 +12814,7 @@ function _vMsg(txt, ok) {
 async function claimVoucher() {
   if (!cu) { showToast('تکایە دووبارە بچۆ ژوورەوە', 'err'); return; }
   const code = (document.getElementById('voucherCodeInp').value || '').trim().toUpperCase();
-  if (!code) { _vMsg('تکایە کۆدی ڤووچەرەکەت بنووسە', false); return; }
+  if (!code) { _vMsg('تکایە کۆدی فاوچەرەکەت بنووسە', false); return; }
 
   const btn = document.getElementById('voucherBtn');
   const ico = document.getElementById('voucherBtnIco');
@@ -12845,30 +12835,30 @@ async function claimVoucher() {
         .single();
 
       if (fetchErr || !voucher) {
-        _vMsg('ڤووچەرەکە نەدۆزرایەوە. کۆدەکە دووبارە بپشکنە.', false);
-        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی ڤووچەر';
+        _vMsg('فاوچەرەکە نەدۆزرایەوە. کۆدەکە دووبارە بپشکنە.', false);
+        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی فاوچەر';
         return;
       }
 
       // 2. Validate
       if (!voucher.is_active) {
-        _vMsg('ئەم ڤووچەرە چالاک نییە.', false);
-        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی ڤووچەر';
+        _vMsg('ئەم فاوچەرە چالاک نییە.', false);
+        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی فاوچەر';
         return;
       }
       if (voucher.used_by) {
-        _vMsg('ئەم ڤووچەرە پێشتر بەکارهێنراوە.', false);
-        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی ڤووچەر';
+        _vMsg('ئەم فاوچەرە پێشتر بەکارهێنراوە.', false);
+        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی فاوچەر';
         return;
       }
       if (voucher.assigned_user_id && voucher.assigned_user_id !== cu.id) {
-        _vMsg('ئەم ڤووچەرە بۆ بەکارهێنەرێکی تر تەرخانکراوە.', false);
-        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی ڤووچەر';
+        _vMsg('ئەم فاوچەرە بۆ بەکارهێنەرێکی تر تەرخانکراوە.', false);
+        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی فاوچەر';
         return;
       }
       if (voucher.expires_at && new Date(voucher.expires_at) < new Date()) {
-        _vMsg('ئەم ڤووچەرە بەسەرچووە.', false);
-        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی ڤووچەر';
+        _vMsg('ئەم فاوچەرە بەسەرچووە.', false);
+        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی فاوچەر';
         return;
       }
 
@@ -12885,7 +12875,7 @@ async function claimVoucher() {
 
       if (claimErr) {
         _vMsg('هەڵەیەک ڕووی دا. دووبارە هەوڵ بدەرەوە.', false);
-        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی ڤووچەر';
+        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی فاوچەر';
         return;
       }
 
@@ -12911,7 +12901,7 @@ async function claimVoucher() {
         type: 'voucher',
         status: 'approved',
         amount: amtUSD,
-        note: 'ڤووچەر: ' + code,
+        note: 'فاوچەر: ' + code,
         created_at: new Date().toISOString()
       });
 
@@ -12920,7 +12910,7 @@ async function claimVoucher() {
         user_id: uid,
         type: 'balance_added',
         title: 'باڵانس زیادکرا',
-        body: amtIQD.toLocaleString() + ' IQD بە ڤووچەر زیادکرا',
+        body: amtIQD.toLocaleString() + ' IQD بە فاوچەر زیادکرا',
         is_read: false,
         created_at: new Date().toISOString()
       });
@@ -12938,11 +12928,11 @@ async function claimVoucher() {
       document.getElementById('vSuccBal').textContent = newBalIQD.toLocaleString() + ' IQD';
       document.getElementById('voucherInputState').style.display = 'none';
       document.getElementById('voucherSuccessState').style.display = 'block';
-      showToast('ڤووچەرەکەت بەسەرکەوتوویی بەکارهێنرا', 'ok');
+      showToast('فاوچەرەکەت بەسەرکەوتوویی بەکارهێنرا', 'ok');
 
     } catch (e) {
       _vMsg('هەڵەی نەچاو: ' + (e.message || e), false);
-      btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی ڤووچەر';
+      btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی فاوچەر';
     }
   });
 }
@@ -12980,7 +12970,7 @@ function _levelForPoints(points, defs) {
   return { cur, next };
 }
 
-// ── ڤووچەری بەخێرهاتنی ٧ ڕۆژ بۆ بەکارهێنەری نوێ (تەنها بۆ خۆی) ──
+// ── فاوچەری بەخێرهاتنی ٧ ڕۆژ بۆ بەکارهێنەری نوێ (تەنها بۆ خۆی) ──
 async function createSignupVoucher(userId) {
   // خوێندنەوەی ئەیلامی دیاری لە ئادمین
   let amount_iqd = 5000;
