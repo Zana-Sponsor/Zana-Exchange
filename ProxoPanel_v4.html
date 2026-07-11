@@ -5465,6 +5465,13 @@ window.lcaSetTyping=function(on){
 window.lcaAcceptSession=async function(id){
   const name=lcaAdminDisplayName||adminUser?.email?.split('@')[0]||'ئەدمین';
   await lcaDb.ref('sessions/'+id).update({status:'active',adminName:name,adminId:adminUser?.id||'',acceptedAt:Date.now()});
+  // ── تۆمارکردنی agent_id لە Supabase (chat_sessions) — id هەمان ئایدی سێشنی Firebase-ە.
+  // ویجیتی کڕیار بە ڕێگەی Supabase Realtime گوێدەگرێت لەسەر ئەم ڕیزە و ناوی ئەدمین لە profiles وەردەگرێت ──
+  if(adminUser?.id){
+    sb.from('chat_sessions').upsert({id,agent_id:adminUser.id}).then(({error})=>{
+      if(error)console.warn('chat_sessions upsert failed:',error.message);
+    });
+  }
   showToast('✅ چات قبووڵکرا','gr');
   lcaSelectSession(id);
 };

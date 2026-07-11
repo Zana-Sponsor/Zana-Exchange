@@ -1215,6 +1215,8 @@ textarea.lc-inp{resize:none;}
 .lc-info-text{font-size:11px;color:#065f46;font-weight:700;}
 .lc-msgs-area{flex:1;overflow-y:auto;padding:13px 13px 7px;display:flex;flex-direction:column;gap:8px;}
 .lc-bubble{max-width:78%;padding:9px 13px;border-radius:16px;font-size:13px;line-height:1.5;animation:lc-bubble-in .2s ease-out;}
+.lc-msg-sender{font-size:10.5px;font-weight:800;margin-bottom:3px;opacity:.85;letter-spacing:.2px;}
+.lc-sys-msg{align-self:center;text-align:center;font-size:11px;color:#94a3b8;font-weight:700;margin:10px 0;padding:0 10px;}
 @keyframes lc-bubble-in{from{opacity:0;transform:translateY(5px)scale(.97);}to{opacity:1;transform:translateY(0)scale(1);}}
 .lc-bubble.user{background:#f1f5f9;color:#1c2333;border-bottom-right-radius:4px;align-self:flex-start;}
 .lc-bubble.admin{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border-bottom-left-radius:4px;align-self:flex-end;}
@@ -11620,7 +11622,7 @@ async function checkDbReady(){
       <div class="lc-head-left">
         <div class="lc-av">P<span id="lcAvDot" class="lc-av-dot off"></span></div>
         <div>
-          <div class="lc-head-name">پشتگیری Proxo</div>
+          <div class="lc-head-name" id="lcHeadName">Proxo AI</div>
           <div id="lcHeadStatus" class="lc-head-status off">● ئۆفلاین</div>
         </div>
       </div>
@@ -12017,15 +12019,34 @@ window.lcGoToHistory=function(){
 // ══ DIRECT-ACCESS INIT — سکرینی 'چاتی نوێ' / فۆرم / مێژوو بە تەواوی لادراوە ══
 // هەر جارێک ویجیت دەکرێتەوە: هەموو سێشن/مێژووی پێشوو ڕەوانە دەکرێت و چات
 // ڕاستەوخۆ دەکرێتەوە بۆ گفتوگۆیەکی چالاکی نوێ، لەگەڵ سلامی ئۆتۆماتیکی + دووگمەی وەڵامی خێرا
-const LC_QUICK_REPLIES=[
-  {label:'پشتگیری',value:'Support'},
-  {label:'فرۆشتن',value:'Sales'},
-  {label:'گشتی',value:'General'}
+// دووگمەکانی هەڵبژاردنی زمان — پرسیاری یەکەمی Proxo Bot
+const LC_LANG_OPTIONS=[
+  {label:'English',value:'English'},
+  {label:'Kurdish',value:'Kurdish'}
 ];
+const LC_Q1_TEXT='Please select your preferred language';
+const LC_Q2_TEXT='Please describe the issue you are facing.';
 
-// وا سلامەکە بەردەوام دەردەکەوێت تا یەکەم پەیامی بەکارهێنەر بنێردرێت —
+// ناوی سەرەتایی — پێش ئەوەی هیچ ئەدمینێک بێتە ناو چاتەکە
+const LC_BOT_NAME='Proxo Bot';
+// ناوی ئەو ئەدمینەی کە ئێستا لەسەر چاتەکەیە (کاتێک هیچ ئەدمینێک نییە، null دەبێت)
+let lcCurrentAdminName=null;
+// ناو + کاتی هاتنی ئەدمین بۆ نیشاندانی پەیامی سیستەمی "[ناو] هاتە ناو چات" لە شوێنی ڕاستی خۆی لە کاتدا
+let lcAgentJoinedName=null;
+let lcAgentJoinTimestamp=null;
+// دوایین لیستی پەیامەکانی وەرگیراو لە Firebase — بۆ ڕیفڕێشکردنی ڕوونووسینی چات
+// کاتێک تەنها دۆخی سێشن (وەک هاتنی ئەدمین) دەگۆڕدرێت، بەبێ ئەوەی پەیامێکی نوێ بێت
+let lcLastMsgs=[];
+
+// دەستکاریکردنی ناوی سەرووی چات — سەرەتا "Proxo Bot"، دوای هاتنی ئەدمین دەبێتە ناوی ئەو ئەدمینە
+function lcSetHeadName(name){
+  const el=document.getElementById('lcHeadName');
+  if(el)el.textContent=name||LC_BOT_NAME;
+}
+
+// وا پرسیاری یەکەمی Proxo Bot بەردەوام دەردەکەوێت هەتا ئەو پەیامە ڕاستەقینەیە بگاتە Firebase —
 // چونکە lcRenderMessages ناوەڕۆکی #lcMsgsArea بە تەواوی جێگۆڕکێ دەکاتەوە لە هەر
-// نوێکردنەوەیەکی Firebase، لەبەرئەوە سلامەکە لە ناخی lcRenderMessages دووبارە دروست دەکرێتەوە
+// نوێکردنەوەیەکی Firebase، لەبەرئەوە پرسیارەکە لە ناخی lcRenderMessages دووبارە دروست دەکرێتەوە
 // نەک وەک تەنها زیادکردنێکی جیاواز — بۆ ئەوەی نەسڕدرێتەوە کاتێک لیستنەری پەیامەکان یەکەمجار دەجوڵێت
 let lcGreetingActive=true;
 
@@ -12035,12 +12056,12 @@ function lcAppendGreeting(area){
   wrap.id='lcGreetingBubble';
   const bubble=document.createElement('div');
   bubble.className='lc-bubble admin';
-  bubble.innerHTML='<div>Hi! How can I help you today?</div><div class="lc-msg-time">'+time+'</div>';
+  bubble.innerHTML='<div class="lc-msg-sender">'+lcEsc(LC_BOT_NAME)+'</div><div>'+lcEsc(LC_Q1_TEXT)+'</div><div class="lc-msg-time">'+time+'</div>';
   wrap.appendChild(bubble);
   const qr=document.createElement('div');
   qr.id='lcQuickReplyRow';
   qr.style.cssText='display:flex;gap:8px;flex-wrap:wrap;margin:10px 2px 4px';
-  qr.innerHTML=LC_QUICK_REPLIES.map(function(q){
+  qr.innerHTML=LC_LANG_OPTIONS.map(function(q){
     return '<button type="button" class="lc-quick-reply-btn" onclick="lcQuickReply(\''+q.value+'\')" '
       +'style="padding:8px 16px;background:#eef2ff;color:#1c2333;border:1px solid #c7d2fe;border-radius:20px;'
       +'font-family:\'R\',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer">'+q.label+'</button>';
@@ -12056,6 +12077,8 @@ function lcRenderGreeting(){
   area.scrollTop=area.scrollHeight;
 }
 
+// دوای هەڵبژاردنی زمان: هەڵبژاردنەکە وەک پەیامی ڕاستەقینەی بەکارهێنەر دەنێردرێت،
+// پاشان Proxo Bot (هەتا ئەدمینێک نەیوتووە بۆ ناو چاتەکە) پرسیاری دووەم دەنێرێت.
 window.lcQuickReply=function(value){
   lcGreetingActive=false;
   const row=document.getElementById('lcQuickReplyRow');
@@ -12063,7 +12086,20 @@ window.lcQuickReply=function(value){
   const inp=document.getElementById('lcChatInput');
   if(inp)inp.value=value;
   lcSendMsg();
+  setTimeout(function(){
+    if(lcCurrentAdminName)return; // ئەدمین پێشتر هاتووەتە ناو چات — Proxo Bot ئیتر پەیام نانێرێت
+    lcSendBotMessage(LC_Q2_TEXT);
+  },700);
 };
+
+// ناردنی پەیامێکی ئۆتۆماتیکی لەلایەن Proxo Bot — وەک پەیامی ئەدمین پاشەکەوت دەکرێت
+// (senderName + isBot جیاکەرەوەن) بۆ ئەوەی لە ڕیزبەندی کاتیدا لەگەڵ باقی گفتوگۆ ڕاست بێت
+function lcSendBotMessage(text){
+  if(!lcSessionId||!lcDb||lcCurrentAdminName)return;
+  lcDb.ref('messages/'+lcSessionId).push({
+    text,sender:'admin',senderName:LC_BOT_NAME,isBot:true,timestamp:Date.now()
+  }).catch(function(){});
+}
 
 async function lcInitDirectChat(){
   document.getElementById('lcOverlay').classList.add('show');
@@ -12087,8 +12123,13 @@ async function lcInitDirectChat(){
   document.getElementById('lcInpWrap').style.display='flex';
   setTimeout(function(){const i=document.getElementById('lcChatInput');if(i)i.focus();},50);
 
-  // ── ٣. سلامی ئۆتۆماتیکی + دووگمەکانی وەڵامی خێرا — دەرکەوتنی خێرا، پێش وەڵامی سێرڤەر ──
+  // ── ٣. پرسیاری یەکەمی Proxo Bot (هەڵبژاردنی زمان) — دەرکەوتنی خێرا، پێش وەڵامی سێرڤەر ──
   lcGreetingActive=true;
+  lcCurrentAdminName=null;
+  lcAgentJoinedName=null;
+  lcAgentJoinTimestamp=null;
+  lcLastMsgs=[];
+  lcSetHeadName(LC_BOT_NAME);
   lcRenderGreeting();
 
   // ── ٤. دروستکردنی سێشنێکی نوێی چالاک — key بە شێوەی هاوکات لە کلاینتەوە دروست دەبێت،
@@ -12100,6 +12141,7 @@ async function lcInitDirectChat(){
     lcSessionId=ref.key;
     localStorage.setItem(LC_KEY,lcSessionId);
     lcAttachListeners();
+    lcSubscribeAgentStatus(lcSessionId);
     ref.set({
       name,
       email:(typeof cu!=='undefined'&&cu&&cu.email)?cu.email:'—',
@@ -12220,6 +12262,16 @@ function lcAttachListeners(){
     if(d.status==='active'){
       lcShowStage('lcStageChat');
       lcSaveToHistory(lcSessionId,d.name,d.problem,d.adminName,'active');
+      // کاتێک مرۆڤ-ئەدمینێک یەکەمجار دێتە ناو چات: پەیامی سیستەمی "[ناو] هاتە ناو چات" تۆمار بکە
+      // بە کاتی ئێستا (بۆ ڕیزبەندی ڕاست لەگەڵ باقی پەیامەکان)، ناوی سەرووی چات بگۆڕە،
+      // و Proxo Bot لەم دواوە ئیتر هیچ پەیامێکی ئۆتۆماتیکی نانێرێت
+      if(!lcCurrentAdminName&&d.adminName){
+        lcAgentJoinedName=d.adminName;
+        lcAgentJoinTimestamp=Date.now();
+      }
+      lcCurrentAdminName=d.adminName||null;
+      lcSetHeadName(lcCurrentAdminName);
+      lcRenderMessages(lcLastMsgs); // نوێکردنەوەی دیمەنی چات دەستبەجێ بۆ نیشاندانی پەیامی سیستەمی
       const bar=document.getElementById('lcInfoBar');
       bar.style.display='flex';
       const adminLbl=d.adminName||'ئەدمین';
@@ -12263,8 +12315,9 @@ function lcAttachListeners(){
   let firstMsg=true;
   lcUnsubMessages=lcDb.ref('messages/'+lcSessionId).on('value',snap=>{
     const d=snap.val();
-    lcRenderMessages(d?Object.entries(d).map(([id,v])=>({id,...v})).sort((a,b)=>a.timestamp-b.timestamp):[]);
-    if(!firstMsg&&d){const msgs=Object.values(d);const last=msgs.sort((a,b)=>a.timestamp-b.timestamp).pop();if(last&&last.sender==='admin'){lcPlayNotif();const _lcOv=document.getElementById('lcOverlay');if(!_lcOv||!_lcOv.classList.contains('show')){_lcUnreadCount++;checkNotifBell();}}}
+    lcLastMsgs=d?Object.entries(d).map(([id,v])=>({id,...v})).sort((a,b)=>a.timestamp-b.timestamp):[];
+    lcRenderMessages(lcLastMsgs);
+    if(!firstMsg&&d){const msgs=Object.values(d);const last=msgs.sort((a,b)=>a.timestamp-b.timestamp).pop();if(last&&last.sender==='admin'&&!last.isBot){lcPlayNotif();const _lcOv=document.getElementById('lcOverlay');if(!_lcOv||!_lcOv.classList.contains('show')){_lcUnreadCount++;checkNotifBell();}}}
     firstMsg=false;
   });
   if(lcUnsubTyping)lcDb.ref('typing/'+lcSessionId+'/admin').off('value',lcUnsubTyping);
@@ -12277,6 +12330,52 @@ function lcDetachListeners(){
     if(lcUnsubMessages)lcDb.ref('messages/'+lcSessionId).off('value',lcUnsubMessages);
     if(lcUnsubTyping)lcDb.ref('typing/'+lcSessionId+'/admin').off('value',lcUnsubTyping);
   }
+  lcUnsubscribeAgentStatus();
+}
+
+// ══ چاودێریکردنی ئایدی ئەدمین لە ڕێگەی Supabase Realtime (جەدوەلی chat_sessions) ══
+// کاتێک پانێڵی ئادمین چاتێک وەردەگرێت، agent_id لە ڕیزی chat_sessions دادەنرێت (id = هەمان
+// ئایدی سێشنی Firebase). ئێرە گوێگرتنی ڕاستەوخۆیە لەسەر ئەو گۆڕانکارییە، پاشان ناوی تەواوی
+// ئەدمین لە profiles وەردەگیرێت و سەرووی چات پێی نوێ دەکرێتەوە.
+let lcAgentChannel=null;
+let lcLastAgentId=null;
+
+function lcSubscribeAgentStatus(sessionId){
+  lcUnsubscribeAgentStatus();
+  if(!sessionId||typeof sb==='undefined'||!sb)return;
+  try{
+    lcAgentChannel=sb.channel('chat_sessions_'+sessionId)
+      .on('postgres_changes',{event:'*',schema:'public',table:'chat_sessions',filter:'id=eq.'+sessionId},payload=>{
+        const agentId=payload.new&&payload.new.agent_id;
+        lcHandleAgentIdChange(agentId);
+      })
+      .subscribe();
+  }catch(e){/* Supabase چالاک نەبوو — ویجیت هێشتا کاردەکات بە ناوی Proxo Bot */}
+}
+
+function lcUnsubscribeAgentStatus(){
+  if(lcAgentChannel&&typeof sb!=='undefined'&&sb){
+    try{sb.removeChannel(lcAgentChannel);}catch(e){}
+  }
+  lcAgentChannel=null;
+  lcLastAgentId=null;
+}
+
+async function lcHandleAgentIdChange(agentId){
+  if(!agentId||agentId===lcLastAgentId)return;
+  lcLastAgentId=agentId;
+  try{
+    const{data,error}=await sb.from('profiles').select('full_name').eq('id',agentId).single();
+    if(error||!data)return;
+    const fullName=data.full_name||LC_BOT_NAME;
+    if(!lcCurrentAdminName){
+      lcAgentJoinedName=fullName;
+      lcAgentJoinTimestamp=Date.now();
+    }
+    lcCurrentAdminName=fullName;
+    lcSetHeadName(fullName);
+    lcRenderMessages(lcLastMsgs);
+  }catch(e){/* شکستی وەرگرتنی full_name — ناوی سەرووی چات وەک خۆی دەمێنێتەوە */}
 }
 
 function lcEsc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -12294,20 +12393,37 @@ function lcRenderMessages(msgs){
       });
     }
   }catch(e){}
-  // سلامی ئۆتۆماتیکی + وەڵامی خێرا هەتا یەکەم پەیامی بەکارهێنەر بەردەوام دەردەکەوێت
-  if(lcGreetingActive)lcAppendGreeting(area);
-  msgs.forEach(m=>{
+  // پرسیاری یەکەمی Proxo Bot تەنها وەک نیشاندانێکی خێرای لۆکاڵ دەردەکەوێت هەتا خۆی وەک
+  // پەیامی ڕاستەقینە لە Firebase دابین بێت — ئینجا لادەبرێت بۆ ئەوەی دووبارە نەبێتەوە
+  const _hasRealBotMsg=msgs.some(m=>m.isBot);
+  if(lcGreetingActive&&!_hasRealBotMsg)lcAppendGreeting(area);
+  // پەیامی سیستەمی "[ناو] هاتە ناو چات" بە ڕیزبەندی کاتی خۆی لەگەڵ باقی پەیامەکان تێکەڵ دەکرێت
+  let renderList=msgs.slice();
+  if(lcAgentJoinedName){
+    renderList.push({type:'system',text:lcAgentJoinedName+' has joined the chat',timestamp:lcAgentJoinTimestamp||Date.now()});
+    renderList.sort((a,b)=>a.timestamp-b.timestamp);
+  }
+  renderList.forEach(m=>{
     const div=document.createElement('div');
+    if(m.type==='system'){
+      div.className='lc-sys-msg';
+      div.textContent=m.text;
+      area.appendChild(div);
+      return;
+    }
     div.className='lc-bubble '+m.sender;
     const time=new Date(m.timestamp).toLocaleTimeString('ku-IQ',{hour:'2-digit',minute:'2-digit'});
+    // ناوی نێردەر — تەنها بۆ پەیامەکانی ئەدمین/بۆت: ناوی ئەدمینی نێردەر، ئەگەرنا Proxo Bot بۆ پەیامەکانی بۆت،
+    // ئەگەرنا ناوی ئەدمینی چالاکی چات
+    const senderLbl=(m.sender==='admin')?'<div class="lc-msg-sender">'+lcEsc(m.senderName||(m.isBot?LC_BOT_NAME:lcCurrentAdminName)||LC_BOT_NAME)+'</div>':'';
     if(m.type==='image'&&m.data){
       div.style.padding='6px';
-      div.innerHTML=`<img class="lc-media-img" src="${m.data}" onclick="lcViewImg(this)" loading="lazy"><div class="lc-msg-time" style="padding:0 4px 2px">${time}</div>`;
+      div.innerHTML=`${senderLbl}<img class="lc-media-img" src="${m.data}" onclick="lcViewImg(this)" loading="lazy"><div class="lc-msg-time" style="padding:0 4px 2px">${time}</div>`;
     }else if(m.type==='video'&&m.data){
       div.style.padding='6px';
-      div.innerHTML=`<video class="lc-media-vid" src="${m.data}" controls playsinline preload="metadata"></video><div class="lc-msg-time" style="padding:0 4px 2px">${time}</div>`;
+      div.innerHTML=`${senderLbl}<video class="lc-media-vid" src="${m.data}" controls playsinline preload="metadata"></video><div class="lc-msg-time" style="padding:0 4px 2px">${time}</div>`;
     }else{
-      div.innerHTML=`<div>${lcEsc(m.text||'')}</div><div class="lc-msg-time">${time}</div>`;
+      div.innerHTML=`${senderLbl}<div>${lcEsc(m.text||'')}</div><div class="lc-msg-time">${time}</div>`;
     }
     area.appendChild(div);
   });
