@@ -1142,135 +1142,156 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 /* ══════════════════════════════════════════════════════
    PROXO LIVE CHAT WIDGET — زیادکراو بێ دەستکاری کۆدی کونی
    ══════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════
+   PROXO LIVE CHAT — ڕووکاری نوێ، ئیلهامگیراو لە Apple / سایتە جیهانیەکان:
+   glass header بلوورکراو، ڕەنگی هێمن سپی/گرەی، شینی سیستەمی (#0A84FF)،
+   بڵقە بە شێوەی iMessage، گۆشەی گەورە و نەرم، سێبەری سووک، جوڵەی سپرینگ
+   ══════════════════════════════════════════════════════════════ */
+:root{
+  --lc-accent:#0A84FF;
+  --lc-accent-d:#0066DB;
+  --lc-bg:#f7f7f9;
+  --lc-surface:rgba(255,255,255,.78);
+  --lc-hairline:rgba(60,60,67,.13);
+  --lc-ink:#1d1d1f;
+  --lc-ink2:#6e6e73;
+  --lc-bubble-in:#e9e9eb;
+  --lc-radius-lg:22px;
+  --lc-radius-md:16px;
+  --lc-ease:cubic-bezier(.32,.72,0,1);
+}
 /* دوگمەی پشتگیری لە تۆپبار */
-.lc-topbar-btn{display:flex;align-items:center;gap:6px;padding:7px 13px;background:var(--dark);border-radius:20px;cursor:pointer;border:none;font-family:'R',sans-serif;font-size:12.5px;font-weight:700;color:#fff;transition:all .18s;white-space:nowrap;position:relative;}
-.lc-topbar-btn:active{opacity:.85;}
-.lc-topbar-btn .lc-online-dot{width:8px;height:8px;border-radius:50%;background:#64748b;flex-shrink:0;transition:background .3s;}
-.lc-topbar-btn .lc-online-dot.on{background:#4ade80;animation:lc-pulse 2s infinite;}
-@keyframes lc-pulse{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.5);}70%{box-shadow:0 0 0 6px rgba(74,222,128,0);}}
+.lc-topbar-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;background:var(--lc-ink);border-radius:20px;cursor:pointer;border:none;font-family:'R',sans-serif;font-size:12.5px;font-weight:700;color:#fff;transition:all .18s var(--lc-ease);white-space:nowrap;position:relative;}
+.lc-topbar-btn:active{opacity:.8;transform:scale(.97);}
+.lc-topbar-btn .lc-online-dot{width:8px;height:8px;border-radius:50%;background:#8e8e93;flex-shrink:0;transition:background .3s;}
+.lc-topbar-btn .lc-online-dot.on{background:#30d158;animation:lc-pulse 2s infinite;}
+@keyframes lc-pulse{0%,100%{box-shadow:0 0 0 0 rgba(48,209,88,.5);}70%{box-shadow:0 0 0 6px rgba(48,209,88,0);}}
 /* ئۆڤەرلەی چات */
-#lcOverlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;inset:0;z-index:99990;background:var(--w);align-items:stretch;justify-content:stretch;padding:0;}
+#lcOverlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;inset:0;z-index:99990;background:var(--lc-bg);align-items:stretch;justify-content:stretch;padding:0;}
 #lcOverlay.show{display:flex;}
 /* ویجێتی چات — وەکوو پەڕەیەکی ناوەکی ئەپ دەکرێتەوە، نەک پۆپ‌ئەپ */
-.lc-widget{width:100%;max-width:100%;height:100vh;height:100dvh;max-height:100vh;background:#fff;border-radius:0;display:flex;flex-direction:column;overflow:hidden;box-shadow:none;animation:lc-pageIn .24s cubic-bezier(.25,.46,.45,.94);}
+.lc-widget{width:100%;max-width:100%;height:100vh;height:100dvh;max-height:100vh;background:var(--lc-bg);border-radius:0;display:flex;flex-direction:column;overflow:hidden;box-shadow:none;animation:lc-pageIn .32s var(--lc-ease);}
 @keyframes lc-pageIn{from{opacity:0;transform:translateX(14px);}to{opacity:1;transform:translateX(0);}}
-/* سەری چات */
-.lc-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:linear-gradient(135deg,#1c2333,#2e3a50);flex-shrink:0;}
+/* سەری چات — glass header، بلوورکراو وەک Apple */
+.lc-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;padding-top:calc(14px + env(safe-area-inset-top));background:rgba(29,29,31,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);flex-shrink:0;border-bottom:.5px solid rgba(255,255,255,.08);}
 .lc-head-left{display:flex;align-items:center;gap:11px;}
-.lc-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#1d4ed8);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:800;position:relative;flex-shrink:0;}
-.lc-av-dot{position:absolute;bottom:0;left:0;width:12px;height:12px;border-radius:50%;border:2.5px solid #1c2333;}
-.lc-av-dot.on{background:#4ade80;}
-.lc-av-dot.off{background:#64748b;}
-.lc-head-name{color:#fff;font-size:13.5px;font-weight:800;line-height:1.3;}
+.lc-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(160deg,var(--lc-accent),var(--lc-accent-d));display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:700;position:relative;flex-shrink:0;box-shadow:0 2px 8px rgba(10,132,255,.35);}
+.lc-av-dot{position:absolute;bottom:0;left:0;width:12px;height:12px;border-radius:50%;border:2.5px solid #1d1d1f;transition:background .25s;}
+.lc-av-dot.on{background:#30d158;}
+.lc-av-dot.off{background:#8e8e93;}
+.lc-head-name{color:#fff;font-size:14px;font-weight:700;line-height:1.3;letter-spacing:-.1px;transition:opacity .2s;}
 .lc-head-status{font-size:11px;margin-top:1px;}
-.lc-head-status.on{color:#4ade80;}
-.lc-head-status.off{color:#94a3b8;}
-.lc-close-btn{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.12);border:none;color:rgba(255,255,255,.8);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .18s;}
-.lc-close-btn:hover{background:rgba(255,255,255,.2);}
+.lc-head-status.on{color:#30d158;}
+.lc-head-status.off{color:rgba(255,255,255,.5);}
+.lc-close-btn{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.12);border:none;color:rgba(255,255,255,.85);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .18s var(--lc-ease);}
+.lc-close-btn:hover{background:rgba(255,255,255,.22);}
+.lc-close-btn:active{transform:scale(.9);}
 /* جەستەی چات */
-.lc-body{flex:1;overflow-y:auto;display:flex;flex-direction:column;-webkit-overflow-scrolling:touch;}
+.lc-body{flex:1;overflow-y:auto;display:flex;flex-direction:column;-webkit-overflow-scrolling:touch;background:var(--lc-bg);}
 /* مەرحەلەکان */
 .lc-stage{display:none;flex:1;flex-direction:column;}
 .lc-stage.on{display:flex;}
 /* فۆرمی پێش چات */
 .lc-form-stage{padding:18px 16px;gap:12px;}
 .lc-form-hero{text-align:center;padding-bottom:6px;}
-.lc-form-hero-ico{width:58px;height:58px;border-radius:18px;background:linear-gradient(135deg,#2563eb,#1d4ed8);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;margin:0 auto 10px;box-shadow:0 6px 20px rgba(37,99,235,.3);}
-.lc-form-hero h2{font-size:16px;font-weight:800;color:#1c2333;}
-.lc-form-hero p{font-size:12px;color:#64748b;margin-top:4px;line-height:1.5;}
-.lc-label{font-size:11.5px;font-weight:700;color:#475569;margin-bottom:5px;display:block;}
+.lc-form-hero-ico{width:58px;height:58px;border-radius:18px;background:linear-gradient(160deg,var(--lc-accent),var(--lc-accent-d));display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;margin:0 auto 10px;box-shadow:0 6px 20px rgba(10,132,255,.3);}
+.lc-form-hero h2{font-size:16px;font-weight:700;color:var(--lc-ink);letter-spacing:-.2px;}
+.lc-form-hero p{font-size:12px;color:var(--lc-ink2);margin-top:4px;line-height:1.5;}
+.lc-label{font-size:11.5px;font-weight:700;color:var(--lc-ink2);margin-bottom:5px;display:block;}
 /* ══ LIVE CHAT — PRE-CHAT INTAKE STEPS (پێشکەوتوو) ══ */
 .lc-step{margin-bottom:18px;}
-.lc-step-hd{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:#1c2333;margin-bottom:10px;}
-.lc-step-num{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Inter',sans-serif;}
+.lc-step-hd{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--lc-ink);margin-bottom:10px;}
+.lc-step-num{width:22px;height:22px;border-radius:50%;background:linear-gradient(160deg,var(--lc-accent),var(--lc-accent-d));color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Inter',sans-serif;}
 .lc-chip-row{display:flex;flex-wrap:wrap;gap:8px;}
-.lc-chip{display:flex;align-items:center;gap:6px;padding:9px 15px;border-radius:12px;border:1.5px solid #e2e8f0;background:#fff;color:#475569;font-family:'R',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;transition:all .16s;}
-.lc-chip i{font-size:12px;color:#94a3b8;transition:color .16s;}
-.lc-chip.on{border-color:#2563eb;background:rgba(37,99,235,.08);color:#1d4ed8;box-shadow:0 0 0 3px rgba(37,99,235,.1);}
-.lc-chip.on i{color:#2563eb;}
+.lc-chip{display:flex;align-items:center;gap:6px;padding:9px 15px;border-radius:var(--lc-radius-md);border:none;background:#fff;color:var(--lc-ink2);font-family:'R',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;transition:all .18s var(--lc-ease);box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px var(--lc-hairline);}
+.lc-chip i{font-size:12px;color:#a1a1a6;transition:color .16s;}
+.lc-chip.on{background:var(--lc-accent);color:#fff;box-shadow:0 4px 12px rgba(10,132,255,.3);}
+.lc-chip.on i{color:#fff;}
 .lc-cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
-.lc-cat-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:14px 8px;border-radius:14px;border:1.5px solid #e2e8f0;background:#fff;color:#475569;font-family:'R',sans-serif;font-size:11.5px;font-weight:700;cursor:pointer;transition:all .16s;text-align:center;}
-.lc-cat-item i{font-size:17px;color:#94a3b8;transition:color .16s;}
-.lc-cat-item.on{border-color:#2563eb;background:rgba(37,99,235,.08);color:#1d4ed8;box-shadow:0 0 0 3px rgba(37,99,235,.1);transform:translateY(-1px);}
-.lc-cat-item.on i{color:#2563eb;}
-.lc-inp{width:100%;padding:11px 13px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:11px;color:#1c2333;font-family:'R',sans-serif;font-size:13.5px;outline:none;transition:all .2s;}
-.lc-inp:focus{border-color:#2563eb;background:#fff;box-shadow:0 0 0 3px rgba(37,99,235,.08);}
-.lc-inp::placeholder{color:#94a3b8;}
+.lc-cat-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:14px 8px;border-radius:var(--lc-radius-md);border:none;background:#fff;color:var(--lc-ink2);font-family:'R',sans-serif;font-size:11.5px;font-weight:700;cursor:pointer;transition:all .18s var(--lc-ease);text-align:center;box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px var(--lc-hairline);}
+.lc-cat-item i{font-size:17px;color:#a1a1a6;transition:color .16s;}
+.lc-cat-item.on{background:var(--lc-accent);color:#fff;box-shadow:0 4px 12px rgba(10,132,255,.3);transform:translateY(-1px);}
+.lc-cat-item.on i{color:#fff;}
+.lc-inp{width:100%;padding:12px 14px;background:#fff;border:none;box-shadow:0 0 0 1px var(--lc-hairline);border-radius:var(--lc-radius-md);color:var(--lc-ink);font-family:'R',sans-serif;font-size:13.5px;outline:none;transition:all .2s var(--lc-ease);}
+.lc-inp:focus{box-shadow:0 0 0 2px var(--lc-accent);}
+.lc-inp::placeholder{color:#a1a1a6;}
 textarea.lc-inp{resize:none;}
-.lc-submit-btn{width:100%;padding:13px;background:linear-gradient(135deg,#1c2333,#2e3a50);color:#fff;border:none;border-radius:12px;font-family:'R',sans-serif;font-size:14.5px;font-weight:800;cursor:pointer;transition:all .2s;box-shadow:0 4px 12px rgba(28,35,51,.25);display:flex;align-items:center;justify-content:center;gap:8px;}
-.lc-submit-btn:disabled{opacity:.5;pointer-events:none;}
+.lc-submit-btn{width:100%;padding:13px;background:var(--lc-accent);color:#fff;border:none;border-radius:var(--lc-radius-md);font-family:'R',sans-serif;font-size:14.5px;font-weight:700;cursor:pointer;transition:all .2s var(--lc-ease);box-shadow:0 4px 14px rgba(10,132,255,.35);display:flex;align-items:center;justify-content:center;gap:8px;}
+.lc-submit-btn:active{transform:scale(.98);}
+.lc-submit-btn:disabled{opacity:.4;pointer-events:none;box-shadow:none;}
 /* مەرحەلەی چاوەڕوان */
 .lc-waiting-stage{align-items:center;justify-content:center;padding:28px 18px;gap:18px;text-align:center;}
 .lc-wait-ico-wrap{position:relative;}
-.lc-wait-ico{width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;font-size:28px;color:#fff;box-shadow:0 8px 20px rgba(245,158,11,.3);}
-.lc-wait-ring{position:absolute;inset:-6px;border-radius:50%;border:3px solid rgba(245,158,11,.3);animation:lc-ring 2s infinite;}
+.lc-wait-ico{width:76px;height:76px;border-radius:50%;background:linear-gradient(160deg,var(--lc-accent),var(--lc-accent-d));display:flex;align-items:center;justify-content:center;font-size:28px;color:#fff;box-shadow:0 8px 22px rgba(10,132,255,.32);}
+.lc-wait-ring{position:absolute;inset:-6px;border-radius:50%;border:3px solid rgba(10,132,255,.28);animation:lc-ring 2s infinite;}
 @keyframes lc-ring{0%{transform:scale(1);opacity:1;}100%{transform:scale(1.3);opacity:0;}}
-.lc-waiting-stage h2{font-size:17px;font-weight:800;color:#1c2333;}
-.lc-waiting-stage p{font-size:12.5px;color:#64748b;line-height:1.6;max-width:250px;}
-.lc-wait-badge{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:#fef9c3;border:1px solid #fde68a;border-radius:50px;color:#92400e;font-size:11px;font-weight:700;}
-.lc-cancel-btn{color:#94a3b8;font-size:12px;background:none;border:none;font-family:'R',sans-serif;cursor:pointer;text-decoration:underline;margin-top:6px;}
+.lc-waiting-stage h2{font-size:17px;font-weight:700;color:var(--lc-ink);letter-spacing:-.2px;}
+.lc-waiting-stage p{font-size:12.5px;color:var(--lc-ink2);line-height:1.6;max-width:250px;}
+.lc-wait-badge{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:rgba(255,159,10,.12);border:none;border-radius:50px;color:#c96a00;font-size:11px;font-weight:700;}
+.lc-cancel-btn{color:#a1a1a6;font-size:12px;background:none;border:none;font-family:'R',sans-serif;cursor:pointer;text-decoration:underline;margin-top:6px;}
 /* مەرحەلەی چات چالاک */
-.lc-info-bar{display:flex;align-items:center;gap:7px;padding:7px 13px;background:#ecfdf5;border-bottom:1px solid #d1fae5;flex-shrink:0;}
-.lc-info-dot{width:7px;height:7px;border-radius:50%;background:#10b981;}
-.lc-info-text{font-size:11px;color:#065f46;font-weight:700;}
-.lc-msgs-area{flex:1;overflow-y:auto;padding:13px 13px 7px;display:flex;flex-direction:column;gap:8px;}
-.lc-bubble{max-width:78%;padding:9px 13px;border-radius:16px;font-size:13px;line-height:1.5;animation:lc-bubble-in .2s ease-out;}
+.lc-info-bar{display:flex;align-items:center;gap:7px;padding:8px 14px;background:rgba(48,209,88,.1);border-bottom:.5px solid rgba(48,209,88,.2);flex-shrink:0;}
+.lc-info-dot{width:7px;height:7px;border-radius:50%;background:#30d158;}
+.lc-info-text{font-size:11px;color:#1a7431;font-weight:700;}
+.lc-msgs-area{flex:1;overflow-y:auto;padding:14px 13px 8px;display:flex;flex-direction:column;gap:9px;background:var(--lc-bg);}
+.lc-bubble{max-width:78%;padding:10px 14px;border-radius:19px;font-size:13.5px;line-height:1.5;animation:lc-bubble-in .28s var(--lc-ease);box-shadow:0 1px 1px rgba(0,0,0,.03);}
 .lc-msg-sender{font-size:10.5px;font-weight:800;margin-bottom:3px;opacity:.85;letter-spacing:.2px;}
-.lc-sys-msg{align-self:center;text-align:center;font-size:11px;color:#94a3b8;font-weight:700;margin:10px 0;padding:0 10px;}
-@keyframes lc-bubble-in{from{opacity:0;transform:translateY(5px)scale(.97);}to{opacity:1;transform:translateY(0)scale(1);}}
-.lc-bubble.user{background:#f1f5f9;color:#1c2333;border-bottom-right-radius:4px;align-self:flex-start;}
-.lc-bubble.admin{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border-bottom-left-radius:4px;align-self:flex-end;}
+.lc-sys-msg{align-self:center;text-align:center;font-size:11px;color:#a1a1a6;font-weight:700;margin:12px 0;padding:4px 12px;background:rgba(120,120,128,.08);border-radius:20px;}
+@keyframes lc-bubble-in{from{opacity:0;transform:translateY(6px)scale(.96);}to{opacity:1;transform:translateY(0)scale(1);}}
+.lc-bubble.user{background:var(--lc-bubble-in);color:var(--lc-ink);border-bottom-right-radius:5px;align-self:flex-start;}
+.lc-bubble.admin{background:linear-gradient(165deg,var(--lc-accent),var(--lc-accent-d));color:#fff;border-bottom-left-radius:5px;align-self:flex-end;}
 .lc-msg-time{font-size:10px;margin-top:3px;opacity:.6;}
-.lc-typing-bubble{align-self:flex-end;padding:9px 14px;background:linear-gradient(135deg,#2563eb,#1d4ed8);border-radius:16px;border-bottom-left-radius:4px;display:flex;gap:5px;align-items:center;}
-.lc-t-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.7);}
+.lc-typing-bubble{align-self:flex-end;padding:11px 15px;background:linear-gradient(165deg,var(--lc-accent),var(--lc-accent-d));border-radius:19px;border-bottom-left-radius:5px;display:flex;gap:5px;align-items:center;}
+.lc-t-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.75);}
 .lc-t-dot:nth-child(1){animation:lc-td 1.2s infinite 0s;}
 .lc-t-dot:nth-child(2){animation:lc-td 1.2s infinite .2s;}
 .lc-t-dot:nth-child(3){animation:lc-td 1.2s infinite .4s;}
 @keyframes lc-td{0%,80%,100%{transform:scale(.7);opacity:.4;}40%{transform:scale(1.2);opacity:1;}}
-.lc-closed-banner{padding:9px 13px;background:#fef2f2;border-top:1px solid #fecaca;text-align:center;font-size:12px;color:#991b1b;font-weight:700;flex-shrink:0;}
+.lc-closed-banner{padding:10px 13px;background:rgba(255,69,58,.1);border-top:.5px solid rgba(255,69,58,.22);text-align:center;font-size:12px;color:#c62b23;font-weight:700;flex-shrink:0;}
 /* مێژووی چات */
 .lc-hist-stage{padding:14px 14px 10px;flex-direction:column;}
-.lc-hist-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:13px;border:1px solid #e2e8f0;margin-bottom:8px;background:#fafafa;}
-.lc-hist-av{width:34px;height:34px;border-radius:50%;background:#1c2333;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;}
+.lc-hist-item{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:var(--lc-radius-md);border:none;margin-bottom:8px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px var(--lc-hairline);}
+.lc-hist-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(160deg,var(--lc-accent),var(--lc-accent-d));color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;}
 .lc-hist-info{flex:1;min-width:0;}
-.lc-hist-name{font-size:12.5px;font-weight:700;color:#1c2333;}
-.lc-hist-sub{font-size:10.5px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.lc-hist-date{font-size:10px;color:#94a3b8;flex-shrink:0;text-align:left;direction:ltr;}
-.lc-new-chat-btn{width:100%;padding:12px;background:linear-gradient(135deg,#1c2333,#2e3a50);color:#fff;border:none;border-radius:12px;font-family:'R',sans-serif;font-size:14px;font-weight:800;cursor:pointer;flex-shrink:0;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;}
-.lc-id-pill{font-size:9.5px;color:#94a3b8;font-family:'Inter',sans-serif;letter-spacing:.3px;background:#f1f5f9;padding:2px 8px;border-radius:20px;direction:ltr;margin-right:auto;}
-.lc-hist-empty{text-align:center;padding:28px 16px;color:#94a3b8;}
+.lc-hist-name{font-size:12.5px;font-weight:700;color:var(--lc-ink);}
+.lc-hist-sub{font-size:10.5px;color:var(--lc-ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.lc-hist-date{font-size:10px;color:#a1a1a6;flex-shrink:0;text-align:left;direction:ltr;}
+.lc-new-chat-btn{width:100%;padding:12px;background:var(--lc-accent);color:#fff;border:none;border-radius:var(--lc-radius-md);font-family:'R',sans-serif;font-size:14px;font-weight:700;cursor:pointer;flex-shrink:0;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(10,132,255,.32);}
+.lc-id-pill{font-size:9.5px;color:#a1a1a6;font-family:'Inter',sans-serif;letter-spacing:.3px;background:rgba(120,120,128,.12);padding:2px 8px;border-radius:20px;direction:ltr;margin-right:auto;}
+.lc-hist-empty{text-align:center;padding:28px 16px;color:#a1a1a6;}
 .lc-hist-empty i{font-size:32px;display:block;margin-bottom:10px;opacity:.35;}
 .lc-hist-empty p{font-size:12.5px;}
 /* خانەی نووسین */
-.lc-inp-wrap{display:flex;align-items:flex-end;gap:7px;padding:9px 11px;border-top:1px solid #e2e8f0;flex-shrink:0;}
-.lc-chat-inp{flex:1;padding:9px 13px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:13px;color:#1c2333;font-family:'R',sans-serif;font-size:13px;outline:none;resize:none;max-height:90px;transition:all .2s;}
-.lc-chat-inp:focus{border-color:#2563eb;background:#fff;}
-.lc-send-btn{width:38px;height:38px;flex-shrink:0;border-radius:11px;background:linear-gradient(135deg,#1c2333,#2e3a50);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s;}
-.lc-send-btn:disabled{opacity:.35;pointer-events:none;}
-.lc-media-btn{width:34px;height:34px;flex-shrink:0;border-radius:10px;background:#f1f5f9;border:1.5px solid #e2e8f0;color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s;}
-.lc-media-btn:hover{background:#e2e8f0;color:#1c2333;}
-.lc-bubble img.lc-media-img{max-width:100%;max-height:220px;border-radius:10px;display:block;cursor:pointer;object-fit:contain;}
-.lc-bubble video.lc-media-vid{max-width:100%;max-height:200px;border-radius:10px;display:block;outline:none;}
-.lc-media-uploading{display:flex;align-items:center;gap:7px;font-size:12px;color:#64748b;padding:6px 10px;background:#f8fafc;border-radius:10px;border:1px dashed #cbd5e1;}
+.lc-inp-wrap{display:flex;align-items:flex-end;gap:7px;padding:10px 12px;padding-bottom:calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,.85);-webkit-backdrop-filter:saturate(180%) blur(16px);backdrop-filter:saturate(180%) blur(16px);border-top:.5px solid var(--lc-hairline);flex-shrink:0;}
+.lc-chat-inp{flex:1;padding:10px 15px;background:#fff;border:none;box-shadow:0 0 0 1px var(--lc-hairline);border-radius:20px;color:var(--lc-ink);font-family:'R',sans-serif;font-size:13.5px;outline:none;resize:none;max-height:90px;transition:all .2s var(--lc-ease);}
+.lc-chat-inp:focus{box-shadow:0 0 0 2px var(--lc-accent);}
+.lc-send-btn{width:38px;height:38px;flex-shrink:0;border-radius:50%;background:var(--lc-accent);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s var(--lc-ease);box-shadow:0 3px 10px rgba(10,132,255,.35);}
+.lc-send-btn:active{transform:scale(.9);}
+.lc-send-btn:disabled{opacity:.3;pointer-events:none;box-shadow:none;}
+.lc-media-btn{width:36px;height:36px;flex-shrink:0;border-radius:50%;background:#fff;border:none;box-shadow:0 0 0 1px var(--lc-hairline);color:var(--lc-ink2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s var(--lc-ease);}
+.lc-media-btn:hover{background:var(--lc-bubble-in);color:var(--lc-ink);}
+.lc-bubble img.lc-media-img{max-width:100%;max-height:220px;border-radius:14px;display:block;cursor:pointer;object-fit:contain;}
+.lc-bubble video.lc-media-vid{max-width:100%;max-height:200px;border-radius:14px;display:block;outline:none;}
+.lc-media-uploading{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--lc-ink2);padding:7px 12px;background:#fff;border-radius:14px;box-shadow:0 0 0 1px var(--lc-hairline);}
 /* مەرحەلەی فیدبەک */
 .lc-fb-stage{padding:22px 18px;align-items:center;gap:14px;text-align:center;}
-.lc-fb-ico{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;box-shadow:0 6px 20px rgba(245,158,11,.3);}
-.lc-fb-stage h2{font-size:17px;font-weight:800;color:#1c2333;}
-.lc-fb-stage p{font-size:12px;color:#64748b;}
+.lc-fb-ico{width:64px;height:64px;border-radius:50%;background:linear-gradient(160deg,var(--lc-accent),var(--lc-accent-d));display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;box-shadow:0 8px 22px rgba(10,132,255,.32);}
+.lc-fb-stage h2{font-size:17px;font-weight:700;color:var(--lc-ink);letter-spacing:-.2px;}
+.lc-fb-stage p{font-size:12px;color:var(--lc-ink2);}
 .lc-stars{display:flex;gap:5px;justify-content:center;}
-.lc-star-btn{font-size:34px;cursor:pointer;background:none;border:none;transition:transform .15s;padding:2px;}
+.lc-star-btn{font-size:34px;cursor:pointer;background:none;border:none;transition:transform .15s var(--lc-ease);padding:2px;}
 .lc-star-btn:hover{transform:scale(1.18);}
-.lc-star-active{color:#f59e0b;}
-.lc-star-inactive{color:#e2e8f0;}
-.lc-rating-lbl{font-size:12.5px;font-weight:700;color:#f59e0b;}
-.lc-fb-btn{width:100%;padding:12px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;border-radius:12px;font-family:'R',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px;}
-.lc-fb-btn:disabled{opacity:.4;pointer-events:none;}
+.lc-star-active{color:#ff9f0a;}
+.lc-star-inactive{color:#e5e5ea;}
+.lc-rating-lbl{font-size:12.5px;font-weight:700;color:#ff9f0a;}
+.lc-fb-btn{width:100%;padding:12px;background:var(--lc-accent);color:#fff;border:none;border-radius:var(--lc-radius-md);font-family:'R',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s var(--lc-ease);display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 4px 14px rgba(10,132,255,.32);}
+.lc-fb-btn:disabled{opacity:.4;pointer-events:none;box-shadow:none;}
 /* مەرحەلەی کۆتایی */
 .lc-done-stage{align-items:center;justify-content:center;gap:13px;text-align:center;padding:28px;}
-.lc-done-ico{width:68px;height:68px;border-radius:50%;background:#ecfdf5;display:flex;align-items:center;justify-content:center;font-size:28px;color:#16a34a;}
-.lc-done-stage h2{font-size:17px;font-weight:800;color:#1c2333;}
-.lc-done-stage p{font-size:12.5px;color:#64748b;}
-.lc-done-btn{padding:10px 26px;background:#1c2333;color:#fff;border:none;border-radius:11px;font-family:'R',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+.lc-done-ico{width:68px;height:68px;border-radius:50%;background:rgba(48,209,88,.12);display:flex;align-items:center;justify-content:center;font-size:28px;color:#30a84a;}
+.lc-done-stage h2{font-size:17px;font-weight:700;color:var(--lc-ink);letter-spacing:-.2px;}
+.lc-done-stage p{font-size:12.5px;color:var(--lc-ink2);}
+.lc-done-btn{padding:10px 26px;background:var(--lc-ink);color:#fff;border:none;border-radius:var(--lc-radius-md);font-family:'R',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
 
 /* ══ FIREBASE IMAGE BANNER SLIDER ══ */
 #fbImgBanner{display:none;margin-bottom:16px;border-radius:22px;overflow:hidden;aspect-ratio:16/9;position:relative;-webkit-user-select:none;user-select:none;}
@@ -1282,9 +1303,9 @@ textarea.lc-inp{resize:none;}
 .fb-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.45);border:none;padding:0;cursor:pointer;transition:background .2s,transform .2s;}
 .fb-dot.on{background:#fff;transform:scale(1.25);}
 /* ══ LIVE SUPPORT — FLOATING BUTTON (هەموو بەشەکانی ئەپ) ══ */
-.lc-fab{display:none;position:fixed;left:16px;bottom:96px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#1c2333,#2e3a50);align-items:center;justify-content:center;color:#fff;font-size:20px;cursor:pointer;z-index:850;box-shadow:0 10px 24px rgba(28,35,51,.38),0 2px 8px rgba(0,0,0,.12);transition:transform .18s;}
+.lc-fab{display:none;position:fixed;left:16px;bottom:96px;width:54px;height:54px;border-radius:50%;background:rgba(29,29,31,.82);-webkit-backdrop-filter:saturate(180%) blur(14px);backdrop-filter:saturate(180%) blur(14px);align-items:center;justify-content:center;color:#fff;font-size:20px;cursor:pointer;z-index:850;box-shadow:0 12px 28px rgba(0,0,0,.24),0 2px 8px rgba(0,0,0,.12);transition:transform .22s var(--lc-ease);}
 .lc-fab:active{transform:scale(.92);}
-.lc-fab-dot{position:absolute;top:2px;right:2px;width:12px;height:12px;border-radius:50%;background:#4ade80;border:2.5px solid #1c2333;animation:lc-pulse 2s infinite;}
+.lc-fab-dot{position:absolute;top:2px;right:2px;width:12px;height:12px;border-radius:50%;background:#30d158;border:2.5px solid #1d1d1f;animation:lc-pulse 2s infinite;}
 @media(min-width:600px){.lc-fab{left:24px;bottom:110px;}}
 
 
@@ -11626,7 +11647,7 @@ async function checkDbReady(){
           <div id="lcHeadStatus" class="lc-head-status off">● ئۆفلاین</div>
         </div>
       </div>
-      <div style="display:flex;align-items:center;gap:6px"><button id="lcBackHistBtn" onclick="lcGoToHistory()" style="display:none;padding:5px 10px;background:rgba(28,35,51,.08);border:none;border-radius:8px;cursor:pointer;font-family:'R',sans-serif;font-size:11px;color:#1c2333;align-items:center;gap:4px"><i class="fas fa-arrow-right" style="font-size:11px"></i> مێژوو</button><button class="lc-close-btn" onclick="lcCloseChat()" title="گەڕانەوە"><i class="fas fa-arrow-right"></i></button></div>
+      <div style="display:flex;align-items:center;gap:6px"><button id="lcBackHistBtn" onclick="lcGoToHistory()" style="display:none;padding:5px 10px;background:rgba(10,132,255,.1);border:none;border-radius:14px;cursor:pointer;font-family:'R',sans-serif;font-size:11px;color:var(--lc-accent);align-items:center;gap:4px"><i class="fas fa-arrow-right" style="font-size:11px"></i> مێژوو</button><button class="lc-close-btn" onclick="lcCloseChat()" title="گەڕانەوە"><i class="fas fa-arrow-right"></i></button></div>
     </div>
     <!-- جەستە -->
     <div class="lc-body">
@@ -11725,8 +11746,8 @@ async function checkDbReady(){
       <!-- مێژووی چاتەکان -->
       <div class="lc-stage lc-hist-stage" id="lcStageHistory">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-          <div style="font-size:14px;font-weight:800;color:#1c2333"><i class="fas fa-history" style="margin-left:7px;color:#2563eb"></i>مێژووی چاتەکان</div>
-          <button onclick="lcStartNewChat()" style="padding:7px 14px;background:#1c2333;color:#fff;border:none;border-radius:10px;font-family:'R',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-plus" style="margin-left:4px"></i>چاتی نوێ</button>
+          <div style="font-size:14px;font-weight:700;color:var(--lc-ink)"><i class="fas fa-history" style="margin-left:7px;color:var(--lc-accent)"></i>مێژووی چاتەکان</div>
+          <button onclick="lcStartNewChat()" style="padding:7px 14px;background:var(--lc-accent);color:#fff;border:none;border-radius:16px;font-family:'R',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-plus" style="margin-left:4px"></i>چاتی نوێ</button>
         </div>
         <div id="lcHistoryList" style="flex:1;overflow-y:auto;"></div>
       </div>
@@ -11948,7 +11969,7 @@ window.lcResumeFromHistory=function(id){
           if(!document.getElementById('lcNewChatAfterClose')){
             const bw=document.createElement('div');bw.id='lcNewChatAfterClose';
             bw.style.cssText='display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap';
-            bw.innerHTML='<button onclick="lcGoToHistory()" style="padding:8px 16px;background:#f1f5f9;color:#1c2333;border:none;border-radius:10px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-history" style="margin-left:5px"></i>گەڕانەوە</button>'+'<button onclick="lcStartNewChat()" style="padding:8px 16px;background:#1c2333;color:#fff;border:none;border-radius:10px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-plus" style="margin-left:5px"></i>چاتی نوێ</button>';
+            bw.innerHTML='<button onclick="lcGoToHistory()" style="padding:8px 16px;background:var(--lc-bubble-in);color:var(--lc-ink);border:none;border-radius:20px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-history" style="margin-left:5px"></i>گەڕانەوە</button>'+'<button onclick="lcStartNewChat()" style="padding:8px 16px;background:var(--lc-accent);color:#fff;border:none;border-radius:20px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-plus" style="margin-left:5px"></i>چاتی نوێ</button>';
             const cb=document.getElementById('lcClosedBanner');
             cb.parentNode.insertBefore(bw,cb.nextSibling);
           }
@@ -11977,8 +11998,8 @@ window.lcResumeFromHistory=function(id){
         if(!document.getElementById('lcNewChatAfterClose')){
           const bw=document.createElement('div');bw.id='lcNewChatAfterClose';
           bw.style.cssText='display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap';
-          bw.innerHTML='<button onclick="lcGoToHistory()" style="padding:8px 16px;background:#f1f5f9;color:#1c2333;border:none;border-radius:10px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-history" style="margin-left:5px"></i>گەڕانەوە</button>'+
-            '<button onclick="lcStartNewChat()" style="padding:8px 16px;background:#1c2333;color:#fff;border:none;border-radius:10px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-plus" style="margin-left:5px"></i>چاتی نوێ</button>';
+          bw.innerHTML='<button onclick="lcGoToHistory()" style="padding:8px 16px;background:var(--lc-bubble-in);color:var(--lc-ink);border:none;border-radius:20px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-history" style="margin-left:5px"></i>گەڕانەوە</button>'+
+            '<button onclick="lcStartNewChat()" style="padding:8px 16px;background:var(--lc-accent);color:#fff;border:none;border-radius:20px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-plus" style="margin-left:5px"></i>چاتی نوێ</button>';
           const cb=document.getElementById('lcClosedBanner');
           cb.parentNode.insertBefore(bw,cb.nextSibling);
         }
@@ -11998,22 +12019,14 @@ window.lcResumeFromHistory=function(id){
   });
 };
 
+// تێبینی: چیتر نابێتە فۆرم/مێژووی کۆن — هەردوو دوگمە ڕاستەوخۆ دەچنە ناو
+// چاتێکی نوێی چالاک لەگەڵ Proxo Bot (هەمان ڕەفتاری کردنەوەی ئاسایی ویجیت)
 window.lcStartNewChat=function(){
-  lcDetachListeners();
-  lcSessionId=null;
-  localStorage.removeItem(LC_KEY);
-  const ob=document.getElementById('lcNewChatAfterClose');if(ob)ob.remove();
-  document.getElementById('lcClosedBanner').style.display='none';
-  document.getElementById('lcInpWrap').style.display='flex';
-  lcShowStage('lcStageForm');
+  lcInitDirectChat();
 };
 
 window.lcGoToHistory=function(){
-  const ob=document.getElementById('lcNewChatAfterClose');if(ob)ob.remove();
-  document.getElementById('lcClosedBanner').style.display='none';
-  document.getElementById('lcInpWrap').style.display='flex';
-  lcRenderHistory();
-  lcShowStage('lcStageHistory');
+  lcInitDirectChat();
 };
 
 // ══ DIRECT-ACCESS INIT — سکرینی 'چاتی نوێ' / فۆرم / مێژوو بە تەواوی لادراوە ══
@@ -12024,8 +12037,8 @@ const LC_LANG_OPTIONS=[
   {label:'English',value:'English'},
   {label:'Kurdish',value:'Kurdish'}
 ];
-const LC_Q1_TEXT='Please select your preferred language';
-const LC_Q2_TEXT='Please describe the issue you are facing.';
+const LC_Q1_TEXT='تکایە زمانی دڵخوازت هەڵبژێرە';
+const LC_Q2_TEXT='تکایە کێشەکەت بە کورتی باس بکە';
 
 // ناوی سەرەتایی — پێش ئەوەی هیچ ئەدمینێک بێتە ناو چاتەکە
 const LC_BOT_NAME='Proxo Bot';
@@ -12300,8 +12313,8 @@ function lcAttachListeners(){
         const btnWrap=document.createElement('div');
         btnWrap.id='lcNewChatAfterClose';
         btnWrap.style.cssText='display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap';
-        btnWrap.innerHTML='<button onclick="lcGoToHistory()" style="padding:8px 16px;background:#f1f5f9;color:#1c2333;border:none;border-radius:10px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-history" style="margin-left:5px"></i>مێژووی چاتەکان</button>'+
-          '<button onclick="lcStartNewChat()" style="padding:8px 16px;background:#1c2333;color:#fff;border:none;border-radius:10px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-plus" style="margin-left:5px"></i>چاتی نوێ</button>';
+        btnWrap.innerHTML='<button onclick="lcGoToHistory()" style="padding:8px 16px;background:var(--lc-bubble-in);color:var(--lc-ink);border:none;border-radius:20px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-history" style="margin-left:5px"></i>مێژووی چاتەکان</button>'+
+          '<button onclick="lcStartNewChat()" style="padding:8px 16px;background:var(--lc-accent);color:#fff;border:none;border-radius:20px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-plus" style="margin-left:5px"></i>چاتی نوێ</button>';
         closedBanner.parentNode.insertBefore(btnWrap,closedBanner.nextSibling);
       }
       // فیدبەک دوای 1.2 چرکە
