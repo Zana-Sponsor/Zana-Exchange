@@ -3227,6 +3227,10 @@ function _toWebP(dataUrl,quality){
           <span class="create-price-lbl">کرێی خزمەتگوزاری</span>
           <span id="bdService" class="create-price-val">3,083 IQD</span>
         </div>
+        <div id="bdLevelDiscountRow" class="create-price-row" style="display:none">
+          <span style="color:var(--gr);display:flex;align-items:center;gap:5px"><i class="fas fa-medal" style="font-size:11px"></i><span id="bdLevelDiscountLbl">داشکاندنی ئاست</span></span>
+          <span id="bdLevelDiscount" style="color:var(--gr);font-weight:700;font-family:'Inter',sans-serif">-0 IQD</span>
+        </div>
         <div id="bdDiscountRow" class="create-price-row" style="display:none">
           <span style="color:var(--rd)">بڕی داشکان</span>
           <span id="bdDiscount" style="color:var(--rd);font-weight:700;font-family:'Inter',sans-serif">-0 IQD</span>
@@ -4707,6 +4711,23 @@ let sb, cu=null, aMode='login';
 let _deviceFp='', _deviceLocalId='';
 let _txMap={};
 let budget=18500, days=1, dailyCost=18500, dailyUSD=10, budgetTier=0, tierIndex=0, depAmt=50;
+let _levelDiscountPercent=0, _levelDiscountName='';
+
+// ── داشکاندنی ئاست بۆ ڕیکلام/سپۆنسەری: بەپێی ئاستی خاڵی بەکارهێنەر ──
+async function _loadAdLevelDiscount(){
+  try{
+    if(!cu) return;
+    const defs = await _getLevelThresholds();
+    const { data } = await sb.from('pa_user_points').select('points').eq('user_id', cu.id).single();
+    const points = parseFloat(data?.points || 0);
+    const { cur } = _levelForPoints(points, defs);
+    _levelDiscountPercent = cur.discount || 0;
+    _levelDiscountName = cur.name;
+  }catch(e){
+    _levelDiscountPercent = 0; _levelDiscountName = '';
+  }
+  updateBudgetDisplay();
+}
 // ── نرخەکانی تایەر ──
 const TIERS=[
   {usd:10,  iqd:18000,  days:1, higher:false},
@@ -7644,7 +7665,7 @@ function goPage(p){
   if(p==='support')loadChat();
   if(p==='profile'){loadBal();loadReferralSection();loadProfile();}
   if(p==='home'){loadCoins();}
-  if(p==='create'){selectedAssetId=null;cardId=null;goal='messages';days=1;dailyUSD=10;dailyCost=18500;budget=18500;budgetTier=0;tierIndex=0;gender='all';adLocation='all';document.querySelectorAll('.loc-chips-wrap .fchip').forEach(function(x){x.classList.toggle('on',x.dataset.loc==='all');});document.querySelectorAll('.gender-pill').forEach(function(x){x.classList.toggle('on',x.dataset.gen==='all');});document.querySelectorAll('.bud-daily-btn').forEach((b,i)=>{b.classList.toggle('sel',i===0);});clearAssetSel&&clearAssetSel();document.querySelectorAll('.card-pick').forEach(x=>x.classList.remove('sel'));document.querySelectorAll('.goal-tab,.goal-tab-v2,.gseg-opt').forEach(x=>x.classList.toggle('on',x.dataset.g==='messages'));setTimeout(function(){if(typeof _animGoalPill==='function')_animGoalPill();if(typeof _animGenDark==='function')_animGenDark();if(typeof _animLocDark==='function')_animLocDark();},60);var _ani=document.getElementById('adNameTitle');var _nd2=new Date();if(_ani)_ani.value='New Ad '+_nd2.toLocaleDateString('en-GB').replace(/\//g,'/');var _tl2=document.getElementById('todayLbl');if(_tl2)_tl2.textContent=_nd2.toLocaleDateString('en-GB').replace(/\//g,'/');const _al=document.getElementById('adLink');if(_al)_al.value='';const _ac=document.getElementById('adCode');if(_ac)_ac.value='';const _pi=document.getElementById('promoCodeInp');if(_pi)_pi.value='';if(typeof clearPromoResult==='function')clearPromoResult();updateBudgetDisplay();loadAssetsForDropdown();}
+  if(p==='create'){selectedAssetId=null;cardId=null;goal='messages';days=1;dailyUSD=10;dailyCost=18500;budget=18500;budgetTier=0;tierIndex=0;gender='all';adLocation='all';document.querySelectorAll('.loc-chips-wrap .fchip').forEach(function(x){x.classList.toggle('on',x.dataset.loc==='all');});document.querySelectorAll('.gender-pill').forEach(function(x){x.classList.toggle('on',x.dataset.gen==='all');});document.querySelectorAll('.bud-daily-btn').forEach((b,i)=>{b.classList.toggle('sel',i===0);});clearAssetSel&&clearAssetSel();document.querySelectorAll('.card-pick').forEach(x=>x.classList.remove('sel'));document.querySelectorAll('.goal-tab,.goal-tab-v2,.gseg-opt').forEach(x=>x.classList.toggle('on',x.dataset.g==='messages'));setTimeout(function(){if(typeof _animGoalPill==='function')_animGoalPill();if(typeof _animGenDark==='function')_animGenDark();if(typeof _animLocDark==='function')_animLocDark();},60);var _ani=document.getElementById('adNameTitle');var _nd2=new Date();if(_ani)_ani.value='New Ad '+_nd2.toLocaleDateString('en-GB').replace(/\//g,'/');var _tl2=document.getElementById('todayLbl');if(_tl2)_tl2.textContent=_nd2.toLocaleDateString('en-GB').replace(/\//g,'/');const _al=document.getElementById('adLink');if(_al)_al.value='';const _ac=document.getElementById('adCode');if(_ac)_ac.value='';const _pi=document.getElementById('promoCodeInp');if(_pi)_pi.value='';if(typeof clearPromoResult==='function')clearPromoResult();_levelDiscountPercent=0;_levelDiscountName='';updateBudgetDisplay();loadAssetsForDropdown();if(typeof _loadAdLevelDiscount==='function')_loadAdLevelDiscount();}
   if(p==='txhistory')loadTxHistory();
   if(p==='tutorials')loadTutorials();
   if(p==='promocodes')loadPromocodesPage();
@@ -8202,9 +8223,19 @@ function updateBudgetDisplay(){
   const sponsor=budget-service;
   const s=document.getElementById('bdSponsor'); if(s)s.textContent=sponsor.toLocaleString()+' IQD';
   const sv=document.getElementById('bdService'); if(sv)sv.textContent=service.toLocaleString()+' IQD';
-  const bt=document.getElementById('bdTotal'); if(bt)bt.textContent=budget.toLocaleString()+' IQD';
   const btl=document.getElementById('bdTotalLbl'); if(btl)btl.textContent='کۆی گشتی ('+days+' ڕۆژ)';
   const bdr=document.getElementById('bdDiscountRow'); if(bdr)bdr.style.display='none';
+
+  // داشکاندنی ئاست
+  const ldRow=document.getElementById('bdLevelDiscountRow');
+  const levelDiscIQD = Math.round(budget * (_levelDiscountPercent||0));
+  if(_levelDiscountPercent>0){
+    const ldLbl=document.getElementById('bdLevelDiscountLbl'); if(ldLbl)ldLbl.textContent='داشکاندنی ئاست ('+_levelDiscountName+' — %'+Math.round(_levelDiscountPercent*100)+')';
+    const ld=document.getElementById('bdLevelDiscount'); if(ld)ld.textContent='-'+levelDiscIQD.toLocaleString()+' IQD';
+    if(ldRow)ldRow.style.display='flex';
+  } else if(ldRow){ ldRow.style.display='none'; }
+
+  const bt=document.getElementById('bdTotal'); if(bt)bt.textContent=Math.max(0,budget-levelDiscIQD).toLocaleString()+' IQD';
 }
 
 function chgBud(d){ /* no-op */ }
@@ -8595,7 +8626,8 @@ function pickCard(el,id){
       .select('id').eq('promo_code_id', promo.id).eq('user_id', cu.id).eq('status', 'active').limit(1);
     if (exist?.length) { showPromoMsg('err', 'پێشتر ئەم کۆدەت بەکارهێناوە'); reset(); return; }
 
-    const total = budget; // budget is already the full total (36,000 + (days-1)*18,000)
+    const levelDiscIQD = Math.round(budget * (_levelDiscountPercent||0));
+    const total = Math.max(0, budget - levelDiscIQD); // دوای داشکاندنی ئاست
     const disc = promo.discount_type === 'percentage'
       ? (total * parseFloat(promo.discount_value)) / 100
       : Math.min(parseFloat(promo.discount_value), total);
@@ -8680,8 +8712,9 @@ function pickCard(el,id){
 
   if(link&&!link.startsWith('https://')){showToast('لینکەکە دەبێت بە https:// دەستپێبکات','err');return;}
 
-  // بودجەی کۆتایی (IQD)
-  const rawTotal   = budget; // IQD = dailyUSD × days × rate
+  // بودجەی کۆتایی (IQD) — دوای داشکاندنی ئاست و پڕۆمۆکۆد
+  const levelDiscIQD = Math.round(budget * (_levelDiscountPercent||0));
+  const rawTotal   = Math.max(0, budget - levelDiscIQD);
   const finalTotal = _promoValidated ? _promoValidated.finalBudget : rawTotal;
   const _totalUSD  = dailyUSD * days;
 
@@ -13548,11 +13581,12 @@ async function claimVoucher() {
 // ════════════════════════════════════════════════════════════════
 // ══ GIFTS / LEVELS / CHALLENGES ══
 // ════════════════════════════════════════════════════════════════
+// discount: ڕێژەی داشکاندنی نرخی ڕیکلام/سپۆنسەری کاتێک بەکارهێنەر لەم ئاستەدایە
 const LEVEL_DEFS = [
-  { key: 'bronze',   name: 'بڕۆنز',    min: 0,   icon: 'fa-medal',   color: '#b45309' },
-  { key: 'silver',   name: 'زیو',      min: 50,  icon: 'fa-medal',   color: '#94a3b8' },
-  { key: 'platinum', name: 'پلاتینیۆم',min: 200, icon: 'fa-crown',   color: '#38bdf8' },
-  { key: 'diamond',  name: 'ئەڵماس',   min: 500, icon: 'fa-gem',     color: '#a855f7' },
+  { key: 'bronze',   name: 'بڕۆنز',    min: 0,   icon: 'fa-medal',   color: '#b45309', discount: 0 },
+  { key: 'silver',   name: 'زیو',      min: 50,  icon: 'fa-medal',   color: '#94a3b8', discount: 0.05 },
+  { key: 'platinum', name: 'پلاتینیۆم',min: 200, icon: 'fa-crown',   color: '#38bdf8', discount: 0.10 },
+  { key: 'diamond',  name: 'ئەڵماس',   min: 500, icon: 'fa-gem',     color: '#a855f7', discount: 0.15 },
 ];
 let _levelThresholds = null;
 
