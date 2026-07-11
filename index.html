@@ -528,15 +528,15 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .pcard{background:var(--w);border:1px solid var(--b1);border-radius:18px;padding:20px;margin-bottom:10px;}
 /* ══ GIFTS / PRIZES PAGE ══ */
 @keyframes giftsGlowBreathe{0%,100%{transform:scale(1) translate(0,0);opacity:.7}50%{transform:scale(1.35) translate(10px,10px);opacity:1}}
-@keyframes giftsIcoPulse{0%,100%{transform:scale(1);box-shadow:0 4px 14px rgba(251,191,36,.15),0 0 0 0 rgba(251,191,36,.35)}50%{transform:scale(1.07);box-shadow:0 4px 18px rgba(251,191,36,.3),0 0 0 8px rgba(251,191,36,0)}}
+@keyframes giftsIcoPulse{0%,100%{transform:scale(1);box-shadow:0 4px 14px rgba(0,0,0,.1),0 0 0 0 rgba(255,255,255,.3)}50%{transform:scale(1.06);box-shadow:0 4px 16px rgba(0,0,0,.12),0 0 0 7px rgba(255,255,255,0)}}
 @keyframes giftsIcoSpin{0%,92%{transform:rotate(0deg)}96%{transform:rotate(-12deg)}100%{transform:rotate(0deg)}}
 @keyframes giftsSheen{0%{transform:translateX(-120%) skewX(-18deg)}55%,100%{transform:translateX(220%) skewX(-18deg)}}
 @keyframes giftsSparklePop{0%,100%{opacity:0;transform:scale(.4) translateY(0)}50%{opacity:1;transform:scale(1) translateY(-4px)}}
-.gifts-level-card{position:relative;overflow:hidden;background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%);border-radius:20px;padding:20px;margin-bottom:14px;box-shadow:0 8px 26px rgba(15,23,42,.28);}
-.gifts-level-glow{position:absolute;top:-40px;left:-30px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(251,191,36,.25),transparent 70%);pointer-events:none;animation:giftsGlowBreathe 4.5s ease-in-out infinite;}
-.gifts-level-sheen{position:absolute;top:0;bottom:0;left:0;width:55px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent);pointer-events:none;animation:giftsSheen 5s ease-in-out infinite;animation-delay:1.2s;}
-.gifts-level-spark{position:absolute;font-size:11px;color:#fde68a;pointer-events:none;animation:giftsSparklePop 2.6s ease-in-out infinite;}
-.gifts-level-ico{width:58px;height:58px;border-radius:16px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.25);display:flex;align-items:center;justify-content:center;font-size:26px;color:#fbbf24;flex-shrink:0;box-shadow:0 4px 14px rgba(251,191,36,.15);animation:giftsIcoPulse 2.8s ease-in-out infinite;}
+.gifts-level-card{--lvl-c1:#f59e0b;--lvl-c2:#ec4899;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--lvl-c1) 0%,var(--lvl-c2) 100%);border-radius:20px;padding:20px;margin-bottom:14px;box-shadow:0 10px 26px -6px color-mix(in srgb,var(--lvl-c2) 55%,transparent);transition:background .4s ease;}
+.gifts-level-glow{position:absolute;top:-40px;left:-30px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.28),transparent 70%);pointer-events:none;animation:giftsGlowBreathe 5.5s ease-in-out infinite;}
+.gifts-level-sheen{position:absolute;top:0;bottom:0;left:0;width:65px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent);pointer-events:none;animation:giftsSheen 6.5s ease-in-out infinite;animation-delay:1.4s;filter:blur(1px);}
+.gifts-level-spark{position:absolute;font-size:10px;color:rgba(255,255,255,.85);pointer-events:none;animation:giftsSparklePop 3s ease-in-out infinite;}
+.gifts-level-ico{width:58px;height:58px;border-radius:16px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;flex-shrink:0;box-shadow:0 4px 14px rgba(0,0,0,.1);animation:giftsIcoPulse 2.8s ease-in-out infinite;}
 .gifts-level-ico i{display:inline-block;animation:giftsIcoSpin 4.2s ease-in-out infinite;}
 .gifts-voucher-card{position:relative;overflow:hidden;display:none;background:linear-gradient(135deg,rgba(6,182,212,.09),rgba(6,182,212,.02));border:1.5px solid rgba(6,182,212,.25);border-radius:18px;padding:16px;margin-bottom:16px;}
 .gifts-voucher-shine{position:absolute;top:-20px;right:-20px;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(6,182,212,.18),transparent 70%);pointer-events:none;animation:giftsGlowBreathe 4s ease-in-out infinite;}
@@ -3620,7 +3620,7 @@ function _toWebP(dataUrl,quality){
     </div>
 
     <!-- ══ Level / Rank Card ══ -->
-    <div class="gifts-level-card">
+    <div id="giftsLevelCard" class="gifts-level-card">
       <div class="gifts-level-glow"></div>
       <div class="gifts-level-sheen"></div>
       <div class="gifts-level-spark" style="top:14px;left:36%;animation-delay:.3s"><i class="fas fa-star"></i></div>
@@ -13609,10 +13609,10 @@ async function claimVoucher() {
 // ════════════════════════════════════════════════════════════════
 // discount: ڕێژەی داشکاندنی نرخی ڕیکلام/سپۆنسەری کاتێک بەکارهێنەر لەم ئاستەدایە
 const LEVEL_DEFS = [
-  { key: 'bronze',   name: 'بڕۆنز',    min: 0,   icon: 'fa-medal',   color: '#b45309', discount: 0 },
-  { key: 'silver',   name: 'زیو',      min: 50,  icon: 'fa-medal',   color: '#94a3b8', discount: 0.05 },
-  { key: 'platinum', name: 'پلاتینیۆم',min: 200, icon: 'fa-crown',   color: '#38bdf8', discount: 0.10 },
-  { key: 'diamond',  name: 'ئەڵماس',   min: 500, icon: 'fa-gem',     color: '#a855f7', discount: 0.15 },
+  { key: 'bronze',   name: 'بڕۆنز',    min: 0,   icon: 'fa-medal',   color: '#b45309', discount: 0,    grad: ['#f59e0b', '#ea580c'] },
+  { key: 'silver',   name: 'زیو',      min: 50,  icon: 'fa-medal',   color: '#94a3b8', discount: 0.05, grad: ['#22d3ee', '#6366f1'] },
+  { key: 'platinum', name: 'پلاتینیۆم',min: 200, icon: 'fa-crown',   color: '#38bdf8', discount: 0.10, grad: ['#38bdf8', '#a855f7'] },
+  { key: 'diamond',  name: 'ئەڵماس',   min: 500, icon: 'fa-gem',     color: '#a855f7', discount: 0.15, grad: ['#a855f7', '#ec4899'] },
 ];
 let _levelThresholds = null;
 
@@ -13724,7 +13724,11 @@ async function _loadGiftsLevel() {
   document.getElementById('giftsLevelPoints').textContent = points.toLocaleString() + ' خاڵ';
   const ico = document.getElementById('giftsLevelIco');
   ico.innerHTML = '<i class="fas ' + cur.icon + '"></i>';
-  ico.style.color = cur.color;
+  const card = document.getElementById('giftsLevelCard');
+  if (card && cur.grad) {
+    card.style.setProperty('--lvl-c1', cur.grad[0]);
+    card.style.setProperty('--lvl-c2', cur.grad[1]);
+  }
   const bar = document.getElementById('giftsLevelBar');
   const nextTxt = document.getElementById('giftsLevelNext');
   if (next) {
