@@ -12014,86 +12014,110 @@ window.lcGoToHistory=function(){
   lcShowStage('lcStageHistory');
 };
 
-window.lcOpenChatDirect=function(){
-  document.getElementById('lcOverlay').classList.add('show');
-  const _fabH=document.getElementById('lcFab');if(_fabH)_fabH.style.display='none';
-  _lcUnreadCount=0;checkNotifBell();
-  const saved=localStorage.getItem(LC_KEY);
-  if(saved){
-    lcSessionId=saved;
-    lcDb.ref('sessions/'+saved).once('value').then(snap=>{
-      const d=snap.val();
-      if(!d){
-        localStorage.removeItem(LC_KEY);
-        lcSessionId=null;
-        lcRenderHistory();lcShowStage('lcStageHistory');
-      }else if(d.status==='closed'){
-        lcSaveToHistory(saved,d.name,d.problem,d.adminName,'closed');
-        localStorage.removeItem(LC_KEY);
-        lcSessionId=null;
-        lcRenderHistory();lcShowStage('lcStageHistory');
-      }else{
-        lcAttachListeners();
-        if(d.status==='pending')lcShowStage('lcStageWaiting');
-        else lcShowStage('lcStageChat');
-      }
-    }).catch(()=>{lcAttachListeners();});
-    return;
-  }
-  lcRenderHistory();
-  lcShowStage('lcStageHistory');
+// ══ DIRECT-ACCESS INIT — سکرینی 'چاتی نوێ' / فۆرم / مێژوو بە تەواوی لادراوە ══
+// هەر جارێک ویجیت دەکرێتەوە: هەموو سێشن/مێژووی پێشوو ڕەوانە دەکرێت و چات
+// ڕاستەوخۆ دەکرێتەوە بۆ گفتوگۆیەکی چالاکی نوێ، لەگەڵ سلامی ئۆتۆماتیکی + دووگمەی وەڵامی خێرا
+const LC_QUICK_REPLIES=[
+  {label:'پشتگیری',value:'Support'},
+  {label:'فرۆشتن',value:'Sales'},
+  {label:'گشتی',value:'General'}
+];
+
+// وا سلامەکە بەردەوام دەردەکەوێت تا یەکەم پەیامی بەکارهێنەر بنێردرێت —
+// چونکە lcRenderMessages ناوەڕۆکی #lcMsgsArea بە تەواوی جێگۆڕکێ دەکاتەوە لە هەر
+// نوێکردنەوەیەکی Firebase، لەبەرئەوە سلامەکە لە ناخی lcRenderMessages دووبارە دروست دەکرێتەوە
+// نەک وەک تەنها زیادکردنێکی جیاواز — بۆ ئەوەی نەسڕدرێتەوە کاتێک لیستنەری پەیامەکان یەکەمجار دەجوڵێت
+let lcGreetingActive=true;
+
+function lcAppendGreeting(area){
+  const time=new Date().toLocaleTimeString('ku-IQ',{hour:'2-digit',minute:'2-digit'});
+  const wrap=document.createElement('div');
+  wrap.id='lcGreetingBubble';
+  const bubble=document.createElement('div');
+  bubble.className='lc-bubble admin';
+  bubble.innerHTML='<div>Hi! How can I help you today?</div><div class="lc-msg-time">'+time+'</div>';
+  wrap.appendChild(bubble);
+  const qr=document.createElement('div');
+  qr.id='lcQuickReplyRow';
+  qr.style.cssText='display:flex;gap:8px;flex-wrap:wrap;margin:10px 2px 4px';
+  qr.innerHTML=LC_QUICK_REPLIES.map(function(q){
+    return '<button type="button" class="lc-quick-reply-btn" onclick="lcQuickReply(\''+q.value+'\')" '
+      +'style="padding:8px 16px;background:#eef2ff;color:#1c2333;border:1px solid #c7d2fe;border-radius:20px;'
+      +'font-family:\'R\',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer">'+q.label+'</button>';
+  }).join('');
+  wrap.appendChild(qr);
+  area.appendChild(wrap);
+}
+
+function lcRenderGreeting(){
+  const area=document.getElementById('lcMsgsArea');
+  if(!area)return;
+  lcAppendGreeting(area);
+  area.scrollTop=area.scrollHeight;
+}
+
+window.lcQuickReply=function(value){
+  lcGreetingActive=false;
+  const row=document.getElementById('lcQuickReplyRow');
+  if(row)row.remove();
+  const inp=document.getElementById('lcChatInput');
+  if(inp)inp.value=value;
+  lcSendMsg();
 };
 
-window.lcOpenChat=function(){
+async function lcInitDirectChat(){
   document.getElementById('lcOverlay').classList.add('show');
-  const _fabO=document.getElementById('lcFab');if(_fabO)_fabO.style.display='none';
+  const _fab=document.getElementById('lcFab');if(_fab)_fab.style.display='none';
   _lcUnreadCount=0;checkNotifBell();
-  const saved=localStorage.getItem(LC_KEY);
-  if(saved){
-    lcSessionId=saved;
-    // بررسی دۆخی سێشنی پاشەکەوتراو
-    lcDb.ref('sessions/'+saved).once('value').then(snap=>{
-      const d=snap.val();
-      if(!d){
-        // سێشن سڕاوەتەوە، چاتی نوێ
-        localStorage.removeItem(LC_KEY);
-        lcSessionId=null;
-        lcShowHistoryOrForm();
-      } else if(d.status==='closed'){
-        // سێشن داخراوە — مێژوو پاشەکەوت بکە و نوێی دەستپێکردن
-        lcSaveToHistory(saved,d.name,d.problem,d.adminName);
-        localStorage.removeItem(LC_KEY);
-        lcSessionId=null;
-        lcShowHistoryOrForm();
-      } else {
-        // سێشن چالاک یان چاوەڕوانە
-        lcAttachListeners();
-      }
-    }).catch(()=>lcAttachListeners());
-    return;
-  }
-  lcShowHistoryOrForm();
-};
 
-async function lcShowHistoryOrForm(){
-  let hist=[];
-  try{hist=JSON.parse(localStorage.getItem(LC_HIST_KEY)||'[]');}catch(e){}
-  // ئەگەر localStorage بەتاڵ بوو، Supabase بپرسە
-  if(!hist.length){
-    try{
-      if(typeof sb!=='undefined'&&typeof cu!=='undefined'&&cu&&cu.id){
-        const{data}=await sb.from('live_chat_history').select('session_id').eq('user_id',cu.id).limit(1);
-        if(data&&data.length)hist=[{id:data[0].session_id}];
-      }
-    }catch(e){}
-  }
-  if(hist.length>0){
-    lcRenderHistory();
-    lcShowStage('lcStageHistory');
-  }else{
-    lcShowStage('lcStageForm');
+  // ── ١. وازهێنان لە هەر listener ی چالاک و سڕینەوەی هەموو شوێنەوارە پێشووەکان ──
+  lcDetachListeners();
+  lcSessionId=null;
+  try{localStorage.removeItem(LC_KEY);}catch(e){}
+  try{localStorage.removeItem(LC_HIST_KEY);}catch(e){}
+  const _ob=document.getElementById('lcNewChatAfterClose');if(_ob)_ob.remove();
+  const _rejNote=document.getElementById('lcRejNote');if(_rejNote)_rejNote.remove();
+  document.getElementById('lcClosedBanner').style.display='none';
+  const _bar=document.getElementById('lcInfoBar');if(_bar)_bar.style.display='none';
+  const _pill=document.getElementById('lcChatIdPill');if(_pill)_pill.remove();
+  const _area=document.getElementById('lcMsgsArea');if(_area)_area.innerHTML='';
+
+  // ── ٢. کردنەوەی ڕاستەوخۆی چات چالاک — بێ فۆرم، بێ چاوەڕوانی ئەدمین، بێ مێژوو ──
+  lcShowStage('lcStageChat');
+  document.getElementById('lcInpWrap').style.display='flex';
+  setTimeout(function(){const i=document.getElementById('lcChatInput');if(i)i.focus();},50);
+
+  // ── ٣. سلامی ئۆتۆماتیکی + دووگمەکانی وەڵامی خێرا — دەرکەوتنی خێرا، پێش وەڵامی سێرڤەر ──
+  lcGreetingActive=true;
+  lcRenderGreeting();
+
+  // ── ٤. دروستکردنی سێشنێکی نوێی چالاک — key بە شێوەی هاوکات لە کلاینتەوە دروست دەبێت،
+  // بۆیە lcSessionId دەستبەجێ ئامادەیە و بەکارهێنەر دەتوانێت بێ دواکەوتن بنووسێت.
+  // نووسینی داتاکە بۆ Firebase بەبێ چاوەڕوانی (fire-and-forget) دەنێردرێت، بێ چاوەڕوانی پەسەندکردنی ئەدمین.
+  try{
+    const name=localStorage.getItem('proxo_lc_name')||'Guest';
+    const ref=lcDb.ref('sessions').push();
+    lcSessionId=ref.key;
+    localStorage.setItem(LC_KEY,lcSessionId);
+    lcAttachListeners();
+    ref.set({
+      name,
+      email:(typeof cu!=='undefined'&&cu&&cu.email)?cu.email:'—',
+      problem:'—',
+      language:'کوردی',
+      category:'گشتی',
+      status:'active',
+      createdAt:Date.now()
+    }).catch(()=>{});
+  }catch(e){
+    // ئەگەر پەیوەندی بە Firebase شکستی هێنا، ویجیت هێشتا چالاکە بۆ نووسین؛
+    // lcSendMsg هەوڵی ناردنەوە دەداتەوە کاتێک پەیوەندی گەڕایەوە
   }
 }
+
+window.lcOpenChatDirect=function(){ lcInitDirectChat(); };
+window.lcOpenChat=function(){ lcInitDirectChat(); };
+window.lcShowHistoryOrForm=function(){ lcInitDirectChat(); };
 
 window.lcCloseChat=function(){
   document.getElementById('lcOverlay').classList.remove('show');
@@ -12270,6 +12294,8 @@ function lcRenderMessages(msgs){
       });
     }
   }catch(e){}
+  // سلامی ئۆتۆماتیکی + وەڵامی خێرا هەتا یەکەم پەیامی بەکارهێنەر بەردەوام دەردەکەوێت
+  if(lcGreetingActive)lcAppendGreeting(area);
   msgs.forEach(m=>{
     const div=document.createElement('div');
     div.className='lc-bubble '+m.sender;
@@ -12323,6 +12349,9 @@ window.lcSendMsg=async function(){
   const btn=document.getElementById('lcSendBtn');
   const text=inp.value.trim();
   if(!text||!lcSessionId)return;
+  // یەکەم پەیامی بەکارهێنەر — سلام و دووگمەکانی وەڵامی خێرا لادەبات
+  lcGreetingActive=false;
+  const _qr=document.getElementById('lcQuickReplyRow');if(_qr)_qr.remove();
   // دیاری ناردن
   if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i>';}
   inp.value='';inp.style.height='auto';
