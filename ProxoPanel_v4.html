@@ -2008,8 +2008,20 @@ document.addEventListener('DOMContentLoaded',()=>{
   sb=window.supabase.createClient(SB_URL,SB_KEY);
   updateClock();
   setInterval(updateClock,60000);
-  sb.auth.getSession().then(({data:{session}})=>{
-    if(session?.user){adminUser=session.user;showApp();setTimeout(updateAdminNotifBadge,500);}
+  sb.auth.getSession().then(async({data:{session}})=>{
+    if(session?.user){
+      adminUser=session.user;
+      // ── هەمان کارە کە doLogin دەیکات: full_name لە profiles وەربگرە بۆ ئەوەی ناوی ئەدمین
+      // "ئەدمین" ی گشتی نەبێت دوای ڕیفڕێشکردنی لاپەڕە (سێشنی پاشەکەوتکراو) ──
+      try{
+        const{data:prof}=await sb.from('profiles').select('is_admin,full_name').eq('id',adminUser.id).single();
+        if(prof?.full_name)lcaAdminDisplayName=prof.full_name;
+        else lcaAdminDisplayName=adminUser.email.split('@')[0];
+      }catch(e){
+        lcaAdminDisplayName=adminUser.email?.split('@')[0]||'ئەدمین';
+      }
+      showApp();setTimeout(updateAdminNotifBadge,500);
+    }
   });
 });
 

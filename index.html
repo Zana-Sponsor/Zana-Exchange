@@ -12365,7 +12365,9 @@ async function lcHandleAgentIdChange(agentId){
   if(!agentId||agentId===lcLastAgentId)return;
   lcLastAgentId=agentId;
   try{
-    const{data,error}=await sb.from('profiles').select('full_name').eq('id',agentId).single();
+    // بۆ پاراستنی نهێنی: ویجیت تەنها لە view ی گشتی chat_agent_profiles دەخوێنێتەوە
+    // (تەنها id + full_name)، نەک ڕاستەوخۆ لە profiles کە زانیاری تری ئیمەیل/بانکی تێدایە
+    const{data,error}=await sb.from('chat_agent_profiles').select('full_name').eq('id',agentId).single();
     if(error||!data)return;
     const fullName=data.full_name||LC_BOT_NAME;
     if(!lcCurrentAdminName){
