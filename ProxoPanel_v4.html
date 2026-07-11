@@ -4090,10 +4090,16 @@ async function loadVersion(){
   // Pre-fill form
   document.getElementById('vNewVer').value=ver==='—'?'':ver;
   document.getElementById('vNewMsg').value=msg==='هیچ تێبینییەک نییە'?'':msg;
+  // Sync force-update button visual state
   _vForceUpdate=force;
   document.getElementById('vForceUpdate').value=String(force);
   const _grp=document.getElementById('vForceGroup');
-  if(_grp){const _btns=_grp.querySelectorAll('div[onclick]');_btns.forEach(d=>{d.style.background='';d.style.color='';d.style.borderColor='var(--b2)';});const _t=_btns[force?1:0];if(_t){_t.style.background=force?'var(--rd)':'var(--dark)';_t.style.color='#fff';_t.style.borderColor=force?'var(--rd)':'var(--dark)';}}
+  if(_grp){
+    const _btns=_grp.querySelectorAll('div[onclick]');
+    _btns.forEach(d=>{d.style.background='';d.style.color='';d.style.borderColor='var(--b2)';});
+    const _t=_btns[force?1:0];
+    if(_t){_t.style.background=force?'var(--rd)':'var(--dark)';_t.style.color='#fff';_t.style.borderColor=force?'var(--rd)':'var(--dark)';}
+  }
 }
 
 async function saveVersion(){
@@ -4102,15 +4108,30 @@ async function saveVersion(){
   const force=document.getElementById('vForceUpdate').value==='true';
   if(!ver){showToast('ژمارەی ڤێرژن بنووسە','rd');return;}
   if(!/^\d+\.\d+(\.\d+)?$/.test(ver)){showToast('ڤێرژن دەبێت مانەندی 1.2.0 بێت','rd');return;}
-  const rows=[
-    {key:'app_version',value:ver,updated_at:new Date().toISOString()},
-    {key:'version_message',value:msg||'نوێکردنەوەی تایبەت',updated_at:new Date().toISOString()},
-    {key:'force_update',value:String(force),updated_at:new Date().toISOString()},
-  ];
-  const{error}=await sb.from('pa_settings').upsert(rows,{onConflict:'key'});
-  if(error){showToast('هەڵە: '+error.message,'rd');return;}
-  showToast('✅ ڤێرژن v'+ver+' پاشەکەوتکرا','gr');
-  loadVersion();
+  const btn=document.querySelector('[onclick="saveVersion()"]');
+  if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> پاشەکەوتکردن...';}
+  const now=new Date().toISOString();
+  try{
+    const r1=await sb.from('pa_settings').upsert({key:'app_version',value:ver,updated_at:now},{onConflict:'key'});
+    if(r1.error)throw r1.error;
+    const r2=await sb.from('pa_settings').upsert({key:'version_message',value:msg||'نوێکردنەوەی تایبەت',updated_at:now},{onConflict:'key'});
+    if(r2.error)throw r2.error;
+    const r3=await sb.from('pa_settings').upsert({key:'force_update',value:String(force),updated_at:now},{onConflict:'key'});
+    if(r3.error)throw r3.error;
+    // Verify save by reading back
+    const{data:check}=await sb.from('pa_settings').select('key,value').in('key',['app_version','force_update']);
+    const savedVer=(check||[]).find(r=>r.key==='app_version')?.value;
+    if(savedVer===ver){
+      showToast('✅ ڤێرژن v'+ver+' پاشەکەوتکرا','gr');
+    } else {
+      showToast('⚠️ پاشەکەوتکرا بەڵام هەڵەی خوێندنەوە','gr');
+    }
+  } catch(e){
+    showToast('هەڵە: '+(e?.message||String(e)),'rd');
+  } finally {
+    if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-rocket"></i> بڵاوکردنەوەی ڤێرژنی نوێ';}
+  }
+  await loadVersion();
 }
 
 async function sendVersionNotif(){
