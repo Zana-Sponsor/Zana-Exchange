@@ -1204,17 +1204,23 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 /* ویجێتی چات — وەکوو پەڕەیەکی ناوەکی ئەپ دەکرێتەوە، نەک پۆپ‌ئەپ */
 .lc-widget{width:100%;max-width:100%;height:100vh;height:100dvh;max-height:100vh;background:var(--lc-bg);border-radius:0;display:flex;flex-direction:column;overflow:hidden;box-shadow:none;animation:lc-pageIn .32s var(--lc-ease);}
 @keyframes lc-pageIn{from{opacity:0;transform:translateX(14px);}to{opacity:1;transform:translateX(0);}}
-/* سەری چات — glass header، بلوورکراو وەک Apple */
-.lc-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;padding-top:calc(14px + env(safe-area-inset-top));background:rgba(29,29,31,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);flex-shrink:0;border-bottom:.5px solid rgba(255,255,255,.08);}
+/* سەری چات — کۆمپاکت، بێ فووڵ سکرین */
+.lc-head{display:none;}
+.lc-mini-top{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;padding-top:calc(10px + env(safe-area-inset-top));background:rgba(255,255,255,.97);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:.5px solid rgba(60,60,67,.1);flex-shrink:0;}
+.lc-mini-brand{display:flex;align-items:center;gap:9px;}
+.lc-mini-close{width:28px;height:28px;border-radius:50%;background:rgba(60,60,67,.08);border:none;color:#1d1d1f;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .18s var(--lc-ease);flex-shrink:0;}
+.lc-mini-close:hover{background:rgba(60,60,67,.16);}
+.lc-mini-close:active{transform:scale(.88);}
+.lc-mini-actions{display:flex;align-items:center;gap:6px;}
 .lc-head-left{display:flex;align-items:center;gap:11px;}
 .lc-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(160deg,var(--lc-accent),var(--lc-accent-d));display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:700;position:relative;flex-shrink:0;box-shadow:0 2px 8px rgba(10,132,255,.35);}
-.lc-av-dot{position:absolute;bottom:0;left:0;width:12px;height:12px;border-radius:50%;border:2.5px solid #1d1d1f;transition:background .25s;}
+.lc-av-dot{position:absolute;bottom:0;left:0;width:11px;height:11px;border-radius:50%;border:2px solid #fff;transition:background .25s;box-shadow:0 0 0 1px rgba(60,60,67,.12);}
 .lc-av-dot.on{background:#30d158;}
 .lc-av-dot.off{background:#8e8e93;}
-.lc-head-name{color:#fff;font-size:14px;font-weight:700;line-height:1.3;letter-spacing:-.1px;transition:opacity .2s;}
+.lc-head-name{color:var(--lc-ink);font-size:13px;font-weight:700;line-height:1.3;letter-spacing:-.1px;transition:opacity .2s;}
 .lc-head-status{font-size:11px;margin-top:1px;}
-.lc-head-status.on{color:#30d158;}
-.lc-head-status.off{color:rgba(255,255,255,.5);}
+.lc-head-status.on{color:#16a34a;}
+.lc-head-status.off{color:#a1a1a6;}
 .lc-close-btn{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.12);border:none;color:rgba(255,255,255,.85);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .18s var(--lc-ease);}
 .lc-close-btn:hover{background:rgba(255,255,255,.22);}
 .lc-close-btn:active{transform:scale(.9);}
@@ -1262,15 +1268,15 @@ textarea.lc-inp{resize:none;}
 .lc-wait-badge{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:rgba(255,159,10,.12);border:none;border-radius:50px;color:#c96a00;font-size:11px;font-weight:700;}
 .lc-cancel-btn{color:#a1a1a6;font-size:12px;background:none;border:none;font-family:'R',sans-serif;cursor:pointer;text-decoration:underline;margin-top:6px;}
 /* مەرحەلەی چات چالاک */
-.lc-info-bar{display:flex;align-items:center;gap:7px;padding:8px 14px;background:rgba(48,209,88,.1);border-bottom:.5px solid rgba(48,209,88,.2);flex-shrink:0;}
-.lc-info-dot{width:7px;height:7px;border-radius:50%;background:#30d158;}
-.lc-info-text{font-size:11px;color:#1a7431;font-weight:700;}
+.lc-info-bar{display:flex;align-items:center;gap:7px;padding:7px 14px;background:rgba(10,132,255,.07);border-bottom:.5px solid rgba(10,132,255,.12);flex-shrink:0;}
+.lc-info-dot{width:7px;height:7px;border-radius:50%;background:var(--lc-accent);animation:lc-pulse 2s infinite;}
+.lc-info-text{font-size:11px;color:var(--lc-accent);font-weight:700;}
 .lc-msgs-area{flex:1;overflow-y:auto;padding:14px 13px 8px;display:flex;flex-direction:column;gap:9px;background:var(--lc-bg);}
 .lc-bubble{max-width:78%;padding:10px 14px;border-radius:19px;font-size:13.5px;line-height:1.5;animation:lc-bubble-in .28s var(--lc-ease);box-shadow:0 1px 1px rgba(0,0,0,.03);}
 .lc-msg-sender{font-size:10.5px;font-weight:800;margin-bottom:3px;opacity:.85;letter-spacing:.2px;}
-.lc-sys-msg{align-self:center;text-align:center;font-size:11px;color:#a1a1a6;font-weight:700;margin:12px 0;padding:4px 12px;background:rgba(120,120,128,.08);border-radius:20px;}
+.lc-sys-msg{align-self:center;text-align:center;font-size:11.5px;color:var(--lc-accent);font-weight:700;margin:14px auto;padding:6px 16px;background:rgba(10,132,255,.08);border:1px solid rgba(10,132,255,.18);border-radius:20px;letter-spacing:.2px;}
 @keyframes lc-bubble-in{from{opacity:0;transform:translateY(6px)scale(.96);}to{opacity:1;transform:translateY(0)scale(1);}}
-.lc-bubble.user{background:var(--lc-bubble-in);color:var(--lc-ink);border-bottom-right-radius:5px;align-self:flex-start;}
+.lc-bubble.user{background:#ebebed;color:var(--lc-ink);border-bottom-right-radius:5px;align-self:flex-start;}
 .lc-bubble.admin{background:linear-gradient(165deg,var(--lc-accent),var(--lc-accent-d));color:#fff;border-bottom-left-radius:5px;align-self:flex-end;}
 .lc-msg-time{font-size:10px;margin-top:3px;opacity:.6;}
 .lc-typing-bubble{align-self:flex-end;padding:11px 15px;background:linear-gradient(165deg,var(--lc-accent),var(--lc-accent-d));border-radius:19px;border-bottom-left-radius:5px;display:flex;gap:5px;align-items:center;}
@@ -1334,11 +1340,25 @@ textarea.lc-inp{resize:none;}
 .fb-dots{position:absolute;bottom:9px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:4;}
 .fb-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.45);border:none;padding:0;cursor:pointer;transition:background .2s,transform .2s;}
 .fb-dot.on{background:#fff;transform:scale(1.25);}
-/* ══ LIVE SUPPORT — FLOATING BUTTON (هەموو بەشەکانی ئەپ) ══ */
-.lc-fab{display:none;position:fixed;left:16px;bottom:96px;width:54px;height:54px;border-radius:50%;background:rgba(29,29,31,.82);-webkit-backdrop-filter:saturate(180%) blur(14px);backdrop-filter:saturate(180%) blur(14px);align-items:center;justify-content:center;color:#fff;font-size:20px;cursor:pointer;z-index:850;box-shadow:0 12px 28px rgba(0,0,0,.24),0 2px 8px rgba(0,0,0,.12);transition:transform .22s var(--lc-ease);}
-.lc-fab:active{transform:scale(.92);}
-.lc-fab-dot{position:absolute;top:2px;right:2px;width:12px;height:12px;border-radius:50%;background:#30d158;border:2.5px solid #1d1d1f;animation:lc-pulse 2s infinite;}
-@media(min-width:600px){.lc-fab{left:24px;bottom:110px;}}
+/* ══ LIVE SUPPORT — FLOATING BUTTON ══ */
+@keyframes lcFabIn{0%{opacity:0;transform:translateY(32px) scale(.7)}60%{transform:translateY(-5px) scale(1.06)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes lcFabOut{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:translateY(28px) scale(.6)}}
+@keyframes lcFabFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes lcRipple{0%{transform:scale(1);opacity:.6}100%{transform:scale(2.3);opacity:0}}
+@keyframes lcRipple2{0%{transform:scale(1);opacity:.4}100%{transform:scale(2.8);opacity:0}}
+.lc-fab-wrap{display:none;position:fixed;left:16px;bottom:96px;z-index:850;align-items:flex-end;gap:0;}
+.lc-fab-wrap.show{display:flex;animation:lcFabIn .52s cubic-bezier(.34,1.56,.64,1) both;}
+.lc-fab-wrap.hide{animation:lcFabOut .28s ease-in both;}
+.lc-fab-ring{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(10,132,255,.5);animation:lcRipple 2.4s ease-out infinite;}
+.lc-fab-ring2{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(10,132,255,.3);animation:lcRipple2 2.4s ease-out .8s infinite;}
+.lc-fab{width:54px;height:54px;border-radius:50%;background:linear-gradient(145deg,#1a8cff,#0a6ce8);align-items:center;justify-content:center;color:#fff;font-size:20px;cursor:pointer;box-shadow:0 8px 24px rgba(10,132,255,.42),0 2px 8px rgba(10,132,255,.22);transition:transform .22s var(--lc-ease),box-shadow .22s;animation:lcFabFloat 3.2s ease-in-out infinite;position:relative;display:flex;flex-shrink:0;}
+.lc-fab:active{transform:scale(.91);box-shadow:0 4px 12px rgba(10,132,255,.35);}
+.lc-fab-ico{font-size:20px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.2));transition:transform .2s;}
+.lc-fab:hover .lc-fab-ico{transform:scale(1.12) rotate(-8deg);}
+.lc-fab-dot{position:absolute;top:2px;right:2px;width:12px;height:12px;border-radius:50%;background:#30d158;border:2.5px solid #0a6ce8;animation:lc-pulse 2s infinite;}
+.lc-fab-dismiss{position:absolute;top:-7px;right:-7px;width:20px;height:20px;border-radius:50%;background:#fff;border:none;color:#6e6e73;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;box-shadow:0 1px 6px rgba(0,0,0,.18);transition:all .18s;z-index:1;padding:0;line-height:1;}
+.lc-fab-dismiss:hover{background:#ff3b30;color:#fff;transform:scale(1.12);}
+@media(min-width:600px){.lc-fab-wrap{left:24px;bottom:110px;}}
 
 
   /* ══ AD REACH CALCULATOR ══ */
@@ -3876,10 +3896,15 @@ function _toWebP(dataUrl,quality){
   </div>
 </nav>
 
-<!-- ══ LIVE SUPPORT — FLOATING BUTTON (بەردەست لە هەموو بەشەکانی ئەپ) ══ -->
-<div class="lc-fab" id="lcFab" onclick="lcOpenChatDirect()" title="پشتگیری ڕاستەوخۆ">
-  <i class="fas fa-headset"></i>
-  <span class="lc-fab-dot" id="lcFabDot" style="display:none"></span>
+<!-- ══ LIVE SUPPORT — FLOATING BUTTON ══ -->
+<div class="lc-fab-wrap" id="lcFabWrap">
+  <span class="lc-fab-ring"></span>
+  <span class="lc-fab-ring2"></span>
+  <div class="lc-fab" id="lcFab" onclick="lcOpenChatDirect()" title="پشتگیری ڕاستەوخۆ">
+    <i class="fas fa-headset lc-fab-ico"></i>
+    <span class="lc-fab-dot" id="lcFabDot" style="display:none"></span>
+  </div>
+  <button class="lc-fab-dismiss" id="lcFabDismiss" onclick="lcDismissFab(event)" title="داخستن"><i class="fas fa-xmark"></i></button>
 </div>
 
 <!-- ══ DEPOSIT STEP 2: INFO FORM ══ -->
@@ -6520,7 +6545,7 @@ async function boot(){
   document.getElementById('authWrap').style.display='none';
   document.getElementById('app').style.display='flex';
   document.getElementById('bnav').style.display='block';
-  const _fab=document.getElementById('lcFab');if(_fab)_fab.style.display='flex';
+  if(!window._lcFabDismissed){const _fw=document.getElementById('lcFabWrap');if(_fw){_fw.classList.remove('hide');_fw.classList.add('show');}}
   const _avb=document.getElementById('authVersionBar');if(_avb)_avb.style.display='none';
   await Promise.all([loadAppSectionLocks(), ensureWallet(), ensureCoinsWallet()]);
   await Promise.all([loadBal(), loadCoins()]);
@@ -11761,16 +11786,19 @@ async function checkDbReady(){
      ══════════════════════════════════════════════════════ -->
 <div id="lcOverlay">
   <div class="lc-widget">
-    <!-- سەر -->
-    <div class="lc-head">
-      <div class="lc-head-left">
-        <div class="lc-av">P<span id="lcAvDot" class="lc-av-dot off"></span></div>
+    <!-- سەر — کۆمپاکت، بێ فووڵ سکرین -->
+    <div class="lc-mini-top">
+      <div class="lc-mini-brand">
+        <div class="lc-av" style="width:34px;height:34px;font-size:13px;flex-shrink:0;">P<span id="lcAvDot" class="lc-av-dot off"></span></div>
         <div>
-          <div class="lc-head-name" id="lcHeadName">Proxo AI</div>
+          <div class="lc-head-name" id="lcHeadName">Proxo</div>
           <div id="lcHeadStatus" class="lc-head-status off">● ئۆفلاین</div>
         </div>
       </div>
-      <div style="display:flex;align-items:center;gap:6px"><button id="lcBackHistBtn" onclick="lcGoToHistory()" style="display:none;padding:5px 10px;background:rgba(10,132,255,.1);border:none;border-radius:14px;cursor:pointer;font-family:'R',sans-serif;font-size:11px;color:var(--lc-accent);align-items:center;gap:4px"><i class="fas fa-arrow-right" style="font-size:11px"></i> مێژوو</button><button class="lc-close-btn" onclick="lcCloseChat()" title="گەڕانەوە"><i class="fas fa-arrow-right"></i></button></div>
+      <div class="lc-mini-actions">
+        <button id="lcBackHistBtn" onclick="lcGoToHistory()" style="display:none;padding:5px 12px;background:rgba(10,132,255,.1);border:none;border-radius:14px;cursor:pointer;font-family:'R',sans-serif;font-size:11px;color:var(--lc-accent);align-items:center;gap:4px"><i class="fas fa-arrow-right" style="font-size:10px"></i> مێژوو</button>
+        <button class="lc-mini-close" onclick="lcCloseChat()" title="داخستن"><i class="fas fa-xmark"></i></button>
+      </div>
     </div>
     <!-- جەستە -->
     <div class="lc-body">
@@ -12239,7 +12267,7 @@ function lcSendBotMessage(text){
 
 async function lcInitDirectChat(){
   document.getElementById('lcOverlay').classList.add('show');
-  const _fab=document.getElementById('lcFab');if(_fab)_fab.style.display='none';
+  const _fw=document.getElementById('lcFabWrap');if(_fw){_fw.classList.remove('show');_fw.classList.add('hide');setTimeout(()=>{_fw.classList.remove('hide');},300);}
   _lcUnreadCount=0;checkNotifBell();
 
   // ── ١. وازهێنان لە هەر listener ی چالاک و سڕینەوەی هەموو شوێنەوارە پێشووەکان ──
@@ -12300,8 +12328,18 @@ window.lcShowHistoryOrForm=function(){ lcInitDirectChat(); };
 window.lcCloseChat=function(){
   document.getElementById('lcOverlay').classList.remove('show');
   const _appEl=document.getElementById('app');
-  const _fabC=document.getElementById('lcFab');
-  if(_fabC&&_appEl&&_appEl.style.display!=='none')_fabC.style.display='flex';
+  if(!window._lcFabDismissed&&_appEl&&_appEl.style.display!=='none'){const _fw=document.getElementById('lcFabWrap');if(_fw){_fw.classList.remove('hide');_fw.classList.add('show');}}
+};
+
+window.lcDismissFab=function(e){
+  if(e)e.stopPropagation();
+  window._lcFabDismissed=true;
+  const _fw=document.getElementById('lcFabWrap');
+  if(_fw){
+    _fw.classList.remove('show');
+    _fw.classList.add('hide');
+    setTimeout(()=>{_fw.classList.remove('show','hide');},320);
+  }
 };
 
 let _lcLang=null,_lcCat=null;
@@ -12440,11 +12478,13 @@ function lcAttachListeners(){
           '<button onclick="lcStartNewChat()" style="padding:8px 16px;background:var(--lc-accent);color:#fff;border:none;border-radius:20px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-plus" style="margin-left:5px"></i>چاتی نوێ</button>';
         closedBanner.parentNode.insertBefore(btnWrap,closedBanner.nextSibling);
       }
-      // فیدبەک دوای 1.2 چرکە
-      setTimeout(()=>{
-        lcSessionId=savedId;
-        lcShowStage('lcStageFeedback');
-      },1200);
+      // ئاگاداری کاتی داخستن، پاشان داخستنی خۆکار
+      const _closedMsg=document.createElement('div');
+      _closedMsg.className='lc-sys-msg';
+      _closedMsg.innerHTML='🔒 چات داخرا';
+      const _msgArea=document.getElementById('lcMsgsArea');
+      if(_msgArea){_msgArea.appendChild(_closedMsg);_msgArea.scrollTop=_msgArea.scrollHeight;}
+      setTimeout(()=>{ lcCloseChat(); },1800);
     }
   });
   if(lcUnsubMessages)lcDb.ref('messages/'+lcSessionId).off('value',lcUnsubMessages);
@@ -12538,7 +12578,7 @@ function lcRenderMessages(msgs){
   // پەیامی سیستەمی "[ناو] هاتە ناو چات" بە ڕیزبەندی کاتی خۆی لەگەڵ باقی پەیامەکان تێکەڵ دەکرێت
   let renderList=msgs.slice();
   if(lcAgentJoinedName){
-    renderList.push({type:'system',text:lcAgentJoinedName+' has joined the chat',timestamp:lcAgentJoinTimestamp||Date.now()});
+    renderList.push({type:'system',text:'👋 '+lcAgentJoinedName+' بەشداری کرد لەچاتەکە',timestamp:lcAgentJoinTimestamp||Date.now()});
     renderList.sort((a,b)=>a.timestamp-b.timestamp);
   }
   renderList.forEach(m=>{
