@@ -314,18 +314,16 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .est-pulse{animation:estPulse 1.8s ease-in-out infinite;}
 @keyframes estPulse{0%,100%{opacity:1}50%{opacity:.5}}
 
-/* ── Giveaway Hero Redesign ── */
-.gw-hero{background:linear-gradient(145deg,#5b21b6,#7c3aed 40%,#a855f7 80%,#c084fc);border-radius:24px;padding:0;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 12px 40px rgba(124,58,237,.35);}
-.gw-hero-deco{position:absolute;pointer-events:none;}
-.gw-prize-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 13px;font-size:11px;font-weight:700;color:#fff;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
-.gw-countdown-box{background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:9px 12px;text-align:center;min-width:52px;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
-.gw-countdown-num{font-size:28px;font-weight:900;color:#fff;font-family:'Inter',sans-serif;line-height:1;text-shadow:0 2px 8px rgba(0,0,0,.2);}
-.gw-countdown-sep{font-size:24px;color:rgba(255,255,255,.5);font-weight:300;align-self:flex-start;margin-top:6px;}
-.gw-countdown-lbl{font-size:9px;color:rgba(255,255,255,.55);margin-top:4px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;}
+
 .topbar-right{display:flex;align-items:center;gap:5px;min-width:0;flex-shrink:1;}
 .hbal{display:flex;align-items:center;gap:6px;padding:8px 14px;cursor:pointer;background:var(--dark);border-radius:22px;font-size:12px;color:#fff;font-weight:700;font-family:'Inter',sans-serif;min-width:0;flex-shrink:1;max-width:160px;box-shadow:0 2px 10px rgba(28,35,51,.22);border:1.5px solid rgba(255,255,255,.08);}
 .hbal #hBal{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:-.3px;}
 .hbal i{font-size:12px;opacity:.75;flex-shrink:0;}
+.sb-sect{font-size:10px;font-weight:800;color:rgba(28,35,51,.35);letter-spacing:.8px;text-transform:uppercase;padding:14px 18px 4px;margin-top:4px;}
+.sidebar-item{transition:background .15s,color .15s;}
+.sidebar-item.active{background:rgba(14,120,255,.08)!important;border-color:rgba(14,120,255,.18)!important;}
+.sidebar-item.active .sidebar-item-ico{color:#0E78FF!important;}
+.sidebar-item.active .sidebar-item-txt{color:#0E78FF!important;font-weight:800;}
 
 /* ══ PROXO COINS ══ */
 .hcoins{display:flex;align-items:center;gap:6px;padding:8px 13px;cursor:pointer;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:20px;font-size:12px;color:#fff;font-weight:600;box-shadow:0 2px 8px rgba(245,158,11,.35);position:relative;transition:all .2s;}
@@ -1287,39 +1285,6 @@ textarea.lc-inp{resize:none;}
 .wdMeth{padding:11px 6px;border:1.5px solid var(--b1);border-radius:12px;text-align:center;cursor:pointer;font-size:12px;font-weight:700;transition:all .2s;background:var(--bg);color:var(--dark);}
 .wdMeth.sel{background:var(--dark);color:#fff;border-color:var(--dark);}
 
-/* ══ FAQ SECTION ══ */
-.faq-card{background:var(--w);border:1px solid var(--b1);border-radius:22px;padding:0;margin-bottom:10px;overflow:hidden;box-shadow:0 2px 16px rgba(28,35,51,.06);}
-.faq-card-hdr{display:flex;align-items:center;gap:12px;padding:18px 20px 14px;}
-.faq-card-hdr-ico{width:38px;height:38px;border-radius:13px;background:linear-gradient(135deg,#0E78FF,#0a50c9);display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;flex-shrink:0;box-shadow:0 4px 12px rgba(14,120,255,.3);}
-.faq-card-hdr-title{font-size:15px;font-weight:900;color:var(--dark);flex:1;}
-.faq-card-hdr-count{font-size:11px;font-weight:700;color:#0E78FF;background:rgba(14,120,255,.09);border:1px solid rgba(14,120,255,.18);border-radius:20px;padding:3px 10px;}
-.faq-search-wrap{padding:0 16px 14px;}
-.faq-search-box{display:flex;align-items:center;gap:10px;background:var(--bg);border:1.5px solid var(--b1);border-radius:13px;padding:11px 14px;transition:all .2s;}
-.faq-search-box:focus-within{border-color:#0E78FF;background:#fff;box-shadow:0 0 0 3px rgba(14,120,255,.08);}
-.faq-search-box i{color:var(--mt);font-size:13px;flex-shrink:0;}
-.faq-search-inp{flex:1;border:none;background:transparent;outline:none;font-family:'R',sans-serif;font-size:14px;color:var(--dark);}
-.faq-search-inp::placeholder{color:var(--mt);}
-.faq-list{padding:0 16px 16px;display:flex;flex-direction:column;gap:8px;}
-.faq-item{border:1.5px solid var(--b1);border-radius:16px;overflow:hidden;transition:all .25s;background:var(--w);}
-.faq-item.open{border-color:rgba(14,120,255,.35);box-shadow:0 4px 18px rgba(14,120,255,.1);}
-.faq-item-q{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .18s;-webkit-user-select:none;user-select:none;}
-.faq-item-q:active{background:var(--bg);}
-.faq-item-q-ico{width:38px;height:38px;border-radius:13px;background:var(--dark);border:none;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;flex-shrink:0;transition:all .25s;}
-.faq-item.open .faq-item-q-ico{background:var(--dark);color:#fff;box-shadow:0 4px 12px rgba(28,35,51,.25);}
-.faq-item-q-txt{flex:1;font-size:13.5px;font-weight:700;color:var(--dark);line-height:1.5;}
-.faq-item.open .faq-item-q-txt{color:#0E78FF;}
-.faq-item-q-arr{width:28px;height:28px;border-radius:50%;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--mt);flex-shrink:0;transition:all .3s;}
-.faq-item.open .faq-item-q-arr{background:rgba(14,120,255,.08);border-color:rgba(14,120,255,.2);color:#0E78FF;transform:rotate(180deg);}
-.faq-item-a{max-height:0;overflow:hidden;padding:0 16px;transition:max-height .38s cubic-bezier(.4,0,.2,1),padding .38s cubic-bezier(.4,0,.2,1),opacity .28s ease;opacity:0;}
-.faq-item.open .faq-item-a{max-height:600px;padding:0 16px 14px;opacity:1;}
-@keyframes faqFadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
-.faq-item-a-inner{background:linear-gradient(135deg,rgba(14,120,255,.04),rgba(14,120,255,.02));border:1px solid rgba(14,120,255,.12);border-radius:12px;padding:13px 14px;}
-.faq-item-a-txt{font-size:13px;color:var(--dark2);line-height:1.9;}
-.faq-item-a-note{display:flex;align-items:flex-start;gap:8px;margin-top:10px;background:rgba(217,119,6,.06);border:1px solid rgba(217,119,6,.18);border-radius:10px;padding:9px 12px;font-size:11.5px;color:#92400e;line-height:1.7;}
-.faq-item-a-note i{color:#d97706;font-size:12px;margin-top:2px;flex-shrink:0;}
-.faq-empty{text-align:center;padding:30px 20px;color:var(--mt);}
-.faq-empty i{font-size:32px;display:block;margin-bottom:10px;color:var(--b2);}
-.faq-empty p{font-size:13px;font-weight:600;}
 /* ══ TIKTOK BUDGET CARDS ══ */
 .tt-bud-wrap{display:flex;gap:12px;margin-bottom:12px;}
 .tt-bud-card{flex:1;background:#fff;border:1.5px solid #f1f4f8;border-radius:28px;padding:22px 12px 18px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.04);transition:all .3s cubic-bezier(.165,.84,.44,1);}
@@ -2689,14 +2654,15 @@ function _toWebP(dataUrl,quality){
         </div>
         <div onclick="openDeposit();closeSidebar();" style="background:rgba(255,255,255,.15);border-radius:10px;padding:8px 12px;font-size:12px;color:#fff;cursor:pointer;"><i class="fas fa-plus"></i> بارکردن</div>
       </div>
+      <div class="sb-sect">هەژمار</div>
       <!-- ٠ — پرۆفایل -->
       <div class="sidebar-item" onclick="goPage('profile');closeSidebar()">
-        <div class="sidebar-item-ico"><i class="fas fa-user-circle"></i></div>
+        <div class="sidebar-item-ico"><i class="fas fa-circle-user"></i></div>
         <div class="sidebar-item-txt">پرۆفایل</div>
       </div>
       <!-- ١ — پارە زیادکردن -->
       <div class="sidebar-item" onclick="openDeposit();closeSidebar()">
-        <div class="sidebar-item-ico"><i class="fas fa-plus-circle"></i></div>
+        <div class="sidebar-item-ico"><i class="fas fa-circle-plus"></i></div>
         <div class="sidebar-item-txt">پارە زیادکردن</div>
       </div>
       <!-- ٢ — مێژووی مامەڵەکان -->
@@ -2704,11 +2670,7 @@ function _toWebP(dataUrl,quality){
         <div class="sidebar-item-ico"><i class="fas fa-clock-rotate-left"></i></div>
         <div class="sidebar-item-txt">مێژووی مامەڵەکان</div>
       </div>
-      <!-- ٣ — خەڵاتی هەفتانە -->
-      <div class="sidebar-item" onclick="goPage('giveaway');closeSidebar()">
-        <div class="sidebar-item-ico"><i class="fas fa-gift"></i></div>
-        <div class="sidebar-item-txt">خەڵاتی هەفتانە</div>
-      </div>
+      <div class="sb-sect">خزمەتگوزاری</div>
       <!-- ٤ — کۆدی داشکاندن -->
       <div class="sidebar-item" onclick="goPage('promocodes');closeSidebar()">
         <div class="sidebar-item-ico"><i class="fas fa-tag"></i></div>
@@ -2721,9 +2683,10 @@ function _toWebP(dataUrl,quality){
       </div>
       <!-- ٤c — دیاریەکان (ئاست، چاڵنج، ڤووچەری بەخۆڕایی) -->
       <div class="sidebar-item" onclick="goPage('gifts');closeSidebar()">
-        <div class="sidebar-item-ico"><i class="fas fa-award"></i></div>
+        <div class="sidebar-item-ico"><i class="fas fa-gift"></i></div>
         <div class="sidebar-item-txt">دیاریەکان</div>
       </div>
+      <div class="sb-sect">یارمەتی</div>
       <!-- ٤ — پشتگیری ڕاستەوخۆ -->
       <div class="sidebar-item" id="lcSidebarItem" onclick="lcOpenChatDirect();closeSidebar();">
         <div class="sidebar-item-ico" style="position:relative">
@@ -2780,114 +2743,7 @@ function _toWebP(dataUrl,quality){
       <i class="fas fa-chevron-left home-card-arr"></i>
     </div>
 
-    <!-- ══ FAQ COMPACT — COLLAPSIBLE ══ -->
-    <div style="margin-top:10px;margin-bottom:8px">
-      <div onclick="faqToggleAll()" id="faqCompactHdr" style="display:flex;align-items:center;gap:14px;padding:18px 18px;background:var(--w);border:1px solid rgba(232,234,240,.8);border-radius:20px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:border-radius .3s,box-shadow .15s;box-shadow:0 1px 10px rgba(0,0,0,.04);">
-        <div style="width:44px;height:44px;border-radius:14px;background:rgba(28,35,51,.08);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--dark);flex-shrink:0"><i class="fas fa-circle-question"></i></div>
-        <div style="flex:1">
-          <div style="font-size:14px;font-weight:800;color:var(--dark)">پرسیارە باوەکان</div>
-          <div style="font-size:11px;color:var(--mt);margin-top:1px">کلیک بکە بۆ بینینی پرسیارەکان</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:7px">
-          <span style="font-size:10.5px;font-weight:700;color:var(--mt2);background:var(--bg);border:1px solid var(--b1);border-radius:20px;padding:3px 10px">٨ پرسیار</span>
-          <i class="fas fa-chevron-down" id="faqTogIco" style="font-size:11px;color:var(--mt);transition:transform .3s"></i>
-        </div>
-      </div>
-      <div id="faqCollBody" style="overflow:hidden;max-height:0;transition:max-height .5s cubic-bezier(.4,0,.2,1);">
-        <div style="background:var(--w);border:1.5px solid var(--b1);border-top:none;border-radius:0 0 16px 16px;padding:6px 14px 12px">
-          <div class="faq-list" id="faqListHome">
-            <div class="faq-item" onclick="faqToggle(this)">
-              <div class="faq-item-q">
-                <div class="faq-item-q-ico"><i class="fas fa-plus"></i></div>
-                <div class="faq-item-q-txt">ئایا چۆن ڕیکلامی نوێ دروست بکەم؟</div>
-                <div class="faq-item-q-arr"><i class="fas fa-chevron-down"></i></div>
-              </div>
-              <div class="faq-item-a"><div class="faq-item-a-inner"><div class="faq-item-a-txt">سەرەتا کلیک لە دووگمەی <b>« + »</b> دەکەی، دواتر ئەنجامی ڕیکلام دیاری دەکەی، دواتر زانیاری ڕیکلامەکانت پڕدەکەیتەوە.</div><div class="faq-item-a-note"><i class="fas fa-triangle-exclamation"></i><span>تکایە، زانیاریەکان بەدروستی پڕبکەرەوە، ئێمە بەرپرس نین لەپڕکردنەوەی زانیاری هەڵە!</span></div></div></div>
-            </div>
-            <div class="faq-item" onclick="faqToggle(this)">
-              <div class="faq-item-q">
-                <div class="faq-item-q-ico"><i class="fas fa-rotate-left"></i></div>
-                <div class="faq-item-q-txt">ئایا پارەکە دەگەڕێتەوە ئەگەر ڕیکلامەکەم ڕەت کرایەوە؟</div>
-                <div class="faq-item-q-arr"><i class="fas fa-chevron-down"></i></div>
-              </div>
-              <div class="faq-item-a"><div class="faq-item-a-inner"><div class="faq-item-a-txt">بەڵێ، ئەگەر ڕیکلامەکەت بە هەر هۆکارێک پەسەند نەکرا، بڕی پارەکە بە شێوەیەکی <b>ئۆتۆماتیکی</b> دەگەڕێتەوە بۆ سەر باڵانسی هەژمارەکەت.</div></div></div>
-            </div>
-            <div class="faq-item" onclick="faqToggle(this)">
-              <div class="faq-item-q">
-                <div class="faq-item-q-ico"><i class="fas fa-wallet"></i></div>
-                <div class="faq-item-q-txt">چۆن دەتوانم باڵانسی ئەکاونتەکەم پڕ بکەمەوە؟</div>
-                <div class="faq-item-q-arr"><i class="fas fa-chevron-down"></i></div>
-              </div>
-              <div class="faq-item-a"><div class="faq-item-a-inner"><div class="faq-item-a-txt"><span style="display:block;margin-bottom:6px">١. کلیک لەسێ خەتەکەی سەرەوە دەکەیت</span><span style="display:block;margin-bottom:6px">٢. کلیک لە <b>زیادکردنی باڵانس</b> دەکەی</span><span style="display:block;margin-bottom:6px">٣. ڕێگەی پارەدان دیاری دەکەی</span><span style="display:block;margin-bottom:6px">٤. بڕی باڵانس دەنووسیت</span><span style="display:block;margin-bottom:6px">٥. زانیاریەکان پڕدەکەیتەوە (ناوی هەژمار، تێبینی، وێنەی پسوولە)</span><span style="display:block">٦. داواکاری دەنێریت — لەماوەی <b>٣٠ خولەک</b> یاخود کەمتر باڵانسەکە دەخرێتە سەر هەژمارەکەت.</span></div></div></div>
-            </div>
-            <div class="faq-item" onclick="faqToggle(this)">
-              <div class="faq-item-q">
-                <div class="faq-item-q-ico"><i class="fas fa-shield-halved"></i></div>
-                <div class="faq-item-q-txt">ئایا پێویست دەکا وشەی نهێنی و ئیمێڵم بدەم بەئێوە؟</div>
-                <div class="faq-item-q-arr"><i class="fas fa-chevron-down"></i></div>
-              </div>
-              <div class="faq-item-a"><div class="faq-item-a-inner"><div class="faq-item-a-txt"><b style="color:#16a34a">نەخێر،</b> بەهیچ شێوازێک ئێمە وشەی نهێنی و زانیاریە کەسیەکان وەرناگرین. بەڵکو چەند زانیاریەکی سەرەتایی وەردەگرین سەبارەت بەو ڤیدیۆیەی کە دەتەوێ ڕیکلامی بۆ بکەی.</div></div></div>
-            </div>
-            <div class="faq-item" onclick="faqToggle(this)">
-              <div class="faq-item-q">
-                <div class="faq-item-q-ico"><i class="fas fa-location-dot"></i></div>
-                <div class="faq-item-q-txt">ئایا دەتوانم دیاری بکەم چ شارێک ڕیکلامەکەم ببینێ؟</div>
-                <div class="faq-item-q-arr"><i class="fas fa-chevron-down"></i></div>
-              </div>
-              <div class="faq-item-a"><div class="faq-item-a-inner"><div class="faq-item-a-txt"><b style="color:#dc2626">نەخێر،</b> لەئێستادا لەسیستەمی تیک تۆک هەڵبژاردنی شارەکان بەردەست نییە بۆ عێراق و هەرێمی کوردستان.</div></div></div>
-            </div>
-            <div class="faq-item" onclick="faqToggle(this)">
-              <div class="faq-item-q">
-                <div class="faq-item-q-ico"><i class="fas fa-chart-bar"></i></div>
-                <div class="faq-item-q-txt">ئایا لەکوێ ئەنجامی ڕیکلامەکانم ببینم؟</div>
-                <div class="faq-item-q-arr"><i class="fas fa-chevron-down"></i></div>
-              </div>
-              <div class="faq-item-a"><div class="faq-item-a-inner"><div class="faq-item-a-txt">لەبەشی <b>«ڕیکلامەکانم»</b> دەتوانیت ئەنجام و وردەکاریەکانی ڕیکلامەکەت ببینی.</div></div></div>
-            </div>
-            <div class="faq-item" onclick="faqToggle(this)">
-              <div class="faq-item-q">
-                <div class="faq-item-q-ico"><i class="fas fa-headset"></i></div>
-                <div class="faq-item-q-txt">ئایا ئەگەر ڕووبەڕوی کێشەیەک بوومەوە لەئەپەکە چی بکەم؟</div>
-                <div class="faq-item-q-arr"><i class="fas fa-chevron-down"></i></div>
-              </div>
-              <div class="faq-item-a"><div class="faq-item-a-inner"><div class="faq-item-a-txt">دەتوانیت لەڕێگەی <b>واتسئاپ</b> یاخود <b>پشتگیری ناو ئەپەکە</b> پەیوەندی بکەی بەکارمەندەکانمانەوە کە <b>٢٤ کاتژمێر</b> لەسەر هێڵن بۆ یارمەتیدانتان.</div></div></div>
-            </div>
-            <div class="faq-item" onclick="faqToggle(this)">
-              <div class="faq-item-q">
-                <div class="faq-item-q-ico"><i class="fas fa-link"></i></div>
-                <div class="faq-item-q-txt">چۆن کەرەستەی پەیوەندی دروست بکەم؟</div>
-                <div class="faq-item-q-arr"><i class="fas fa-chevron-down"></i></div>
-              </div>
-              <div class="faq-item-a"><div class="faq-item-a-inner"><div class="faq-item-a-txt"><span style="display:block;margin-bottom:6px">١. دەچیتە بەشی <b>«ئامرازەکان»</b></span><span style="display:block;margin-bottom:6px">٢. کلیک لەدروستکردنی <b>«کەرەستەی پەیوەندی»</b> دەکەی</span><span style="display:block;margin-bottom:6px">٣. زانیاریەکان پڕدەکەیتەوە (ناو، دووگمەی پەیوەندی و هتد)</span><span style="display:block">٤. کلیک لەپێشبینی و دروستکردن دەکەی — ڕاستەوخۆ بەسەرکەوتوویی دروست دەبێت.</span></div></div></div>
-            </div>
-            <div class="faq-empty" id="faqEmptyHome" style="display:none"><i class="fas fa-magnifying-glass"></i><p>هیچ پرسیارێک نەدۆزرایەوە</p></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <script>
-    var _faqAllOpen=false;
-    function faqToggleAll(){
-      _faqAllOpen=!_faqAllOpen;
-      var col=document.getElementById('faqCollBody');
-      var ico=document.getElementById('faqTogIco');
-      var hdr=document.getElementById('faqCompactHdr');
-      if(_faqAllOpen){
-        col.style.maxHeight='9999px';
-        ico.style.transform='rotate(180deg)';
-        hdr.style.borderRadius='16px 16px 0 0';
-        hdr.style.borderBottomColor='transparent';
-      }else{
-        col.style.maxHeight='0';
-        ico.style.transform='rotate(0deg)';
-        hdr.style.borderRadius='16px';
-        hdr.style.borderBottomColor='';
-        setTimeout(function(){if(!_faqAllOpen)hdr.style.borderRadius='16px';},300);
-      }
-    }
-    </script>
 
-    <div style="height:8px"></div>
     <div style="text-align:center;padding:10px 0 6px;font-size:11px;color:var(--mt);font-family:'Inter',sans-serif;letter-spacing:.5px">v<span id="dashVersionLbl">1.0.1</span></div>
   </div>
 
@@ -3644,106 +3500,6 @@ function _toWebP(dataUrl,quality){
     <div class="tvp-bottom-space"></div>
   </div>
 
-  <!-- ── خەڵاتی هەفتانە ── -->
-  <div class="pg" id="pgGiveaway">
-    <!-- هێرۆی نوێکراو -->
-    <div class="gw-hero">
-      <!-- دەکۆراسیۆنی شەپۆلی دواوە -->
-      <div class="gw-hero-deco" style="top:-30px;left:-30px;width:120px;height:120px;background:rgba(255,255,255,.06);border-radius:50%"></div>
-      <div class="gw-hero-deco" style="top:-10px;left:50px;width:60px;height:60px;background:rgba(255,255,255,.04);border-radius:50%"></div>
-      <div class="gw-hero-deco" style="bottom:-20px;right:-20px;width:100px;height:100px;background:rgba(0,0,0,.12);border-radius:50%"></div>
-      <div class="gw-hero-deco" style="bottom:30px;right:80px;width:40px;height:40px;background:rgba(255,255,255,.05);border-radius:50%"></div>
-      <!-- ستاری بڵاوکراوە -->
-      <div class="gw-hero-deco" style="top:18px;right:20px;font-size:10px;color:rgba(255,255,255,.4)">✦</div>
-      <div class="gw-hero-deco" style="top:40px;right:50px;font-size:7px;color:rgba(255,255,255,.3)">✦</div>
-      <div class="gw-hero-deco" style="top:22px;right:80px;font-size:13px;color:rgba(255,255,255,.2)">✦</div>
-
-      <!-- ناوەڕۆکی سەرەوە -->
-      <div style="position:relative;padding:22px 20px 18px">
-        <!-- باجی خەڵات -->
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-          <div class="gw-prize-badge"><i class="fas fa-gift" style="font-size:10px"></i> خەڵاتی هەفتانە</div>
-          <div class="gw-prize-badge" style="background:rgba(251,191,36,.25);border-color:rgba(251,191,36,.4)"><i class="fas fa-trophy" style="font-size:10px;color:#fbbf24"></i> <span style="color:#fde68a">هەفتانە</span></div>
-        </div>
-
-        <!-- بڕی خەڵات — پرۆمینێنت -->
-        <div style="text-align:center;margin-bottom:20px">
-          <div style="font-size:11px;color:rgba(255,255,255,.6);font-weight:600;letter-spacing:.5px;margin-bottom:6px;text-transform:uppercase">خەڵاتی کۆتا</div>
-          <div style="font-size:42px;font-weight:900;color:#fff;font-family:'Inter',sans-serif;line-height:1;text-shadow:0 4px 20px rgba(0,0,0,.25);letter-spacing:-1px">18,000</div>
-          <div style="font-size:16px;font-weight:700;color:rgba(255,255,255,.8);font-family:'Inter',sans-serif;margin-top:2px">IQD</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:6px">هەر هەفتە یەک برنامەدەری خۆشبەخت</div>
-        </div>
-      </div>
-
-      <!-- شمارگری کات — دەرەوەی باکگراوند تاریکتر -->
-      <div style="background:rgba(0,0,0,.2);border-top:1px solid rgba(255,255,255,.1);padding:16px 20px">
-        <div style="font-size:10px;color:rgba(255,255,255,.55);margin-bottom:12px;font-weight:700;letter-spacing:.8px;text-align:center;text-transform:uppercase">ماوەی مایەوە تا قورعەی داهاتوو</div>
-        <div style="display:flex;gap:8px;justify-content:center;align-items:flex-start">
-          <div class="gw-countdown-box">
-            <div id="gwDays" class="gw-countdown-num">00</div>
-            <div class="gw-countdown-lbl">ڕۆژ</div>
-          </div>
-          <div class="gw-countdown-sep">:</div>
-          <div class="gw-countdown-box">
-            <div id="gwHours" class="gw-countdown-num">00</div>
-            <div class="gw-countdown-lbl">کاتژمێر</div>
-          </div>
-          <div class="gw-countdown-sep">:</div>
-          <div class="gw-countdown-box">
-            <div id="gwMins" class="gw-countdown-num">00</div>
-            <div class="gw-countdown-lbl">خولەک</div>
-          </div>
-          <div class="gw-countdown-sep">:</div>
-          <div class="gw-countdown-box">
-            <div id="gwSecs" class="gw-countdown-num">00</div>
-            <div class="gw-countdown-lbl">چرکە</div>
-          </div>
-        </div>
-        <div style="margin-top:10px;font-size:10px;color:rgba(255,255,255,.35);text-align:center">قورعە هەموو هەفتەیەک ئینجام دەدرێت — کاتی ڕۆژی هەینی</div>
-      </div>
-    </div>
-
-    <!-- بازنەدەرهاتووی ئێستا -->
-    <div id="gwMyEntry" style="display:none;background:rgba(168,85,247,.08);border:1.5px solid rgba(168,85,247,.25);border-radius:16px;padding:14px 16px;margin-bottom:14px">
-      <div style="display:flex;align-items:center;gap:10px">
-        <div style="width:36px;height:36px;border-radius:50%;background:rgba(168,85,247,.15);border:1.5px solid rgba(168,85,247,.3);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0"><i class="fas fa-check" style="color:#8b5cf6;font-size:14px"></i></div>
-        <div>
-          <div style="font-size:13px;font-weight:800;color:#7c3aed">تۆ بەشداری ئەم هەفتەیەتی!</div>
-          <div style="font-size:11px;color:var(--mt);margin-top:2px">ڕیکلامت ($٢٠ یان زیاتر) پەسەند کرا — خۆت دانراویت بۆ قورعەی هەفتانە</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- برنامەدەری بازنەدەرهاتوو -->
-    <div class="pcard" style="margin-bottom:14px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-        <div style="font-size:14px;font-weight:800;color:var(--dark)"><i class="fas fa-users" style="margin-left:7px;color:#a855f7"></i>بەشداران ئەم هەفتەیە</div>
-        <div id="gwEntryCount" style="font-size:12px;font-weight:700;color:#a855f7;font-family:'Inter',sans-serif">0 کەس</div>
-      </div>
-      <div id="gwParticipantsList">
-        <div style="text-align:center;padding:20px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin"></i></div>
-      </div>
-    </div>
-
-    <!-- برنامەدەری پێشوو -->
-    <div class="pcard" style="margin-bottom:14px" id="gwLastWinnerCard">
-      <div style="font-size:14px;font-weight:800;color:var(--dark);margin-bottom:12px"><i class="fas fa-trophy" style="margin-left:7px;color:#f59e0b"></i>برنامەدەری کاتی پێشوو</div>
-      <div id="gwLastWinnerContent">
-        <div style="text-align:center;padding:16px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin"></i></div>
-      </div>
-    </div>
-
-    <!-- ئایتەم چۆن دانرێیت -->
-    <div style="background:var(--bg);border:1.5px dashed var(--b2);border-radius:16px;padding:16px;margin-bottom:100px">
-      <div style="font-size:12px;font-weight:800;color:var(--dark);margin-bottom:10px"><i class="fas fa-circle-info" style="margin-left:6px;color:#a855f7"></i>چۆن بەشداری دەکەیت؟</div>
-      <div style="font-size:12px;color:var(--mt);line-height:2">
-        ١. ڕیکلامێک دروست بکە بە بودجەی <strong style="color:var(--dark)">36,000 IQD یان زیاتر</strong><br>
-        ٢. ئادمین ڕیکلامەکەت پەسەند دەکات<br>
-        ٣. خۆت بە شێوەی ئۆتۆماتیک دادەنرێیت بۆ قورعەی هەفتانە<br>
-        ٤. هەموو هەفتەیەک یەک کەسی خۆشبەختی هەڵدەبژێرێت و 18,000 IQD وەردەگرێت
-      </div>
-    </div>
-  </div>
 
 
   <!-- ══ GIFTS / LEVELS / CHALLENGES ══ -->
@@ -6922,16 +6678,11 @@ function closeSidebar(){
   document.getElementById('sidebarOverlay').classList.remove('on');
 }
 function updateSidebarActive(page){
-  document.querySelectorAll('.sidebar-item').forEach(el=>el.classList.remove('active'));
-  const map={home:'home',profile:'profile',myads:'myads',proxolink:'proxolink',tutorials:'tutorials',create:'create',txhistory:'txhistory'};
-  const key=map[page];
-  if(key){
-    document.querySelectorAll('.sidebar-item').forEach(el=>{
-      const txt=el.querySelector('.sidebar-item-txt')?.textContent||'';
-      const maps2={home:'سەرەکی',profile:'پرۆفایل',myads:'ڕیکلامەکانم',proxolink:'ئامرازەکان',tutorials:'فێرکاری',txhistory:'مێژووی مامەڵەکان'};
-      if(maps2[page]&&txt===maps2[page])el.classList.add('active');
-    });
-  }
+  document.querySelectorAll('.sidebar-item').forEach(el=>{
+    el.classList.remove('active');
+    const oc=el.getAttribute('onclick')||'';
+    if(oc.includes("goPage('"+page+"')"))el.classList.add('active');
+  });
 }
 async function loadSidebarUser(){
   if(!cu) return;
@@ -7544,7 +7295,7 @@ async function exchangeCoins(){
 }
 function openWA(){window.open('https://wa.me/9647512345678','_blank');}
 
-const pages=['home','profile','create','myads','proxolink','notifications','support','tutorials','tutplayer','txhistory','promocodes','giveaway','adcalc','wallet','gifts'];
+const pages=['home','profile','create','myads','proxolink','notifications','support','tutorials','tutplayer','txhistory','promocodes','adcalc','wallet','gifts'];
 let _currentPage='home';
 
 // ══ SECTION LOCKS ══
@@ -7736,7 +7487,6 @@ function goPage(p){
   if(p==='txhistory')loadTxHistory();
   if(p==='tutorials')loadTutorials();
   if(p==='promocodes')loadPromocodesPage();
-  if(p==='giveaway')loadGiveawayPage();
   if(p==='gifts')loadGiftsPage();
   if(p==='wallet'){startWalletListener();startReqListener();}
   updateSidebarActive(p);
@@ -8452,7 +8202,7 @@ async function loadAssets(){
   paAssetsList=data||[];
   const wrap=document.getElementById('assetsListWrap');
   if(!paAssetsList.length){
-    wrap.innerHTML=`<div class="empty-box"><div class="empty-box-ico"><i class="fas fa-layer-group"></i></div><h3>هیچ کەرەستەیەک نییە</h3><p>دووگمەی + بکە تا کەرەستەی نوێ زیاد بکەیت</p></div>`;return;
+    wrap.innerHTML=`<div class="empty-box"><div class="empty-box-ico"><i class="fas fa-layer-group"></i></div><h3>هیچ کەرەستەیەک نییە</h3><p>دووگمەی + بکە تا کەرەستەی نوێ زیاد بکەیت</p><button onclick="loadAssets()" style="margin-top:12px;padding:8px 20px;background:var(--dark);color:#fff;border:none;border-radius:12px;font-family:'R',sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px"><i class="fas fa-rotate-right"></i> نوێکردنەوە</button></div>`;return;
   }
   const icons={whatsapp:'fab fa-whatsapp',instagram:'fab fa-instagram',phone:'fas fa-phone',telegram:'fab fa-telegram',link:'fas fa-link'};
   const icoClass={whatsapp:'wa',instagram:'ig',phone:'ph',telegram:'tg',link:'lk'};
@@ -11063,7 +10813,7 @@ async function loadNotifications(){
       </div>
     </div>`:null;
   if(!data?.length){
-    list.innerHTML=(versionCard||'')+`<div style="text-align:center;padding:24px;color:var(--mt)"><i class="fas fa-bell-slash" style="font-size:28px;display:block;margin-bottom:10px;opacity:.3"></i>هیچ ئاگادارییەک نییە</div>`;return;
+    list.innerHTML=(versionCard||'')+`<div style="text-align:center;padding:24px;color:var(--mt)"><i class="fas fa-bell-slash" style="font-size:28px;display:block;margin-bottom:10px;opacity:.3"></i><div style="margin-bottom:12px">هیچ ئاگادارییەک نییە</div><button onclick="loadNotifications()" style="padding:8px 20px;background:var(--dark);color:#fff;border:none;border-radius:12px;font-family:'R',sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px"><i class="fas fa-rotate-right"></i> نوێکردنەوە</button></div>`;return;
   }
   const typeMap={
     // ── ڕیکلام ──
@@ -11819,164 +11569,7 @@ async function checkDbReady(){
     }).join('') + '</div>';
   }
 
-// ══ GIVEAWAY PAGE ══
-let _gwCountdownTimer=null;
-let _serverTimeOffset=0;    // ms offset: server clock vs client clock
-let _gwRaffleTarget=null;   // fixed Date object fetched from DB
 
-async function syncServerClock(){
-  try{
-    const r=await fetch('https://cojchkwssmasiejcgvbk.supabase.co/rest/v1/pa_settings?select=key&limit=1',{
-      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
-    });
-    const d=new Date(r.headers.get('Date'));
-    if(!isNaN(d.getTime()))_serverTimeOffset=d.getTime()-Date.now();
-  }catch(e){_serverTimeOffset=0;}
-}
-
-async function fetchRaffleTarget(){
-  try{
-    const{data}=await sb.from('pa_settings').select('value').eq('key','raffle_next_draw').single();
-    if(data?.value){
-      const dt=new Date(data.value);
-      if(!isNaN(dt.getTime()))_gwRaffleTarget=dt;
-    }
-  }catch(e){_gwRaffleTarget=null;}
-}
-
-function _gwNow(){return new Date(Date.now()+_serverTimeOffset);}
-
-function _gwGetWeekStart(d){
-  const dt=d?new Date(d):_gwNow();
-  const day=dt.getDay();
-  const diff=day===0?-6:1-day;
-  const mon=new Date(dt);
-  mon.setHours(0,0,0,0);
-  mon.setDate(dt.getDate()+diff);
-  return mon.toISOString().slice(0,10);
-}
-
-function _gwGetNextWeekStart(){
-  const dt=_gwNow();
-  const day=dt.getDay();
-  const diffToMon=day===0?-6:1-day;
-  const mon=new Date(dt);
-  mon.setHours(0,0,0,0);
-  mon.setDate(dt.getDate()+diffToMon+7);
-  return mon.toISOString().slice(0,10);
-}
-
-function _gwGetNextDrawTime(){
-  // ئەگەر بەرواری تیروپشک لە داتابەیس هاتبوو، ئەوە بەکاربهێنە
-  if(_gwRaffleTarget && _gwRaffleTarget > _gwNow()) return _gwRaffleTarget;
-  // Fallback: نزیکترین هەینی سەرانسەری
-  const now=_gwNow();
-  const day=now.getDay();
-  let daysUntilFri=(5-day+7)%7||7;
-  const next=new Date(now);
-  next.setDate(now.getDate()+daysUntilFri);
-  next.setHours(0,0,0,0);
-  return next;
-}
-
-function _gwStartCountdown(){
-  if(_gwCountdownTimer)clearInterval(_gwCountdownTimer);
-  // Sync server clock & fetch raffle target (non-blocking)
-  syncServerClock();
-  fetchRaffleTarget().then(()=>{});
-  function tick(){
-    const now=_gwNow();
-    const target=_gwGetNextDrawTime();
-    let diff=target-now;
-    if(diff<0)diff=0;
-    const days=Math.floor(diff/86400000);
-    const hrs=Math.floor((diff%86400000)/3600000);
-    const mins=Math.floor((diff%3600000)/60000);
-    const secs=Math.floor((diff%60000)/1000);
-    const pad=n=>String(n).padStart(2,'0');
-    const d=document.getElementById('gwDays');
-    const h=document.getElementById('gwHours');
-    const m=document.getElementById('gwMins');
-    const s=document.getElementById('gwSecs');
-    if(d)d.textContent=pad(days);
-    if(h)h.textContent=pad(hrs);
-    if(m)m.textContent=pad(mins);
-    if(s)s.textContent=pad(secs);
-  }
-  tick();
-  _gwCountdownTimer=setInterval(tick,1000);
-}
-
-async function loadGiveawayPage(){
-  _gwStartCountdown();
-  const weekStart=_gwGetWeekStart();
-
-  // بار کردنی بەشداران
-  const{data:entries,error}=await sb.from('weekly_giveaway_entries').select('*').eq('week_start',weekStart).order('created_at',{ascending:true});
-  const list=entries||[];
-  const el=document.getElementById('gwEntryCount');
-  if(el)el.textContent=list.length+' کەس';
-
-  // بینینی ئایا بەکارهێنەری ئێستا بەشداره
-  const uid=cu?.id;
-  const myEntry=uid?list.find(e=>e.user_id===uid):null;
-  const myEntryDiv=document.getElementById('gwMyEntry');
-  if(myEntryDiv)myEntryDiv.style.display=myEntry?'block':'none';
-
-  // نیشاندانی ئاگاداری دواخستن ئەگەر بەشداربووان کەم بوون
-  const gwPostponeUserBox=document.getElementById('gwUserPostponeBox');
-  if(gwPostponeUserBox){
-    if(list.length>0&&list.length<5){
-      const nextWS=_gwGetNextWeekStart();
-      gwPostponeUserBox.style.display='flex';
-      const pmsg=document.getElementById('gwUserPostponeMsg');
-      if(pmsg)pmsg.textContent=`بەشداربووان کەمن (${list.length}/5 کەس) — ئەگەر تا هەینی ١٥ کەس نەبوو، تیروپشکەکە بۆ هەینی داهاتوو (${nextWS}) دواخرێت`;
-    } else {
-      gwPostponeUserBox.style.display='none';
-    }
-  }
-
-  // لیستی بەشداران
-  const wrap=document.getElementById('gwParticipantsList');
-  if(wrap){
-    if(!list.length){
-      wrap.innerHTML='<div style="text-align:center;padding:20px;color:var(--mt);font-size:13px"><i class="fas fa-users-slash" style="font-size:22px;opacity:.3;display:block;margin-bottom:8px"></i>هێشتا کەس بەشداری نەکردووە</div>';
-    } else {
-      wrap.innerHTML=list.map((e,i)=>`
-        <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--b1)${i===list.length-1?';border-bottom:none':''}">
-          <div style="width:32px;height:32px;border-radius:50%;background:rgba(168,85,247,.12);border:1.5px solid rgba(168,85,247,.25);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#7c3aed;font-family:'Inter',sans-serif;flex-shrink:0">${i+1}</div>
-          <div style="flex:1;min-width:0">
-            <div style="font-size:13px;font-weight:700;color:var(--dark)">${e.user_name||'بێ ناو'}</div>
-            <div style="font-size:10px;color:var(--mt)">${new Date(e.created_at).toLocaleDateString('ku')}</div>
-          </div>
-          ${e.user_id===uid?'<div style="font-size:10px;padding:3px 8px;background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.25);border-radius:20px;color:#7c3aed;font-weight:700">تۆ </div>':''}
-        </div>`).join('');
-    }
-  }
-
-  // داماوەی برنامەدەر کاتی پێشوو
-  const lwContent=document.getElementById('gwLastWinnerContent');
-  try{
-    const{data:winners,error:wErr}=await sb.from('weekly_giveaway_winners').select('*').order('drawn_at',{ascending:false}).limit(1);
-    const lastWinner=(!wErr&&winners)?winners[0]:null;
-    if(lwContent){
-      if(!lastWinner){
-        lwContent.innerHTML='<div style="text-align:center;padding:16px;color:var(--mt);font-size:13px"><i class="fas fa-trophy" style="font-size:22px;opacity:.2;display:block;margin-bottom:8px"></i>هێشتا هیچ قورعەیەک ئینجام نەدراوە</div>';
-      } else {
-        lwContent.innerHTML=`
-          <div style="display:flex;align-items:center;gap:14px">
-            <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#fbbf24);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🏆</div>
-            <div>
-              <div style="font-size:15px;font-weight:900;color:var(--dark)">${lastWinner.user_name||'بێ ناو'}</div>
-              <div style="font-size:12px;color:var(--mt);margin-top:2px">${new Date(lastWinner.drawn_at).toLocaleDateString('ku')} — هەفتەی ${lastWinner.week_start||'—'}</div>
-              <div style="font-size:13px;font-weight:800;color:var(--gr);margin-top:4px">+${(parseFloat(lastWinner.prize_amount||19000)>=100?Math.round(parseFloat(lastWinner.prize_amount||19000)):Math.round(parseFloat(lastWinner.prize_amount||10)*1800)).toLocaleString()} IQD خەڵات وەرگرت</div>
-            </div>
-          </div>`;
-      }
-    }
-  }catch(e){
-    if(lwContent)lwContent.innerHTML='<div style="text-align:center;padding:16px;color:var(--mt);font-size:13px"><i class="fas fa-trophy" style="font-size:22px;opacity:.2;display:block;margin-bottom:8px"></i>هێشتا هیچ قورعەیەک ئینجام نەدراوە</div>';
-  }
 }
 
 </script>
@@ -13392,18 +12985,32 @@ function _levelForPoints(points, defs) {
 
 // ── ڤووچەری بەخێرهاتنی ٧ ڕۆژ بۆ بەکارهێنەری نوێ (تەنها بۆ خۆی) ──
 async function createSignupVoucher(userId) {
+  // خوێندنەوەی ئەیلامی دیاری لە ئادمین
+  let amount_iqd = 5000;
+  let days = 7;
+  let enabled = true;
+  try {
+    const { data: cfgData } = await sb.from('pa_settings').select('value').eq('key','signup_gift_config').single();
+    if (cfgData?.value) {
+      const cfg = typeof cfgData.value === 'string' ? JSON.parse(cfgData.value) : cfgData.value;
+      if (cfg.enabled === false) return; // ئادمین چالاکی ناکردووە
+      if (cfg.amount_iqd && cfg.amount_iqd >= 100) amount_iqd = cfg.amount_iqd;
+      if (cfg.days && cfg.days >= 1) days = cfg.days;
+    }
+  } catch(e) {}
   const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
   let code = 'PRXO';
   for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
   const now = new Date();
-  const expires = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // ٧ ڕۆژ
+  const expires = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
   await sb.from('pa_vouchers').insert({
     code,
-    amount_iqd: 5000,
+    amount_iqd,
     is_active: true,
     used_by: null,
     assigned_user_id: userId,
     is_signup_bonus: true,
+    signup_days: days,
     expires_at: expires.toISOString(),
   });
 }
