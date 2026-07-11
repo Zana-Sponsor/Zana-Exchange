@@ -526,6 +526,21 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .prof-name{font-size:16px;font-weight:800;color:var(--dark);}
 .prof-email{font-size:11px;color:var(--mt);margin-top:2px;direction:ltr;text-align:right;}
 .pcard{background:var(--w);border:1px solid var(--b1);border-radius:18px;padding:20px;margin-bottom:10px;}
+/* ══ GIFTS / PRIZES PAGE ══ */
+.gifts-level-card{position:relative;overflow:hidden;background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%);border-radius:20px;padding:20px;margin-bottom:14px;}
+.gifts-level-glow{position:absolute;top:-40px;left:-30px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(251,191,36,.25),transparent 70%);pointer-events:none;}
+.gifts-level-ico{width:58px;height:58px;border-radius:16px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.25);display:flex;align-items:center;justify-content:center;font-size:26px;color:#fbbf24;flex-shrink:0;box-shadow:0 4px 14px rgba(251,191,36,.15);}
+.gifts-voucher-card{position:relative;overflow:hidden;display:none;background:linear-gradient(135deg,rgba(6,182,212,.09),rgba(6,182,212,.02));border:1.5px solid rgba(6,182,212,.25);border-radius:18px;padding:16px;margin-bottom:16px;}
+.gifts-voucher-shine{position:absolute;top:-20px;right:-20px;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(6,182,212,.18),transparent 70%);pointer-events:none;}
+.gifts-sec-hdr{display:flex;align-items:center;justify-content:space-between;margin:18px 4px 12px;}
+.gifts-sec-hdr>div{font-size:14.5px;font-weight:800;color:var(--dark);}
+.gifts-sec-ico{width:26px;height:26px;border-radius:8px;background:rgba(168,85,247,.1);color:#a855f7;display:flex;align-items:center;justify-content:center;font-size:12px;}
+.gifts-chal-card{background:var(--w);border:1px solid var(--b1);border-radius:16px;padding:16px;margin-bottom:11px;transition:border-color .2s;}
+.gifts-chal-card.done{border-color:rgba(22,163,74,.3);background:linear-gradient(135deg,rgba(22,163,74,.03),transparent);}
+.gifts-chal-ico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.gifts-chal-reward{font-size:11px;font-weight:800;color:#a855f7;font-family:'Inter',sans-serif;white-space:nowrap;background:rgba(168,85,247,.08);padding:4px 9px;border-radius:8px;}
+.gifts-empty{text-align:center;padding:40px 20px;color:var(--mt);}
+.gifts-empty i{font-size:30px;opacity:.35;margin-bottom:10px;display:block;}
 .pcard-hdr{font-size:11px;color:var(--mt);display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .pcard-hdr-left{display:flex;align-items:center;gap:6px;}
 .bal-row{display:flex;align-items:baseline;gap:6px;}
@@ -3588,34 +3603,54 @@ function _toWebP(dataUrl,quality){
 
   <!-- ══ GIFTS / LEVELS / CHALLENGES ══ -->
   <div class="pg" id="pgGifts">
-    <div class="pcard" style="margin-bottom:14px;background:var(--dark);border:none">
-      <div style="display:flex;align-items:center;gap:14px">
-        <div id="giftsLevelIco" style="width:54px;height:54px;border-radius:16px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:26px;color:#fbbf24;flex-shrink:0"><i class="fas fa-medal"></i></div>
+    <div class="pg-hdr">
+      <div class="pg-title"><i class="fas fa-gift" style="margin-left:8px;color:#a855f7"></i>خەڵاتەکان</div>
+    </div>
+
+    <!-- ══ Level / Rank Card ══ -->
+    <div class="gifts-level-card">
+      <div class="gifts-level-glow"></div>
+      <div style="display:flex;align-items:center;gap:14px;position:relative;z-index:1">
+        <div id="giftsLevelIco" class="gifts-level-ico"><i class="fas fa-medal"></i></div>
         <div style="flex:1;min-width:0">
-          <div id="giftsLevelName" style="font-size:17px;font-weight:900;color:#fff">—</div>
-          <div id="giftsLevelPoints" style="font-size:12px;color:rgba(255,255,255,.65);margin-top:2px;font-family:'Inter',sans-serif">— خاڵ</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5);font-weight:700;letter-spacing:.3px;margin-bottom:3px">ئاستی ئێستات</div>
+          <div id="giftsLevelName" style="font-size:19px;font-weight:900;color:#fff;line-height:1.2">—</div>
+          <div id="giftsLevelPoints" style="font-size:12.5px;color:rgba(255,255,255,.65);margin-top:4px;font-family:'Inter',sans-serif;font-weight:600">— خاڵ</div>
         </div>
       </div>
-      <div style="margin-top:14px">
-        <div style="height:8px;border-radius:8px;background:rgba(255,255,255,.12);overflow:hidden">
-          <div id="giftsLevelBar" style="height:100%;width:0%;border-radius:8px;background:linear-gradient(90deg,#fbbf24,#f59e0b);transition:width .4s"></div>
+      <div style="margin-top:16px;position:relative;z-index:1">
+        <div style="height:9px;border-radius:9px;background:rgba(255,255,255,.12);overflow:hidden">
+          <div id="giftsLevelBar" style="height:100%;width:0%;border-radius:9px;background:linear-gradient(90deg,#fbbf24,#f59e0b);transition:width .5s ease;box-shadow:0 0 10px rgba(251,191,36,.5)"></div>
         </div>
-        <div id="giftsLevelNext" style="font-size:11px;color:rgba(255,255,255,.55);margin-top:8px">—</div>
+        <div id="giftsLevelNext" style="font-size:11.5px;color:rgba(255,255,255,.6);margin-top:9px;display:flex;align-items:center;gap:6px"><i class="fas fa-arrow-trend-up" style="font-size:10px;color:#fbbf24"></i>—</div>
       </div>
     </div>
 
-    <div id="giftsVoucherBox" style="display:none;background:linear-gradient(135deg,rgba(6,182,212,.08),rgba(6,182,212,.02));border:1.5px dashed rgba(6,182,212,.4);border-radius:16px;padding:14px 16px;margin-bottom:14px">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-        <i class="fas fa-ticket" style="color:#06b6d4;font-size:16px"></i>
-        <div style="font-size:13px;font-weight:800;color:var(--dark)">فاوچەری بەخێرهاتن بۆ تۆیە</div>
+    <!-- ══ Welcome Voucher ══ -->
+    <div id="giftsVoucherBox" class="gifts-voucher-card">
+      <div class="gifts-voucher-shine"></div>
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:10px;position:relative;z-index:1">
+        <div style="width:38px;height:38px;border-radius:11px;background:rgba(6,182,212,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="fas fa-ticket" style="color:#06b6d4;font-size:16px"></i>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:13.5px;font-weight:800;color:var(--dark)">فاوچەری بەخێرهاتن بۆ تۆیە</div>
+          <div style="font-size:10.5px;color:var(--mt);font-weight:600;margin-top:1px">تایبەتە بە هەژمارەکەت — کەس نایتوانێت بەکاری بهێنێت</div>
+        </div>
       </div>
-      <div id="giftsVoucherDesc" style="font-size:12px;color:var(--mt);line-height:1.7">—</div>
-      <div id="giftsVoucherCode" style="margin-top:10px;font-family:'Inter',sans-serif;font-weight:800;letter-spacing:2px;font-size:15px;color:#06b6d4;direction:ltr;text-align:center;background:#fff;border-radius:10px;padding:8px"></div>
+      <div id="giftsVoucherDesc" style="font-size:12px;color:var(--mt);line-height:1.7;position:relative;z-index:1">—</div>
+      <div id="giftsVoucherCode" style="margin-top:12px;font-family:'Inter',sans-serif;font-weight:800;letter-spacing:3px;font-size:16px;color:#0e7490;direction:ltr;text-align:center;background:#fff;border:1.5px dashed rgba(6,182,212,.4);border-radius:11px;padding:10px;position:relative;z-index:1"></div>
     </div>
 
-    <div style="font-size:14px;font-weight:800;color:var(--dark);margin:6px 4px 10px"><i class="fas fa-flag-checkered" style="margin-left:7px;color:#a855f7"></i>چاڵنجەکان</div>
+    <div class="gifts-sec-hdr">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="gifts-sec-ico"><i class="fas fa-flag-checkered"></i></div>
+        <span>چاڵنجەکان</span>
+      </div>
+      <span style="font-size:10.5px;color:var(--mt);font-weight:600">خەڵاتی خۆت وەربگرە</span>
+    </div>
     <div id="giftsChallengesList" style="margin-bottom:100px">
-      <div style="text-align:center;padding:20px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin"></i></div>
+      <div style="text-align:center;padding:30px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin" style="font-size:20px"></i></div>
     </div>
   </div>
 
@@ -5968,6 +6003,10 @@ function startWalletListener() {
   const ref = db.ref('wallets/' + uid + '/balance');
   if (_wBalUnsub) ref.off('value', _wBalUnsub);
   _wBalUnsub = ref.on('value', function(snap) {
+    // ── گرنگ: ئەگەر ئەم ڕێڕەوە هێشتا لە Firebase دروست نەکرابێت (snap بەتاڵە)
+    // مامەڵەی وەک 0 لەگەڵی مەکە، چونکە ئەوە باڵانسی ڕاستی کاش کراو لە Supabase دەسڕێتەوە.
+    // سەرچاوەی ڕاستی باڵانس هەمیشە Supabase (pa_wallets) ـە، ئەمە تەنها مرۆر بۆ realtime ـە.
+    if (!snap.exists()) return;
     const bal = Math.round(parseFloat(snap.val() || 0));
     _runningBalIQD = bal;
     const fmt = bal.toLocaleString();
@@ -7254,6 +7293,13 @@ async function loadBal(){
   const profBalEl=document.getElementById('profBal');if(profBalEl)profBalEl.textContent=b;
   const sidebarBalEl=document.getElementById('sidebarBal');if(sidebarBalEl)sidebarBalEl.textContent=b+' IQD';
   const wBalEl=document.getElementById('wBal');if(wBalEl)wBalEl.textContent=b;
+  // ── هاوکاتکردنی مرۆری Firebase بە باڵانسی ڕاستی Supabase ──
+  // ئەمە پێشوازیدەکات لەوەی گوێگری realtime باڵانس بگەڕێنێتەوە بۆ 0
+  // کاتێک ڕێڕەوی Firebase هێشتا دروست نەکراوە یان دەرکەوتووە.
+  try{
+    const _db=getFwDb();
+    if(_db&&cu)_db.ref('wallets/'+cu.id+'/balance').set(bIQD);
+  }catch(_e){}
   return bIQD;
 }
 
@@ -8046,6 +8092,71 @@ function updateEstResults(){
 
 // ═══ AD BUDGET (USD DAILY SYSTEM) ═══
 function getAdRate(usd){ return usd<=10 ? 1850 : 1800; }
+
+// ══════════════════════════════════════════════════════════════
+// ══ SPONSORSHIP TIER PRICING — نرخی سپۆنسەری بەپێی پلە ══
+// ڕێژەی گۆڕینەوە: ١٠ دۆلار = ١٨,٥٠٠ دینار (١ دۆلار = ١,٨٥٠ دینار)
+// پلەکان: Bronze (بێ داشکاندن) / Silver (%٥) / Diamond (%١٠) / Diamond+ (%١٥)
+// ══════════════════════════════════════════════════════════════
+const SPONSOR_EXCHANGE_RATE_IQD = 1850; // 1 USD = 1,850 IQD (10 USD = 18,500 IQD)
+
+const SPONSOR_TIER_DISCOUNTS = {
+  'Bronze':   0,
+  'Silver':   0.05,
+  'Diamond':  0.10,
+  'Diamond+': 0.15,
+};
+
+/**
+ * Calculates the final sponsorship price in IQD for a given user tier and
+ * sponsorship amount (in USD), applying the tier's discount on top of the
+ * fixed 1,850 IQD/USD exchange rate.
+ *
+ * @param {'Bronze'|'Silver'|'Diamond'|'Diamond+'} tier - the user's membership tier
+ * @param {number} amountUSD - the sponsorship amount in USD
+ * @returns {{
+ *   tier: string,
+ *   amountUSD: number,
+ *   exchangeRate: number,
+ *   discountPercent: number,
+ *   basePriceIQD: number,
+ *   discountIQD: number,
+ *   finalPriceIQD: number,
+ *   formatted: string
+ * }}
+ */
+function calculateSponsorshipPrice(tier, amountUSD){
+  const normalizedTier = SPONSOR_TIER_DISCOUNTS.hasOwnProperty(tier) ? tier : 'Bronze';
+  const discountPercent = SPONSOR_TIER_DISCOUNTS[normalizedTier];
+
+  const usd = Math.max(0, parseFloat(amountUSD) || 0);
+  const basePriceIQD = usd * SPONSOR_EXCHANGE_RATE_IQD;
+  const discountIQD = basePriceIQD * discountPercent;
+  const finalPriceIQD = Math.round(basePriceIQD - discountIQD);
+
+  return {
+    tier: normalizedTier,
+    amountUSD: usd,
+    exchangeRate: SPONSOR_EXCHANGE_RATE_IQD,
+    discountPercent: discountPercent * 100,
+    basePriceIQD: Math.round(basePriceIQD),
+    discountIQD: Math.round(discountIQD),
+    finalPriceIQD,
+    formatted: finalPriceIQD.toLocaleString('en-US') + ' IQD',
+  };
+}
+
+/**
+ * Convenience helper — returns just the clearly formatted final price string
+ * shown to the user, e.g. "17,575 IQD".
+ */
+function getSponsorshipPriceDisplay(tier, amountUSD){
+  return calculateSponsorshipPrice(tier, amountUSD).formatted;
+}
+
+// Expose globally so other inline scripts / onclick handlers can use it.
+window.calculateSponsorshipPrice = calculateSponsorshipPrice;
+window.getSponsorshipPriceDisplay = getSponsorshipPriceDisplay;
 
 const _BUD_STEPS=[10,20,50,100,200,500,1000];
 
@@ -13584,7 +13695,7 @@ async function _loadGiftsChallenges() {
   const wrap = document.getElementById('giftsChallengesList');
   const { data: challenges } = await sb.from('pa_challenges').select('*').eq('is_active', true).order('created_at', { ascending: false });
   if (!challenges || !challenges.length) {
-    wrap.innerHTML = '<div style="text-align:center;padding:20px;color:var(--mt);font-size:12.5px">هیچ چاڵنجێکی چالاک نییە لە ئێستادا</div>';
+    wrap.innerHTML = '<div class="gifts-empty"><i class="fas fa-flag-checkered"></i>هیچ چاڵنجێکی چالاک نییە لە ئێستادا<br><span style="font-size:11px;opacity:.75">دواتر سەردانی ئەم بەشە بکەرەوە</span></div>';
     return;
   }
   const { data: progressRows } = await sb.from('pa_challenge_progress').select('*').eq('user_id', cu.id);
@@ -13595,27 +13706,36 @@ async function _loadGiftsChallenges() {
     const pr = progMap[c.id] || { progress: 0, claimed: false };
     const pct = Math.min(100, Math.round((pr.progress / c.goal_value) * 100));
     const done = pr.progress >= c.goal_value;
-    const unit = c.goal_type === 'ads_count' ? 'ڕیکلام' : 'دۆلار';
+    const isAdsGoal = c.goal_type === 'ads_count';
+    const unit = isAdsGoal ? 'ڕیکلام' : 'دۆلار';
+    const icoCls = isAdsGoal ? 'fa-bullhorn' : 'fa-dollar-sign';
+    const icoColor = pr.claimed ? '#16a34a' : (done ? '#a855f7' : '#6366f1');
+    const icoBg = pr.claimed ? 'rgba(22,163,74,.1)' : (done ? 'rgba(168,85,247,.1)' : 'rgba(99,102,241,.1)');
     const rewardTxt = [
       c.reward_iqd > 0 ? (parseFloat(c.reward_iqd).toLocaleString() + ' IQD') : null,
       c.reward_points > 0 ? (c.reward_points + ' خاڵ') : null,
     ].filter(Boolean).join(' + ');
     let btn;
     if (pr.claimed) {
-      btn = '<div style="font-size:12px;font-weight:800;color:var(--gr)"><i class="fas fa-check-circle"></i> وەرگیرا</div>';
+      btn = '<div style="font-size:12px;font-weight:800;color:var(--gr);display:flex;align-items:center;gap:6px"><i class="fas fa-check-circle"></i> وەرگیرا</div>';
     } else if (done) {
-      btn = '<button class="abtn" style="padding:8px 16px;font-size:12.5px;width:auto" onclick="claimChallenge(\''+c.id+'\')"><i class="fas fa-gift"></i> وەرگرتنی خەڵات</button>';
+      btn = '<button class="abtn" style="padding:9px 18px;font-size:12.5px;width:auto" onclick="claimChallenge(\''+c.id+'\')"><i class="fas fa-gift"></i> وەرگرتنی خەڵات</button>';
     } else {
-      btn = '<div style="font-size:11px;color:var(--mt)">' + Math.floor(pr.progress) + ' / ' + c.goal_value + ' ' + unit + '</div>';
+      btn = '<div style="font-size:11px;color:var(--mt);font-weight:700;font-family:\'Inter\',sans-serif">' + Math.floor(pr.progress) + ' / ' + c.goal_value + ' <span style="font-family:\'R\',sans-serif;font-weight:600">' + unit + '</span></div>';
     }
-    return '<div class="pcard" style="margin-bottom:10px">' +
-      '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px">' +
-        '<div style="font-size:13.5px;font-weight:800;color:var(--dark)">' + (c.title || '') + '</div>' +
-        '<div style="font-size:11px;font-weight:700;color:#a855f7;font-family:\'Inter\',sans-serif;white-space:nowrap">' + rewardTxt + '</div>' +
+    return '<div class="gifts-chal-card' + (pr.claimed ? ' done' : '') + '">' +
+      '<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px">' +
+        '<div class="gifts-chal-ico" style="background:' + icoBg + ';color:' + icoColor + '"><i class="fas ' + icoCls + '"></i></div>' +
+        '<div style="flex:1;min-width:0">' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">' +
+            '<div style="font-size:13.5px;font-weight:800;color:var(--dark)">' + (c.title || '') + '</div>' +
+            '<div class="gifts-chal-reward">' + rewardTxt + '</div>' +
+          '</div>' +
+          (c.description ? '<div style="font-size:11.5px;color:var(--mt);margin-top:4px;line-height:1.6">' + c.description + '</div>' : '') +
+        '</div>' +
       '</div>' +
-      (c.description ? '<div style="font-size:11.5px;color:var(--mt);margin-bottom:10px">' + c.description + '</div>' : '') +
-      '<div style="height:6px;border-radius:6px;background:var(--b1);overflow:hidden;margin-bottom:10px">' +
-        '<div style="height:100%;width:' + pct + '%;border-radius:6px;background:linear-gradient(90deg,#a855f7,#7c3aed)"></div>' +
+      '<div style="height:7px;border-radius:7px;background:var(--b1);overflow:hidden;margin-bottom:11px">' +
+        '<div style="height:100%;width:' + pct + '%;border-radius:7px;background:linear-gradient(90deg,#a855f7,#7c3aed);transition:width .4s ease"></div>' +
       '</div>' +
       '<div style="display:flex;justify-content:flex-end">' + btn + '</div>' +
     '</div>';
