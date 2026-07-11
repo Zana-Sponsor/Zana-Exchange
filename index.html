@@ -5203,7 +5203,14 @@ async function verifyOtp() {
         // ── تۆمارکردنی دیوایس دوای سەرکەوتن ──
         try{ await registerDeviceFingerprint(); }catch(e){}
         // ── فاوچەری بەخێرهاتنی ٧ ڕۆژ — تەنها بۆ خۆی ──
-        try{ await createSignupVoucher(cu.id); }catch(e){}
+        try{
+          const _sv = await createSignupVoucher(cu.id);
+          if(_sv && _sv.ok === false){
+            console.error('[signup] هەڵە لە دروستکردنی فاوچەری بەخێرهاتن:', _sv);
+          } else if(_sv && _sv.code){
+            showToast('🎁 فاوچەری بەخێرهاتن بۆت دروستکرا! سەردانی خەڵات بکە بۆ چالاککردنی', 'ok');
+          }
+        }catch(e){ console.error('[signup] createSignupVoucher threw:', e); }
         // ── referral (چێکی هەمان دیوایس) ──
         const refCode = localStorage.getItem('proxo_ref');
         localStorage.removeItem('proxo_ref');
@@ -13208,26 +13215,54 @@ function _levelForPoints(points, defs) {
 }
 
 // ── فاوچەری بەخێرهاتنی ٧ ڕۆژ بۆ بەکارهێنەری نوێ (تەنها بۆ خۆی) ──
+// تێبینی گرنگ: پێشتر ئەم فەنکشنە ڕاستەوخۆ INSERT دەکرد بۆ pa_vouchers لە
+// لایەنی کلایەنت (وشەیاسای بەکارهێنەری نوێ خۆی). لە زیاتر لە حاڵەتێکدا
+// Supabase Row Level Security (RLS) ڕێگە بە بەکارهێنەری ئاسایی نادات کە
+// ڕاستەوخۆ نۆرەیەک/چیک تۆمار بکات لە خشتەی pa_vouchers، بەڵام sb.from().insert()
+// لە دۆخی ئاوادا HELE THROW نەیدەکرد -- تەنها {error} دەگەرێنرایەوە، بۆیە
+// try/catch دەوروبەرەکە هیچ کاتێک کارینەدەکرد و هەڵەکە بێدەنگ بوو، بۆیە نەشتۆمارکراو
+// دیاریەکە بۆ بەکارهێنەر دروست نەدەکرا و هیچ نیشانەیەکی هەڵەی نیشان نەدەدرا.
+// چارەسەر: یەکەم هەوڵ لەسەر RPC-ی سێرڤەردا (SECURITY DEFINER، تێپەڕی RLS)
+// دەدرێت -- هەمان شێوازی handle_auto_referral کە پێشتر بەکاردێت. ئەگەر
+// ئەم RPC-ە هێشتا لە داتابەیسدا دروست نەکرابێت (بۆ نموونە پرۆژە هێشتا SQL
+// ـەکەی خوارەوەی جێبەجێ نەکردووە) کۆدەکە دەگەڕێتەوە بۆ INSERT ـی ڕاستەوخۆ
+// وەک پێشتر، بەڵام ئێستا هەڵەکان بۆ کۆنسۆل تۆمار دەکرێن بۆ ئاسانکردنی دۆزینەوەی کێشە.
 async function createSignupVoucher(userId) {
-  // خوێندنەوەی ئەیلامی دیاری لە ئادمین
+  // 1) هەوڵ بە RPC (پێشنیارکراو -- بڕوانە README_FIX.md بۆ SQL-ی پێویست)
+  try {
+    const { data, error } = await sb.rpc('handle_signup_voucher', { p_user_id: userId });
+    if (!error) {
+      if (data && data.ok === false) {
+        console.warn('[createSignupVoucher] RPC returned ok:false ->', data);
+      }
+      return data;
+    }
+    // ئەگەر هەڵەکە بەهۆی نەبوونی فەنکشنەکەیە (هێشتا دروست نەکراوە) دەچین بۆ fallback
+    console.warn('[createSignupVoucher] RPC handle_signup_voucher failed, falling back to direct insert:', error);
+  } catch (e) {
+    console.warn('[createSignupVoucher] RPC call threw, falling back to direct insert:', e);
+  }
+
+  // 2) FALLBACK — INSERT ـی ڕاستەوخۆ (هەمان کۆنی پێشوو، بەڵام ئێستا هەڵەکان دەردەکەوێت)
   let amount_iqd = 5000;
   let days = 7;
-  let enabled = true;
   try {
-    const { data: cfgData } = await sb.from('pa_settings').select('value').eq('key','signup_gift_config').single();
+    const { data: cfgData, error: cfgErr } = await sb.from('pa_settings').select('value').eq('key','signup_gift_config').single();
+    if (cfgErr) console.warn('[createSignupVoucher] could not read signup_gift_config:', cfgErr);
     if (cfgData?.value) {
       const cfg = typeof cfgData.value === 'string' ? JSON.parse(cfgData.value) : cfgData.value;
-      if (cfg.enabled === false) return; // ئادمین چالاکی ناکردووە
+      if (cfg.enabled === false) return { ok: false, reason: 'disabled_by_admin' }; // ئادمین چالاکی ناکردووە
       if (cfg.amount_iqd && cfg.amount_iqd >= 100) amount_iqd = cfg.amount_iqd;
       if (cfg.days && cfg.days >= 1) days = cfg.days;
     }
-  } catch(e) {}
+  } catch(e) { console.warn('[createSignupVoucher] signup_gift_config read threw:', e); }
+
   const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
   let code = 'PRXO';
   for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
   const now = new Date();
   const expires = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
-  await sb.from('pa_vouchers').insert({
+  const { error: insErr } = await sb.from('pa_vouchers').insert({
     code,
     amount_iqd,
     is_active: true,
@@ -13237,6 +13272,14 @@ async function createSignupVoucher(userId) {
     signup_days: days,
     expires_at: expires.toISOString(),
   });
+  if (insErr) {
+    // ئەمە ئەو هەڵەیەیە کە پێشتر بێدەنگ بوو — ئێستا لە کۆنسۆلدا دەردەکەوێت.
+    // ئەگەر کۆدی هەڵەکە '42501' یان دەربارەی RLS/policy بوو، ئەوا پێویستە
+    // RPC-ی handle_signup_voucher لە README_FIX.md جێبەجێ بکرێت.
+    console.error('[createSignupVoucher] insert into pa_vouchers failed:', insErr);
+    return { ok: false, reason: 'insert_failed', error: insErr };
+  }
+  return { ok: true, code, amount_iqd, days };
 }
 
 async function loadGiftsPage() {
