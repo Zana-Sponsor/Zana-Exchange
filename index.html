@@ -1100,6 +1100,9 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .vch-hero-ico{position:relative;z-index:1;width:52px;height:52px;border-radius:15px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;margin-bottom:14px}
 .vch-hero-title{position:relative;z-index:1;font-size:16.5px;font-weight:900;color:#fff}
 .vch-hero-sub{position:relative;z-index:1;font-size:12px;color:rgba(255,255,255,.78);margin-top:5px;line-height:1.6}
+.vch-hero-chips{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.vch-hero-chips span{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:20px;padding:5px 11px;font-size:10.5px;font-weight:700;color:#fff}
+.vch-hint{display:flex;align-items:center;justify-content:center;gap:5px;text-align:center;margin-top:9px;font-size:10.5px;color:var(--mt);font-family:'R',sans-serif}
 .vch-ticket{position:relative;background:#fff;border-radius:18px;margin:-30px 4px 14px;box-shadow:0 12px 26px rgba(79,70,229,.16);border:1px solid rgba(79,70,229,.08)}
 .vch-ticket:before,.vch-ticket:after{content:'';position:absolute;top:50%;width:20px;height:20px;border-radius:50%;background:var(--bg);transform:translateY(-50%);z-index:2}
 .vch-ticket:before{left:-10px}
@@ -1109,7 +1112,6 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .vch-ticket-dash{width:1.5px;align-self:stretch;margin:12px 0;background:repeating-linear-gradient(to bottom,rgba(124,58,237,.28) 0 6px,transparent 6px 12px)}
 .vch-inp{flex:1;border:none;outline:none;background:transparent;font-family:'Inter',monospace;font-size:16px;font-weight:800;letter-spacing:2px;color:var(--dark);text-align:center;padding:17px 6px;text-transform:uppercase;caret-color:#7c3aed}
 .vch-paste-btn{padding:0 14px;background:none;border:none;color:#7c3aed;cursor:pointer;font-size:15px;height:100%;display:flex;align-items:center}
-.vch-hint{text-align:center;margin-top:9px;font-size:10.5px;color:var(--mt);font-family:'Inter';letter-spacing:.4px}
 .vch-btn{width:100%;margin-top:14px;padding:15px;border:none;border-radius:15px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;font-family:'R',sans-serif;font-size:14.5px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 18px rgba(79,70,229,.28);transition:transform .15s,opacity .15s}
 .vch-btn:active{transform:scale(.98)}
 .vch-btn:disabled{opacity:.55;pointer-events:none}
@@ -1177,6 +1179,20 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .lc-form-hero h2{font-size:16px;font-weight:800;color:#1c2333;}
 .lc-form-hero p{font-size:12px;color:#64748b;margin-top:4px;line-height:1.5;}
 .lc-label{font-size:11.5px;font-weight:700;color:#475569;margin-bottom:5px;display:block;}
+/* ══ LIVE CHAT — PRE-CHAT INTAKE STEPS (پێشکەوتوو) ══ */
+.lc-step{margin-bottom:18px;}
+.lc-step-hd{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:#1c2333;margin-bottom:10px;}
+.lc-step-num{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Inter',sans-serif;}
+.lc-chip-row{display:flex;flex-wrap:wrap;gap:8px;}
+.lc-chip{display:flex;align-items:center;gap:6px;padding:9px 15px;border-radius:12px;border:1.5px solid #e2e8f0;background:#fff;color:#475569;font-family:'R',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;transition:all .16s;}
+.lc-chip i{font-size:12px;color:#94a3b8;transition:color .16s;}
+.lc-chip.on{border-color:#2563eb;background:rgba(37,99,235,.08);color:#1d4ed8;box-shadow:0 0 0 3px rgba(37,99,235,.1);}
+.lc-chip.on i{color:#2563eb;}
+.lc-cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.lc-cat-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:14px 8px;border-radius:14px;border:1.5px solid #e2e8f0;background:#fff;color:#475569;font-family:'R',sans-serif;font-size:11.5px;font-weight:700;cursor:pointer;transition:all .16s;text-align:center;}
+.lc-cat-item i{font-size:17px;color:#94a3b8;transition:color .16s;}
+.lc-cat-item.on{border-color:#2563eb;background:rgba(37,99,235,.08);color:#1d4ed8;box-shadow:0 0 0 3px rgba(37,99,235,.1);transform:translateY(-1px);}
+.lc-cat-item.on i{color:#2563eb;}
 .lc-inp{width:100%;padding:11px 13px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:11px;color:#1c2333;font-family:'R',sans-serif;font-size:13.5px;outline:none;transition:all .2s;}
 .lc-inp:focus{border-color:#2563eb;background:#fff;box-shadow:0 0 0 3px rgba(37,99,235,.08);}
 .lc-inp::placeholder{color:#94a3b8;}
@@ -1263,6 +1279,11 @@ textarea.lc-inp{resize:none;}
 .fb-dots{position:absolute;bottom:9px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:4;}
 .fb-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.45);border:none;padding:0;cursor:pointer;transition:background .2s,transform .2s;}
 .fb-dot.on{background:#fff;transform:scale(1.25);}
+/* ══ LIVE SUPPORT — FLOATING BUTTON (هەموو بەشەکانی ئەپ) ══ */
+.lc-fab{display:none;position:fixed;left:16px;bottom:96px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#1c2333,#2e3a50);align-items:center;justify-content:center;color:#fff;font-size:20px;cursor:pointer;z-index:850;box-shadow:0 10px 24px rgba(28,35,51,.38),0 2px 8px rgba(0,0,0,.12);transition:transform .18s;}
+.lc-fab:active{transform:scale(.92);}
+.lc-fab-dot{position:absolute;top:2px;right:2px;width:12px;height:12px;border-radius:50%;background:#4ade80;border:2.5px solid #1c2333;animation:lc-pulse 2s infinite;}
+@media(min-width:600px){.lc-fab{left:24px;bottom:110px;}}
 
 
   /* ══ AD REACH CALCULATOR ══ */
@@ -2700,15 +2721,6 @@ function _toWebP(dataUrl,quality){
         <div class="sidebar-item-ico" style="background:rgba(219,39,119,.12);color:#db2777"><i class="fas fa-gifts"></i></div>
         <div class="sidebar-item-txt">دیاریەکان</div>
       </div>
-      <div class="sb-sect">یارمەتی</div>
-      <!-- ٤ — پشتگیری ڕاستەوخۆ -->
-      <div class="sidebar-item" id="lcSidebarItem" onclick="lcOpenChatDirect();closeSidebar();">
-        <div class="sidebar-item-ico" style="position:relative;background:rgba(28,35,51,.9);color:#fff">
-          <i class="fas fa-comment-dots"></i>
-          <span id="lcSideNavDot" style="display:none;position:absolute;top:2px;right:2px;width:9px;height:9px;border-radius:50%;background:#4ade80;border:2px solid #fff"></span>
-        </div>
-        <div class="sidebar-item-txt">پشتگیری ڕاستەوخۆ</div>
-      </div>
       <div style="text-align:center;padding:14px 0 4px;font-size:11px;color:var(--mt);font-family:'Inter',sans-serif;letter-spacing:.5px;font-weight:500">
         v<span id="sidebarVersionLbl">1.0.1</span>
       </div>
@@ -3809,6 +3821,12 @@ function _toWebP(dataUrl,quality){
   </div>
 </nav>
 
+<!-- ══ LIVE SUPPORT — FLOATING BUTTON (بەردەست لە هەموو بەشەکانی ئەپ) ══ -->
+<div class="lc-fab" id="lcFab" onclick="lcOpenChatDirect()" title="پشتگیری ڕاستەوخۆ">
+  <i class="fas fa-headset"></i>
+  <span class="lc-fab-dot" id="lcFabDot" style="display:none"></span>
+</div>
+
 <!-- ══ DEPOSIT STEP 2: INFO FORM ══ -->
 <div class="mover" id="moWalletDeposit">
   <div class="mbox">
@@ -4340,28 +4358,33 @@ function _toWebP(dataUrl,quality){
         <div class="vch-hero-blob b1"></div>
         <div class="vch-hero-blob b2"></div>
         <div class="vch-hero-ico"><i class="fas fa-ticket-simple"></i></div>
-        <div class="vch-hero-title">فاوچەرەکەت بنووسە</div>
-        <div class="vch-hero-sub">کۆدی فاوچەرەکەت بنووسە بۆ وەرگرتنی باڵانسی خۆرایی بۆ هەژمارەکەت</div>
+        <div class="vch-hero-title">کۆدی فاوچەرت بنووسە</div>
+        <div class="vch-hero-sub">کۆدەکەت دابنێ و خەڵاتەکەت وەربگرە — یەکسەر دەچێتە باڵانسی هەژمارەکەت</div>
+        <div class="vch-hero-chips">
+          <span><i class="fas fa-bolt"></i> خێرا</span>
+          <span><i class="fas fa-shield-halved"></i> پارێزراو</span>
+          <span><i class="fas fa-wallet"></i> ڕاستەوخۆ بۆ باڵانس</span>
+        </div>
       </div>
 
       <div class="vch-ticket" id="voucherInpWrap">
         <div class="vch-ticket-row">
           <div class="vch-ticket-ico"><i class="fas fa-ticket-simple" style="transform:rotate(-15deg);display:inline-block"></i></div>
           <input type="text" id="voucherCodeInp" class="vch-inp" placeholder="PRXO-XXXX-XXXX" dir="ltr"
-            oninput="this.value=this.value.toUpperCase();document.getElementById('voucherInpWrap').style.boxShadow=this.value?'0 12px 26px rgba(79,70,229,.3)':'0 12px 26px rgba(79,70,229,.16)'">
+            oninput="this.value=this.value.toUpperCase();document.getElementById('voucherInpWrap').style.boxShadow=this.value?'0 14px 30px rgba(79,70,229,.32)':'0 12px 26px rgba(79,70,229,.16)'">
           <div class="vch-ticket-dash"></div>
-          <button onclick="pasteToField('voucherCodeInp')" class="vch-paste-btn" title="لکاندن">
+          <button onclick="pasteToField('voucherCodeInp')" class="vch-paste-btn" title="لکاندن لە کلیپبۆرد">
             <i class="fas fa-clipboard-check"></i>
           </button>
         </div>
       </div>
-      <div class="vch-hint">کۆدەکەت بنووسە یان لکبدە</div>
+      <div class="vch-hint"><i class="fas fa-circle-info"></i> کۆدەکە بنووسە یان لکی بدە لە کلیپبۆردەوە</div>
 
       <div id="voucherMsg" style="display:none;font-size:12.5px;font-weight:600;padding:10px 14px;border-radius:12px;margin:12px 4px;text-align:center"></div>
 
       <button class="vch-btn" id="voucherBtn" onclick="claimVoucher()" style="margin-top:16px">
         <i class="fas fa-ticket" id="voucherBtnIco"></i>
-        <span id="voucherBtnTxt">بەکارهێنانی فاوچەر</span>
+        <span id="voucherBtnTxt">چالاککردنی فاوچەر</span>
       </button>
     </div>
 
@@ -4370,7 +4393,7 @@ function _toWebP(dataUrl,quality){
       <div style="text-align:center;padding:10px 0 20px">
         <div style="width:80px;height:80px;border-radius:50%;background:rgba(22,163,74,.12);border:2px solid rgba(22,163,74,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:34px;color:var(--gr);animation:pulse 1s ease 1"><i class="fas fa-circle-check"></i></div>
         <div style="font-size:18px;font-weight:900;color:var(--dark);margin-bottom:6px">پیرۆزبایت! 🎉</div>
-        <div style="font-size:13px;color:var(--mt)">فاوچەرەکەت بەسەرکەوتوویی بەکارهێنرا</div>
+        <div style="font-size:13px;color:var(--mt)">فاوچەرەکەت بە سەرکەوتوویی چالاک کرا و باڵانسەکەت نوێ بووەوە</div>
       </div>
 
       <div style="background:rgba(124,58,237,.06);border:1.5px solid rgba(124,58,237,.18);border-radius:16px;padding:16px;margin-bottom:14px">
@@ -6426,6 +6449,7 @@ async function boot(){
   document.getElementById('authWrap').style.display='none';
   document.getElementById('app').style.display='flex';
   document.getElementById('bnav').style.display='block';
+  const _fab=document.getElementById('lcFab');if(_fab)_fab.style.display='flex';
   const _avb=document.getElementById('authVersionBar');if(_avb)_avb.style.display='none';
   await Promise.all([loadAppSectionLocks(), ensureWallet(), ensureCoinsWallet()]);
   await Promise.all([loadBal(), loadCoins()]);
@@ -11609,11 +11633,37 @@ async function checkDbReady(){
         <div class="lc-form-hero">
           <div class="lc-form-hero-ico"><i class="fas fa-comments" style="font-size:24px;color:#fff"></i></div>
           <h2>دەستپێبکە</h2>
-          <p>زانیاریەکانت بنووسە بۆ دەستپێکردنی چات</p>
+          <p>چەند پرسیارێکی کورت بۆ ئەوەی خێراتر و باشتر یارمەتیت بدەین</p>
         </div>
-        <div><label class="lc-label">ناو *</label><input class="lc-inp" id="lcFName" type="text" placeholder="ناوی تەواوت بنووسە"></div>
-        <div><label class="lc-label">ئیمەیڵ *</label><input class="lc-inp" id="lcFEmail" type="email" placeholder="ئیمەیڵت بنووسە" dir="ltr" style="text-align:left"></div>
-        <div><label class="lc-label">کێشەکەت *</label><textarea class="lc-inp" id="lcFProblem" rows="3" placeholder="کێشەکەت بە کورتی شی بکەوە..."></textarea></div>
+
+        <div class="lc-step">
+          <div class="lc-step-hd"><span class="lc-step-num">1</span> زمانی گفتوگۆ</div>
+          <div class="lc-chip-row" id="lcLangChips">
+            <button type="button" class="lc-chip" data-val="کوردی" onclick="lcPickLang(this)"><i class="fas fa-language"></i> کوردی</button>
+            <button type="button" class="lc-chip" data-val="عەرەبی" onclick="lcPickLang(this)"><i class="fas fa-language"></i> عەرەبی</button>
+            <button type="button" class="lc-chip" data-val="English" onclick="lcPickLang(this)"><i class="fas fa-language"></i> English</button>
+          </div>
+        </div>
+
+        <div class="lc-step">
+          <div class="lc-step-hd"><span class="lc-step-num">2</span> کێشەکەت دەربارەی کام بەشە؟</div>
+          <div class="lc-cat-grid" id="lcCatChips">
+            <button type="button" class="lc-cat-item" data-val="باڵانس و پارە" onclick="lcPickCat(this)"><i class="fas fa-wallet"></i><span>باڵانس و پارە</span></button>
+            <button type="button" class="lc-cat-item" data-val="ڕیکلامەکان" onclick="lcPickCat(this)"><i class="fas fa-bullhorn"></i><span>ڕیکلامەکان</span></button>
+            <button type="button" class="lc-cat-item" data-val="هەژمار" onclick="lcPickCat(this)"><i class="fas fa-user-gear"></i><span>هەژمار</span></button>
+            <button type="button" class="lc-cat-item" data-val="فاوچەر/داشکاندن" onclick="lcPickCat(this)"><i class="fas fa-ticket"></i><span>فاوچەر/داشکاندن</span></button>
+            <button type="button" class="lc-cat-item" data-val="کێشەی تەکنیکی" onclick="lcPickCat(this)"><i class="fas fa-bug"></i><span>تەکنیکی</span></button>
+            <button type="button" class="lc-cat-item" data-val="شتێکی تر" onclick="lcPickCat(this)"><i class="fas fa-ellipsis"></i><span>شتێکی تر</span></button>
+          </div>
+        </div>
+
+        <div class="lc-step">
+          <div class="lc-step-hd"><span class="lc-step-num">3</span> زانیارییەکانت</div>
+          <div><label class="lc-label">ناو *</label><input class="lc-inp" id="lcFName" type="text" placeholder="ناوی تەواوت بنووسە"></div>
+          <div><label class="lc-label">ئیمەیڵ *</label><input class="lc-inp" id="lcFEmail" type="email" placeholder="ئیمەیڵت بنووسە" dir="ltr" style="text-align:left"></div>
+          <div><label class="lc-label">کێشەکەت بە وردی *</label><textarea class="lc-inp" id="lcFProblem" rows="3" placeholder="کێشەکەت بە کورتی شی بکەوە..."></textarea></div>
+        </div>
+
         <button class="lc-submit-btn" id="lcSubmitBtn" onclick="lcSubmitForm()">
           <i class="fas fa-paper-plane"></i> دەستپێکردنی چات
         </button>
@@ -11746,6 +11796,8 @@ lcDb.ref('adminStatus/online').on('value',snap=>{
   if(sideItem)sideItem.style.display='flex';
   const sideNavDot=document.getElementById('lcSideNavDot');
   if(sideNavDot)sideNavDot.style.display=lcAdminOnline?'block':'none';
+  const fabDot=document.getElementById('lcFabDot');
+  if(fabDot)fabDot.style.display=lcAdminOnline?'block':'none';
 });
 
 function lcShowStage(id){
@@ -11757,6 +11809,11 @@ function lcShowStage(id){
   // نیشاندانی دووگمەی مێژوو تەنها کاتی چاتی چالاک
   const backBtn=document.getElementById('lcBackHistBtn');
   if(backBtn)backBtn.style.display=(id==='lcStageChat')?'flex':'none';
+  // ڕێستکردنەوەی هەڵبژاردنی زمان/بەش کاتێک فۆرمی نوێ دەردەکەوێت
+  if(id==='lcStageForm'){
+    _lcLang=null;_lcCat=null;
+    document.querySelectorAll('#lcLangChips .lc-chip, #lcCatChips .lc-cat-item').forEach(c=>c.classList.remove('on'));
+  }
   // کاتی چاتی چالاک — خانەی نووسین ئامادە بکە
   if(id==='lcStageChat'){
     const wrap=document.getElementById('lcInpWrap');
@@ -11959,6 +12016,7 @@ window.lcGoToHistory=function(){
 
 window.lcOpenChatDirect=function(){
   document.getElementById('lcOverlay').classList.add('show');
+  const _fabH=document.getElementById('lcFab');if(_fabH)_fabH.style.display='none';
   _lcUnreadCount=0;checkNotifBell();
   const saved=localStorage.getItem(LC_KEY);
   if(saved){
@@ -11988,6 +12046,7 @@ window.lcOpenChatDirect=function(){
 
 window.lcOpenChat=function(){
   document.getElementById('lcOverlay').classList.add('show');
+  const _fabO=document.getElementById('lcFab');if(_fabO)_fabO.style.display='none';
   _lcUnreadCount=0;checkNotifBell();
   const saved=localStorage.getItem(LC_KEY);
   if(saved){
@@ -12038,25 +12097,43 @@ async function lcShowHistoryOrForm(){
 
 window.lcCloseChat=function(){
   document.getElementById('lcOverlay').classList.remove('show');
+  const _appEl=document.getElementById('app');
+  const _fabC=document.getElementById('lcFab');
+  if(_fabC&&_appEl&&_appEl.style.display!=='none')_fabC.style.display='flex';
 };
 
+let _lcLang=null,_lcCat=null;
+window.lcPickLang=function(el){
+  document.querySelectorAll('#lcLangChips .lc-chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  _lcLang=el.dataset.val;
+};
+window.lcPickCat=function(el){
+  document.querySelectorAll('#lcCatChips .lc-cat-item').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  _lcCat=el.dataset.val;
+};
 window.lcSubmitForm=async function(){
   const name=document.getElementById('lcFName').value.trim();
   const email=document.getElementById('lcFEmail').value.trim();
   const problem=document.getElementById('lcFProblem').value.trim();
+  if(!_lcLang){alert('تکایە زمانی گفتوگۆ هەڵبژێرە');return;}
+  if(!_lcCat){alert('تکایە بەشەکە هەڵبژێرە کە کێشەکەت پەیوەندیداری پێیەتی');return;}
   if(!name||!email||!problem){alert('تکایە هەموو خانەکان پڕبکەوە');return;}
   const btn=document.getElementById('lcSubmitBtn');
   btn.disabled=true;btn.textContent='چاوەڕوان بە...';
   try{
     const ref=lcDb.ref('sessions').push();
     lcSessionId=ref.key;
-    await ref.set({name,email,problem,status:'pending',createdAt:Date.now()});
+    await ref.set({name,email,problem,language:_lcLang,category:_lcCat,status:'pending',createdAt:Date.now()});
     // ── ئاگادارکردنەوەی تیلیگرام کاتی دەستپێکردنی چات ──
     try{
       const _lcTgTxt='🔔 <b>داواکاری پشتگیری ژیوەی نوێ</b>\n'
         +'━━━━━━━━━━━━━━━━\n'
         +'👤 <b>ناو:</b> '+name+'\n'
         +'✉️ <b>ئیمەیل:</b> '+email+'\n'
+        +'🌐 <b>زمان:</b> '+_lcLang+'\n'
+        +'🗂️ <b>بەش:</b> '+_lcCat+'\n'
         +'💬 <b>کێشە:</b> '+problem.substring(0,200)+'\n'
         +'━━━━━━━━━━━━━━━━\n'
         +'🔑 <b>سێشن:</b> #'+lcSessionId.slice(-8)+'\n'
@@ -12796,7 +12873,7 @@ function openVoucherModal() {
   const btn = document.getElementById('voucherBtn');
   btn.disabled = false;
   document.getElementById('voucherBtnIco').className = 'fas fa-ticket';
-  document.getElementById('voucherBtnTxt').textContent = 'بەکارهێنانی فاوچەر';
+  document.getElementById('voucherBtnTxt').textContent = 'چالاککردنی فاوچەر';
   document.getElementById('moVoucher').classList.add('on');
 }
 
@@ -12836,29 +12913,29 @@ async function claimVoucher() {
 
       if (fetchErr || !voucher) {
         _vMsg('فاوچەرەکە نەدۆزرایەوە. کۆدەکە دووبارە بپشکنە.', false);
-        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی فاوچەر';
+        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'چالاککردنی فاوچەر';
         return;
       }
 
       // 2. Validate
       if (!voucher.is_active) {
         _vMsg('ئەم فاوچەرە چالاک نییە.', false);
-        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی فاوچەر';
+        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'چالاککردنی فاوچەر';
         return;
       }
       if (voucher.used_by) {
         _vMsg('ئەم فاوچەرە پێشتر بەکارهێنراوە.', false);
-        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی فاوچەر';
+        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'چالاککردنی فاوچەر';
         return;
       }
       if (voucher.assigned_user_id && voucher.assigned_user_id !== cu.id) {
         _vMsg('ئەم فاوچەرە بۆ بەکارهێنەرێکی تر تەرخانکراوە.', false);
-        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی فاوچەر';
+        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'چالاککردنی فاوچەر';
         return;
       }
       if (voucher.expires_at && new Date(voucher.expires_at) < new Date()) {
         _vMsg('ئەم فاوچەرە بەسەرچووە.', false);
-        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی فاوچەر';
+        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'چالاککردنی فاوچەر';
         return;
       }
 
@@ -12875,7 +12952,7 @@ async function claimVoucher() {
 
       if (claimErr) {
         _vMsg('هەڵەیەک ڕووی دا. دووبارە هەوڵ بدەرەوە.', false);
-        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی فاوچەر';
+        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'چالاککردنی فاوچەر';
         return;
       }
 
@@ -12932,7 +13009,7 @@ async function claimVoucher() {
 
     } catch (e) {
       _vMsg('هەڵەی نەچاو: ' + (e.message || e), false);
-      btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'بەکارهێنانی فاوچەر';
+      btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'چالاککردنی فاوچەر';
     }
   });
 }
