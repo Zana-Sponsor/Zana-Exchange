@@ -897,14 +897,18 @@ tr:hover td{background:rgba(28,35,51,.015);}
             </select>
             <div id="fbNavSectionWrap">
               <select class="minp" id="fbBannerNavSection" style="background:var(--bg)" onchange="fbBannerUpdatePreview()">
+                <option value="home">🏠 سەرەکی</option>
                 <option value="create">📢 سپۆنسەری نوێ (ڕیکلام دروست بکە)</option>
                 <option value="proxolink">🔗 ئامرازەکان</option>
                 <option value="tutorials">🎓 فێرکاریەکان</option>
                 <option value="txhistory">📋 مێژووی مامەڵەکان</option>
                 <option value="profile">👤 پرۆفایل</option>
                 <option value="myads">📊 ڕیکلامەکانم</option>
-                <option value="giveaway">🎁 خەڵاتی هەفتانە</option>
+                <option value="gifts">🎁 خەڵاتەکان</option>
                 <option value="promocodes">🏷️ کۆدی داشکاندن</option>
+                <option value="wallet">👛 جزدان</option>
+                <option value="notifications">🔔 ئاگادارییەکان</option>
+                <option value="support">🛟 پشتگیری</option>
               </select>
             </div>
             <div id="fbNavUrlWrap" style="display:none">
@@ -5633,9 +5637,11 @@ function lcaEsc(t){return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;
   const fbBannersRef = lcaDb.ref('appContent/banners');
   let _fbCurrentB64 = '';
   const NAV_LABELS = {
-    create:'📢 سپۆنسەری نوێ',proxolink:'🔗 ئامرازەکان',tutorials:'🎓 فێرکاریەکان',
+    home:'🏠 سەرەکی',create:'📢 سپۆنسەری نوێ',proxolink:'🔗 ئامرازەکان',tutorials:'🎓 فێرکاریەکان',
     txhistory:'📋 مێژووی مامەڵەکان',profile:'👤 پرۆفایل',myads:'📊 ڕیکلامەکانم',
-    giveaway:'🎁 خەڵاتی هەفتانە',promocodes:'🏷️ کۆدی داشکاندن'
+    gifts:'🎁 خەڵاتەکان',promocodes:'🏷️ کۆدی داشکاندن',wallet:'👛 جزدان',
+    notifications:'🔔 ئاگادارییەکان',support:'🛟 پشتگیری',
+    giveaway:'🎁 خەڵاتی هەفتانە' /* کۆن — بۆ بانەرە کۆنەکان کە پێشتر دروستکراون */
   };
 
   function _getTargetURL(){
