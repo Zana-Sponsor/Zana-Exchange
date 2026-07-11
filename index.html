@@ -12650,7 +12650,7 @@ function lcRenderMessages(msgs){
   // پەیامی سیستەمی "[ناو] هاتە ناو چات" بە ڕیزبەندی کاتی خۆی لەگەڵ باقی پەیامەکان تێکەڵ دەکرێت
   let renderList=msgs.slice();
   if(lcAgentJoinedName){
-    renderList.push({type:'system',text:lcAgentJoinedName+' بەشداربوو لەچاتەکەت 🟢',timestamp:lcAgentJoinTimestamp||Date.now()});
+    renderList.push({type:'system',text:lcAgentJoinedName+' بەشداربوو لەچاتەکە',timestamp:lcAgentJoinTimestamp||Date.now()});
     renderList.sort((a,b)=>a.timestamp-b.timestamp);
   }
   // ── فتنکشنی تیک‌ی پەیام ──
@@ -12660,7 +12660,7 @@ function lcRenderMessages(msgs){
     if(status==='delivered')return '<span class="lc-ticks lc-ticks-delivered" title="گەیشتووە">✓✓</span>';
     return '<span class="lc-ticks lc-ticks-sent" title="نێردرا">✓</span>';
   }
-  let _lcPrevSender=null;
+  let _lcPrevSender=null,_lcPrevIsBot=false;
   renderList.forEach(m=>{
     const div=document.createElement('div');
     if(m.type==='system'){
@@ -12672,14 +12672,15 @@ function lcRenderMessages(msgs){
     }
     // ── ئاڤاتاری ئەدمین — تەنها بۆ مرۆڤ-ئەدمین، بەکارهێنانی senderName لە پەیامەکەوە ──
     const _aDispName=m.senderName||(m.isBot?null:lcCurrentAdminName);
-    if(m.sender==='admin'&&_lcPrevSender!=='admin'&&!m.isBot&&_aDispName&&_aDispName!==LC_BOT_NAME){
+    // ناوی ئادمین دەرخرێت کاتێک: پەیامی مرۆڤی ڕاستەقینە بێت + پێشووی بۆت بوو یان گرووپی نوێ بوو
+    if(m.sender==='admin'&&!m.isBot&&_aDispName&&_aDispName!==LC_BOT_NAME&&(_lcPrevSender!=='admin'||_lcPrevIsBot)){
       const _ar=document.createElement('div');
       _ar.className='lc-admin-row';
       _ar.innerHTML='<div class="lc-admin-av-sm">'+lcEsc(_aDispName.charAt(0).toUpperCase())+'</div>'
         +'<span class="lc-admin-name-sm">'+lcEsc(_aDispName)+'</span>';
       area.appendChild(_ar);
     }
-    _lcPrevSender=m.sender;
+    _lcPrevSender=m.sender;_lcPrevIsBot=!!m.isBot;
     div.className='lc-bubble '+m.sender;
     const time=new Date(m.timestamp).toLocaleTimeString('ku-IQ',{hour:'2-digit',minute:'2-digit'});
     const senderLbl=''; // ناوی نێردەر ئێستا لە ئاڤاتاری سەرەوەدا دەردەکەوێت
