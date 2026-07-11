@@ -1202,16 +1202,17 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 #lcOverlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;inset:0;z-index:99990;background:var(--lc-bg);align-items:stretch;justify-content:stretch;padding:0;}
 #lcOverlay.show{display:flex;}
 /* ویجێتی چات — وەکوو پەڕەیەکی ناوەکی ئەپ دەکرێتەوە، نەک پۆپ‌ئەپ */
-.lc-widget{width:100%;max-width:100%;height:100vh;height:100dvh;max-height:100vh;background:var(--lc-bg);border-radius:0;display:flex;flex-direction:column;overflow:hidden;box-shadow:none;animation:lc-pageIn .32s var(--lc-ease);}
+.lc-widget{width:100%;max-width:100%;height:100vh;height:100dvh;max-height:100vh;background:var(--lc-bg);border-radius:0;display:flex;flex-direction:column;overflow:hidden;box-shadow:none;animation:lc-pageIn .32s var(--lc-ease);position:relative;}
 @keyframes lc-pageIn{from{opacity:0;transform:translateX(14px);}to{opacity:1;transform:translateX(0);}}
-/* سەری چات — کۆمپاکت، بێ فووڵ سکرین */
+/* سەری چات — تەواو سڕاوەتەوە، تەنها دووگمەی داخستن هەیە */
 .lc-head{display:none;}
-.lc-mini-top{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;padding-top:calc(10px + env(safe-area-inset-top));background:rgba(255,255,255,.97);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:.5px solid rgba(60,60,67,.1);flex-shrink:0;}
-.lc-mini-brand{display:flex;align-items:center;gap:9px;}
-.lc-mini-close{width:28px;height:28px;border-radius:50%;background:rgba(60,60,67,.08);border:none;color:#1d1d1f;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .18s var(--lc-ease);flex-shrink:0;}
-.lc-mini-close:hover{background:rgba(60,60,67,.16);}
-.lc-mini-close:active{transform:scale(.88);}
-.lc-mini-actions{display:flex;align-items:center;gap:6px;}
+/* دووگمەی داخستن — شناوەر لەسەر چاتەکە */
+.lc-float-bar{position:absolute;top:calc(10px + env(safe-area-inset-top));left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:0 14px;z-index:10;pointer-events:none;}
+.lc-float-close{pointer-events:all;display:flex;align-items:center;gap:6px;padding:7px 13px 7px 10px;background:rgba(255,255,255,.92);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border:none;border-radius:20px;cursor:pointer;font-family:'R',sans-serif;font-size:12px;font-weight:700;color:#3c3c43;box-shadow:0 2px 12px rgba(0,0,0,.12);transition:all .2s var(--lc-ease);}
+.lc-float-close:active{transform:scale(.93);}
+.lc-float-close i{font-size:13px;color:#6e6e73;}
+.lc-float-hist{pointer-events:all;display:none;align-items:center;gap:5px;padding:7px 12px;background:rgba(10,132,255,.1);border:none;border-radius:20px;cursor:pointer;font-family:'R',sans-serif;font-size:11.5px;font-weight:700;color:var(--lc-accent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);transition:all .2s var(--lc-ease);}
+.lc-float-hist:active{transform:scale(.93);}
 .lc-head-left{display:flex;align-items:center;gap:11px;}
 .lc-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(160deg,var(--lc-accent),var(--lc-accent-d));display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:700;position:relative;flex-shrink:0;box-shadow:0 2px 8px rgba(10,132,255,.35);}
 .lc-av-dot{position:absolute;bottom:0;left:0;width:11px;height:11px;border-radius:50%;border:2px solid #fff;transition:background .25s;box-shadow:0 0 0 1px rgba(60,60,67,.12);}
@@ -1225,7 +1226,7 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .lc-close-btn:hover{background:rgba(255,255,255,.22);}
 .lc-close-btn:active{transform:scale(.9);}
 /* جەستەی چات */
-.lc-body{flex:1;overflow-y:auto;display:flex;flex-direction:column;-webkit-overflow-scrolling:touch;background:var(--lc-bg);}
+.lc-body{flex:1;overflow-y:auto;display:flex;flex-direction:column;-webkit-overflow-scrolling:touch;background:var(--lc-bg);padding-top:calc(50px + env(safe-area-inset-top));}
 /* مەرحەلەکان */
 .lc-stage{display:none;flex:1;flex-direction:column;}
 .lc-stage.on{display:flex;}
@@ -1278,7 +1279,15 @@ textarea.lc-inp{resize:none;}
 @keyframes lc-bubble-in{from{opacity:0;transform:translateY(6px)scale(.96);}to{opacity:1;transform:translateY(0)scale(1);}}
 .lc-bubble.user{background:#ebebed;color:var(--lc-ink);border-bottom-right-radius:5px;align-self:flex-start;}
 .lc-bubble.admin{background:linear-gradient(165deg,var(--lc-accent),var(--lc-accent-d));color:#fff;border-bottom-left-radius:5px;align-self:flex-end;}
-.lc-msg-time{font-size:10px;margin-top:3px;opacity:.6;}
+.lc-msg-time{font-size:10px;margin-top:3px;opacity:.65;display:flex;align-items:center;gap:3px;}
+.lc-ticks{font-size:10.5px;font-weight:900;letter-spacing:-1.5px;line-height:1;}
+.lc-bubble.user .lc-ticks-sent{color:#b0b0b8;}
+.lc-bubble.user .lc-ticks-read{color:#2196f3;}
+.lc-bubble.admin .lc-ticks-sent{color:rgba(255,255,255,.45);}
+.lc-bubble.admin .lc-ticks-read{color:#7ee8fa;}
+.lc-admin-row{display:flex;align-items:center;gap:6px;align-self:flex-start;margin-bottom:-4px;margin-top:6px;}
+.lc-admin-av-sm{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--lc-accent),var(--lc-accent-d));color:#fff;font-size:9.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.lc-admin-name-sm{font-size:10.5px;color:var(--lc-accent);font-weight:700;}
 .lc-typing-bubble{align-self:flex-end;padding:11px 15px;background:linear-gradient(165deg,var(--lc-accent),var(--lc-accent-d));border-radius:19px;border-bottom-left-radius:5px;display:flex;gap:5px;align-items:center;}
 .lc-t-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.75);}
 .lc-t-dot:nth-child(1){animation:lc-td 1.2s infinite 0s;}
@@ -11786,19 +11795,14 @@ async function checkDbReady(){
      ══════════════════════════════════════════════════════ -->
 <div id="lcOverlay">
   <div class="lc-widget">
-    <!-- سەر — کۆمپاکت، بێ فووڵ سکرین -->
-    <div class="lc-mini-top">
-      <div class="lc-mini-brand">
-        <div class="lc-av" style="width:34px;height:34px;font-size:13px;flex-shrink:0;">P<span id="lcAvDot" class="lc-av-dot off"></span></div>
-        <div>
-          <div class="lc-head-name" id="lcHeadName">Proxo</div>
-          <div id="lcHeadStatus" class="lc-head-status off">● ئۆفلاین</div>
-        </div>
-      </div>
-      <div class="lc-mini-actions">
-        <button id="lcBackHistBtn" onclick="lcGoToHistory()" style="display:none;padding:5px 12px;background:rgba(10,132,255,.1);border:none;border-radius:14px;cursor:pointer;font-family:'R',sans-serif;font-size:11px;color:var(--lc-accent);align-items:center;gap:4px"><i class="fas fa-arrow-right" style="font-size:10px"></i> مێژوو</button>
-        <button class="lc-mini-close" onclick="lcCloseChat()" title="داخستن"><i class="fas fa-xmark"></i></button>
-      </div>
+    <!-- دووگمەی داخستنی شناوەر — بێ سەری چات -->
+    <div class="lc-float-bar" id="lcFloatBar">
+      <button class="lc-float-close" onclick="lcCloseChat()" title="داخستن">
+        <i class="fas fa-xmark"></i> داخستن
+      </button>
+      <button class="lc-float-hist" id="lcBackHistBtn" onclick="lcGoToHistory()">
+        <i class="fas fa-arrow-right" style="font-size:10px"></i> مێژوو
+      </button>
     </div>
     <!-- جەستە -->
     <div class="lc-body">
@@ -11988,7 +11992,7 @@ function lcShowStage(id){
     _lcLang=null;_lcCat=null;
     document.querySelectorAll('#lcLangChips .lc-chip, #lcCatChips .lc-cat-item').forEach(c=>c.classList.remove('on'));
   }
-  // کاتی چاتی چالاک — خانەی نووسین ئامادە بکە
+  // کاتی چاتی چالاک — خانەی نووسین ئامادە بکە + مارک کردنی پەیامەکان
   if(id==='lcStageChat'){
     const wrap=document.getElementById('lcInpWrap');
     const closed=document.getElementById('lcClosedBanner');
@@ -11996,6 +12000,7 @@ function lcShowStage(id){
       wrap.style.display='flex';
       setTimeout(()=>{const i=document.getElementById('lcChatInput');if(i)i.focus();},100);
     }
+    setTimeout(lcMarkAdminMsgsRead,400);
   }
 }
 
@@ -12261,7 +12266,7 @@ window.lcQuickReply=function(value){
 function lcSendBotMessage(text){
   if(!lcSessionId||!lcDb||lcCurrentAdminName)return;
   lcDb.ref('messages/'+lcSessionId).push({
-    text,sender:'admin',senderName:LC_BOT_NAME,isBot:true,timestamp:Date.now()
+    text,sender:'admin',senderName:LC_BOT_NAME,isBot:true,timestamp:Date.now(),status:'sent'
   }).catch(function(){});
 }
 
@@ -12270,10 +12275,50 @@ async function lcInitDirectChat(){
   const _fw=document.getElementById('lcFabWrap');if(_fw){_fw.classList.remove('show');_fw.classList.add('hide');setTimeout(()=>{_fw.classList.remove('hide');},300);}
   _lcUnreadCount=0;checkNotifBell();
 
-  // ── ١. وازهێنان لە هەر listener ی چالاک و سڕینەوەی هەموو شوێنەوارە پێشووەکان ──
+  // ══ سێشنی بەردەوام — پشکنینی localStorage پێش دروستکردنی سێشنی نوێ ══
+  const _savedId=localStorage.getItem(LC_KEY);
+  if(_savedId){
+    try{
+      const _snap=await lcDb.ref('sessions/'+_savedId).once('value');
+      const _d=_snap.val();
+      if(_d&&_d.status!=='closed'){
+        // سێشنی بەردەوام بوونەوە — پەیوەند بکەوە بێ دروستکردنی نوێ
+        lcDetachListeners();
+        lcSessionId=_savedId;
+        lcCurrentAdminName=_d.adminName||null;
+        lcAgentJoinedName=null; // پەیامی «هاتە ناو چات» دووبارە نادەرخرێت
+        lcAgentJoinTimestamp=null;
+        lcLastMsgs=[];
+        lcGreetingActive=false;
+        lcSetHeadName(lcCurrentAdminName||LC_BOT_NAME);
+        // پاککردنەوەی UI ی پێشوو
+        const _ob=document.getElementById('lcNewChatAfterClose');if(_ob)_ob.remove();
+        document.getElementById('lcClosedBanner').style.display='none';
+        const _area=document.getElementById('lcMsgsArea');if(_area)_area.innerHTML='';
+        if(_d.status==='pending'){
+          lcShowStage('lcStageWaiting');
+        }else{
+          lcShowStage('lcStageChat');
+          document.getElementById('lcInpWrap').style.display='flex';
+          if(_d.adminName){
+            const _bar=document.getElementById('lcInfoBar');
+            if(_bar){_bar.style.display='flex';const _lbl=document.getElementById('lcInfoText');if(_lbl)_lbl.textContent=_d.adminName+' ئێستا لەسەر هێڵە لەگەڵتە';}
+          }
+          setTimeout(()=>{const i=document.getElementById('lcChatInput');if(i)i.focus();},80);
+        }
+        lcAttachListeners();
+        lcSubscribeAgentStatus(lcSessionId);
+        lcMarkAdminMsgsRead(); // مارک کردنی پەیامەکانی ئەدمین بە خوێندراو
+        return;
+      }
+    }catch(e){}
+    // سێشن داخراوە یان سڕاوەتەوە
+    localStorage.removeItem(LC_KEY);
+  }
+
+  // ══ سێشنی نوێ دروست بکە ══
   lcDetachListeners();
   lcSessionId=null;
-  try{localStorage.removeItem(LC_KEY);}catch(e){}
   try{localStorage.removeItem(LC_HIST_KEY);}catch(e){}
   const _ob=document.getElementById('lcNewChatAfterClose');if(_ob)_ob.remove();
   const _rejNote=document.getElementById('lcRejNote');if(_rejNote)_rejNote.remove();
@@ -12281,13 +12326,9 @@ async function lcInitDirectChat(){
   const _bar=document.getElementById('lcInfoBar');if(_bar)_bar.style.display='none';
   const _pill=document.getElementById('lcChatIdPill');if(_pill)_pill.remove();
   const _area=document.getElementById('lcMsgsArea');if(_area)_area.innerHTML='';
-
-  // ── ٢. کردنەوەی ڕاستەوخۆی چات چالاک — بێ فۆرم، بێ چاوەڕوانی ئەدمین، بێ مێژوو ──
   lcShowStage('lcStageChat');
   document.getElementById('lcInpWrap').style.display='flex';
   setTimeout(function(){const i=document.getElementById('lcChatInput');if(i)i.focus();},50);
-
-  // ── ٣. پرسیاری یەکەمی Proxo Bot (هەڵبژاردنی زمان) — دەرکەوتنی خێرا، پێش وەڵامی سێرڤەر ──
   lcGreetingActive=true;
   lcCurrentAdminName=null;
   lcAgentJoinedName=null;
@@ -12295,10 +12336,6 @@ async function lcInitDirectChat(){
   lcLastMsgs=[];
   lcSetHeadName(LC_BOT_NAME);
   lcRenderGreeting();
-
-  // ── ٤. دروستکردنی سێشنێکی نوێی چالاک — key بە شێوەی هاوکات لە کلاینتەوە دروست دەبێت،
-  // بۆیە lcSessionId دەستبەجێ ئامادەیە و بەکارهێنەر دەتوانێت بێ دواکەوتن بنووسێت.
-  // نووسینی داتاکە بۆ Firebase بەبێ چاوەڕوانی (fire-and-forget) دەنێردرێت، بێ چاوەڕوانی پەسەندکردنی ئەدمین.
   try{
     const name=localStorage.getItem('proxo_lc_name')||'Guest';
     const ref=lcDb.ref('sessions').push();
@@ -12315,10 +12352,7 @@ async function lcInitDirectChat(){
       status:'active',
       createdAt:Date.now()
     }).catch(()=>{});
-  }catch(e){
-    // ئەگەر پەیوەندی بە Firebase شکستی هێنا، ویجیت هێشتا چالاکە بۆ نووسین؛
-    // lcSendMsg هەوڵی ناردنەوە دەداتەوە کاتێک پەیوەندی گەڕایەوە
-  }
+  }catch(e){}
 }
 
 window.lcOpenChatDirect=function(){ lcInitDirectChat(); };
@@ -12493,7 +12527,19 @@ function lcAttachListeners(){
     const d=snap.val();
     lcLastMsgs=d?Object.entries(d).map(([id,v])=>({id,...v})).sort((a,b)=>a.timestamp-b.timestamp):[];
     lcRenderMessages(lcLastMsgs);
-    if(!firstMsg&&d){const msgs=Object.values(d);const last=msgs.sort((a,b)=>a.timestamp-b.timestamp).pop();if(last&&last.sender==='admin'&&!last.isBot){lcPlayNotif();const _lcOv=document.getElementById('lcOverlay');if(!_lcOv||!_lcOv.classList.contains('show')){_lcUnreadCount++;checkNotifBell();}}}
+    if(!firstMsg&&d){
+      const msgs=Object.values(d);const last=msgs.sort((a,b)=>a.timestamp-b.timestamp).pop();
+      if(last&&last.sender==='admin'&&!last.isBot){
+        lcPlayNotif();
+        const _lcOv=document.getElementById('lcOverlay');
+        if(_lcOv&&_lcOv.classList.contains('show')){
+          // چاتەکە کراوەیە — دەستبەجێ بە خوێندراو مارک بکە
+          setTimeout(lcMarkAdminMsgsRead,300);
+        }else{
+          _lcUnreadCount++;checkNotifBell();
+        }
+      }
+    }
     firstMsg=false;
   });
   if(lcUnsubTyping)lcDb.ref('typing/'+lcSessionId+'/admin').off('value',lcUnsubTyping);
@@ -12507,6 +12553,17 @@ function lcDetachListeners(){
     if(lcUnsubTyping)lcDb.ref('typing/'+lcSessionId+'/admin').off('value',lcUnsubTyping);
   }
   lcUnsubscribeAgentStatus();
+}
+
+// ══ مارک کردنی پەیامەکانی ئەدمین بە خوێندراو کاتێک بەکارهێنەر چاتەکە دەکاتەوە ══
+function lcMarkAdminMsgsRead(){
+  if(!lcSessionId||!lcDb)return;
+  lcDb.ref('messages/'+lcSessionId).once('value',snap=>{
+    if(!snap.val())return;
+    const updates={};
+    snap.forEach(child=>{const m=child.val();if(m.sender==='admin'&&m.status!=='read')updates[child.key+'/status']='read';});
+    if(Object.keys(updates).length)lcDb.ref('messages/'+lcSessionId).update(updates).catch(()=>{});
+  });
 }
 
 // ══ چاودێریکردنی ئایدی ئەدمین لە ڕێگەی Supabase Realtime (جەدوەلی chat_sessions) ══
@@ -12581,27 +12638,44 @@ function lcRenderMessages(msgs){
     renderList.push({type:'system',text:'👋 '+lcAgentJoinedName+' بەشداری کرد لەچاتەکە',timestamp:lcAgentJoinTimestamp||Date.now()});
     renderList.sort((a,b)=>a.timestamp-b.timestamp);
   }
+  // ── فتنکشنی تیک‌ی پەیام ──
+  function lcTickHtml(status,sender){
+    if(sender!=='user')return '';
+    if(status==='read')return '<span class="lc-ticks lc-ticks-read" title="خوێندرایەوە">✓✓</span>';
+    return '<span class="lc-ticks lc-ticks-sent" title="نێردرا">✓</span>';
+  }
+  let _lcPrevSender=null;
   renderList.forEach(m=>{
     const div=document.createElement('div');
     if(m.type==='system'){
       div.className='lc-sys-msg';
       div.textContent=m.text;
       area.appendChild(div);
+      _lcPrevSender=null;
       return;
     }
+    // ── ئاڤاتاری ئەدمین — تەنها کاتی یەکەمین پەیام لە هر گرووپێک ──
+    if(m.sender==='admin'&&_lcPrevSender!=='admin'&&lcCurrentAdminName){
+      const _ar=document.createElement('div');
+      _ar.className='lc-admin-row';
+      const _aName=m.senderName||lcCurrentAdminName||LC_BOT_NAME;
+      _ar.innerHTML='<div class="lc-admin-av-sm">'+lcEsc(_aName.charAt(0).toUpperCase())+'</div>'
+        +'<span class="lc-admin-name-sm">'+lcEsc(_aName)+'</span>';
+      area.appendChild(_ar);
+    }
+    _lcPrevSender=m.sender;
     div.className='lc-bubble '+m.sender;
     const time=new Date(m.timestamp).toLocaleTimeString('ku-IQ',{hour:'2-digit',minute:'2-digit'});
-    // ناوی نێردەر — تەنها بۆ پەیامەکانی ئەدمین/بۆت: ناوی ئەدمینی نێردەر، ئەگەرنا Proxo Bot بۆ پەیامەکانی بۆت،
-    // ئەگەرنا ناوی ئەدمینی چالاکی چات
-    const senderLbl=(m.sender==='admin')?'<div class="lc-msg-sender">'+lcEsc(m.senderName||(m.isBot?LC_BOT_NAME:lcCurrentAdminName)||LC_BOT_NAME)+'</div>':'';
+    const senderLbl=''; // ناوی نێردەر ئێستا لە ئاڤاتاری سەرەوەدا دەردەکەوێت
+    const tickHtml=lcTickHtml(m.status,m.sender);
     if(m.type==='image'&&m.data){
       div.style.padding='6px';
-      div.innerHTML=`${senderLbl}<img class="lc-media-img" src="${m.data}" onclick="lcViewImg(this)" loading="lazy"><div class="lc-msg-time" style="padding:0 4px 2px">${time}</div>`;
+      div.innerHTML=`<img class="lc-media-img" src="${m.data}" onclick="lcViewImg(this)" loading="lazy"><div class="lc-msg-time" style="padding:0 4px 2px">${time}${tickHtml}</div>`;
     }else if(m.type==='video'&&m.data){
       div.style.padding='6px';
-      div.innerHTML=`${senderLbl}<video class="lc-media-vid" src="${m.data}" controls playsinline preload="metadata"></video><div class="lc-msg-time" style="padding:0 4px 2px">${time}</div>`;
+      div.innerHTML=`<video class="lc-media-vid" src="${m.data}" controls playsinline preload="metadata"></video><div class="lc-msg-time" style="padding:0 4px 2px">${time}${tickHtml}</div>`;
     }else{
-      div.innerHTML=`${senderLbl}<div>${lcEsc(m.text||'')}</div><div class="lc-msg-time">${time}</div>`;
+      div.innerHTML=`<div>${lcEsc(m.text||'')}</div><div class="lc-msg-time">${time}${tickHtml}</div>`;
     }
     area.appendChild(div);
   });
@@ -12651,7 +12725,7 @@ window.lcSendMsg=async function(){
   inp.value='';inp.style.height='auto';
   const name=localStorage.getItem('proxo_lc_name')||'User';
   try{
-    await lcDb.ref('messages/'+lcSessionId).push({text,sender:'user',senderName:name,timestamp:Date.now()});
+    await lcDb.ref('messages/'+lcSessionId).push({text,sender:'user',senderName:name,timestamp:Date.now(),status:'sent'});
     await lcDb.ref('typing/'+lcSessionId+'/user').set(false);
     lcPlaySent();
     // ── ئاگاداری تیلیگرام — تەنها یەکجار بۆ سێشنی نوێ ──
@@ -12722,7 +12796,8 @@ window.lcHandleMedia=async function(input){
       mimeType:file.type,
       sender:'user',
       senderName:name,
-      timestamp:Date.now()
+      timestamp:Date.now(),
+      status:'sent'
     });
     lcPlaySent();
   }catch(e){

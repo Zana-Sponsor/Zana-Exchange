@@ -415,7 +415,16 @@ tr:hover td{background:rgba(28,35,51,.015);}
 .lca-bubble{max-width:78%;padding:9px 13px;border-radius:16px;font-size:13px;line-height:1.5;}
 .lca-bubble.user{background:#f0f4f8;color:var(--dark);border-bottom-right-radius:5px;align-self:flex-start;border:1px solid rgba(37,99,235,.07);}
 .lca-bubble.admin{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border-bottom-left-radius:5px;align-self:flex-end;box-shadow:0 2px 8px rgba(37,99,235,.25);}
-.lca-msg-time{font-size:10px;margin-top:3px;opacity:.6;}
+.lca-msg-time{font-size:10px;margin-top:3px;opacity:.65;display:flex;align-items:center;gap:3px;}
+.lca-ticks{font-size:10px;font-weight:900;letter-spacing:-1.5px;line-height:1;}
+.lca-bubble.admin .lca-ticks-sent{color:rgba(255,255,255,.45);}
+.lca-bubble.admin .lca-ticks-read{color:#7ee8fa;}
+.lca-bubble.user .lca-ticks-sent{color:#94a3b8;}
+.lca-bubble.user .lca-ticks-read{color:#2563eb;}
+.lca-fs-bubble .lca-ticks-sent{color:rgba(255,255,255,.45);}
+.lca-fs-bubble.user .lca-ticks-sent{color:#94a3b8;}
+.lca-fs-bubble.user .lca-ticks-read{color:#2563eb;}
+.lca-fs-bubble.admin .lca-ticks-read{color:#7ee8fa;}
 .lca-typing-bubble{align-self:flex-start;padding:9px 14px;background:#f1f5f9;border-radius:16px;border-bottom-right-radius:4px;display:flex;gap:5px;align-items:center;}
 .lca-t-dot{width:6px;height:6px;border-radius:50%;background:var(--mt);}
 .lca-t-dot:nth-child(1){animation:lca-td 1.2s infinite 0s;}
@@ -5369,6 +5378,8 @@ window.lcaSelectSession=function(id){
   lcaUnreadMap[id]=0;
   lcaLastMsgTs[id]=Date.now();
   lcaRenderSessions();
+  // مارک کردنی پەیامەکانی بەکارهێنەر بە خوێندراو
+  lcaMarkUserMsgsRead(id);
   // لیسنەری پەیامەکان
   if(lcaUnsubMessages)lcaDb.ref('messages/'+lcaCurrentSessionId).off('value',lcaUnsubMessages);
   let firstMsg=true;
@@ -5380,9 +5391,10 @@ window.lcaSelectSession=function(id){
       const last=msgs[msgs.length-1];
       if(last&&last.sender==='user'){
         lcaPlayNotif();
-        // خوێندراوکردنی خۆکار چونکە چاتەکە کراوەیە
         lcaUnreadMap[id]=0;
         lcaLastMsgTs[id]=last.timestamp;
+        // مارک کردنی خۆکار چونکە چاتەکە کراوەیە
+        lcaMarkUserMsgsRead(id);
       }
     }
     firstMsg=false;
@@ -5396,6 +5408,22 @@ window.lcaSelectSession=function(id){
   const inpWrap=document.getElementById('lcaInpWrap');
   if(inpWrap)inpWrap.style.display=s.status==='active'?'flex':'none';
 };
+
+// ══ مارک کردنی پەیامەکانی بەکارهێنەر بە خوێندراو کاتێک ئەدمین چاتەکە دەکاتەوە ══
+function lcaMarkUserMsgsRead(sessionId){
+  if(!sessionId||!lcaDb)return;
+  lcaDb.ref('messages/'+sessionId).once('value',snap=>{
+    if(!snap.val())return;
+    const updates={};
+    snap.forEach(child=>{const m=child.val();if(m.sender==='user'&&m.status!=='read')updates[child.key+'/status']='read';});
+    if(Object.keys(updates).length)lcaDb.ref('messages/'+sessionId).update(updates).catch(()=>{});
+  });
+}
+function lcaTickHtml(status,sender){
+  if(sender==='user')return ''; // تیک تەنها بۆ پەیامەکانی ئەدمین دەردەکەوێت
+  if(status==='read')return '<span class="lca-ticks lca-ticks-read">✓✓</span>';
+  return '<span class="lca-ticks lca-ticks-sent">✓</span>';
+}
 
 function lcaRenderMessages(msgs){
   const area=document.getElementById('lcaMsgs');
@@ -5414,14 +5442,15 @@ function lcaRenderMessages(msgs){
           ? `<div class="lca-sender-lbl">🛡 ${lcaEsc(m.senderName||myName)}</div>`
           : `<div class="lca-sender-lbl">👤 ${lcaEsc(m.senderName||'کڕیار')}</div>`)
       : '';
+    const _lcaTick=lcaTickHtml(m.status,m.sender);
     if(m.type==='image'&&m.data){
       div.style.padding='6px 8px';
-      div.innerHTML=senderLabel+`<img src="${m.data}" onclick="lcaViewImg(this)" loading="lazy" style="max-width:100%;max-height:250px;border-radius:10px;display:block;cursor:pointer;object-fit:contain;"><div class="lca-msg-time" style="padding:2px 4px">${time}</div>`;
+      div.innerHTML=senderLabel+`<img src="${m.data}" onclick="lcaViewImg(this)" loading="lazy" style="max-width:100%;max-height:250px;border-radius:10px;display:block;cursor:pointer;object-fit:contain;"><div class="lca-msg-time" style="padding:2px 4px">${time}${_lcaTick}</div>`;
     }else if(m.type==='video'&&m.data){
       div.style.padding='6px 8px';
-      div.innerHTML=senderLabel+`<video src="${m.data}" controls playsinline preload="metadata" style="max-width:100%;max-height:220px;border-radius:10px;display:block;outline:none;"></video><div class="lca-msg-time" style="padding:2px 4px">${time}</div>`;
+      div.innerHTML=senderLabel+`<video src="${m.data}" controls playsinline preload="metadata" style="max-width:100%;max-height:220px;border-radius:10px;display:block;outline:none;"></video><div class="lca-msg-time" style="padding:2px 4px">${time}${_lcaTick}</div>`;
     }else{
-      div.innerHTML=senderLabel+`<div>${lcaEsc(m.text||'')}</div><div class="lca-msg-time">${time}</div>`;
+      div.innerHTML=senderLabel+`<div>${lcaEsc(m.text||'')}</div><div class="lca-msg-time">${time}${_lcaTick}</div>`;
     }
     area.appendChild(div);
   });
@@ -5464,7 +5493,7 @@ window.lcaSendMsg=async function(){
   if(!s||s.status!=='active'){showToast('چاتەکە چالاک نییە','rd');return;}
   inp.value='';inp.style.height='auto';
   const _n=lcaAdminDisplayName||adminUser?.email?.split('@')[0]||'ئەدمین';
-  await lcaDb.ref('messages/'+lcaCurrentSessionId).push({text,sender:'admin',senderName:_n,timestamp:Date.now()});
+  await lcaDb.ref('messages/'+lcaCurrentSessionId).push({text,sender:'admin',senderName:_n,timestamp:Date.now(),status:'sent'});
   await lcaDb.ref('typing/'+lcaCurrentSessionId+'/admin').set(false);
 };
 
@@ -5734,15 +5763,16 @@ function lcaFsRenderMsgs(msgs){
     const div=document.createElement('div');
     div.className='lca-fs-bubble '+(m.sender||'user');
     const time=m.timestamp?new Date(m.timestamp).toLocaleTimeString('ku-IQ',{hour:'2-digit',minute:'2-digit'}):'';
+    const _fsTick=(m.sender==='admin'&&m.status)?lcaTickHtml(m.status,m.sender):'';
     if(m.type==='image'&&m.data){
       div.style.padding='6px';
-      div.innerHTML='<img src="'+m.data+'" onclick="lcaViewImg(this)" loading="lazy"><div class="lca-fs-msg-time">'+time+'</div>';
+      div.innerHTML='<img src="'+m.data+'" onclick="lcaViewImg(this)" loading="lazy"><div class="lca-fs-msg-time">'+time+_fsTick+'</div>';
     }else if(m.type==='video'&&m.data){
       div.style.padding='6px';
-      div.innerHTML='<video src="'+m.data+'" controls playsinline preload="metadata"></video><div class="lca-fs-msg-time">'+time+'</div>';
+      div.innerHTML='<video src="'+m.data+'" controls playsinline preload="metadata"></video><div class="lca-fs-msg-time">'+time+_fsTick+'</div>';
     }else{
       div.innerHTML=(m.sender==='admin'?'<div class="lca-fs-lbl">ئادمین</div>':'')+
-        '<div>'+lcaEsc(m.text||'')+'</div><div class="lca-fs-msg-time">'+time+'</div>';
+        '<div>'+lcaEsc(m.text||'')+'</div><div class="lca-fs-msg-time">'+time+_fsTick+'</div>';
     }
     area.appendChild(div);
   });
@@ -5782,7 +5812,7 @@ window.lcaFsSend=async function(){
   inp.value='';inp.style.height='auto';
   // هاوکاتی نارد بۆ هەردووکیان
   const _n2=lcaAdminDisplayName||adminUser?.email?.split('@')[0]||'ئەدمین';
-  await _db.ref('messages/'+_csid).push({text,sender:'admin',senderName:_n2,timestamp:Date.now()});
+  await _db.ref('messages/'+_csid).push({text,sender:'admin',senderName:_n2,timestamp:Date.now(),status:'sent'});
   await _db.ref('typing/'+_csid+'/admin').set(false);
   const fsArea=document.getElementById('lcaFsMsgs');
   if(fsArea)fsArea.scrollTop=fsArea.scrollHeight;
