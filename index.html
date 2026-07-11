@@ -1281,6 +1281,7 @@ textarea.lc-inp{resize:none;}
 .lc-bubble.admin{background:linear-gradient(165deg,var(--lc-accent),var(--lc-accent-d));color:#fff;border-bottom-left-radius:5px;align-self:flex-end;}
 .lc-msg-time{font-size:10px;margin-top:3px;opacity:.65;display:flex;align-items:center;gap:3px;}
 .lc-ticks{font-size:10.5px;font-weight:900;letter-spacing:-1.5px;line-height:1;}
+.lc-ticks-read{font-size:11.5px!important;letter-spacing:-2px!important;filter:drop-shadow(0 0 0.3px currentColor);}
 .lc-bubble.user .lc-ticks-sent{color:#b0b0b8;}
 .lc-bubble.user .lc-ticks-delivered{color:#a1a1a6;}
 .lc-bubble.user .lc-ticks-read{color:#2196f3;}
@@ -12649,13 +12650,13 @@ function lcRenderMessages(msgs){
   // پەیامی سیستەمی "[ناو] هاتە ناو چات" بە ڕیزبەندی کاتی خۆی لەگەڵ باقی پەیامەکان تێکەڵ دەکرێت
   let renderList=msgs.slice();
   if(lcAgentJoinedName){
-    renderList.push({type:'system',text:'👋 '+lcAgentJoinedName+' بەشداری کرد لەچاتەکە',timestamp:lcAgentJoinTimestamp||Date.now()});
+    renderList.push({type:'system',text:lcAgentJoinedName+' بەشداربوو لەچاتەکەت 🟢',timestamp:lcAgentJoinTimestamp||Date.now()});
     renderList.sort((a,b)=>a.timestamp-b.timestamp);
   }
   // ── فتنکشنی تیک‌ی پەیام ──
   function lcTickHtml(status,sender){
     if(sender!=='user')return '';
-    if(status==='read')return '<span class="lc-ticks lc-ticks-read" title="خوێندرایەوە">✓✓</span>';
+    if(status==='read')return '<span class="lc-ticks lc-ticks-read" title="خوێندرایەوە">✔✔</span>';
     if(status==='delivered')return '<span class="lc-ticks lc-ticks-delivered" title="گەیشتووە">✓✓</span>';
     return '<span class="lc-ticks lc-ticks-sent" title="نێردرا">✓</span>';
   }
