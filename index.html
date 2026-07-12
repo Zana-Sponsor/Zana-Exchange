@@ -8798,7 +8798,8 @@ function pickCard(el,id){
             gender,
             location:adLocation,
             status:'pending',
-            ad_number:_adNum
+            ad_number:_adNum,
+            title:document.getElementById('adNameTitle')?.value?.trim()||null
           }).select('id,ad_number').single();
           if(_adErr)throw new Error(_adErr.message);
           _fallbackAdNum=String(_newAd?.ad_number||_adNum); // پاراستنی ژمارە بۆ دەرەوەی بلۆک
@@ -8834,6 +8835,16 @@ function pickCard(el,id){
 
       // ژمارەی ڕیکلام (بۆ هەردوو ڕێگای RPC و فالبەک) — بەکاردێت بۆ تۆمارکردنی داشکاندن
       const _adNumFinal = _fallbackAdNum || (typeof data === 'string' ? data : (data?.ad_number || data?.id || null));
+
+      // ── پاشکەوتکردنی ناوی ڕیکلام (title) — تەنها کاتێک RPC کردووە ──
+      if(!_fallbackAdNum){
+        const _adTitleVal=document.getElementById('adNameTitle')?.value?.trim();
+        if(_adTitleVal){
+          try{
+            await sb.from('pa_ads').update({title:_adTitleVal}).eq('ad_number',String(_adNumFinal));
+          }catch(_){}
+        }
+      }
 
       // ── تۆمارکردنی بەکارهێنانی کۆدی داشکاندن ──────────────────
       // data === null کاتێک فالبەک بووە، بۆیە تەنها _promoValidated پشکن دەکەین
@@ -12662,7 +12673,7 @@ window.lcFabClick=function(e){
       if(!dragging)return;
       const pt=e.touches?e.touches[0]:e;
       lastDx=pt.clientX-sx; lastDy=pt.clientY-sy;
-      if(Math.abs(lastDx)>6||Math.abs(lastDy)>6)moved=true;
+      if(Math.abs(lastDx)>12||Math.abs(lastDy)>12)moved=true;
       if(moved&&e.cancelable)e.preventDefault();
       if(!rafPending){
         rafPending=true;
