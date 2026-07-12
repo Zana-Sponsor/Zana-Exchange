@@ -6606,7 +6606,8 @@ async function boot(){
   loadProfile();
   loadSidebarUser();
   loadMyCards();
-  goPage('home');
+  // دەستپێک لە هاشی URL — ئەگەر بەشێکی دیاریکراو هەبوو ئەویش بکەرەوە
+  (function(){const _h=window.location.hash.slice(1);const _hashable=pages.filter(x=>x!=='tutplayer');goPage(_hashable.includes(_h)?_h:'home');})();
   loadHomeBanner();
   startNotifListener(); // ── Firebase realtime notifications ──
   startWalletListener(); // ── Firebase balance realtime ──
@@ -7659,6 +7660,8 @@ function goPage(p){
   }
 
   _currentPage=p;
+  // هاشی URL نوێ دەکاتەوە بۆ هەر بەشێک
+  if(p!=='tutplayer'){try{if(window.location.hash.slice(1)!==p)history.replaceState(null,'','#'+p);}catch(_){}}
   // تەنها کاتی گۆڕینی بەش tracking بکە
   if(_sessionId && _sessInfo && p !== _lastTrackedPage){
     _updateSessionPage(p);
@@ -7694,6 +7697,13 @@ function goPage(p){
   const hcBtn=document.getElementById('hCoinsBtn');
   if(hcBtn)hcBtn.style.display='none';
 }
+
+// hashchange — پشتگیری دوگمەی گەڕانەوەی براوسەر
+window.addEventListener('hashchange',function(){
+  const _h=window.location.hash.slice(1);
+  const _hashable=pages.filter(x=>x!=='tutplayer');
+  if(_hashable.includes(_h)&&_h!==_currentPage&&cu)goPage(_h);
+});
 
 let _homeBannerNav='create';
 function homeBannerClick(){
@@ -12673,7 +12683,7 @@ window.lcFabClick=function(e){
       if(!dragging)return;
       const pt=e.touches?e.touches[0]:e;
       lastDx=pt.clientX-sx; lastDy=pt.clientY-sy;
-      if(Math.abs(lastDx)>12||Math.abs(lastDy)>12)moved=true;
+      if(Math.abs(lastDx)>20||Math.abs(lastDy)>20)moved=true;
       if(moved&&e.cancelable)e.preventDefault();
       if(!rafPending){
         rafPending=true;
@@ -12690,7 +12700,7 @@ window.lcFabClick=function(e){
       document.removeEventListener('touchend',onUp);
       window.removeEventListener('blur',onUp);
       document.removeEventListener('visibilitychange',onVisibilityUnlock);
-      if(moved){
+      if(Math.abs(lastDx)>20||Math.abs(lastDy)>20){
         window._lcFabWasDragged=true;
         const r=wrap.getBoundingClientRect();
         try{localStorage.setItem(POS_KEY,JSON.stringify({left:r.left,top:r.top}));}catch(e){}
