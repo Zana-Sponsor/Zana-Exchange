@@ -12625,6 +12625,7 @@ window.lcDismissFab=function(e){
 // ══ گواستنەوەی ئایکۆنی پشتگیری ڕاستەوخۆ بە ڕاکێشان (Drag) ══
 window.lcFabClick=function(e){
   if(window._lcFabWasDragged){ window._lcFabWasDragged=false; if(e){e.preventDefault();e.stopPropagation();} return; }
+  if(window._lcFabSuppressClick){ window._lcFabSuppressClick=false; if(e){e.preventDefault();e.stopPropagation();} return; }
   lcOpenChatDirect();
 };
 (function initLcFabDrag(){
@@ -12701,9 +12702,16 @@ window.lcFabClick=function(e){
       window.removeEventListener('blur',onUp);
       document.removeEventListener('visibilitychange',onVisibilityUnlock);
       if(Math.abs(lastDx)>20||Math.abs(lastDy)>20){
+        // ڕاکێشانی ڕاستەوخۆ — پاشەکەوتی شوێن
         window._lcFabWasDragged=true;
+        window._lcFabSuppressClick=false;
         const r=wrap.getBoundingClientRect();
         try{localStorage.setItem(POS_KEY,JSON.stringify({left:r.left,top:r.top}));}catch(e){}
+      }else{
+        // کلیکی پاک — ڕاستەوخۆ بکەرەوە؛ چاوەڕوانی کلیکی مەرکەب مەبە
+        window._lcFabWasDragged=false;
+        window._lcFabSuppressClick=true; // ئەگەر کلیکی مەرکەب هاتەوە دووبارە نەکرایەوە
+        if(typeof lcOpenChatDirect==='function')lcOpenChatDirect();
       }
     }
     fab.addEventListener('mousedown',onDown);
