@@ -549,6 +549,52 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .gifts-chal-reward{font-size:11px;font-weight:800;color:#a855f7;font-family:'Inter',sans-serif;white-space:nowrap;background:rgba(168,85,247,.08);padding:4px 9px;border-radius:8px;}
 .gifts-empty{text-align:center;padding:40px 20px;color:var(--mt);}
 .gifts-empty i{font-size:30px;opacity:.35;margin-bottom:10px;display:block;}
+/* ══ DUPLICATE AD BUTTON ══ */
+.dup-ad-btn{width:100%;margin-top:13px;padding:13px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border:none;border-radius:14px;font-family:'R',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 4px 14px rgba(79,70,229,.25);transition:opacity .18s;}
+.dup-ad-btn:active{opacity:.88;}
+
+/* ══ LEVELS PAGE ══ */
+.lvl-hero{background:linear-gradient(135deg,#1c2333,#2e3a50);border-radius:22px;padding:22px 18px;margin-bottom:16px;position:relative;overflow:hidden;}
+.lvl-hero-label{font-size:11px;color:rgba(255,255,255,.5);font-weight:700;letter-spacing:.4px;margin-bottom:8px;}
+.lvl-hero-row{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.lvl-hero-ico{width:54px;height:54px;border-radius:16px;background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;flex-shrink:0;}
+.lvl-hero-name{font-size:26px;font-weight:900;color:#fff;line-height:1.1;}
+.lvl-hero-pts{font-size:12.5px;color:rgba(255,255,255,.6);margin-top:5px;font-family:'Inter',sans-serif;font-weight:600;}
+.lvl-bar-track{height:9px;border-radius:9px;background:rgba(255,255,255,.14);overflow:hidden;}
+.lvl-bar-fill{height:100%;border-radius:9px;background:linear-gradient(90deg,#fbbf24,#f59e0b);transition:width .6s ease;box-shadow:0 0 8px rgba(251,191,36,.4);}
+.lvl-bar-info{display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:rgba(255,255,255,.5);}
+.lvl-row{background:var(--w);border:1.5px solid var(--b1);border-radius:18px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:13px;transition:border-color .2s,box-shadow .2s;}
+.lvl-row.current{border-color:rgba(99,102,241,.4);box-shadow:0 4px 18px rgba(99,102,241,.12);}
+.lvl-row.locked{opacity:.5;}
+.lvl-row-ico{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.lvl-row-name{font-size:14.5px;font-weight:800;color:var(--dark);}
+.lvl-row-pts{font-size:11px;color:var(--mt);margin-top:3px;font-family:'Inter',sans-serif;}
+.lvl-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;}
+
+/* ══ TASKS PAGE ══ */
+.tasks-hero{border-radius:22px;padding:20px;margin-bottom:16px;background:linear-gradient(135deg,#a855f7,#7c3aed);position:relative;overflow:hidden;}
+.tasks-hero-title{font-size:20px;font-weight:900;color:#fff;margin-bottom:4px;position:relative;z-index:1;}
+.tasks-hero-sub{font-size:12px;color:rgba(255,255,255,.65);position:relative;z-index:1;}
+.tasks-stats{display:flex;gap:10px;margin-top:14px;position:relative;z-index:1;}
+.tasks-stat{flex:1;background:rgba(255,255,255,.14);border-radius:12px;padding:10px 6px;text-align:center;border:1px solid rgba(255,255,255,.15);}
+.tasks-stat-val{font-size:20px;font-weight:900;color:#fff;font-family:'Inter',sans-serif;}
+.tasks-stat-lbl{font-size:10px;color:rgba(255,255,255,.65);margin-top:2px;font-weight:600;}
+.task-row{background:var(--w);border:1.5px solid var(--b1);border-radius:18px;padding:16px;margin-bottom:11px;transition:border-color .2s;}
+.task-row.done{border-color:rgba(22,163,74,.3);background:linear-gradient(135deg,rgba(22,163,74,.03),transparent);}
+.task-row.claimed{border-color:rgba(22,163,74,.2);opacity:.72;}
+.task-row-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;}
+.task-row-ico{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.task-row-title{font-size:14px;font-weight:800;color:var(--dark);margin-bottom:4px;}
+.task-row-desc{font-size:11.5px;color:var(--mt);line-height:1.6;}
+.task-reward-tag{font-size:11px;font-weight:800;color:#a855f7;background:rgba(168,85,247,.09);padding:4px 10px;border-radius:8px;border:1px solid rgba(168,85,247,.18);white-space:nowrap;flex-shrink:0;}
+.task-bar{height:8px;border-radius:8px;background:var(--b1);overflow:hidden;margin-bottom:10px;}
+.task-bar-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,#a855f7,#7c3aed);transition:width .4s ease;}
+.task-foot{display:flex;align-items:center;justify-content:space-between;}
+.task-count{font-size:12px;font-weight:700;color:var(--mt2);font-family:'Inter',sans-serif;}
+.task-claim-btn{padding:9px 18px;background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border:none;border-radius:11px;font-family:'R',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 3px 10px rgba(168,85,247,.28);}
+.task-claim-btn:active{opacity:.9;}
+.task-claimed-tag{font-size:12px;font-weight:800;color:var(--gr);display:flex;align-items:center;gap:6px;}
+
 .pcard-hdr{font-size:11px;color:var(--mt);display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .pcard-hdr-left{display:flex;align-items:center;gap:6px;}
 .bal-row{display:flex;align-items:baseline;gap:6px;}
@@ -2819,7 +2865,7 @@ function _toWebP(dataUrl,quality){
         <div class="sidebar-item-ico" style="background:rgba(245,158,11,.12);color:#f59e0b"><i class="fas fa-medal"></i></div>
         <div class="sidebar-item-txt">ئاستەکان</div>
       </div>
-      <!-- ٦ — ئەرکەکان (چاڵنج) -->
+      <!-- ٦ — ئەرکەکان -->
       <div class="sidebar-item" onclick="goPage('tasks');closeSidebar()">
         <div class="sidebar-item-ico" style="background:rgba(168,85,247,.12);color:#a855f7"><i class="fas fa-flag-checkered"></i></div>
         <div class="sidebar-item-txt">ئەرکەکان</div>
@@ -3569,105 +3615,43 @@ function _toWebP(dataUrl,quality){
       <h1 class="tut-page-title">فێرکاری</h1>
     </div>
 
-    <!-- فلتەری بەش -->
-    <div id="tutFilterChips" style="display:none;" class="tut-filter-row">
-      <span class="tut-cat on" onclick="_tutSetFilter('all',this)"><i class="fas fa-th-large"></i> هەموو</span>
-    </div>
-
-    <!-- Dynamic Tutorials loaded from Supabase pa_tutorials -->
-    <div id="tutDynamicList">
-      <div style="text-align:center;padding:40px 20px;color:var(--mt)">
-        <div style="width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 8px 24px rgba(99,102,241,.3)">
-          <i class="fas fa-circle-notch fa-spin" style="font-size:22px;color:#fff"></i>
-        </div>
-        <div style="font-size:13px;font-weight:700;color:var(--dark)">چاوەڕوانبە...</div>
-        <div style="font-size:11px;color:var(--mt);margin-top:4px">ڤیدیۆکان بار دەبن</div>
-      </div>
-    </div>
-
-    <div style="height:24px"></div>
-  </div>
-
-  <!-- ══ VIDEO PLAYER PAGE — LIGHT ══ -->
-  <div class="pg" id="pgTutplayer">
-
-    <!-- Light Header -->
-    <div class="tvp-header">
-      <div class="tvp-back-btn" onclick="goPage('tutorials');_fabBounce()"><i class="fas fa-arrow-right"></i></div>
-      <div class="tvp-header-info">
-        <div class="tvp-header-label"><i class="fas fa-circle-play" style="margin-left:4px"></i>فێرکاری</div>
-        <div class="tvp-header-title" id="tvpTitle">ڤیدیۆی فێرکاری</div>
-      </div>
-    </div>
-
-    <!-- Video Iframe -->
-    <div class="tvp-video-wrap">
-      <iframe id="tvpIframe" src="" allowfullscreen
-        allow="autoplay; fullscreen; encrypted-media; picture-in-picture; accelerometer; gyroscope"
-        sandbox="allow-scripts allow-same-origin allow-presentation allow-popups allow-forms"
-        referrerpolicy="no-referrer-when-downgrade"
-        frameborder="0" scrolling="no"></iframe>
-    </div>
-
-    <!-- Info Card -->
-    <div class="tvp-info-card">
-      <div class="tvp-info-title" id="tvpInfoTitle">ڤیدیۆی فێرکاری</div>
-      <div class="tvp-info-desc" id="tvpInfoDesc"></div>
-      <div class="tvp-pills" id="tvpPills"></div>
-    </div>
-
-    <!-- Related Videos — داینامیک لە Supabase -->
-    <div class="tvp-related-lbl"><i class="fas fa-layer-group" style="margin-left:6px"></i>ڤیدیۆکانی تر</div>
-    <div id="tvpRelatedWrap"></div>
-
-    <div class="tvp-bottom-space"></div>
-  </div>
-
-
-
-  <!-- ══ GIFTS / LEVELS / CHALLENGES ══ -->
+  <!-- ══ GIFTS — تەنها فاوچەری بەخێرهاتن ══ -->
   <div class="pg" id="pgGifts">
     <div class="pg-hdr">
       <div class="pg-title"><i class="fas fa-ticket-simple" style="margin-left:8px;color:#06b6d4"></i>فاوچەری بەخێرهاتن</div>
     </div>
 
-    <!-- Hidden stubs so old JS code doesn't throw -->
-    <div id="giftsLevelCard" style="display:none"><div id="giftsLevelIco"></div><div id="giftsLevelName"></div><div id="giftsLevelPoints"></div><div id="giftsLevelBar"></div><div id="giftsLevelNext"></div></div>
+    <!-- stubs بۆ ئەوەی JS-ی کۆن هەڵە نەدا -->
+    <div id="giftsLevelCard" style="display:none">
+      <div id="giftsLevelIco"></div><div id="giftsLevelName"></div>
+      <div id="giftsLevelPoints"></div><div id="giftsLevelBar"></div><div id="giftsLevelNext"></div>
+    </div>
     <div id="giftsChallengesList" style="display:none"></div>
 
-    <!-- ══ Welcome Voucher ══ -->
-    <div id="giftsVoucherBox" class="gifts-voucher-card" style="display:none">
+    <!-- فاوچەر -->
+    <div id="giftsVoucherBox" class="gifts-voucher-card">
       <div class="gifts-voucher-shine"></div>
-      <div style="display:flex;align-items:center;gap:13px;margin-bottom:16px;position:relative;z-index:1">
-        <div style="width:50px;height:50px;border-radius:14px;background:rgba(6,182,212,.15);border:1.5px solid rgba(6,182,212,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 14px rgba(6,182,212,.2)">
-          <i class="fas fa-ticket" style="color:#06b6d4;font-size:22px"></i>
+      <div style="display:flex;align-items:center;gap:13px;margin-bottom:14px;position:relative;z-index:1">
+        <div style="width:48px;height:48px;border-radius:14px;background:rgba(6,182,212,.15);border:1.5px solid rgba(6,182,212,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="fas fa-ticket" style="color:#06b6d4;font-size:21px"></i>
         </div>
         <div style="flex:1">
-          <div style="font-size:15px;font-weight:900;color:var(--dark)">فاوچەری بەخێرهاتن 🎉</div>
-          <div style="font-size:11px;color:var(--mt);font-weight:600;margin-top:4px">تایبەتە بە هەژمارەکەت — کەس نایتوانێت بەکاری بهێنێت</div>
+          <div style="font-size:14.5px;font-weight:900;color:var(--dark)">فاوچەری بەخێرهاتن 🎉</div>
+          <div style="font-size:11px;color:var(--mt);font-weight:600;margin-top:3px">تایبەتە بە هەژمارەکەت — کەس نایتوانێت بەکاری بهێنێت</div>
         </div>
       </div>
-      <div id="giftsVoucherDesc" style="font-size:13px;color:var(--dark);line-height:1.8;position:relative;z-index:1;font-weight:600;background:rgba(6,182,212,.06);border-radius:11px;padding:10px 12px;border:1px solid rgba(6,182,212,.15)">—</div>
-      <div style="margin-top:14px;position:relative;z-index:1">
-        <div style="font-size:10px;color:var(--mt);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px"><i class="fas fa-key" style="font-size:9px"></i>کۆدی فاوچەرەکەت</div>
-        <div id="giftsVoucherCode" onclick="navigator.clipboard&&navigator.clipboard.writeText(this.textContent.trim()).then(()=>showToast('کۆدەکە کۆپی کرا ✓','ok'))" style="font-family:'Inter',sans-serif;font-weight:900;letter-spacing:4px;font-size:22px;color:#0e7490;direction:ltr;text-align:center;background:#fff;border:2px dashed rgba(6,182,212,.4);border-radius:14px;padding:16px;cursor:pointer;transition:all .2s;user-select:all"></div>
-        <div style="text-align:center;margin-top:8px;font-size:11.5px;color:#06b6d4;font-weight:700"><i class="fas fa-copy" style="margin-left:5px"></i>کرتەی بکە تا کۆپی بکرێت</div>
-      </div>
+      <div id="giftsVoucherDesc" style="font-size:12.5px;color:var(--mt);line-height:1.8;position:relative;z-index:1">—</div>
+      <div id="giftsVoucherCode" onclick="navigator.clipboard&&navigator.clipboard.writeText(this.textContent.trim()).then(()=>showToast('کۆدەکە کۆپی کرا ✓','ok'))" style="margin-top:12px;font-family:'Inter',sans-serif;font-weight:800;letter-spacing:3px;font-size:18px;color:#0e7490;direction:ltr;text-align:center;background:#fff;border:1.5px dashed rgba(6,182,212,.4);border-radius:12px;padding:12px;position:relative;z-index:1;cursor:pointer"></div>
+      <div style="text-align:center;margin-top:7px;font-size:11px;color:#06b6d4;font-weight:600"><i class="fas fa-copy" style="margin-left:4px"></i>کرتەی بکە تا کۆپی بکرێت</div>
     </div>
 
-    <!-- ══ No Voucher State ══ -->
-    <div id="giftsNoVoucher" style="display:none;text-align:center;padding:60px 20px">
-      <div style="width:90px;height:90px;border-radius:26px;background:rgba(6,182,212,.07);border:1.5px solid rgba(6,182,212,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:36px;color:#06b6d4">
-        <i class="fas fa-ticket-simple"></i>
-      </div>
-      <div style="font-size:17px;font-weight:900;color:var(--dark);margin-bottom:10px">فاوچەرت نییە</div>
-      <div style="font-size:13px;color:var(--mt);line-height:1.8;max-width:260px;margin:0 auto">فاوچەری بەخێرهاتن تەنها بۆ بەکارهێنەری نوێ دەدرێت کاتی تۆمارکردن</div>
+    <!-- نە-فاوچەر -->
+    <div id="giftsNoVoucher" style="display:none;text-align:center;padding:50px 20px">
+      <div style="width:80px;height:80px;border-radius:24px;background:rgba(6,182,212,.08);border:1.5px solid rgba(6,182,212,.14);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:30px;color:#06b6d4"><i class="fas fa-ticket-simple"></i></div>
+      <div style="font-size:16px;font-weight:900;color:var(--dark);margin-bottom:8px">فاوچەرت نییە</div>
+      <div style="font-size:12.5px;color:var(--mt);line-height:1.8">فاوچەری بەخێرهاتن تەنها بۆ بەکارهێنەری نوێ دەدرێت کاتی تۆمارکردن</div>
     </div>
 
-    <!-- ══ Loading ══ -->
-    <div id="giftsVoucherLoading" style="text-align:center;padding:60px">
-      <i class="fas fa-circle-notch fa-spin" style="font-size:28px;color:var(--mt)"></i>
-    </div>
     <div style="height:80px"></div>
   </div>
 
@@ -3677,56 +3661,50 @@ function _toWebP(dataUrl,quality){
       <div class="pg-title"><i class="fas fa-medal" style="margin-left:8px;color:#f59e0b"></i>ئاستەکان</div>
     </div>
 
-    <!-- Hero -->
+    <!-- کارتی ئاستی ئێستا -->
     <div class="lvl-hero" id="lvlHeroCard">
-      <div style="position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:rgba(255,255,255,.04);border-radius:50%;pointer-events:none"></div>
-      <div style="position:absolute;bottom:-30px;left:0;width:120px;height:120px;background:rgba(255,255,255,.03);border-radius:50%;pointer-events:none"></div>
+      <div style="position:absolute;top:-40px;right:-40px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.04);pointer-events:none"></div>
+      <div style="position:absolute;bottom:-30px;left:-10px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.03);pointer-events:none"></div>
       <div style="position:relative;z-index:1">
-        <div class="lvl-hero-title">ئاستی ئێستات</div>
-        <div style="display:flex;align-items:center;gap:14px;margin:10px 0">
-          <div id="lvlHeroIco" style="width:56px;height:56px;border-radius:16px;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;flex-shrink:0;box-shadow:0 4px 14px rgba(0,0,0,.1)">
-            <i class="fas fa-medal"></i>
-          </div>
+        <div class="lvl-hero-label">ئاستی ئێستات</div>
+        <div class="lvl-hero-row">
+          <div class="lvl-hero-ico" id="lvlHeroIco"><i class="fas fa-medal"></i></div>
           <div>
-            <div id="lvlHeroName" style="font-size:26px;font-weight:900;color:#fff;line-height:1.1">—</div>
-            <div id="lvlHeroPts" style="font-size:13px;color:rgba(255,255,255,.65);margin-top:5px;font-family:'Inter',sans-serif;font-weight:600">— خاڵ</div>
+            <div class="lvl-hero-name" id="lvlHeroName">—</div>
+            <div class="lvl-hero-pts" id="lvlHeroPts">— خاڵ</div>
           </div>
         </div>
-        <div>
-          <div style="height:9px;border-radius:9px;background:rgba(255,255,255,.15);overflow:hidden">
-            <div id="lvlHeroBar" style="height:100%;width:0%;border-radius:9px;background:linear-gradient(90deg,#fbbf24,#f59e0b);transition:width .6s ease;box-shadow:0 0 8px rgba(251,191,36,.5)"></div>
-          </div>
-          <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:rgba(255,255,255,.5)">
-            <span id="lvlHeroBarLeft">0 خاڵ</span>
-            <span id="lvlHeroBarNext">—</span>
-          </div>
+        <div class="lvl-bar-track">
+          <div class="lvl-bar-fill" id="lvlHeroBar" style="width:0%"></div>
+        </div>
+        <div class="lvl-bar-info">
+          <span id="lvlHeroBarLeft">0 خاڵ</span>
+          <span id="lvlHeroBarRight">—</span>
         </div>
       </div>
     </div>
 
-    <!-- Info -->
-    <div style="background:rgba(22,163,74,.06);border:1px solid rgba(22,163,74,.18);border-radius:14px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px">
-      <div style="width:34px;height:34px;border-radius:10px;background:rgba(22,163,74,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;color:#16a34a"><i class="fas fa-tags"></i></div>
+    <!-- تێبینی داشکاندن -->
+    <div style="background:rgba(22,163,74,.05);border:1px solid rgba(22,163,74,.16);border-radius:14px;padding:12px 14px;margin-bottom:16px;display:flex;align-items:center;gap:10px">
+      <div style="width:32px;height:32px;border-radius:10px;background:rgba(22,163,74,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;color:#16a34a"><i class="fas fa-tags"></i></div>
       <div style="font-size:12px;color:var(--dark);line-height:1.7">هەر ئاستێک <strong>داشکاندنی جیاواز</strong> لە نرخی ڕیکلام پێیەوەیە. زیاتر ڕیکلام بنێرە، خاڵت زیاد دەبێت.</div>
     </div>
 
-    <!-- All levels -->
+    <!-- لیستی هەموو ئاستەکان -->
     <div id="lvlAllCards">
       <div style="text-align:center;padding:30px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin"></i></div>
     </div>
     <div style="height:80px"></div>
   </div>
 
-  <!-- ══ TASKS / CHALLENGES PAGE ══ -->
+  <!-- ══ TASKS PAGE ══ -->
   <div class="pg" id="pgTasks">
-    <!-- Hero -->
+    <!-- hero -->
     <div class="tasks-hero">
-      <div style="position:absolute;top:-30px;right:-30px;width:140px;height:140px;background:rgba(255,255,255,.06);border-radius:50%;pointer-events:none"></div>
-      <div style="position:relative;z-index:1">
-        <div class="tasks-hero-title">ئەرکەکان 🎯</div>
-        <div class="tasks-hero-sub">ئەرکەکانت تەواو بکە و خەڵاتی وەربگرە</div>
-      </div>
-      <div class="tasks-hero-stats">
+      <div style="position:absolute;top:-30px;right:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.06);pointer-events:none"></div>
+      <div class="tasks-hero-title">ئەرکەکان 🎯</div>
+      <div class="tasks-hero-sub">ئەرکەکانت تەواو بکە و خەڵاتی وەربگرە</div>
+      <div class="tasks-stats">
         <div class="tasks-stat">
           <div class="tasks-stat-val" id="tasksStatTotal">—</div>
           <div class="tasks-stat-lbl">کۆی ئەرکەکان</div>
@@ -3742,12 +3720,70 @@ function _toWebP(dataUrl,quality){
       </div>
     </div>
 
-    <!-- Tasks list -->
-    <div id="tasksListWrap" style="margin-top:4px">
-      <div style="text-align:center;padding:40px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin" style="font-size:24px"></i></div>
+    <!-- لیستی ئەرکەکان -->
+    <div id="tasksListWrap">
+      <div style="text-align:center;padding:40px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin" style="font-size:22px"></i></div>
     </div>
     <div style="height:80px"></div>
   </div>
+
+
+
+
+  <!-- ══ GIFTS / LEVELS / CHALLENGES ══ -->
+  <div class="pg" id="pgGifts">
+    <div class="pg-hdr">
+      <div class="pg-title"><i class="fas fa-gift" style="margin-left:8px;color:#a855f7"></i>خەڵاتەکان</div>
+    </div>
+
+    <!-- ══ Level / Rank Card ══ -->
+    <div id="giftsLevelCard" class="gifts-level-card">
+      <div class="gifts-level-glow"></div>
+      <div class="gifts-level-sheen"></div>
+      <div style="display:flex;align-items:center;gap:14px;position:relative;z-index:1">
+        <div id="giftsLevelIco" class="gifts-level-ico"><i class="fas fa-medal"></i></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:11px;color:rgba(255,255,255,.5);font-weight:700;letter-spacing:.3px;margin-bottom:3px">ئاستی ئێستات</div>
+          <div id="giftsLevelName" style="font-size:19px;font-weight:900;color:#fff;line-height:1.2">—</div>
+          <div id="giftsLevelPoints" style="font-size:12.5px;color:rgba(255,255,255,.65);margin-top:4px;font-family:'Inter',sans-serif;font-weight:600">— خاڵ</div>
+        </div>
+      </div>
+      <div style="margin-top:16px;position:relative;z-index:1">
+        <div style="height:9px;border-radius:9px;background:rgba(255,255,255,.12);overflow:hidden">
+          <div id="giftsLevelBar" style="height:100%;width:0%;border-radius:9px;background:linear-gradient(90deg,#fbbf24,#f59e0b);transition:width .5s ease;box-shadow:0 0 10px rgba(251,191,36,.5)"></div>
+        </div>
+        <div id="giftsLevelNext" style="font-size:11.5px;color:rgba(255,255,255,.6);margin-top:9px;display:flex;align-items:center;gap:6px"><i class="fas fa-arrow-trend-up" style="font-size:10px;color:#fbbf24"></i>—</div>
+      </div>
+    </div>
+
+    <!-- ══ Welcome Voucher ══ -->
+    <div id="giftsVoucherBox" class="gifts-voucher-card">
+      <div class="gifts-voucher-shine"></div>
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:10px;position:relative;z-index:1">
+        <div style="width:38px;height:38px;border-radius:11px;background:rgba(6,182,212,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="fas fa-ticket" style="color:#06b6d4;font-size:16px"></i>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:13.5px;font-weight:800;color:var(--dark)">فاوچەری بەخێرهاتن بۆ تۆیە</div>
+          <div style="font-size:10.5px;color:var(--mt);font-weight:600;margin-top:1px">تایبەتە بە هەژمارەکەت — کەس نایتوانێت بەکاری بهێنێت</div>
+        </div>
+      </div>
+      <div id="giftsVoucherDesc" style="font-size:12px;color:var(--mt);line-height:1.7;position:relative;z-index:1">—</div>
+      <div id="giftsVoucherCode" style="margin-top:12px;font-family:'Inter',sans-serif;font-weight:800;letter-spacing:3px;font-size:16px;color:#0e7490;direction:ltr;text-align:center;background:#fff;border:1.5px dashed rgba(6,182,212,.4);border-radius:11px;padding:10px;position:relative;z-index:1"></div>
+    </div>
+
+    <div class="gifts-sec-hdr">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="gifts-sec-ico"><i class="fas fa-flag-checkered"></i></div>
+        <span>چاڵنجەکان</span>
+      </div>
+      <span style="font-size:10.5px;color:var(--mt);font-weight:600">خەڵاتی خۆت وەربگرە</span>
+    </div>
+    <div id="giftsChallengesList" style="margin-bottom:100px">
+      <div style="text-align:center;padding:30px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin" style="font-size:20px"></i></div>
+    </div>
+  </div>
+
   <!-- ══ WALLET PAGE (Firebase) ══ -->
   <div class="pg" id="pgWallet">
     <div class="pg-hdr">
@@ -9232,97 +9268,13 @@ function renderAds(){
       ${refundNote}
       ${rejectNote}
       ${(st==='completed'||st==='done')?`
-      <div style="height:1px;background:var(--b1);margin:13px 0 12px"></div>
+      <div style="height:1px;background:var(--b1);margin:12px 0 11px"></div>
       <button class="dup-ad-btn" onclick="event.stopPropagation();duplicateAd(allAds.find(x=>x.id==='${ad.id}'))">
-        <i class="fas fa-copy"></i>
-        دووبارەکردنەوەی ئەم ڕیکلامە
+        <i class="fas fa-copy"></i>دووبارەکردنەوەی ئەم ڕیکلامە
       </button>`:''}
     </div>`;
   }).join('');
   if(!_adsShowAll&&filtered.length>2){var _vmDiv2=document.createElement('div');_vmDiv2.style.cssText='text-align:center;padding:14px 0 4px';_vmDiv2.innerHTML='<button onclick="_adsShowAll=true;renderAds()" style="padding:10px 28px;border-radius:20px;background:var(--bg);border:1.5px solid var(--b1);font-family:R,sans-serif;font-size:13px;font-weight:700;color:var(--dark);cursor:pointer;display:inline-flex;align-items:center;gap:6px"><i class=\\"fas fa-chevron-down\\" style=\\"font-size:10px\\"></i>بۆ بینینی زیاتر ('+(filtered.length-2)+' ڕیکلامی تر)</button>';wrap.appendChild(_vmDiv2);}
-}
-
-
-// ══ DUPLICATE AD ══
-// ڕیکلامێکی کۆپی دروست دەکات لە ڕیکلامی تەواوبووەوە — هەمان داتای پێشوو
-async function duplicateAd(ad) {
-  if (!ad) { showToast('ڕیکلامەکە نەدۆزرایەوە', 'err'); return; }
-  // بچۆ بۆ پەڕەی دروستکردنی ڕیکلام
-  goPage('create');
-  // چاوەڕوانی داگرتنی فۆرمەکە
-  await new Promise(r => setTimeout(r, 80));
-
-  // ناوی ڕیکلام (کۆپی + ناوی پێشوو)
-  const nameInp = document.getElementById('adNameTitle');
-  const prevName = ad.title || ('New Ad ' + new Date(ad.created_at || Date.now()).toLocaleDateString('en-GB'));
-  if (nameInp) nameInp.value = 'کۆپی — ' + prevName;
-  const tl = document.getElementById('todayLbl');
-  if (tl) tl.textContent = new Date().toLocaleDateString('en-GB');
-
-  // ئامانجی ڕیکلام
-  const adGoal = ad.goal || 'messages';
-  goal = adGoal;
-  document.querySelectorAll('.gseg-opt,.goal-tab,.goal-tab-v2').forEach(x => x.classList.toggle('on', x.dataset.g === adGoal));
-  setTimeout(() => { if (typeof _animGoalPill === 'function') _animGoalPill(); }, 40);
-
-  // ئامانجگرتن — ڕەگەز
-  const adGender = ad.gender || 'all';
-  gender = adGender;
-  document.querySelectorAll('.gender-pill').forEach(x => x.classList.toggle('on', x.dataset.gen === adGender));
-  setTimeout(() => { if (typeof _animGenDark === 'function') _animGenDark(); }, 40);
-
-  // ئامانجگرتن — شوێن
-  const adLoc = ad.location || 'all';
-  adLocation = adLoc;
-  document.querySelectorAll('.loc-chips-wrap .fchip').forEach(x => x.classList.toggle('on', x.dataset.loc === adLoc));
-  setTimeout(() => { if (typeof _animLocDark === 'function') _animLocDark(); }, 40);
-
-  // ئامانجگرتن — تەمەن
-  if (ad.age_group) {
-    selectedAges.clear();
-    const ages = Array.isArray(ad.age_group) ? ad.age_group : [ad.age_group];
-    ages.forEach(a => selectedAges.add(a));
-    document.querySelectorAll('.age-grp').forEach(x => {
-      x.classList.toggle('on', selectedAges.has(x.dataset.age));
-    });
-    if (typeof _updateAgeDisplay === 'function') _updateAgeDisplay();
-  }
-
-  // بودجەی ڕۆژانە
-  if (ad.daily_budget_usd) {
-    dailyUSD = Math.max(10, Math.round(parseFloat(ad.daily_budget_usd)));
-  } else if (ad.budget) {
-    const _days = ad.days || 1;
-    dailyUSD = Math.max(10, Math.round(parseFloat(ad.budget) / 1800 / _days));
-  }
-
-  // ژمارەی ڕۆژەکان
-  if (ad.days) {
-    days = Math.max(1, parseInt(ad.days));
-  } else if (ad.budget && dailyUSD) {
-    days = Math.max(1, Math.round(parseFloat(ad.budget) / 1800 / dailyUSD));
-  }
-
-  // نوێکردنەوەی ئامارەکان
-  if (typeof updateBudgetDisplay === 'function') updateBudgetDisplay();
-  if (typeof updateRings === 'function') updateRings();
-
-  // لینک و کۆدی ڤیدیۆ
-  const linkInp = document.getElementById('adLink');
-  if (linkInp) linkInp.value = ad.video_link || ad.video_url || '';
-  const codeInp = document.getElementById('adCode');
-  if (codeInp) codeInp.value = ad.video_code || '';
-
-  // Asset (تەنها بۆ ئامانجی نامە)
-  if (adGoal === 'messages' && ad.asset_id) {
-    await loadAssetsForDropdown();
-    await new Promise(r => setTimeout(r, 120));
-    if (typeof selectAsset === 'function') selectAsset(ad.asset_id);
-  }
-
-  // Scroll بۆ سەرەوە
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  showToast('✅ زانیاریەکانی ڕیکلامی پێشوو داگیرا — دەتوانیت دەستکاریشی بکەیت', 'ok');
 }
 
 // ══ SHARE AD: پەیوەندی گشتی/ڕاستەوخۆ بۆ هاوبەشکردن ══
@@ -14062,30 +14014,15 @@ async function createSignupVoucher(userId) {
 async function loadGiftsPage() {
   if (!cu) return;
   // تەنها فاوچەری بەخێرهاتن نیشان بدە
-  const loading = document.getElementById('giftsVoucherLoading');
   const box = document.getElementById('giftsVoucherBox');
-  const noVoucher = document.getElementById('giftsNoVoucher');
-  if (loading) loading.style.display = 'block';
+  const noV = document.getElementById('giftsNoVoucher');
   if (box) box.style.display = 'none';
-  if (noVoucher) noVoucher.style.display = 'none';
-
-  const { data } = await sb.from('pa_vouchers')
-    .select('*').eq('assigned_user_id', cu.id).eq('is_signup_bonus', true)
-    .order('created_at', { ascending: false }).limit(1);
-  const v = data && data[0];
-
-  if (loading) loading.style.display = 'none';
-
-  if (!v || v.used_by || (v.expires_at && new Date(v.expires_at) < new Date())) {
-    if (noVoucher) noVoucher.style.display = 'block';
-    return;
+  if (noV) noV.style.display = 'none';
+  await _loadGiftsVoucher();
+  // ئەگەر voucher نیشان نەدرا، پیامی نە-فاوچەر نیشان بدە
+  if (box && box.style.display === 'none') {
+    if (noV) noV.style.display = 'block';
   }
-  if (box) box.style.display = 'block';
-  const left = Math.max(0, Math.ceil((new Date(v.expires_at) - new Date()) / (1000 * 60 * 60 * 24)));
-  const descEl = document.getElementById('giftsVoucherDesc');
-  if (descEl) descEl.textContent = 'دیاری بەخێرهاتنی ' + parseFloat(v.amount_iqd).toLocaleString() + ' IQD — ' + left + ' ڕۆژی تر ماوە بۆ بەکارهێنانی. تەنها تۆ دەتوانیت ئەم کۆدە بەکاربهێنیت.';
-  const codeEl = document.getElementById('giftsVoucherCode');
-  if (codeEl) codeEl.textContent = v.code;
 }
 
 async function _loadGiftsLevel() {
@@ -14192,6 +14129,210 @@ async function claimChallenge(challengeId) {
   }
   showToast('🎉 خەڵاتەکەت وەرگیرا', 'ok');
   await Promise.all([loadBal(), _loadGiftsLevel(), _loadGiftsChallenges()]);
+}
+
+
+// ══ DUPLICATE AD ══
+async function duplicateAd(ad) {
+  if (!ad) { showToast('ڕیکلامەکە نەدۆزرایەوە', 'err'); return; }
+  goPage('create');
+  await new Promise(r => setTimeout(r, 80));
+
+  // ناو
+  const nameInp = document.getElementById('adNameTitle');
+  const prevName = ad.title || ('New Ad ' + new Date(ad.created_at || Date.now()).toLocaleDateString('en-GB'));
+  if (nameInp) nameInp.value = 'کۆپی — ' + prevName;
+  const tl = document.getElementById('todayLbl');
+  if (tl) tl.textContent = new Date().toLocaleDateString('en-GB');
+
+  // ئامانج
+  const adGoal = ad.goal || 'messages';
+  goal = adGoal;
+  document.querySelectorAll('.gseg-opt,.goal-tab,.goal-tab-v2').forEach(x => x.classList.toggle('on', x.dataset.g === adGoal));
+  setTimeout(() => { if (typeof _animGoalPill === 'function') _animGoalPill(); }, 40);
+
+  // ڕەگەز
+  const adGender = ad.gender || 'all';
+  gender = adGender;
+  document.querySelectorAll('.gender-pill').forEach(x => x.classList.toggle('on', x.dataset.gen === adGender));
+  setTimeout(() => { if (typeof _animGenDark === 'function') _animGenDark(); }, 40);
+
+  // شوێن
+  const adLoc = ad.location || 'all';
+  adLocation = adLoc;
+  document.querySelectorAll('.loc-chips-wrap .fchip').forEach(x => x.classList.toggle('on', x.dataset.loc === adLoc));
+  setTimeout(() => { if (typeof _animLocDark === 'function') _animLocDark(); }, 40);
+
+  // تەمەن
+  if (ad.age_group) {
+    selectedAges.clear();
+    const ages = Array.isArray(ad.age_group) ? ad.age_group : [ad.age_group];
+    ages.forEach(a => selectedAges.add(a));
+    document.querySelectorAll('.age-grp').forEach(x => x.classList.toggle('on', selectedAges.has(x.dataset.age)));
+    if (typeof _updateAgeDisplay === 'function') _updateAgeDisplay();
+  }
+
+  // بودجە
+  if (ad.daily_budget_usd) {
+    dailyUSD = Math.max(10, Math.round(parseFloat(ad.daily_budget_usd)));
+  } else if (ad.budget) {
+    const _d = ad.days || 1;
+    dailyUSD = Math.max(10, Math.round(parseFloat(ad.budget) / 1800 / _d));
+  }
+  if (ad.days) days = Math.max(1, parseInt(ad.days));
+
+  if (typeof updateBudgetDisplay === 'function') updateBudgetDisplay();
+  if (typeof updateRings === 'function') updateRings();
+
+  // لینک و کۆد
+  const linkInp = document.getElementById('adLink');
+  if (linkInp) linkInp.value = ad.video_link || ad.video_url || '';
+  const codeInp = document.getElementById('adCode');
+  if (codeInp) codeInp.value = ad.video_code || '';
+
+  // Asset
+  if (adGoal === 'messages' && ad.asset_id) {
+    await loadAssetsForDropdown();
+    await new Promise(r => setTimeout(r, 100));
+    if (typeof selectAsset === 'function') selectAsset(ad.asset_id);
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  showToast('✅ زانیاریەکانی ڕیکلامی پێشوو داگیرا — دەتوانیت دەستکاریشی بکەیت', 'ok');
+}
+
+// ══ LEVELS PAGE ══
+async function loadLevelsPage() {
+  if (!cu) return;
+  const defs = await _getLevelThresholds();
+  const { data } = await sb.from('pa_user_points').select('points').eq('user_id', cu.id).single();
+  const points = parseFloat(data?.points || 0);
+  const { cur, next } = _levelForPoints(points, defs);
+
+  // hero
+  const heroIco = document.getElementById('lvlHeroIco');
+  if (heroIco) heroIco.innerHTML = '<i class="fas ' + cur.icon + '"></i>';
+  const heroCard = document.getElementById('lvlHeroCard');
+  if (heroCard && cur.grad) {
+    heroCard.style.background = 'linear-gradient(135deg,' + cur.grad[0] + ',' + cur.grad[1] + ')';
+  }
+  const el = (id, txt) => { const e = document.getElementById(id); if (e) e.textContent = txt; };
+  el('lvlHeroName', cur.name);
+  el('lvlHeroPts', points.toLocaleString() + ' خاڵ');
+
+  const bar = document.getElementById('lvlHeroBar');
+  if (next) {
+    const span = next.min - cur.min;
+    const pct = span > 0 ? Math.min(100, Math.max(4, ((points - cur.min) / span) * 100)) : 100;
+    if (bar) bar.style.width = pct + '%';
+    el('lvlHeroBarLeft', points.toLocaleString() + ' خاڵ');
+    el('lvlHeroBarRight', (Math.max(0, next.min - points)).toLocaleString() + ' خاڵی تر بۆ ' + next.name);
+  } else {
+    if (bar) bar.style.width = '100%';
+    el('lvlHeroBarLeft', points.toLocaleString() + ' خاڵ');
+    el('lvlHeroBarRight', 'بەرزترین ئاست');
+  }
+
+  // لیستی هەموو ئاستەکان
+  const wrap = document.getElementById('lvlAllCards');
+  if (!wrap) return;
+  const colorMap = {
+    bronze:   { bg: 'rgba(180,83,9,.1)',   ico: '#b45309' },
+    silver:   { bg: 'rgba(148,163,184,.1)', ico: '#94a3b8' },
+    platinum: { bg: 'rgba(56,189,248,.1)',  ico: '#38bdf8' },
+    diamond:  { bg: 'rgba(168,85,247,.1)',  ico: '#a855f7' },
+  };
+  wrap.innerHTML = defs.map(lv => {
+    const isCur = lv.key === cur.key;
+    const isLocked = points < lv.min;
+    const lc = colorMap[lv.key] || { bg: 'rgba(139,149,168,.1)', ico: '#8b95a8' };
+    const discPct = Math.round(lv.discount * 100);
+    const discTxt = discPct > 0 ? discPct + '% داشکاندن' : 'داشکاندنی نییە';
+    const discBg  = discPct > 0 ? 'rgba(22,163,74,.09)' : 'rgba(139,149,168,.07)';
+    const discCol = discPct > 0 ? '#15803d' : '#8b95a8';
+    const discBdr = discPct > 0 ? 'rgba(22,163,74,.2)' : 'rgba(139,149,168,.18)';
+    const ptsTxt  = lv.min === 0 ? 'دەستپێک — بەخۆکاری' : lv.min.toLocaleString() + ' خاڵ پێویستە';
+    return (
+      '<div class="lvl-row' + (isCur ? ' current' : '') + (isLocked ? ' locked' : '') + '">' +
+        '<div class="lvl-row-ico" style="background:' + lc.bg + ';color:' + lc.ico + '"><i class="fas ' + lv.icon + '"></i></div>' +
+        '<div style="flex:1">' +
+          '<div class="lvl-row-name">' + lv.name + '</div>' +
+          '<div class="lvl-row-pts">' + ptsTxt + '</div>' +
+        '</div>' +
+        '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">' +
+          '<div class="lvl-badge" style="background:' + discBg + ';color:' + discCol + ';border:1px solid ' + discBdr + '">' + discTxt + '</div>' +
+          (isCur ? '<div class="lvl-badge" style="background:rgba(99,102,241,.09);color:#4f46e5;border:1px solid rgba(99,102,241,.2)"><i class="fas fa-check" style="margin-left:3px;font-size:9px"></i>ئەم ئاستەدایت</div>' : '') +
+          (isLocked ? '<div style="font-size:10px;color:var(--mt)"><i class="fas fa-lock" style="font-size:9px;margin-left:3px"></i>قفڵکراوە</div>' : '') +
+        '</div>' +
+      '</div>'
+    );
+  }).join('');
+}
+
+// ══ TASKS PAGE ══
+async function loadTasksPage() {
+  if (!cu) return;
+  const wrap = document.getElementById('tasksListWrap');
+  if (wrap) wrap.innerHTML = '<div style="text-align:center;padding:40px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin" style="font-size:22px"></i></div>';
+
+  const { data: challenges } = await sb.from('pa_challenges').select('*').eq('is_active', true).order('created_at', { ascending: false });
+  const { data: progressRows } = await sb.from('pa_challenge_progress').select('*').eq('user_id', cu.id);
+  const progMap = {};
+  (progressRows || []).forEach(p => { progMap[p.challenge_id] = p; });
+
+  const total = (challenges || []).length;
+  const doneCount = (challenges || []).filter(c => (progMap[c.id]?.progress || 0) >= c.goal_value).length;
+  const claimedCount = (progressRows || []).filter(p => p.claimed).length;
+
+  const si = id => { const e = document.getElementById(id); if (e) e.textContent = total === 0 ? '0' : (id === 'tasksStatTotal' ? total : id === 'tasksStatDone' ? doneCount : claimedCount); };
+  si('tasksStatTotal'); si('tasksStatDone'); si('tasksStatClaimed');
+
+  if (!wrap) return;
+  if (!challenges || !challenges.length) {
+    wrap.innerHTML = '<div class="gifts-empty"><i class="fas fa-flag-checkered"></i>هیچ ئەرکێکی چالاک نییە لە ئێستادا<br><span style="font-size:11px;opacity:.75">دواتر سەردانی ئەم بەشە بکەرەوە</span></div>';
+    return;
+  }
+
+  wrap.innerHTML = challenges.map(c => {
+    const pr = progMap[c.id] || { progress: 0, claimed: false };
+    const pct = Math.min(100, Math.round((pr.progress / c.goal_value) * 100));
+    const done = pr.progress >= c.goal_value;
+    const isAds = c.goal_type === 'ads_count';
+    const unit = isAds ? 'ڕیکلام' : 'دۆلار';
+    const icoCls = isAds ? 'fa-bullhorn' : 'fa-dollar-sign';
+    const icoColor = pr.claimed ? '#16a34a' : (done ? '#a855f7' : '#6366f1');
+    const icoBg   = pr.claimed ? 'rgba(22,163,74,.1)' : (done ? 'rgba(168,85,247,.1)' : 'rgba(99,102,241,.1)');
+    const rewardTxt = [
+      c.reward_iqd > 0 ? parseFloat(c.reward_iqd).toLocaleString() + ' IQD' : null,
+      c.reward_points > 0 ? c.reward_points + ' خاڵ' : null,
+    ].filter(Boolean).join(' + ');
+
+    let footHtml;
+    if (pr.claimed) {
+      footHtml = '<div class="task-claimed-tag"><i class="fas fa-check-circle"></i> وەرگیرا</div>';
+    } else if (done) {
+      footHtml = '<button class="task-claim-btn" onclick="claimChallenge('' + c.id + '');"><i class="fas fa-gift"></i> وەرگرتنی خەڵات</button>';
+    } else {
+      footHtml = '<div class="task-count">' + Math.floor(pr.progress) + ' / ' + c.goal_value + ' <span style="font-family:'R',sans-serif">' + unit + '</span></div>';
+    }
+
+    return (
+      '<div class="task-row' + (pr.claimed ? ' claimed' : done ? ' done' : '') + '">' +
+        '<div class="task-row-top">' +
+          '<div class="task-row-ico" style="background:' + icoBg + ';color:' + icoColor + '"><i class="fas ' + icoCls + '"></i></div>' +
+          '<div style="flex:1;min-width:0">' +
+            '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px">' +
+              '<div class="task-row-title">' + (c.title || '') + '</div>' +
+              '<div class="task-reward-tag">' + rewardTxt + '</div>' +
+            '</div>' +
+            (c.description ? '<div class="task-row-desc">' + c.description + '</div>' : '') +
+          '</div>' +
+        '</div>' +
+        '<div class="task-bar"><div class="task-bar-fill" style="width:' + pct + '%"></div></div>' +
+        '<div class="task-foot">' + footHtml + '</div>' +
+      '</div>'
+    );
+  }).join('');
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -14361,154 +14502,6 @@ if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostn
     navigator.serviceWorker.register('./sw.js').catch(()=>{});
   });
 }
-
-// ══ LEVELS PAGE ══
-async function loadLevelsPage() {
-  if (!cu) return;
-  const defs = await _getLevelThresholds();
-  const { data } = await sb.from('pa_user_points').select('points').eq('user_id', cu.id).single();
-  const points = parseFloat(data?.points || 0);
-  const { cur, next } = _levelForPoints(points, defs);
-
-  // Hero card
-  const heroIco = document.getElementById('lvlHeroIco');
-  if (heroIco) heroIco.innerHTML = '<i class="fas ' + cur.icon + '"></i>';
-  const heroCard = document.getElementById('lvlHeroCard');
-  if (heroCard) {
-    heroCard.style.background = 'linear-gradient(135deg,' + (cur.grad ? cur.grad[0] : '#1c2333') + ',' + (cur.grad ? cur.grad[1] : '#2e3a50') + ')';
-  }
-  const heroName = document.getElementById('lvlHeroName');
-  if (heroName) heroName.textContent = cur.name;
-  const heroPts = document.getElementById('lvlHeroPts');
-  if (heroPts) heroPts.textContent = points.toLocaleString() + ' خاڵ';
-  const heroBar = document.getElementById('lvlHeroBar');
-  const heroLeft = document.getElementById('lvlHeroBarLeft');
-  const heroNext = document.getElementById('lvlHeroBarNext');
-  if (next) {
-    const span = next.min - cur.min;
-    const pct = span > 0 ? Math.min(100, Math.max(4, ((points - cur.min) / span) * 100)) : 100;
-    if (heroBar) heroBar.style.width = pct + '%';
-    if (heroLeft) heroLeft.textContent = points.toLocaleString() + ' خاڵ';
-    if (heroNext) heroNext.textContent = (next.min - points > 0 ? (next.min - points).toLocaleString() : 0) + ' خاڵی تر بۆ ' + next.name;
-  } else {
-    if (heroBar) heroBar.style.width = '100%';
-    if (heroLeft) heroLeft.textContent = points.toLocaleString() + ' خاڵ';
-    if (heroNext) heroNext.textContent = 'بەرزترین ئاست — ' + cur.name;
-  }
-
-  // All level cards
-  const wrap = document.getElementById('lvlAllCards');
-  if (!wrap) return;
-  const levelColors = {
-    bronze:   { ico: '#b45309', bg: 'rgba(180,83,9,.1)',   grad: '#f59e0b,#ea580c' },
-    silver:   { ico: '#94a3b8', bg: 'rgba(148,163,184,.1)', grad: '#22d3ee,#6366f1' },
-    platinum: { ico: '#38bdf8', bg: 'rgba(56,189,248,.1)',  grad: '#38bdf8,#a855f7' },
-    diamond:  { ico: '#a855f7', bg: 'rgba(168,85,247,.1)',  grad: '#a855f7,#ec4899' },
-  };
-  wrap.innerHTML = defs.map(lv => {
-    const isCurrent = lv.key === cur.key;
-    const isLocked = points < lv.min;
-    const lc = levelColors[lv.key] || { ico: '#8b95a8', bg: 'rgba(139,149,168,.1)' };
-    const discTxt = lv.discount > 0 ? Math.round(lv.discount * 100) + '% داشکاندن' : 'داشکاندنی نییە';
-    const discColor = lv.discount > 0 ? 'rgba(22,163,74,.09)' : 'rgba(139,149,168,.08)';
-    const discBorder = lv.discount > 0 ? 'rgba(22,163,74,.2)' : 'rgba(139,149,168,.2)';
-    const discTxtColor = lv.discount > 0 ? '#15803d' : '#8b95a8';
-    return '<div class="lvl-card' + (isCurrent ? ' current' : '') + (isLocked ? ' locked' : '') + '">' +
-      '<div class="lvl-card-ico" style="background:' + lc.bg + ';color:' + lc.ico + '">' +
-        '<i class="fas ' + lv.icon + '"></i>' +
-      '</div>' +
-      '<div class="lvl-card-info">' +
-        '<div class="lvl-card-name">' + lv.name + '</div>' +
-        '<div class="lvl-card-pts">' + (lv.min === 0 ? 'دەستپێک' : lv.min.toLocaleString() + ' خاڵ پێویستە') + '</div>' +
-      '</div>' +
-      '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">' +
-        '<div style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:' + discColor + ';color:' + discTxtColor + ';border:1px solid ' + discBorder + '">' + discTxt + '</div>' +
-        (isCurrent ? '<div style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(99,102,241,.09);color:#4f46e5;border:1px solid rgba(99,102,241,.2)"><i class="fas fa-check" style="margin-left:3px;font-size:9px"></i>ئەم ئاستەدایت</div>' : '') +
-        (isLocked ? '<div style="font-size:10px;color:var(--mt)"><i class="fas fa-lock" style="font-size:9px;margin-left:3px"></i>قفڵکراوە</div>' : '') +
-      '</div>' +
-    '</div>';
-  }).join('');
-}
-
-// ══ TASKS PAGE ══
-async function loadTasksPage() {
-  if (!cu) return;
-  const wrap = document.getElementById('tasksListWrap');
-  if (wrap) wrap.innerHTML = '<div style="text-align:center;padding:40px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin" style="font-size:24px"></i></div>';
-
-  const { data: challenges } = await sb.from('pa_challenges').select('*').eq('is_active', true).order('created_at', { ascending: false });
-  const { data: progressRows } = await sb.from('pa_challenge_progress').select('*').eq('user_id', cu.id);
-  const progMap = {};
-  (progressRows || []).forEach(p => { progMap[p.challenge_id] = p; });
-
-  const total = (challenges || []).length;
-  const doneCount = (challenges || []).filter(c => {
-    const pr = progMap[c.id] || { progress: 0 };
-    return pr.progress >= c.goal_value;
-  }).length;
-  const claimedCount = (progressRows || []).filter(p => p.claimed).length;
-
-  const statTotal = document.getElementById('tasksStatTotal');
-  const statDone = document.getElementById('tasksStatDone');
-  const statClaimed = document.getElementById('tasksStatClaimed');
-  if (statTotal) statTotal.textContent = total;
-  if (statDone) statDone.textContent = doneCount;
-  if (statClaimed) statClaimed.textContent = claimedCount;
-
-  if (!wrap) return;
-
-  if (!challenges || !challenges.length) {
-    wrap.innerHTML = '<div style="text-align:center;padding:50px 20px"><div style="width:80px;height:80px;border-radius:24px;background:rgba(168,85,247,.08);border:1.5px solid rgba(168,85,247,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:32px;color:#a855f7"><i class="fas fa-flag-checkered"></i></div><div style="font-size:16px;font-weight:900;color:var(--dark);margin-bottom:8px">هیچ ئەرکێک نییە</div><div style="font-size:13px;color:var(--mt);line-height:1.7">دواتر سەردانی ئەم بەشە بکەرەوە</div></div>';
-    return;
-  }
-
-  wrap.innerHTML = challenges.map(c => {
-    const pr = progMap[c.id] || { progress: 0, claimed: false };
-    const pct = Math.min(100, Math.round((pr.progress / c.goal_value) * 100));
-    const done = pr.progress >= c.goal_value;
-    const isAdsGoal = c.goal_type === 'ads_count';
-    const unit = isAdsGoal ? 'ڕیکلام' : 'دۆلار';
-    const icoCls = isAdsGoal ? 'fa-bullhorn' : 'fa-dollar-sign';
-    const icoColor = pr.claimed ? '#16a34a' : (done ? '#a855f7' : '#7c3aed');
-    const icoBg = pr.claimed ? 'rgba(22,163,74,.12)' : (done ? 'rgba(168,85,247,.12)' : 'rgba(124,58,237,.1)');
-    const rewardTxt = [
-      c.reward_iqd > 0 ? parseFloat(c.reward_iqd).toLocaleString() + ' IQD' : null,
-      c.reward_points > 0 ? c.reward_points + ' خاڵ' : null,
-    ].filter(Boolean).join(' + ');
-
-    let footerHtml;
-    if (pr.claimed) {
-      footerHtml = '<div class="task-claimed-lbl"><i class="fas fa-check-circle"></i> وەرگیرا</div>';
-    } else if (done) {
-      footerHtml = '<button class="task-claim-btn" onclick="claimTaskChallenge(''+c.id+'')"><i class="fas fa-gift"></i> وەرگرتنی خەڵات</button>';
-    } else {
-      footerHtml = '<div class="task-card-counter">' + Math.floor(pr.progress) + ' / ' + c.goal_value + ' <span style="font-family:'R',sans-serif">' + unit + '</span></div>';
-    }
-
-    return '<div class="task-card' + (pr.claimed ? ' claimed' : (done ? ' done' : '')) + '">' +
-      '<div class="task-card-top">' +
-        '<div class="task-card-ico" style="background:' + icoBg + ';color:' + icoColor + '"><i class="fas ' + icoCls + '"></i></div>' +
-        '<div style="flex:1;min-width:0">' +
-          '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px">' +
-            '<div class="task-card-title">' + (c.title || '') + '</div>' +
-            '<div class="task-card-reward">' + rewardTxt + '</div>' +
-          '</div>' +
-          (c.description ? '<div class="task-card-desc">' + c.description + '</div>' : '') +
-        '</div>' +
-      '</div>' +
-      '<div class="task-card-progress"><div class="task-card-progress-fill" style="width:' + pct + '%"></div></div>' +
-      '<div class="task-card-footer">' + footerHtml + '</div>' +
-    '</div>';
-  }).join('');
-}
-
-async function claimTaskChallenge(challengeId) {
-  const { data, error } = await sb.rpc('claim_challenge_reward', { p_challenge_id: challengeId, p_user_id: cu.id });
-  if (error || !data?.ok) { showToast('نەتوانرا خەڵاتەکە وەربگیرێت', 'err'); return; }
-  showToast('🎉 خەڵاتەکەت وەرگیرا', 'ok');
-  await Promise.all([loadBal(), loadTasksPage()]);
-}
-
 </script>
 
 </html>
