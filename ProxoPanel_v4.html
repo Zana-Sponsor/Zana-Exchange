@@ -3139,6 +3139,7 @@ function renderAdsTable(q=''){
         <div class="user-card-stat rd"><i class="fas fa-coins" style="font-size:10px"></i> ${Math.round(parseFloat(a.budget||0)*1800).toLocaleString()} IQD</div>
         <div class="user-card-stat" style="font-size:11px">${gs[a.goal]||a.goal||'—'}</div>
         <div class="user-card-date"><i class="fas fa-calendar-alt" style="font-size:9px;margin-left:3px"></i>${new Date(a.created_at).toLocaleDateString('ku')} &nbsp;<span style="font-family:'Inter';direction:ltr">${new Date(a.created_at).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span></div>
+        ${a.status==='scheduled'&&(a.start_date||a.start_time)?`<div style="display:flex;align-items:center;gap:5px;background:rgba(8,145,178,.07);border:1px solid rgba(8,145,178,.2);border-radius:8px;padding:4px 9px;margin-top:4px"><i class="fas fa-clock" style="font-size:10px;color:#0891b2"></i><span style="font-size:11px;color:#0891b2;font-weight:700;font-family:'Inter'">کات بۆ دانراو: ${a.start_date||''} ${a.start_time||''}</span></div>`:'}
       </div>
       ${a.status==='pending'?`<div class="ad-card-actions" onclick="event.stopPropagation()">
         <div class="act-btn gr" onclick="openApproveModal('${a.id}')"><i class="fas fa-check-circle"></i> Review</div>
