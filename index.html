@@ -8812,14 +8812,15 @@ function pickCard(el,id){
           const{data:_wb}=await sb.from('pa_wallets').select('balance').eq('user_id',cu.id).single();
           const _newWalBal=Math.max(0,parseFloat(_wb?.balance||0)-finalTotal/1800);
           await sb.from('pa_wallets').update({balance:_newWalBal}).eq('user_id',cu.id);
-          // 4. تۆمارکردنی مامەڵە
+          // 4. تۆمارکردنی مامەڵە (لەگەڵ باڵانسی ڕاستەقینەی دوای مامەڵەکە)
           await sb.from('pa_transactions').insert({
             user_id:cu.id,
             amount:finalTotal/1800,
             type:'withdrawal',
             status:'approved',
             note:'ڕیکلامی نوێ',
-            ad_number:_newAd?.ad_number||_adNum
+            ad_number:_newAd?.ad_number||_adNum,
+            balance_after:Math.round(_newWalBal*1800)
           });
           // دووگمەی setup شاری بکە
           const _sb=document.getElementById('setupDbBtn');
@@ -8881,6 +8882,17 @@ function pickCard(el,id){
       }
 
       await loadBal();
+      // ── تۆمارکردنی باڵانسی ڕاستەقینەی دوای مامەڵە بۆ ڕێگای RPC ──
+      // (بۆ فالبەک ئەمە پێشتر لەگەڵ خۆی مامەڵەکەدا تۆمارکراوە)
+      if(_adNumFinal && !_fallbackAdNum){
+        try{
+          const{data:_balNow}=await sb.from('pa_wallets').select('balance').eq('user_id',cu.id).single();
+          const _balAfterIQD=Math.max(0,Math.round(parseFloat(_balNow?.balance||0)*1800));
+          await sb.from('pa_transactions').update({balance_after:_balAfterIQD})
+            .eq('user_id',cu.id).eq('ad_number',String(_adNumFinal)).eq('type','withdrawal')
+            .is('balance_after',null);
+        }catch(_e){}
+      }
       // Award 50 Proxo Coins for submitting an ad
       await addCoins(COINS_PER_AD, 'ناردنی ڕیکلام — کۆینی پاداشت');
       // ── خاڵ بۆ ئاست و پێشکەوتنی چاڵنجەکان (ڕێژەکە لە لایەن ئادمینەوە دیاریدەکرێت) ──
@@ -11832,6 +11844,7 @@ async function loadTxHistory(){
     return {id:t.id, kind, label, sub, amount:amtRaw, amtIQD,
       status, date:t.created_at, method:t.method||null,
       ad_number:t.ad_number||null, note:noteStr, deposit_number:t.deposit_number||null,
+      balance_after:(t.balance_after!=null?Math.round(parseFloat(t.balance_after)):null),
       _raw:t};
   });
 
@@ -11872,11 +11885,18 @@ async function loadTxHistory(){
   if(!_runBal) _runBal=parseInt((document.getElementById('wBal')?.textContent||'0').replace(/,/g,''))||0;
 
   allTxHistory.forEach(t=>{
-    t._balanceAfter=_runBal;
-    const isOut = t.kind==='spend'||t.kind==='admin_deduct'||t.kind==='withdraw';
-    const isIn  = t.kind==='deposit'||t.kind==='refund'||t.kind==='reward'||t.kind==='voucher'||t.kind==='coin_exchange';
-    if(isOut && t.status!=='refunded') _runBal+=t.amtIQD;
-    else if(isIn && t.status==='approved') _runBal-=t.amtIQD;
+    if(t.balance_after!=null){
+      // باڵانسی ڕاستەقینەی تۆمارکراو لە کاتی مامەڵەکەدا — پشتگیری دەکات لەوەی
+      // هەڵەی داهاتووی سیستەم لە حساباتدا کاریگەری لەسەر مێژووی پێشوو نەبێت
+      t._balanceAfter=t.balance_after;
+      _runBal=t.balance_after;
+    } else {
+      t._balanceAfter=_runBal;
+      const isOut = t.kind==='spend'||t.kind==='admin_deduct'||t.kind==='withdraw';
+      const isIn  = t.kind==='deposit'||t.kind==='refund'||t.kind==='reward'||t.kind==='voucher'||t.kind==='coin_exchange';
+      if(isOut && t.status!=='refunded') _runBal+=t.amtIQD;
+      else if(isIn && t.status==='approved') _runBal-=t.amtIQD;
+    }
   });
 
   renderTxHistory();
@@ -13951,7 +13971,8 @@ async function claimVoucher() {
         status: 'approved',
         amount: amtUSD,
         note: 'فاوچەر: ' + code,
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
+        balance_after: Math.round(newBal*1800)
       });
 
       // 6. Insert notification
