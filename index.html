@@ -657,7 +657,9 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .spons-status-rejected{background:rgba(239,68,68,.09);color:#dc2626;border:1px solid rgba(239,68,68,.2);}
 .spons-status-completed{background:rgba(99,102,241,.09);color:#4f46e5;border:1px solid rgba(99,102,241,.25);}
 .spons-status-paused{background:rgba(107,114,128,.09);color:#4b5563;border:1px solid rgba(107,114,128,.25);}
-.spons-status-scheduled{background:rgba(8,145,178,.09);color:#0891b2;border:1px solid rgba(8,145,178,.25);}
+.spons-status-scheduled{background:linear-gradient(135deg,rgba(8,145,178,.13),rgba(6,182,212,.09));color:#0891b2;border:1px solid rgba(8,145,178,.3);font-weight:800;}
+@keyframes sched-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.75)}}
+.sched-dot{width:7px;height:7px;border-radius:50%;background:#0891b2;display:inline-block;animation:sched-pulse 1.6s ease-in-out infinite;margin-left:5px;vertical-align:middle;}
 .spons-title{font-size:15px;font-weight:800;color:var(--dark);margin-bottom:12px;line-height:1.4;direction:rtl;text-align:right;}
 .spons-metrics{display:flex;gap:8px;margin-bottom:12px;}
 .spons-metric-box{background:var(--bg);border-radius:16px;padding:12px 6px 10px;text-align:center;border:1px solid var(--b1);flex:1;}
@@ -3547,7 +3549,7 @@ function _toWebP(dataUrl,quality){
     <!-- فیلتەر -->
     <div style="display:flex;gap:7px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch">
       <div class="fchip on" data-txf="all" onclick="filterTxHistory(this)">هەموو</div>
-      <div class="fchip" data-txf="deposit" onclick="filterTxHistory(this)"><i class="fas fa-plus-circle" style="font-size:9px;margin-left:3px"></i>واریز</div>
+      <div class="fchip" data-txf="deposit" onclick="filterTxHistory(this)"><i class="fas fa-plus-circle" style="font-size:9px;margin-left:3px"></i>زیادکردن</div>
       <div class="fchip" data-txf="voucher" onclick="filterTxHistory(this)"><i class="fas fa-ticket" style="font-size:9px;margin-left:3px"></i>فاوچەر</div>
       <div class="fchip" data-txf="spend" onclick="filterTxHistory(this)"><i class="fas fa-bullhorn" style="font-size:9px;margin-left:3px"></i>ڕیکلام</div>
       <div class="fchip" data-txf="refund" onclick="filterTxHistory(this)"><i class="fas fa-rotate-left" style="font-size:9px;margin-left:3px"></i>گەڕانەوە</div>
@@ -9092,7 +9094,28 @@ function renderAds(){
     // کات بۆ دانراو note
     const _schedDate=ad.start_date||'';
     const _schedTime=ad.start_time||'';
-    const scheduledNote=(st==='scheduled'&&(_schedDate||_schedTime))?`<div style="display:flex;align-items:center;gap:9px;background:rgba(8,145,178,.06);border:1.5px solid rgba(8,145,178,.2);border-radius:13px;padding:11px 13px;margin-bottom:10px"><div style="width:32px;height:32px;border-radius:10px;background:rgba(8,145,178,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-clock" style="font-size:13px;color:#0891b2"></i></div><div><div style="font-size:10px;color:#0891b2;font-weight:700;margin-bottom:2px">کات بۆ دانراو</div><div style="font-size:13px;font-weight:800;color:#0891b2;font-family:'Inter',sans-serif">${_schedDate}${_schedDate&&_schedTime?' — ':''}${_schedTime}</div></div></div>`:'';
+    const scheduledNote=(st==='scheduled'&&(_schedDate||_schedTime))?`
+<div style="background:linear-gradient(135deg,rgba(8,145,178,.07) 0%,rgba(6,182,212,.04) 100%);border:1.5px solid rgba(8,145,178,.22);border-radius:16px;padding:13px 14px;margin-bottom:12px;position:relative;overflow:hidden">
+  <div style="position:absolute;left:-18px;top:-18px;width:72px;height:72px;border-radius:50%;background:rgba(8,145,178,.07);pointer-events:none"></div>
+  <div style="position:absolute;right:-10px;bottom:-22px;width:60px;height:60px;border-radius:50%;background:rgba(6,182,212,.06);pointer-events:none"></div>
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;position:relative">
+    <div style="width:30px;height:30px;border-radius:10px;background:rgba(8,145,178,.15);border:1px solid rgba(8,145,178,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <i class="fas fa-calendar-clock" style="font-size:12px;color:#0891b2"></i>
+    </div>
+    <span style="font-size:11.5px;font-weight:800;color:#0891b2;letter-spacing:.2px">کات بۆ دانراو</span>
+    <span class="sched-dot"></span>
+  </div>
+  <div style="display:flex;gap:8px;position:relative">
+    ${_schedDate?`<div style="flex:1;background:var(--w);border:1px solid rgba(8,145,178,.18);border-radius:11px;padding:9px 11px">
+      <div style="font-size:9px;color:#0891b2;font-weight:800;margin-bottom:4px;letter-spacing:.4px;display:flex;align-items:center;gap:4px"><i class="fas fa-calendar" style="font-size:8px"></i>بەروار</div>
+      <div style="font-size:14px;font-weight:900;color:var(--dark);font-family:'Inter',sans-serif;letter-spacing:-.3px">${_schedDate}</div>
+    </div>`:''}
+    ${_schedTime?`<div style="flex:1;background:var(--w);border:1px solid rgba(8,145,178,.18);border-radius:11px;padding:9px 11px">
+      <div style="font-size:9px;color:#0891b2;font-weight:800;margin-bottom:4px;letter-spacing:.4px;display:flex;align-items:center;gap:4px"><i class="fas fa-clock" style="font-size:8px"></i>کات</div>
+      <div style="font-size:14px;font-weight:900;color:var(--dark);font-family:'Inter',sans-serif;letter-spacing:-.3px">${_schedTime}</div>
+    </div>`:''}
+  </div>
+</div>`:'';
 
     // داشکاندنی ئاست note
     const _lvlDiscIQD=Math.round(parseFloat(ad.level_discount_iqd||0));
@@ -11762,8 +11785,8 @@ async function loadTxHistory(){
       sub='ڕاستەوخۆ بۆ باڵانس';
     } else if(isRefund){
       kind='refund';
-      label='گەڕانەوەی بودجەی ڕیکلام'+(t.ad_number?' — #'+t.ad_number:'');
-      sub='ڕیکلامەکە ڕەتکرایەوە';
+      label='گەڕانەوەی پارەی ڕیکلام'+(t.ad_number?' — #'+t.ad_number:'');
+      sub='';
     } else if(isReward){
       kind='reward';
       label=noteStr||'چاڵنجی هەفتانە';
@@ -11800,13 +11823,9 @@ async function loadTxHistory(){
   // ── 2. مامەڵەکانی ڕیکلام (pa_ads) ──
   const spendItems = ads.map(a=>{
     const amtIQD = Math.round(parseFloat(a.budget||0)*1800);
-    const adLabel = (a.title||('ڕیکلامی نوێ')) + (a.ad_number?' — #'+a.ad_number:'');
+    const adLabel = 'ڕیکلامی نوێ' + (a.ad_number?' — #'+a.ad_number:'');
     return {id:a.id, kind:'spend', label:adLabel,
-      sub: a.status==='rejected'?'ڕەتکرایەوە — باڵانس گەڕایەوە':
-           a.status==='scheduled'?'کات بۆ دانراو':
-           a.status==='active'?'چالاک':
-           a.status==='completed'?'تەواوبوو':
-           a.status==='pending'?'چاوەڕوانی ئادمین':'',
+      sub:'',
       amount:parseFloat(a.budget||0), amtIQD,
       status: a.status==='rejected'?'refunded':'spent',
       ad_status: a.status, date:a.created_at,
@@ -11931,15 +11950,7 @@ function renderTxHistory(){
       // باڵانسی پاش مامەڵەکە
       const balAfter = t._balanceAfter!==undefined?`<div style="font-size:10px;color:var(--mt2);font-weight:600;margin-top:2px;direction:rtl">باڵانس: ${Math.max(0,t._balanceAfter).toLocaleString()} IQD</div>`:'';
 
-      // badge دۆخ
-      let badge='';
-      if(t.kind==='deposit'||t.kind==='withdraw'){
-        if(t.status==='pending')  badge=_txBadge('<i class="fas fa-clock" style="font-size:7px"></i> چاوەڕوان','#d97706','rgba(217,119,6,.1)','rgba(217,119,6,.25)');
-        else if(t.status==='approved') badge=_txBadge('<i class="fas fa-check" style="font-size:7px"></i> پەسەندکرا','#16a34a','rgba(22,163,74,.1)','rgba(22,163,74,.25)');
-        else if(t.status==='rejected') badge=_txBadge('<i class="fas fa-xmark" style="font-size:7px"></i> ڕەتکرا','#dc2626','rgba(220,38,38,.08)','rgba(220,38,38,.2)');
-      }
-      if(isRejectedSpend) badge=_txBadge('<i class="fas fa-rotate-left" style="font-size:7px"></i> بودجە گەڕایەوە','#6366f1','rgba(99,102,241,.08)','rgba(99,102,241,.2)');
-      if(t.kind==='spend'&&t.ad_status==='scheduled') badge=_txBadge('<i class="fas fa-clock" style="font-size:7px"></i> کات بۆ دانراو','#0891b2','rgba(8,145,178,.08)','rgba(8,145,178,.2)');
+      // badge — نیشان نادرێت
 
       // بەروار و کات
       const d=new Date(t.date);
