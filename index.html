@@ -9477,7 +9477,7 @@ async function showAdDetail(ad){
   h+='<div class="ad-sheet-sec" style="margin-top:18px"><i class="fas fa-receipt" style="margin-left:5px"></i>وردەکاری نرخ</div>';
   h+='<div class="ad-price-box">';
   h+='<div class="ad-price-row"><span>نرخی بنەڕەتی</span><span>'+originalTotal.toLocaleString()+' IQD</span></div>';
-  if(levelDiscIQD2>0) h+='<div class="ad-price-row" style="margin-top:3px"><span style="display:flex;align-items:center;gap:6px"><i class="fas fa-medal" style="color:#a855f7;font-size:10px"></i>داشکاندنی ئاست'+(levelDiscName2?' ('+levelDiscName2+(levelDiscPct2>0?' · %'+levelDiscPct2:'')+')')+'</span><span style="color:#a855f7;font-weight:800">- '+levelDiscIQD2.toLocaleString()+' IQD</span></div>';
+  if(levelDiscIQD2>0) h+='<div class="ad-price-row" style="margin-top:3px"><span style="display:flex;align-items:center;gap:6px"><i class="fas fa-medal" style="color:#a855f7;font-size:10px"></i>داشکاندنی ئاست'+(levelDiscName2?' ('+levelDiscName2+(levelDiscPct2>0?' · %'+levelDiscPct2:'')+')':'')+'</span><span style="color:#a855f7;font-weight:800">- '+levelDiscIQD2.toLocaleString()+' IQD</span></div>';
   if(promoCode) h+='<div class="ad-price-row" style="margin-top:3px"><span style="display:flex;align-items:center;gap:6px">پڕۆمۆ کۆد <span class="ad-promo-badge"><i class="fas fa-tag" style="font-size:9px"></i>'+promoCode+'</span></span><span style="color:var(--gr)">- '+discountIQD.toLocaleString()+' IQD</span></div>';
   var isRej2=ad.status==='rejected';
   h+='<div class="ad-price-row ad-price-total"><span>نرخی کۆتایی</span><span style="'+(isRej2?'color:var(--rd);text-decoration:line-through':'')+'">'+finalTotal.toLocaleString()+' IQD</span></div>';
