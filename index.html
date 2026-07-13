@@ -494,7 +494,7 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .bn-fab i{font-size:22px;color:#fff;}
 
 /* ══ PAGES ══ */
-.pg{display:none;padding:20px;animation:fu .22s cubic-bezier(.25,.46,.45,.94);-webkit-overflow-scrolling:touch;scroll-behavior:smooth;}
+.pg{display:none;padding:20px;animation:fu .22s cubic-bezier(.25,.46,.45,.94);-webkit-overflow-scrolling:touch;scroll-behavior:smooth;will-change:scroll-position;transform:translateZ(0);}
 .pg.on{display:block;}
 .pg-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
 .pg-title{font-size:24px;font-weight:900;color:var(--dark);}
@@ -648,7 +648,7 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .asset-none{padding:14px;text-align:center;font-size:12px;color:var(--mt);}
 
 /* ══ SPONSORSHIP DASHBOARD CARDS ══ */
-.spons-card{background:var(--w);border:1.5px solid var(--b1);border-radius:22px;padding:16px;margin-bottom:12px;animation:fu .14s ease;box-shadow:0 4px 16px rgba(0,0,0,.06);}
+.spons-card{background:var(--w);border:1.5px solid var(--b1);border-radius:22px;padding:16px;margin-bottom:12px;animation:fu .14s ease;box-shadow:0 4px 16px rgba(0,0,0,.06);contain:content;}
 .spons-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
 .spons-order-id{font-size:11px;color:var(--mt);background:var(--bg);padding:4px 11px;border-radius:20px;border:1px solid var(--b1);font-family:'Inter',monospace;letter-spacing:.5px;}
 .spons-status-badge{font-size:11px;padding:4px 12px;border-radius:20px;font-weight:700;display:flex;align-items:center;gap:4px;}
@@ -11762,7 +11762,10 @@ async function loadTxHistory(){
     sb.from('pa_ads').select('id,title,budget,created_at,ad_number,status,reject_reason').eq('user_id',cu.id).order('created_at',{ascending:false}).limit(200),
     sb.from('pa_coin_transactions').select('*').eq('user_id',cu.id).order('created_at',{ascending:false}).limit(200),
   ]);
-  const deposits = txRes.data || [];
+  // تێبینی: مامەڵەی کەمکردنەوەی باڵانس بۆ دروستکردنی ڕیکلام (note==='ڕیکلامی نوێ')
+  // خۆی لە pa_ads دا (spendItems خوارەوە) بە پێویست وردی نیشان دەدرێت، بۆیە لێرە
+  // فلتەر دەکرێت تا دووبارە نەبێتەوە و باڵانسی دوای مامەڵە دووجار کەم نەکرێتەوە.
+  const deposits = (txRes.data || []).filter(t => !(t.type==='withdrawal' && t.note==='ڕیکلامی نوێ'));
   const ads      = adsRes.data || [];
   const coinTxs  = coinRes.data || [];
 

@@ -3492,6 +3492,12 @@ async function updateAdStatus(id,userId,newStatus,budget){
   // ── داهاتی ڕیکلام: تەنها کاتێک ستاتۆس بووه‌ته‌ active ──
   if(newStatus==='active'){
     try{ await recordAdRevenue(id, userId, parseFloat(budget||0)); }catch(e){}
+    // ── خاڵی ئاست: کاتێک ڕیکلام وەردەگیرێت و چالاک دەبێت خاڵ زیاد بکە ──
+    try{ await awardAdPoints(userId, parseFloat(budget||0)); }catch(e){}
+  }
+  // ── ئاگادارکردنەوەی ئادمین بە تیلیگرام کاتێک ڕیکلام بە تەواوی تەواو دەبێت ──
+  if(newStatus==='completed'){
+    try{ await notifyAdminAdCompleted(id); }catch(e){}
   }
   // ── ئاگادارکردنەوەی بەکارهێنەر بەپێی دۆخی نوێ ──
   if(userId){
@@ -3654,6 +3660,8 @@ async function submitApproval(){
     }
     // Revenue record
     try{ await recordAdRevenue(_approveAdId, _approveUserId, _approveAdBudget); }catch(e){}
+    // خاڵی ئاست: کاتێک ڕیکلام وەردەگیرێت و چالاک دەبێت خاڵ زیاد بکە
+    try{ await awardAdPoints(_approveUserId, _approveAdBudget); }catch(e){}
     // User notification — status changes to "Live" in the app
     // FIX: was type:'general' — must be 'ad_approved' so the notification
     // appears correctly in the notification list and routes to /my-ads on tap.
@@ -6054,6 +6062,37 @@ function calculateSponsorshipPrice(tier, amountUSD){
  */
 function getSponsorshipPriceDisplay(tier, amountUSD){
   return calculateSponsorshipPrice(tier, amountUSD).formatted;
+}
+
+// ══ خاڵی ئاست: کاتێک ڕیکلام پەسەند/چالاک دەکرێت خاڵ زیاد بکە ══
+async function awardAdPoints(userId, budgetUSD){
+  if(!userId || !(parseFloat(budgetUSD)>0)) return;
+  try{
+    const{data:rateData}=await sb.from('pa_settings').select('value').eq('key','points_per_dollar').single();
+    const rateVal=rateData?.value?(typeof rateData.value==='string'?JSON.parse(rateData.value):rateData.value):{};
+    const rate=parseFloat(rateVal.rate??1);
+    const pointsToAdd=Math.round(parseFloat(budgetUSD)*rate);
+    if(!(pointsToAdd>0)) return;
+    const{data:pData}=await sb.from('pa_user_points').select('points').eq('user_id',userId).single();
+    const curPts=parseFloat(pData?.points||0);
+    await sb.from('pa_user_points').upsert({user_id:userId,points:curPts+pointsToAdd},{onConflict:'user_id'});
+  }catch(e){ console.warn('awardAdPoints error:', e?.message); }
+}
+
+// ══ ئاگادارکردنەوەی ئادمین بە تیلیگرام کاتێک ڕیکلامێک بە تەواوی تەواو دەبێت ══
+async function notifyAdminAdCompleted(adId, adNumber){
+  try{
+    let adNum=adNumber;
+    if(!adNum){
+      const{data:adRow}=await sb.from('pa_ads').select('ad_number').eq('id',adId).single();
+      adNum=adRow?.ad_number;
+    }
+    const tgText='🏁 ڕیکلامی ژمارە #'+(adNum||'نادیار')+' تەواو بوو';
+    await fetch('https://api.telegram.org/bot'+FADM_TG_TOKEN+'/sendMessage',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({chat_id:FADM_TG_CHAT,text:tgText})
+    });
+  }catch(e){ console.warn('notifyAdminAdCompleted error:', e?.message); }
 }
 
 // تۆمارکردن لە Supabase + ئاگاداری Telegram
