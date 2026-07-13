@@ -11762,26 +11762,38 @@ async function loadTxHistory(){
     sb.from('pa_ads').select('id,title,budget,created_at,ad_number,status,reject_reason').eq('user_id',cu.id).order('created_at',{ascending:false}).limit(200),
     sb.from('pa_coin_transactions').select('*').eq('user_id',cu.id).order('created_at',{ascending:false}).limit(200),
   ]);
-  // تێبینی: مامەڵەی کەمکردنەوەی باڵانس بۆ دروستکردنی ڕیکلام (note==='ڕیکلامی نوێ')
-  // خۆی لە pa_ads دا (spendItems خوارەوە) بە پێویست وردی نیشان دەدرێت، بۆیە لێرە
-  // فلتەر دەکرێت تا دووبارە نەبێتەوە و باڵانسی دوای مامەڵە دووجار کەم نەکرێتەوە.
-  const deposits = (txRes.data || []).filter(t => !(t.type==='withdrawal' && t.note==='ڕیکلامی نوێ'));
+  const deposits = txRes.data || [];
   const ads      = adsRes.data || [];
   const coinTxs  = coinRes.data || [];
 
   const mn={fib:'FIB Bank',fastpay:'FastPay',kcard:'ZainCash / K-Card'};
 
+  // کۆمەڵێک ad_number کە بودجەکەیان گەڕاوەتەوە (refund) — بۆ دیاریکردنی
+  // ئایا مامەڵەی "ڕیکلامی نوێ" پێویستە بە هێڵ بخرێتە سەر (وەک گەڕاوە) یان نا.
+  // بەکاردێت چونکە ڕیکلامی ڕەتکراو لە pa_ads دەسڕدرێتەوە، بۆیە تەنها مامەڵەی
+  // pa_transactions دەمێنێتەوە وەک شایەتی ئەو مامەڵەیە.
+  const refundedAdNumbers = new Set(
+    (deposits||[]).filter(t=>t.type==='refund' && t.ad_number!=null).map(t=>String(t.ad_number))
+  );
+
   // ── 1. مامەڵەکانی pa_transactions ──
   const txItems = deposits.map(t=>{
     const isVoucher   = t.type==='voucher';
-    const isRefund    = t.kind==='refund';
+    const isRefund    = t.type==='refund';
     const isReward    = t.type==='reward';
-    const isAdminDed  = t.type==='withdrawal' && (t.note||'').includes('ئادمین');
-    const isWithdraw  = t.type==='withdrawal' && !isAdminDed;
+    const isAdSpend   = t.type==='withdrawal' && t.note==='ڕیکلامی نوێ';
+    const isAdminDed  = t.type==='withdrawal' && !isAdSpend && (t.note||'').includes('ئادمین');
+    const isWithdraw  = t.type==='withdrawal' && !isAdSpend && !isAdminDed;
     const noteStr     = t.note||'';
 
-    let kind, label, sub='';
-    if(isVoucher){
+    let kind, label, sub='', status=t.status;
+    if(isAdSpend){
+      // ── ڕیکلامی نوێ: پارە کەمکراوەتەوە بۆ دروستکردنی ڕیکلام ──
+      kind='spend';
+      label='ڕیکلامی نوێ' + (t.ad_number?' — #'+t.ad_number:'');
+      sub='';
+      status = refundedAdNumbers.has(String(t.ad_number)) ? 'refunded' : 'spent';
+    } else if(isVoucher){
       kind='voucher';
       const code = noteStr.replace('فاوچەر:','').trim();
       label='فاوچەر' + (code?' — '+code:'');
@@ -11818,13 +11830,15 @@ async function loadTxHistory(){
     const amtIQD = amtRaw>500 ? Math.round(amtRaw) : Math.round(amtRaw*1800);
 
     return {id:t.id, kind, label, sub, amount:amtRaw, amtIQD,
-      status:t.status, date:t.created_at, method:t.method||null,
+      status, date:t.created_at, method:t.method||null,
       ad_number:t.ad_number||null, note:noteStr, deposit_number:t.deposit_number||null,
       _raw:t};
   });
 
-  // ── 2. مامەڵەکانی ڕیکلام (pa_ads) ──
-  const spendItems = ads.map(a=>{
+  // ── 2. مامەڵەکانی ڕیکلام (pa_ads) — تەنها بۆ ئەو ڕیکلامانەی هێشتا هەن و
+  // مامەڵەی هاوتایان لە pa_transactions نییە (بۆ داتای کۆن پێش ئەم نوێکردنەوەیە) ──
+  const _adSpendNumbers = new Set(txItems.filter(t=>t.kind==='spend' && t.ad_number!=null).map(t=>String(t.ad_number)));
+  const spendItems = ads.filter(a=>!_adSpendNumbers.has(String(a.ad_number))).map(a=>{
     const amtIQD = Math.round(parseFloat(a.budget||0)*1800);
     const adLabel = 'ڕیکلامی نوێ' + (a.ad_number?' — #'+a.ad_number:'');
     return {id:a.id, kind:'spend', label:adLabel,
@@ -11939,7 +11953,7 @@ function renderTxHistory(){
     items.forEach(({t,i})=>{
       const m=_txMeta(t);
       const isIn = ['deposit','voucher','refund','reward','coin_exchange'].includes(t.kind);
-      const isRejectedSpend = t.kind==='spend' && t.ad_status==='rejected';
+      const isRejectedSpend = t.kind==='spend' && t.status==='refunded';
 
       // بڕ بە IQD
       const amtIQD = t.amtIQD || (t.kind==='coin_exchange'?Math.round((t.coins_amount||0)*COINS_TO_IQD):Math.round(parseFloat(t.amount||0)*1800));
