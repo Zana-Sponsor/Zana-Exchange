@@ -1957,7 +1957,7 @@ tr:hover td{background:rgba(28,35,51,.015);}
       <div class="field-err" id="voucherAmount-err">بڕی IQD دیاری بکە (کەمترین: 100)</div>
     </div>
     <div class="field-wrap">
-      <label class="modal-lbl">بەرواری کۆتایی <span style="font-size:10px;color:var(--mt)">(ئۆپشنی)</span></label>
+      <label class="modal-lbl">بەرواری کۆتایی <span style="font-size:10px;color:var(--mt)">(ئۆپشنی — دیاریکردنی کاتێک فاوچەرەکە چالاک دەمێنێتەوە)</span></label>
       <input class="minp" type="datetime-local" id="voucherExpiry" dir="ltr" style="font-family:'Inter'">
     </div>
     <div class="field-wrap">
@@ -1972,6 +1972,34 @@ tr:hover td{background:rgba(28,35,51,.015);}
           <input type="checkbox" id="voucherIsActive" checked>
           <span class="tog-sl"></span>
         </label>
+      </div>
+    </div>
+    <!-- بۆ بەکارهێنەرێکی تایبەت -->
+    <div style="background:rgba(245,158,11,.05);border:1.5px dashed rgba(245,158,11,.3);border-radius:13px;padding:12px 14px;margin-top:4px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--dark)"><i class="fas fa-paper-plane" style="color:#f59e0b;margin-left:6px"></i>ناردن بۆ بەکارهێنەرێکی تایبەت</div>
+          <div style="font-size:11px;color:var(--mt);margin-top:2px">فاوچەرەکە ڕاستەوخۆ لە بەشی «دیاریەکان»ی هەژماری ئەو بەکارهێنەرە دەردەکەوێت</div>
+        </div>
+        <label style="position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0">
+          <input type="checkbox" id="voucherTargetToggle" onchange="toggleVoucherTarget(this)" style="opacity:0;width:0;height:0">
+          <span style="position:absolute;cursor:pointer;inset:0;background:#ccc;border-radius:22px;transition:.3s" id="voucherTargetTrack"></span>
+        </label>
+      </div>
+      <div id="voucherTargetWrap" style="display:none">
+        <div style="position:relative">
+          <input class="minp" type="text" id="voucherUserSearch" placeholder="ناو یان ئیمەیلی بەکارهێنەر بنووسە..." oninput="searchVoucherUser(this.value)" autocomplete="off" style="margin-bottom:0">
+          <div id="voucherUserResults" style="position:absolute;top:100%;right:0;left:0;background:#fff;border:1.5px solid var(--b1);border-radius:11px;box-shadow:0 8px 24px rgba(0,0,0,.1);z-index:999;max-height:200px;overflow-y:auto;display:none"></div>
+        </div>
+        <div id="voucherTargetUserBox" style="display:none;margin-top:8px;background:#fff;border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:8px 12px;align-items:center;gap:8px">
+          <div id="voucherTargetAvatar" class="mini-av" style="width:28px;height:28px;font-size:11px;background:#f59e0b;flex-shrink:0">?</div>
+          <div style="flex:1;min-width:0">
+            <div id="voucherTargetName" style="font-size:12px;font-weight:700;color:var(--dark)">—</div>
+            <div id="voucherTargetEmail" style="font-size:10px;color:var(--mt)">—</div>
+          </div>
+          <div class="act-btn rd" style="padding:4px 8px;font-size:11px" onclick="clearVoucherTarget()"><i class="fas fa-times"></i></div>
+        </div>
+        <input type="hidden" id="voucherTargetUserId" value="">
       </div>
     </div>
     <button class="modal-btn dark" onclick="createVoucherCode()" style="background:#f59e0b;border-color:#f59e0b"><i class="fas fa-plus"></i> دروستکردنی ڤاوچەر</button>
@@ -2752,7 +2780,7 @@ async function confirmAddBalance(){
   const newBal=parseFloat(wallet?.balance||0)+amtUSD;
   const{error}=await sb.from('pa_wallets').update({balance:newBal,updated_at:new Date().toISOString()}).eq('user_id',uid);
   if(error && !isNetHttpErr(error)){showToast('هەڵە: '+error.message,'rd');return;}
-  await sb.from('pa_transactions').insert({user_id:uid,amount:amtUSD,type:'admin_adjustment',status:'approved',note:`ئادمین (${adminEmail}): زیادکردن — ${note}`});
+  await sb.from('pa_transactions').insert({user_id:uid,amount:amtUSD,type:'admin_adjustment',status:'approved',note:`ئادمین (${adminEmail}): زیادکردن — ${note}`,balance_after:Math.round(newBal*1800)});
   await sb.from('pa_notifications').insert({user_id:uid,type:'balance_added',title:'باڵانست زیادکرا 💰',body:`ئادمین ${Math.round(amtIQD).toLocaleString()} IQD زیادی کرد بۆ باڵانسەکەت.`,is_read:false});
   showToast('✅ '+Math.round(amtIQD).toLocaleString()+' IQD زیادکرا','gr');
   // ── Firebase realtime sync ──
@@ -2814,7 +2842,7 @@ async function confirmDeductBalance(){
   const newBal=Math.max(0,cur-amtUSD);
   const{error}=await sb.from('pa_wallets').update({balance:newBal,updated_at:new Date().toISOString()}).eq('user_id',uid);
   if(error && !isNetHttpErr(error)){showToast('هەڵە: '+error.message,'rd');return;}
-  await sb.from('pa_transactions').insert({user_id:uid,amount:amtUSD,type:'admin_adjustment',status:'approved',note:`ئادمین (${adminEmail}): وەرگرتن — ${note}`});
+  await sb.from('pa_transactions').insert({user_id:uid,amount:amtUSD,type:'admin_adjustment',status:'approved',note:`ئادمین (${adminEmail}): وەرگرتن — ${note}`,balance_after:Math.round(newBal*1800)});
   await sb.from('pa_notifications').insert({user_id:uid,type:'balance_deducted',title:'باڵانسەکەت کەم کرایەوە ⚠️',body:`ئادمین ${Math.round(amtIQD).toLocaleString()} IQD لە باڵانسەکەت وەرگرت. هۆکار: ${note}`,is_read:false});
   showToast('✅ '+Math.round(amtIQD).toLocaleString()+' IQD وەرگیرا','gr');
   // ── Firebase realtime sync ──
@@ -3041,12 +3069,12 @@ function showDepDetail(d){
 async function approveDeposit(id,userId,amount){
   confirm2('پەسەندکردنی پارەدان',`ئایا دەتەوێت ${Math.round(parseFloat(amount)*1800).toLocaleString()} IQD زیاد بکەیت؟`,
     'fas fa-check-circle','var(--gr)',async()=>{
-      const{error:e1}=await safeUpdateTx(id,{status:'approved'});
-      if(e1){showToast('هەڵە: '+e1.message,'rd');return;}
       await sb.from('pa_wallets').upsert({user_id:userId,balance:0},{onConflict:'user_id',ignoreDuplicates:true});
       const{data:w,error:e2}=await sb.from('pa_wallets').select('balance').eq('user_id',userId).single();
       if(e2 && !isNetHttpErr(e2)){showToast('هەڵەی بارکردنی باڵانس: '+e2.message,'rd');return;}
       const newBal=parseFloat(w?.balance||0)+parseFloat(amount);
+      const{error:e1}=await safeUpdateTx(id,{status:'approved',balance_after:Math.round(newBal*1800)});
+      if(e1){showToast('هەڵە: '+e1.message,'rd');return;}
       const{error:e3}=await sb.from('pa_wallets').update({balance:newBal,updated_at:new Date().toISOString()}).eq('user_id',userId);
       if(e3 && !isNetHttpErr(e3)){showToast('هەڵەی نوێکردنەوەی باڵانس: '+e3.message,'rd');return;}
       await sb.from('pa_notifications').insert({user_id:userId,type:'deposit_approved',title:'پارەدانت پەسەندکرا ✅',body:`${Math.round(parseFloat(amount)*1800).toLocaleString()} IQD زیادکرا بۆ باڵانسەکەت.`,is_read:false});
@@ -3779,7 +3807,8 @@ async function confirmReject(){
           kind:'refund',
           status:'approved',
           ad_number:adObj.ad_number||null,
-          note:`گەڕانەوەی پارەی ڕیکلام #${adObj.ad_number||''} — ${refundIQD.toLocaleString()} IQD`
+          note:`گەڕانەوەی پارەی ڕیکلام #${adObj.ad_number||''} — ${refundIQD.toLocaleString()} IQD`,
+          balance_after:Math.round(newRefBal*1800)
         });
         await sb.from('pa_notifications').insert({
           user_id:adObj.user_id,
@@ -4813,6 +4842,54 @@ function genVoucherCode(){
   if(inp)inp.value=code;
 }
 
+// ── فەنکشنەکانی ناردنی ڤاوچەر بۆ بەکارهێنەرێکی تایبەت ──
+function toggleVoucherTarget(cb){
+  const wrap=document.getElementById('voucherTargetWrap');
+  const track=document.getElementById('voucherTargetTrack');
+  if(cb.checked){
+    wrap.style.display='block';
+    track.style.background='#f59e0b';
+  }else{
+    wrap.style.display='none';
+    track.style.background='#ccc';
+    clearVoucherTarget();
+  }
+}
+function clearVoucherTarget(){
+  document.getElementById('voucherTargetUserId').value='';
+  document.getElementById('voucherUserSearch').value='';
+  document.getElementById('voucherTargetUserBox').style.display='none';
+  document.getElementById('voucherUserResults').style.display='none';
+}
+function selectVoucherUser(id,name,email){
+  document.getElementById('voucherTargetUserId').value=id;
+  document.getElementById('voucherUserSearch').value='';
+  document.getElementById('voucherUserResults').style.display='none';
+  const box=document.getElementById('voucherTargetUserBox');
+  box.style.display='flex';
+  document.getElementById('voucherTargetAvatar').textContent=(name||email||'?')[0].toUpperCase();
+  document.getElementById('voucherTargetName').textContent=name||'—';
+  document.getElementById('voucherTargetEmail').textContent=email||'—';
+}
+let _voucherUserSearchTimer=null;
+async function searchVoucherUser(q){
+  const res=document.getElementById('voucherUserResults');
+  if(!q||q.length<2){res.style.display='none';return;}
+  clearTimeout(_voucherUserSearchTimer);
+  _voucherUserSearchTimer=setTimeout(async()=>{
+    res.innerHTML='<div style="padding:10px;text-align:center;color:var(--mt);font-size:12px"><i class="fas fa-circle-notch fa-spin"></i></div>';
+    res.style.display='block';
+    const{data:profs}=await sb.from('profiles').select('id,full_name,email')
+      .or(`full_name.ilike.%${q}%,email.ilike.%${q}%`).limit(8);
+    if(!profs?.length){res.innerHTML='<div style="padding:10px;text-align:center;color:var(--mt);font-size:12px">هیچ بەکارهێنەرێک نەدۆزرایەوە</div>';return;}
+    res.innerHTML=profs.map(p=>`<div onclick="selectVoucherUser('${p.id}','${p.full_name||''}','${p.email||''}')" style="display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;border-bottom:1px solid var(--b1);transition:background .15s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='#fff'">
+      <div class="mini-av" style="width:26px;height:26px;font-size:11px;background:#f59e0b;flex-shrink:0">${(p.full_name||p.email||'?')[0].toUpperCase()}</div>
+      <div><div style="font-size:12px;font-weight:700">${p.full_name||'—'}</div><div style="font-size:10px;color:var(--mt)">${p.email||'—'}</div></div>
+    </div>`).join('');
+    res.style.display='block';
+  },300);
+}
+
 async function loadVouchers(){
   const wrap=document.getElementById('voucherWrap');
   if(!wrap)return;
@@ -4899,7 +4976,7 @@ function renderVouchers(){
     wrap.innerHTML='<div class="empty"><i class="fas fa-ticket"></i><p>هیچ کۆدێک دروست نەکراوە</p></div>';
     return;
   }
-  var thead='<table><thead><tr><th>کۆد</th><th>بڕ (IQD)</th><th>بار</th><th>بەکارهێنراو لەلایەن</th><th>کۆتایی</th><th>دروستکراو</th><th>کردارەکان</th></tr></thead><tbody>';
+  var thead='<table><thead><tr><th>کۆد</th><th>بڕ (IQD)</th><th>بۆ کێ</th><th>بار</th><th>بەکارهێنراو لەلایەن</th><th>کۆتایی</th><th>نێردراوە</th><th>کردارەکان</th></tr></thead><tbody>';
   var tbody='';
   var cards='<div class="user-cards">';
   for(var i=0;i<av.length;i++){
@@ -4907,6 +4984,7 @@ function renderVouchers(){
     var expired=!!(v.expires_at&&new Date(v.expires_at)<new Date());
     var claimed=!!v.used_by;
     var up=v._usedByProfile;
+    var tp=v._assignedProfile;
     var slabel=claimed?'بەکارهێنراو':(!v.is_active?'ناچالاک':(expired?'بەسەرچووە':'چاوەڕوانە'));
     var sclass=claimed?'approved':((!v.is_active||expired)?'rejected':'pending');
     var uinit=up?((up.full_name||up.email||'?')[0].toUpperCase()):'?';
@@ -4914,16 +4992,21 @@ function renderVouchers(){
     var ucell=(claimed&&up)
       ?('<div class="user-cell"><div class="mini-av" style="width:24px;height:24px;font-size:9px;background:#16a34a">'+uinit+'</div><div style="font-size:11px;font-weight:700">'+uname+'</div></div>')
       :(claimed?'<span style="font-size:11px;color:var(--mt)">بەکارهێنراوە</span>':'<span style="color:var(--mt);font-size:11px">—</span>');
+    var tname=tp?(tp.full_name||tp.email||'—'):'';
+    var tinit=tp?((tp.full_name||tp.email||'?')[0].toUpperCase()):'?';
+    var tcell=(v.assigned_user_id&&tp)
+      ?('<div class="user-cell"><div class="mini-av" style="width:24px;height:24px;font-size:9px;background:#f59e0b">'+tinit+'</div><div style="font-size:11px;font-weight:700">'+tname+'</div></div>')
+      :(v.assigned_user_id?'<span style="font-size:11px;color:var(--mt)">نازانراو</span>':'<span style="color:var(--mt);font-size:11px">هەموو / گشتی</span>');
     var ecell=v.expires_at
       ?((expired?'<span style="color:var(--rd)">⛔ ':'<span>✅ ')+new Date(v.expires_at).toLocaleDateString('ku')+'</span>')
       :'—';
-    var cdate=v.created_at?new Date(v.created_at).toLocaleDateString('ku'):'—';
+    var cdate=v.created_at?new Date(v.created_at).toLocaleString('ku',{year:'2-digit',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
     var amt=Math.round(v.amount_iqd||0).toLocaleString();
     var vid=v.id; var vcode=v.code; var vactive=v.is_active;
     var tbtn=!claimed?('<div class="act-btn '+(vactive?'yw':'gr')+'" style="flex:1" data-id="'+vid+'" data-active="'+vactive+'" onclick="toggleVoucher(this.dataset.id,this.dataset.active===\'true\')"><i class="fas fa-toggle-'+(vactive?'on':'off')+'"></i> '+(vactive?'ناچالاككردن':'چالاككردن')+'</div>'):'';
     var dbtn='<div class="act-btn rd" style="'+(claimed?'flex:1;':'')+'padding:4px 8px;font-size:11px" data-id="'+vid+'" data-code="'+vcode+'" onclick="deleteVoucher(this.dataset.id,this.dataset.code)"><i class="fas fa-trash"></i></div>';
-    tbody+='<tr><td><b style="font-family:Inter;font-weight:800;letter-spacing:2px">'+vcode+'</b></td><td><b style="color:#f59e0b;font-family:Inter">'+amt+' IQD</b></td><td><span class="badge '+sclass+'">'+slabel+'</span></td><td>'+ucell+'</td><td style="font-size:11px;color:var(--mt)">'+ecell+'</td><td style="font-size:11px;color:var(--mt)">'+cdate+'</td><td>'+dbtn+'</td></tr>';
-    cards+='<div class="user-card"><div class="user-card-header"><div class="user-card-info"><div class="user-card-name">'+vcode+'</div><div class="user-card-date"><i class="fas fa-calendar-plus" style="font-size:9px;opacity:.5;margin-left:3px"></i>'+cdate+'</div></div><span class="badge '+sclass+'">'+slabel+'</span></div>'+(v.expires_at?'<div style="font-size:10.5px;color:'+(expired?'var(--rd)':'var(--mt)')+';margin-bottom:8px;padding:5px 10px;background:'+(expired?'rgba(220,38,38,.06)':'var(--bg)')+';border-radius:8px;border:1px solid '+(expired?'rgba(220,38,38,.15)':'var(--b1)')+'"><i class="fas fa-clock" style="margin-left:4px;font-size:9px"></i>کۆتایی: '+new Date(v.expires_at).toLocaleDateString('ku')+'</div>':'')+'<div class="user-card-actions">'+tbtn+dbtn.replace('padding:4px 8px;font-size:11px','flex:1')+'</div></div>';
+    tbody+='<tr><td><b style="font-family:Inter;font-weight:800;letter-spacing:2px">'+vcode+'</b></td><td><b style="color:#f59e0b;font-family:Inter">'+amt+' IQD</b></td><td>'+tcell+'</td><td><span class="badge '+sclass+'">'+slabel+'</span></td><td>'+ucell+'</td><td style="font-size:11px;color:var(--mt)">'+ecell+'</td><td style="font-size:11px;color:var(--mt);white-space:nowrap">'+cdate+'</td><td>'+dbtn+'</td></tr>';
+    cards+='<div class="user-card"><div class="user-card-header"><div class="user-card-info"><div class="user-card-name">'+vcode+'</div><div class="user-card-date"><i class="fas fa-calendar-plus" style="font-size:9px;opacity:.5;margin-left:3px"></i>'+cdate+'</div></div><span class="badge '+sclass+'">'+slabel+'</span></div>'+(v.assigned_user_id?'<div style="font-size:10.5px;color:var(--mt);margin-bottom:8px;padding:5px 10px;background:rgba(245,158,11,.06);border-radius:8px;border:1px solid rgba(245,158,11,.18)"><i class="fas fa-user" style="margin-left:4px;font-size:9px"></i>بۆ: '+(tname||'نازانراو')+'</div>':'')+(v.expires_at?'<div style="font-size:10.5px;color:'+(expired?'var(--rd)':'var(--mt)')+';margin-bottom:8px;padding:5px 10px;background:'+(expired?'rgba(220,38,38,.06)':'var(--bg)')+';border-radius:8px;border:1px solid '+(expired?'rgba(220,38,38,.15)':'var(--b1)')+'"><i class="fas fa-clock" style="margin-left:4px;font-size:9px"></i>کۆتایی: '+new Date(v.expires_at).toLocaleDateString('ku')+'</div>':'')+'<div class="user-card-actions">'+tbtn+dbtn.replace('padding:4px 8px;font-size:11px','flex:1')+'</div></div>';
   }
   wrap.innerHTML=thead+tbody+'</tbody></table>'+cards+'</div>';
 }
@@ -4933,26 +5016,45 @@ async function createVoucherCode(){
   const amountIqd=parseFloat(document.getElementById('voucherAmount').value);
   const expiry=document.getElementById('voucherExpiry').value;
   const isActive=document.getElementById('voucherIsActive').checked;
+  const targetEnabled=document.getElementById('voucherTargetToggle').checked;
+  const targetUserId=(document.getElementById('voucherTargetUserId').value||'').trim();
+  const targetName=(document.getElementById('voucherTargetName')?.textContent||'').trim();
   let valid=true;
   if(!code){showFieldErr('voucherCode');valid=false;}
   if(isNaN(amountIqd)||amountIqd<100){showFieldErr('voucherAmount');valid=false;}
+  if(targetEnabled&&!targetUserId){showToast('تکایە بەکارهێنەرێک هەڵبژێرە کە فاوچەرەکەی بۆ بنێردرێت','rd');return;}
   if(!valid)return;
   if(!/^[A-Z0-9]{4,20}$/.test(code)){showToast('کۆد دەبێت تەنها ئینگلیزی بزیک و ژمارە بێت (٤ تا ٢٠ پیت)','rd');return;}
   const dup=_allVouchers.find(v=>v.code===code);
   if(dup){showToast('ئەم کۆدە پێشتر هەیە','rd');return;}
-  const row={code,amount_iqd:amountIqd,is_active:isActive,used_by:null,used_at:null};
+  const row={code,amount_iqd:amountIqd,is_active:isActive,used_by:null,used_at:null,created_at:new Date().toISOString()};
   if(expiry)row.expires_at=new Date(expiry).toISOString();
+  if(targetEnabled&&targetUserId)row.assigned_user_id=targetUserId;
   const btn=document.querySelector('[onclick="createVoucherCode()"]');
   if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> دروستدەکرێت...';}
   const{error}=await sb.from('pa_vouchers').insert(row);
   if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-plus"></i> دروستکردنی ڤاوچەر';}
   if(error){showToast('هەڵە: '+error.message,'rd');return;}
-  showToast('✅ ڤاوچەری '+code+' دروستکرا — '+Math.round(amountIqd).toLocaleString()+' IQD','gr');
+  // ئەگەر فاوچەرەکە بۆ بەکارهێنەرێکی تایبەت بووە، ئاگاداری بۆ بنێرە کە دیاریەکە بۆی ناردراوە
+  if(targetEnabled&&targetUserId){
+    const expTxt=expiry?('تا '+new Date(expiry).toLocaleDateString('ku')):'بێ کۆتایی';
+    const notifTitle='🎁 فاوچەرێکی تایبەت بۆت نێردرا';
+    const notifBody='ئادمین فاوچەرێکی '+Math.round(amountIqd).toLocaleString()+' IQD بۆت ناردووە. سەردانی بەشی «دیاریەکان» بکە بۆ چالاککردنی. ('+expTxt+')';
+    await sb.from('pa_notifications').insert({user_id:targetUserId,type:'general',title:notifTitle,body:notifBody,is_read:false,created_at:new Date().toISOString()});
+    _fbPushNotif(targetUserId,notifTitle,notifBody,'general');
+    showToast('✅ ڤاوچەری '+code+' نێردرا بۆ '+(targetName||'بەکارهێنەر')+' — '+Math.round(amountIqd).toLocaleString()+' IQD','gr');
+  } else {
+    showToast('✅ ڤاوچەری '+code+' دروستکرا — '+Math.round(amountIqd).toLocaleString()+' IQD','gr');
+  }
   closeMo('moCreateVoucher');
   document.getElementById('voucherCode').value='';
   document.getElementById('voucherAmount').value='';
   document.getElementById('voucherExpiry').value='';
   document.getElementById('voucherIsActive').checked=true;
+  document.getElementById('voucherTargetToggle').checked=false;
+  document.getElementById('voucherTargetWrap').style.display='none';
+  document.getElementById('voucherTargetTrack').style.background='#ccc';
+  clearVoucherTarget();
   loadVouchers();
 }
 
@@ -6483,7 +6585,8 @@ async function approveReq(reqId,userId,amount,type){
         amount:amount/1800,
         type:type==='deposit'?'admin_adjustment':'admin_deduct',
         status:'approved',
-        note:(type==='deposit'?'Firebase بارکردنی':'Firebase کەمکردنی')+' ئادمین — '+amtIqd+' IQD'
+        note:(type==='deposit'?'Firebase بارکردنی':'Firebase کەمکردنی')+' ئادمین — '+amtIqd+' IQD',
+        balance_after:Math.round(newBal)
       });
       await sb.from('pa_notifications').insert({
         user_id:userId,

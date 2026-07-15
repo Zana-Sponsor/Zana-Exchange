@@ -2824,11 +2824,6 @@ function _toWebP(dataUrl,quality){
         <div class="sidebar-item-ico" style="background:rgba(202,138,4,.13);color:#ca8a04"><i class="fas fa-percent"></i></div>
         <div class="sidebar-item-txt">کۆدی داشکاندن</div>
       </div>
-      <!-- ٤b — فاوچەر کۆد -->
-      <div class="sidebar-item" onclick="openVoucherModal();closeSidebar()">
-        <div class="sidebar-item-ico" style="background:rgba(6,182,212,.13);color:#06b6d4"><i class="fas fa-ticket-simple"></i></div>
-        <div class="sidebar-item-txt">فاوچەر کۆد</div>
-      </div>
       <!-- ٤c — ئەرکەکان -->
       <div class="sidebar-item" onclick="goPage('challenges');closeSidebar()">
         <div class="sidebar-item-ico" style="background:rgba(168,85,247,.12);color:#a855f7"><i class="fas fa-list-check"></i></div>
@@ -2839,10 +2834,10 @@ function _toWebP(dataUrl,quality){
         <div class="sidebar-item-ico" style="background:rgba(245,158,11,.12);color:#f59e0b"><i class="fas fa-layer-group"></i></div>
         <div class="sidebar-item-txt">ئاستەکان</div>
       </div>
-      <!-- ٤e — دیاریەکان (دیاری تۆمارکردن) -->
+      <!-- ٤e — فاوچەرەکان (فاوچەر کۆد + دیاری تۆمارکردن) -->
       <div class="sidebar-item" onclick="goPage('gifts');closeSidebar()">
-        <div class="sidebar-item-ico" style="background:rgba(219,39,119,.12);color:#db2777"><i class="fas fa-gifts"></i></div>
-        <div class="sidebar-item-txt">دیاریەکان</div>
+        <div class="sidebar-item-ico" style="background:rgba(219,39,119,.12);color:#db2777"><i class="fas fa-ticket"></i></div>
+        <div class="sidebar-item-txt">فاوچەرەکان</div>
       </div>
       <div style="text-align:center;padding:14px 0 12px;font-size:11px;color:var(--mt);font-family:'Inter',sans-serif;letter-spacing:.5px;font-weight:500">
         v<span id="sidebarVersionLbl">1.0.1</span>
@@ -3660,10 +3655,9 @@ function _toWebP(dataUrl,quality){
 
     <div class="gifts-sec-hdr" style="margin-top:2px">
       <div style="display:flex;align-items:center;gap:8px">
-        <div class="gifts-sec-ico" style="background:rgba(168,85,247,.1);color:#a855f7"><i class="fas fa-list-check"></i></div>
-        <span>ئەرکەکانت</span>
+        <div class="gifts-sec-ico" style="background:rgba(168,85,247,.1);color:#a855f7"><i class="fas fa-bullhorn"></i></div>
+        <span>خەڵاتی خۆت وەربگرە</span>
       </div>
-      <span style="font-size:10.5px;color:var(--mt);font-weight:600">خەڵاتی خۆت وەربگرە</span>
     </div>
     <div id="giftsChallengesList" style="margin-bottom:100px">
       <div style="text-align:center;padding:30px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin" style="font-size:20px"></i></div>
@@ -3719,32 +3713,59 @@ function _toWebP(dataUrl,quality){
     </div>
   </div>
 
-  <!-- ══ GIFTS (SIGNUP BONUS ONLY) ══ -->
+  <!-- ══ GIFTS (SIGNUP BONUS + ADMIN-TARGETED VOUCHERS) ══ -->
   <div class="pg" id="pgGifts">
     <div class="pg-hdr">
-      <div class="pg-title"><i class="fas fa-gifts" style="margin-left:8px;color:#db2777"></i>دیاریەکان</div>
+      <div class="pg-title"><i class="fas fa-ticket" style="margin-left:8px;color:#06b6d4"></i>فاوچەرەکان</div>
     </div>
 
-    <!-- ══ Welcome Voucher ══ -->
-    <div id="giftsVoucherBox" class="gifts-voucher-card">
-      <div class="gifts-voucher-shine"></div>
-      <div style="display:flex;align-items:center;gap:11px;margin-bottom:10px;position:relative;z-index:1">
-        <div style="width:38px;height:38px;border-radius:11px;background:rgba(6,182,212,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-          <i class="fas fa-ticket" style="color:#06b6d4;font-size:16px"></i>
-        </div>
-        <div style="flex:1">
-          <div style="font-size:13.5px;font-weight:800;color:var(--dark)">فاوچەری بەخێرهاتن بۆ تۆیە</div>
-          <div style="font-size:10.5px;color:var(--mt);font-weight:600;margin-top:1px">تایبەتە بە هەژمارەکەت — کەس نایتوانێت بەکاری بهێنێت</div>
-        </div>
+    <!-- ══ داخڵکردنی کۆدی فاوچەر ══ -->
+    <div class="vch-hero" style="margin-bottom:14px">
+      <div class="vch-hero-blob b1"></div>
+      <div class="vch-hero-blob b2"></div>
+      <div class="vch-hero-ico"><i class="fas fa-ticket-simple"></i></div>
+      <div class="vch-hero-title">کۆدی فاوچەرت بنووسە</div>
+      <div class="vch-hero-sub">کۆدەکەت دابنێ و خەڵاتەکەت وەربگرە — یەکسەر دەچێتە باڵانسی هەژمارەکەت</div>
+      <div class="vch-hero-chips">
+        <span><i class="fas fa-bolt"></i> خێرا</span>
+        <span><i class="fas fa-shield-halved"></i> پارێزراو</span>
+        <span><i class="fas fa-wallet"></i> ڕاستەوخۆ بۆ باڵانس</span>
       </div>
-      <div id="giftsVoucherDesc" style="font-size:12px;color:var(--mt);line-height:1.7;position:relative;z-index:1">—</div>
-      <div id="giftsVoucherCode" style="margin-top:12px;font-family:'Inter',sans-serif;font-weight:800;letter-spacing:3px;font-size:16px;color:#0e7490;direction:ltr;text-align:center;background:#fff;border:1.5px dashed rgba(6,182,212,.4);border-radius:11px;padding:10px;position:relative;z-index:1"></div>
     </div>
+
+    <div class="vch-ticket" id="voucherInpWrap">
+      <div class="vch-ticket-row">
+        <div class="vch-ticket-ico"><i class="fas fa-ticket-simple" style="transform:rotate(-15deg);display:inline-block"></i></div>
+        <input type="text" id="voucherCodeInp" class="vch-inp" placeholder="PRXO-XXXX-XXXX" dir="ltr"
+          oninput="this.value=this.value.toUpperCase();document.getElementById('voucherInpWrap').style.boxShadow=this.value?'0 14px 30px rgba(79,70,229,.32)':'0 12px 26px rgba(79,70,229,.16)'">
+        <div class="vch-ticket-dash"></div>
+        <button onclick="pasteToField('voucherCodeInp')" class="vch-paste-btn" title="لکاندن لە کلیپبۆرد">
+          <i class="fas fa-clipboard-check"></i>
+        </button>
+      </div>
+    </div>
+    <div class="vch-hint"><i class="fas fa-circle-info"></i> کۆدەکە بنووسە یان لکی بدە لە کلیپبۆردەوە</div>
+
+    <div id="voucherMsg" style="display:none;font-size:12.5px;font-weight:600;padding:10px 14px;border-radius:12px;margin:12px 4px;text-align:center"></div>
+
+    <button class="vch-btn" id="voucherBtn" onclick="claimVoucher()" style="margin-top:6px;margin-bottom:24px">
+      <i class="fas fa-ticket" id="voucherBtnIco"></i>
+      <span id="voucherBtnTxt">چالاککردنی فاوچەر</span>
+    </button>
+
+    <!-- ══ فاوچەرەکانی ئەم هەژمارە (دیاری بەخێرهاتن + هەر فاوچەرێکی تایبەت کە ئادمین ناردبێتی) ══ -->
+    <div class="gifts-sec-hdr" style="margin-top:2px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="gifts-sec-ico" style="background:rgba(219,39,119,.1);color:#db2777"><i class="fas fa-gifts"></i></div>
+        <span>فاوچەرەکانت</span>
+      </div>
+    </div>
+
+    <div id="giftsVouchersList"></div>
 
     <div id="giftsEmptyState" class="gifts-empty" style="display:none">
       <i class="fas fa-gift"></i>
-      <div style="font-size:14px;font-weight:800;color:var(--dark);margin-bottom:6px">هیچ دیاریەکی چالاک نییە</div>
-      <div style="font-size:12px;color:var(--mt);line-height:1.7">دیاری بەخێرهاتن تەنها یەکجار بۆ هەژمارە نوێیەکان دەدرێت، و لەبەرئەوەی پێشتر بەکارتهێناوە یان بەسەرچووە ئێستا لێرە نیشان نادرێت.</div>
+      <div style="font-size:13.5px;font-weight:700;color:var(--dark)">هیچ فاوچەرێکی چالاکت بەردەست نییە بۆ هەژمارەکەت!</div>
     </div>
   </div>
 
@@ -4532,81 +4553,6 @@ function _toWebP(dataUrl,quality){
       </button>
     </div>
 
-  </div>
-</div>
-
-<!-- ══ VOUCHER MODAL ══ -->
-<div class="mover" id="moVoucher">
-  <div class="mbox">
-    <div class="mbar"></div>
-    <div class="mhdr">
-      <h3><i class="fas fa-ticket" style="margin-left:8px;color:#06b6d4"></i>فاوچەر کۆد</h3>
-      <button class="mclose" onclick="closeMo('moVoucher')"><i class="fas fa-xmark"></i></button>
-    </div>
-
-    <!-- input state -->
-    <div id="voucherInputState">
-      <div class="vch-hero">
-        <div class="vch-hero-blob b1"></div>
-        <div class="vch-hero-blob b2"></div>
-        <div class="vch-hero-ico"><i class="fas fa-ticket-simple"></i></div>
-        <div class="vch-hero-title">کۆدی فاوچەرت بنووسە</div>
-        <div class="vch-hero-sub">کۆدەکەت دابنێ و خەڵاتەکەت وەربگرە — یەکسەر دەچێتە باڵانسی هەژمارەکەت</div>
-        <div class="vch-hero-chips">
-          <span><i class="fas fa-bolt"></i> خێرا</span>
-          <span><i class="fas fa-shield-halved"></i> پارێزراو</span>
-          <span><i class="fas fa-wallet"></i> ڕاستەوخۆ بۆ باڵانس</span>
-        </div>
-      </div>
-
-      <div class="vch-ticket" id="voucherInpWrap">
-        <div class="vch-ticket-row">
-          <div class="vch-ticket-ico"><i class="fas fa-ticket-simple" style="transform:rotate(-15deg);display:inline-block"></i></div>
-          <input type="text" id="voucherCodeInp" class="vch-inp" placeholder="PRXO-XXXX-XXXX" dir="ltr"
-            oninput="this.value=this.value.toUpperCase();document.getElementById('voucherInpWrap').style.boxShadow=this.value?'0 14px 30px rgba(79,70,229,.32)':'0 12px 26px rgba(79,70,229,.16)'">
-          <div class="vch-ticket-dash"></div>
-          <button onclick="pasteToField('voucherCodeInp')" class="vch-paste-btn" title="لکاندن لە کلیپبۆرد">
-            <i class="fas fa-clipboard-check"></i>
-          </button>
-        </div>
-      </div>
-      <div class="vch-hint"><i class="fas fa-circle-info"></i> کۆدەکە بنووسە یان لکی بدە لە کلیپبۆردەوە</div>
-
-      <div id="voucherMsg" style="display:none;font-size:12.5px;font-weight:600;padding:10px 14px;border-radius:12px;margin:12px 4px;text-align:center"></div>
-
-      <button class="vch-btn" id="voucherBtn" onclick="claimVoucher()" style="margin-top:16px">
-        <i class="fas fa-ticket" id="voucherBtnIco"></i>
-        <span id="voucherBtnTxt">چالاککردنی فاوچەر</span>
-      </button>
-    </div>
-
-    <!-- success state -->
-    <div id="voucherSuccessState" style="display:none">
-      <div style="text-align:center;padding:10px 0 20px">
-        <div style="width:80px;height:80px;border-radius:50%;background:rgba(22,163,74,.12);border:2px solid rgba(22,163,74,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:34px;color:var(--gr);animation:pulse 1s ease 1"><i class="fas fa-circle-check"></i></div>
-        <div style="font-size:18px;font-weight:900;color:var(--dark);margin-bottom:6px">پیرۆزبایت! 🎉</div>
-        <div style="font-size:13px;color:var(--mt)">فاوچەرەکەت بە سەرکەوتوویی چالاک کرا و باڵانسەکەت نوێ بووەوە</div>
-      </div>
-
-      <div style="background:rgba(124,58,237,.06);border:1.5px solid rgba(124,58,237,.18);border-radius:16px;padding:16px;margin-bottom:14px">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--b1)">
-          <span style="font-size:12px;color:var(--mt)">کۆدی فاوچەر</span>
-          <span style="font-family:'Inter',monospace;font-size:14px;font-weight:900;color:var(--dark)" id="vSuccCode">—</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--b1)">
-          <span style="font-size:12px;color:var(--mt)">بڕی زیادکراو</span>
-          <span style="font-family:'Inter',sans-serif;font-size:16px;font-weight:900;color:var(--gr)" id="vSuccAmt">—</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0">
-          <span style="font-size:12px;color:var(--mt)">باڵانسی نوێ</span>
-          <span style="font-family:'Inter',sans-serif;font-size:16px;font-weight:900;color:var(--dark)" id="vSuccBal">—</span>
-        </div>
-      </div>
-
-      <button class="vch-btn" onclick="closeMo('moVoucher')">
-        <i class="fas fa-check"></i> باشە
-      </button>
-    </div>
   </div>
 </div>
 
@@ -13922,19 +13868,17 @@ async function pasteToField(id){
 // ════════════════════════════════════════════════════════════════
 // ════  VOUCHER CODE SYSTEM  ══════════════════════════════════════
 // ════════════════════════════════════════════════════════════════
-function openVoucherModal() {
-  // reset states
-  document.getElementById('voucherInputState').style.display = 'block';
-  document.getElementById('voucherSuccessState').style.display = 'none';
-  document.getElementById('voucherCodeInp').value = '';
+function _resetVoucherClaimUI() {
+  const codeInp = document.getElementById('voucherCodeInp');
+  if (codeInp) codeInp.value = '';
   const msg = document.getElementById('voucherMsg');
-  msg.style.display = 'none';
-  msg.textContent = '';
+  if (msg) { msg.style.display = 'none'; msg.textContent = ''; }
   const btn = document.getElementById('voucherBtn');
-  btn.disabled = false;
-  document.getElementById('voucherBtnIco').className = 'fas fa-ticket';
-  document.getElementById('voucherBtnTxt').textContent = 'چالاککردنی فاوچەر';
-  document.getElementById('moVoucher').classList.add('on');
+  if (btn) btn.disabled = false;
+  const ico = document.getElementById('voucherBtnIco');
+  if (ico) ico.className = 'fas fa-ticket';
+  const txt = document.getElementById('voucherBtnTxt');
+  if (txt) txt.textContent = 'چالاککردنی فاوچەر';
 }
 
 function _vMsg(txt, ok) {
@@ -13945,6 +13889,103 @@ function _vMsg(txt, ok) {
     el.style.cssText = 'display:block;font-size:12.5px;font-weight:600;padding:10px 14px;border-radius:12px;margin-bottom:12px;text-align:center;background:rgba(22,163,74,.09);border:1px solid rgba(22,163,74,.25);color:#16a34a;';
   } else {
     el.style.cssText = 'display:block;font-size:12.5px;font-weight:600;padding:10px 14px;border-radius:12px;margin-bottom:12px;text-align:center;background:rgba(220,38,38,.07);border:1px solid rgba(220,38,38,.2);color:#dc2626;';
+  }
+}
+
+// ── کۆرەی چالاککردنی فاوچەر — بەکاردێت هەم لە مۆداڵی داخڵکردنی کۆد بەدەستی و هەم لە دووگمەی چالاککردنی ڕاستەوخۆی بەشی دیاریەکان ──
+async function _claimVoucherCore(code) {
+  if (!cu) return { ok: false, reason: 'no_session', msg: 'تکایە دووبارە بچۆ ژوورەوە' };
+  code = (code || '').trim().toUpperCase();
+  if (!code) return { ok: false, reason: 'empty_code', msg: 'تکایە کۆدی فاوچەرەکەت بنووسە' };
+
+  // 1. Look up the voucher
+  const { data: voucher, error: fetchErr } = await sb
+    .from('pa_vouchers')
+    .select('*')
+    .eq('code', code)
+    .single();
+
+  if (fetchErr || !voucher) {
+    return { ok: false, reason: 'not_found', msg: 'فاوچەرەکە نەدۆزرایەوە. کۆدەکە دووبارە بپشکنە.' };
+  }
+
+  // 2. Validate
+  if (!voucher.is_active) {
+    return { ok: false, reason: 'inactive', msg: 'ئەم فاوچەرە چالاک نییە.' };
+  }
+  if (voucher.used_by) {
+    return { ok: false, reason: 'used', msg: 'ئەم فاوچەرە پێشتر بەکارهێنراوە.' };
+  }
+  if (voucher.assigned_user_id && voucher.assigned_user_id !== cu.id) {
+    return { ok: false, reason: 'not_yours', msg: 'ئەم فاوچەرە بۆ بەکارهێنەرێکی تر تەرخانکراوە.' };
+  }
+  if (voucher.expires_at && new Date(voucher.expires_at) < new Date()) {
+    return { ok: false, reason: 'expired', msg: 'ئەم فاوچەرە بەسەرچووە.' };
+  }
+
+  try {
+    const uid = cu.id;
+    const amtIQD = parseFloat(voucher.amount_iqd);
+    const amtUSD = amtIQD / 1800;
+
+    // 3. Atomically claim: only update if used_by IS NULL (race-safe)
+    const { error: claimErr } = await sb
+      .from('pa_vouchers')
+      .update({ used_by: uid, used_at: new Date().toISOString(), is_active: false })
+      .eq('id', voucher.id)
+      .is('used_by', null);
+
+    if (claimErr) {
+      return { ok: false, reason: 'claim_failed', msg: 'هەڵەیەک ڕووی دا. دووبارە هەوڵ بدەرەوە.' };
+    }
+
+    // 4. Add to pa_wallets (upsert)
+    const { data: wallet } = await sb
+      .from('pa_wallets')
+      .select('balance')
+      .eq('user_id', uid)
+      .single();
+
+    const prevBal = parseFloat(wallet?.balance || 0);
+    const newBal = prevBal + amtUSD;
+
+    await sb.from('pa_wallets').upsert({
+      user_id: uid,
+      balance: newBal,
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'user_id' });
+
+    // 5. Insert transaction record
+    await sb.from('pa_transactions').insert({
+      user_id: uid,
+      type: 'voucher',
+      status: 'approved',
+      amount: amtUSD,
+      note: 'فاوچەر: ' + code,
+      created_at: new Date().toISOString(),
+      balance_after: Math.round(newBal*1800)
+    });
+
+    // 6. Insert notification
+    await sb.from('pa_notifications').insert({
+      user_id: uid,
+      type: 'balance_added',
+      title: 'باڵانس زیادکرا',
+      body: amtIQD.toLocaleString() + ' IQD بە فاوچەر زیادکرا',
+      is_read: false,
+      created_at: new Date().toISOString()
+    });
+
+    // 7. Sync Firebase balance
+    const newBalIQD = Math.round(newBal * 1800);
+    try {
+      const db = getFwDb();
+      if (db) await db.ref('wallets/' + uid + '/balance').set(newBalIQD);
+    } catch (_) {}
+
+    return { ok: true, code, amtIQD, newBalIQD };
+  } catch (e) {
+    return { ok: false, reason: 'exception', msg: 'هەڵەی نەچاو: ' + (e.message || e) };
   }
 }
 
@@ -13963,115 +14004,33 @@ async function claimVoucher() {
   msgEl.style.display = 'none';
 
   await withSession(async () => {
-    try {
-      // 1. Look up the voucher
-      const { data: voucher, error: fetchErr } = await sb
-        .from('pa_vouchers')
-        .select('*')
-        .eq('code', code)
-        .single();
-
-      if (fetchErr || !voucher) {
-        _vMsg('فاوچەرەکە نەدۆزرایەوە. کۆدەکە دووبارە بپشکنە.', false);
-        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'چالاککردنی فاوچەر';
-        return;
-      }
-
-      // 2. Validate
-      if (!voucher.is_active) {
-        _vMsg('ئەم فاوچەرە چالاک نییە.', false);
-        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'چالاککردنی فاوچەر';
-        return;
-      }
-      if (voucher.used_by) {
-        _vMsg('ئەم فاوچەرە پێشتر بەکارهێنراوە.', false);
-        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'چالاککردنی فاوچەر';
-        return;
-      }
-      if (voucher.assigned_user_id && voucher.assigned_user_id !== cu.id) {
-        _vMsg('ئەم فاوچەرە بۆ بەکارهێنەرێکی تر تەرخانکراوە.', false);
-        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'چالاککردنی فاوچەر';
-        return;
-      }
-      if (voucher.expires_at && new Date(voucher.expires_at) < new Date()) {
-        _vMsg('ئەم فاوچەرە بەسەرچووە.', false);
-        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'چالاککردنی فاوچەر';
-        return;
-      }
-
-      const uid = cu.id;
-      const amtIQD = parseFloat(voucher.amount_iqd);
-      const amtUSD = amtIQD / 1800;
-
-      // 3. Atomically claim: only update if used_by IS NULL (race-safe)
-      const { error: claimErr } = await sb
-        .from('pa_vouchers')
-        .update({ used_by: uid, used_at: new Date().toISOString(), is_active: false })
-        .eq('id', voucher.id)
-        .is('used_by', null);
-
-      if (claimErr) {
-        _vMsg('هەڵەیەک ڕووی دا. دووبارە هەوڵ بدەرەوە.', false);
-        btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'چالاککردنی فاوچەر';
-        return;
-      }
-
-      // 4. Add to pa_wallets (upsert)
-      const { data: wallet } = await sb
-        .from('pa_wallets')
-        .select('balance')
-        .eq('user_id', uid)
-        .single();
-
-      const prevBal = parseFloat(wallet?.balance || 0);
-      const newBal = prevBal + amtUSD;
-
-      await sb.from('pa_wallets').upsert({
-        user_id: uid,
-        balance: newBal,
-        updated_at: new Date().toISOString()
-      }, { onConflict: 'user_id' });
-
-      // 5. Insert transaction record
-      await sb.from('pa_transactions').insert({
-        user_id: uid,
-        type: 'voucher',
-        status: 'approved',
-        amount: amtUSD,
-        note: 'فاوچەر: ' + code,
-        created_at: new Date().toISOString(),
-        balance_after: Math.round(newBal*1800)
-      });
-
-      // 6. Insert notification
-      await sb.from('pa_notifications').insert({
-        user_id: uid,
-        type: 'balance_added',
-        title: 'باڵانس زیادکرا',
-        body: amtIQD.toLocaleString() + ' IQD بە فاوچەر زیادکرا',
-        is_read: false,
-        created_at: new Date().toISOString()
-      });
-
-      // 7. Sync Firebase balance
-      const newBalIQD = Math.round(newBal * 1800);
-      try {
-        const db = getFwDb();
-        if (db) await db.ref('wallets/' + uid + '/balance').set(newBalIQD);
-      } catch (_) {}
-
-      // 8. Show success card
-      document.getElementById('vSuccCode').textContent = code;
-      document.getElementById('vSuccAmt').textContent = amtIQD.toLocaleString() + ' IQD';
-      document.getElementById('vSuccBal').textContent = newBalIQD.toLocaleString() + ' IQD';
-      document.getElementById('voucherInputState').style.display = 'none';
-      document.getElementById('voucherSuccessState').style.display = 'block';
-      showToast('فاوچەرەکەت بەسەرکەوتوویی بەکارهێنرا', 'ok');
-
-    } catch (e) {
-      _vMsg('هەڵەی نەچاو: ' + (e.message || e), false);
-      btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'چالاککردنی فاوچەر';
+    const res = await _claimVoucherCore(code);
+    btn.disabled = false; ico.className = 'fas fa-ticket'; txt.textContent = 'چالاککردنی فاوچەر';
+    if (!res.ok) {
+      _vMsg(res.msg, false);
+      return;
     }
+    document.getElementById('voucherCodeInp').value = '';
+    _vMsg('🎉 ' + res.amtIQD.toLocaleString() + ' IQD زیادکرا بۆ باڵانسەکەت — باڵانسی نوێ: ' + res.newBalIQD.toLocaleString() + ' IQD', true);
+    showToast('فاوچەرەکەت بەسەرکەوتوویی بەکارهێنرا', 'ok');
+    await Promise.all([loadBal(), _loadGiftsVoucher()]);
+  });
+}
+
+// ── چالاککردنی ڕاستەوخۆی فاوچەر لە کارتێکی بەشی دیاریەکان (بێ پێویستی بە نووسینی کۆد) ──
+async function activateGiftVoucher(code, btnEl) {
+  if (!cu) { showToast('تکایە دووبارە بچۆ ژوورەوە', 'err'); return; }
+  const originalHtml = btnEl ? btnEl.innerHTML : '';
+  if (btnEl) { btnEl.disabled = true; btnEl.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i><span>چاوەڕوانبە...</span>'; }
+  await withSession(async () => {
+    const res = await _claimVoucherCore(code);
+    if (!res.ok) {
+      showToast(res.msg, 'err');
+      if (btnEl) { btnEl.disabled = false; btnEl.innerHTML = originalHtml; }
+      return;
+    }
+    showToast('🎉 ' + res.amtIQD.toLocaleString() + ' IQD زیادکرا بۆ باڵانسەکەت', 'ok');
+    await Promise.all([loadBal(), _loadGiftsVoucher()]);
   });
 }
 
@@ -14183,6 +14142,7 @@ async function createSignupVoucher(userId) {
 
 async function loadGiftsPage() {
   if (!cu) return;
+  _resetVoucherClaimUI();
   await _loadGiftsVoucher();
 }
 
@@ -14261,24 +14221,60 @@ async function _loadGiftsLevel() {
   }
 }
 
+// ── هەموو فاوچەرە چالاک و بەکارنەهاتووەکانی ئەم هەژمارە دەگرێتەوە ──
+// (فاوچەری بەخێرهاتن + هەر فاوچەرێکی تایبەت کە ئادمین بۆ ئەم بەکارهێنەرە ناردبێتی)
 async function _loadGiftsVoucher() {
-  const box = document.getElementById('giftsVoucherBox');
+  const wrap = document.getElementById('giftsVouchersList');
   const empty = document.getElementById('giftsEmptyState');
+  if (!wrap) return;
   const { data } = await sb.from('pa_vouchers')
-    .select('*').eq('assigned_user_id', cu.id).eq('is_signup_bonus', true)
-    .order('created_at', { ascending: false }).limit(1);
-  const v = data && data[0];
-  if (!v || v.used_by || (v.expires_at && new Date(v.expires_at) < new Date())) {
-    box.style.display = 'none';
+    .select('*').eq('assigned_user_id', cu.id).eq('is_active', true)
+    .is('used_by', null)
+    .order('created_at', { ascending: false });
+  const now = new Date();
+  const valid = (data || []).filter(v => !v.expires_at || new Date(v.expires_at) > now);
+  if (!valid.length) {
+    wrap.innerHTML = '';
     if (empty) empty.style.display = 'block';
     return;
   }
-  box.style.display = 'block';
   if (empty) empty.style.display = 'none';
-  const left = Math.max(0, Math.ceil((new Date(v.expires_at) - new Date()) / (1000 * 60 * 60 * 24)));
-  document.getElementById('giftsVoucherDesc').textContent =
-    'دیاری بەخێرهاتنی ' + parseFloat(v.amount_iqd).toLocaleString() + ' IQD — ' + left + ' ڕۆژی تر ماوە بۆ بەکارهێنانی. تەنها تۆ دەتوانیت ئەم کۆدە بەکاربهێنیت.';
-  document.getElementById('giftsVoucherCode').textContent = v.code;
+  wrap.innerHTML = valid.map(_renderGiftVoucherCard).join('');
+}
+
+function _renderGiftVoucherCard(v) {
+  const isSignup = !!v.is_signup_bonus;
+  const amt = parseFloat(v.amount_iqd || 0);
+  const left = v.expires_at ? Math.max(0, Math.ceil((new Date(v.expires_at) - new Date()) / (1000 * 60 * 60 * 24))) : null;
+  const accent = isSignup ? '#06b6d4' : '#a855f7';
+  const title = isSignup ? 'فاوچەری بەخێرهاتن بۆ تۆیە' : 'فاوچەرێکی تایبەت لەلایەن ئادمینەوە بۆت نێردراوە';
+  const sub = isSignup ? 'تایبەتە بە هەژمارەکەت — کەس نایتوانێت بەکاری بهێنێت' : 'تایبەتە بۆ هەژمارەکەت — ئادمین بە دیاری ناردوویەتی بۆت';
+  let sentTxt = '';
+  if (v.created_at) {
+    const d = new Date(v.created_at);
+    sentTxt = 'نێردراوە لە ' + d.toLocaleDateString('en-GB') + ' — ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  }
+  const leftTxt = left === null ? 'بێ کۆتایی' : (left + ' ڕۆژی تر ماوە');
+  return '<div class="gifts-voucher-card" style="display:block;border-color:' + accent + '40">' +
+    '<div class="gifts-voucher-shine"></div>' +
+    (sentTxt ? '<div class="chal-date-badge"><i class="fas fa-paper-plane"></i>' + sentTxt + '</div>' : '') +
+    '<div style="display:flex;align-items:center;gap:11px;margin-bottom:10px;position:relative;z-index:1">' +
+      '<div style="width:38px;height:38px;border-radius:11px;background:' + accent + '1f;display:flex;align-items:center;justify-content:center;flex-shrink:0">' +
+        '<i class="fas fa-ticket" style="color:' + accent + ';font-size:16px"></i>' +
+      '</div>' +
+      '<div style="flex:1">' +
+        '<div style="font-size:13.5px;font-weight:800;color:var(--dark)">' + title + '</div>' +
+        '<div style="font-size:10.5px;color:var(--mt);font-weight:600;margin-top:1px">' + sub + '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div style="font-size:12px;color:var(--mt);line-height:1.7;position:relative;z-index:1">' +
+      (isSignup ? 'دیاری بەخێرهاتنی ' : 'بڕی فاوچەر: ') + amt.toLocaleString() + ' IQD — ' + leftTxt + '.' +
+    '</div>' +
+    '<div style="margin-top:12px;font-family:\'Inter\',sans-serif;font-weight:800;letter-spacing:3px;font-size:16px;color:#0e7490;direction:ltr;text-align:center;background:#fff;border:1.5px dashed ' + accent + '66;border-radius:11px;padding:10px;position:relative;z-index:1">' + v.code + '</div>' +
+    '<button class="vch-btn" style="margin-top:12px;background:' + accent + ';border-color:' + accent + '" onclick="activateGiftVoucher(\'' + v.code + '\', this)">' +
+      '<i class="fas fa-check"></i><span>چالاککردنی فاوچەر</span>' +
+    '</button>' +
+  '</div>';
 }
 
 async function _loadGiftsChallenges() {
