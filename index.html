@@ -57,8 +57,8 @@ src="https://www.facebook.com/tr?id=986943520933161&ev=PageView&noscript=1"
 // ══ AD REACH CALCULATOR LOGIC ══
 const ARC_IQD_RATE=1800;
 const ARC_CATS={
-  A:{name:'Sales & Messages',cpmLow:.15,cpmHigh:.20},
-  B:{name:'Engagement & Views',cpmLow:.12,cpmHigh:.15}
+  A:{name:'Sales & Messages',nameKu:'فرۆشتن و نامەکان',nameAr:'مبيعات ورسائل',cpmLow:.15,cpmHigh:.20},
+  B:{name:'Engagement & Views',nameKu:'ئینگێجمنت و بینین',nameAr:'تفاعل ومشاهدات',cpmLow:.12,cpmHigh:.15}
 };
 function arcFmtReach(n){
   if(n>=1e6)return(n/1e6).toLocaleString('en-US',{maximumFractionDigits:1})+'M';
@@ -129,7 +129,8 @@ function arcRenderResults(iqd,cat){
   if(!r)return;
   document.getElementById('arcResIQD').textContent=iqd.toLocaleString()+' IQD';
   document.getElementById('arcResUSD').textContent='≈ $'+r.usd.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-  document.getElementById('arcResCat').textContent=r.cat.name;
+  const _arcLang=typeof ProxoLang!=='undefined'?ProxoLang.getLang():'ku';
+  document.getElementById('arcResCat').textContent=_arcLang==='ar'?r.cat.nameAr:r.cat.nameKu;
   document.getElementById('arcMinReach').textContent=arcFmtReach(r.minReach);
   document.getElementById('arcMaxReach').textContent=arcFmtReach(r.maxReach);
   document.getElementById('arcCpmLowVal').textContent=arcFmtReach(r.maxReach)+' کەس';
@@ -749,6 +750,7 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 
 /* PROXOLINK FORM */
 .plform{background:var(--w);border:1px solid var(--b1);border-radius:20px;padding:20px 18px;}
+.pl-lang-opt.on{background:var(--dark)!important;color:#fff!important;border-color:var(--dark)!important;}
 .plform-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
 .plform-hdr h2{font-size:17px;font-weight:900;color:var(--dark);}
 .plform-close{width:32px;height:32px;border-radius:50%;background:var(--bg);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mt);font-size:14px;}
@@ -3393,6 +3395,13 @@ function _toWebP(dataUrl,quality){
         <div class="plform-hdr">
           <h2 id="plFormTitle">پەڕەی نوێ زیادبکە</h2>
           <div class="plform-close" onclick="hidePLForm()"><i class="fas fa-xmark"></i></div>
+        </div>
+
+        <!-- زمانی کەرەستە -->
+        <div class="plform-lbl" style="margin-bottom:8px"><i class="fas fa-globe" style="margin-left:5px;color:var(--bl)"></i>زمانی کەرەستە <span style="font-size:10px;color:var(--mt)">(زمانی دووگمەکانی فایل)</span></div>
+        <div style="display:flex;gap:8px;margin-bottom:16px">
+          <button type="button" class="pl-lang-opt on" data-lang="ar" onclick="plSetCardLang('ar')" style="flex:1;padding:10px;border-radius:12px;border:1.5px solid var(--b1);background:var(--bg);font-family:'R',sans-serif;font-size:13px;font-weight:700;color:var(--mt);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px"><i class="fas fa-language"></i>العربية</button>
+          <button type="button" class="pl-lang-opt" data-lang="ku" onclick="plSetCardLang('ku')" style="flex:1;padding:10px;border-radius:12px;border:1.5px solid var(--b1);background:var(--bg);font-family:'R',sans-serif;font-size:13px;font-weight:700;color:var(--mt);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px"><i class="fas fa-language"></i>کوردی</button>
         </div>
 
         <!-- وێنە -->
@@ -8421,7 +8430,10 @@ function updateAssetLivePreview(){
     telegram:'linear-gradient(135deg,#229ED9,#0088cc)',
     link:'linear-gradient(135deg,#6366f1,#8b5cf6)'
   };
-  const typeLabel={whatsapp:'واتسئەپ',instagram:'ئینستاگرام',phone:'تەلەفۆن',telegram:'تێلێگرام',link:'لینک'};
+  const _isAssetAr=typeof ProxoLang!=='undefined'&&ProxoLang.getLang()==='ar';
+  const typeLabel=_isAssetAr
+    ?{whatsapp:'واتساب',instagram:'إنستغرام',phone:'هاتف',telegram:'تيليجرام',link:'رابط'}
+    :{whatsapp:'واتسئەپ',instagram:'ئینستاگرام',phone:'تەلەفۆن',telegram:'تێلێگرام',link:'لینک'};
   const ico=icons[currentAssetType]||'fas fa-link';
   const icoColor=icoColors[currentAssetType]||'linear-gradient(135deg,#6366f1,#8b5cf6)';
   const tLabel=typeLabel[currentAssetType]||currentAssetType;
@@ -8523,10 +8535,15 @@ async function submitAsset(){
 async function autoSendAssetToTelegram(asset){
   if(!asset)return;
   try{
-    const typeLabels={whatsapp:'واتسئەپ',instagram:'ئینستاگرام',phone:'تەلەفۆن',telegram:'تێلێگرام',link:'لینک'};
+    const _isAutoAr=typeof ProxoLang!=='undefined'&&ProxoLang.getLang()==='ar';
+    const typeLabels=_isAutoAr
+      ?{whatsapp:'واتساب',instagram:'إنستغرام',phone:'هاتف',telegram:'تيليجرام',link:'رابط'}
+      :{whatsapp:'واتسئەپ',instagram:'ئینستاگرام',phone:'تەلەفۆن',telegram:'تێلێگرام',link:'لینک'};
     const styleLabel={classic:'کلاسیک',light:'ڕۆژ',gradient:'گرادیێنت',zoom:'زووم',banner:'بانەر'};
     const userName=document.getElementById('profName')?.textContent||cu?.email||'کڕیار';
-    const caption=`کەرەستەی نوێ — ProxoAds\n\nکڕیار: ${userName}\nناو: ${asset.name}\nجۆر: ${typeLabels[asset.asset_type]||asset.asset_type}\nنرخ: ${asset.value}${asset.note?'\nتێبینی: '+asset.note:''}\nستایل: ${styleLabel[asset.style]||asset.style}\nکات: ${new Date().toLocaleString('ku')}`;
+    const caption=_isAutoAr
+      ?`أداة جديدة — ProxoAds\n\nالمستخدم: ${userName}\nالاسم: ${asset.name}\nالنوع: ${typeLabels[asset.asset_type]||asset.asset_type}\nالقيمة: ${asset.value}${asset.note?'\nملاحظة: '+asset.note:''}\nالستايل: ${styleLabel[asset.style]||asset.style}\nالوقت: ${new Date().toLocaleString('ar')}`
+      :`کەرەستەی نوێ — ProxoAds\n\nکڕیار: ${userName}\nناو: ${asset.name}\nجۆر: ${typeLabels[asset.asset_type]||asset.asset_type}\nنرخ: ${asset.value}${asset.note?'\nتێبینی: '+asset.note:''}\nستایل: ${styleLabel[asset.style]||asset.style}\nکات: ${new Date().toLocaleString('ku')}`;
     const formData=new FormData();
     formData.append('chat_id',TG_CHAT_ASSET);
     formData.append('text',caption);
@@ -8544,10 +8561,15 @@ async function sendAssetToTelegram(){
   btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> ناردن...';
   status.style.display='none';
   try{
-    const typeLabels={whatsapp:'واتسئەپ',instagram:'ئینستاگرام',phone:'تەلەفۆن',telegram:'تێلێگرام',link:'لینک'};
+    const _isSendAr=typeof ProxoLang!=='undefined'&&ProxoLang.getLang()==='ar';
+    const typeLabels=_isSendAr
+      ?{whatsapp:'واتساب',instagram:'إنستغرام',phone:'هاتف',telegram:'تيليجرام',link:'رابط'}
+      :{whatsapp:'واتسئەپ',instagram:'ئینستاگرام',phone:'تەلەفۆن',telegram:'تێلێگرام',link:'لینک'};
     const styleLabel={classic:'کلاسیک',light:'ڕۆژ',gradient:'گرادیێنت',zoom:'زووم',banner:'بانەر'};
     const userName=document.getElementById('profName')?.textContent||cu?.email||'کڕیار';
-    const caption=`کەرەستەی نوێ — ProxoAds\n\nکڕیار: ${userName}\nناو: ${lastSavedAsset.name}\nجۆر: ${typeLabels[lastSavedAsset.asset_type]||lastSavedAsset.asset_type}\nنرخ: ${lastSavedAsset.value}${lastSavedAsset.note?'\nتێبینی: '+lastSavedAsset.note:''}\nستایل: ${styleLabel[lastSavedAsset.style]||lastSavedAsset.style}\nکات: ${new Date().toLocaleString('ku')}`;
+    const caption=_isSendAr
+      ?`أداة جديدة — ProxoAds\n\nالمستخدم: ${userName}\nالاسم: ${lastSavedAsset.name}\nالنوع: ${typeLabels[lastSavedAsset.asset_type]||lastSavedAsset.asset_type}\nالقيمة: ${lastSavedAsset.value}${lastSavedAsset.note?'\nملاحظة: '+lastSavedAsset.note:''}\nالستايل: ${styleLabel[lastSavedAsset.style]||lastSavedAsset.style}\nالوقت: ${new Date().toLocaleString('ar')}`
+      :`کەرەستەی نوێ — ProxoAds\n\nکڕیار: ${userName}\nناو: ${lastSavedAsset.name}\nجۆر: ${typeLabels[lastSavedAsset.asset_type]||lastSavedAsset.asset_type}\nنرخ: ${lastSavedAsset.value}${lastSavedAsset.note?'\nتێبینی: '+lastSavedAsset.note:''}\nستایل: ${styleLabel[lastSavedAsset.style]||lastSavedAsset.style}\nکات: ${new Date().toLocaleString('ku')}`;
     const formData=new FormData();
     formData.append('chat_id',TG_CHAT_ASSET);
     formData.append('text',caption);
@@ -9658,6 +9680,7 @@ function showPLForm(){
   PL_BTNS.forEach(b=>b._val='');
   plLogoB64='';
   document.getElementById('plBrandName').value='';
+  document.querySelectorAll('.pl-lang-opt').forEach(function(el){el.classList.toggle('on',el.dataset.lang===_plCardLang);});
   if(document.getElementById('plDesc'))document.getElementById('plDesc').value='';
   if(document.getElementById('plTT'))document.getElementById('plTT').value='';
   if(document.getElementById('plVideoUrl'))document.getElementById('plVideoUrl').value='';
@@ -9735,6 +9758,17 @@ function hidePLForm(){
 }
 // ═══ PROXOLINK BUILDER ═══
 let plLogoB64='', plStyle='dark', plTheme='purple', plEditingCardId=null;
+// ── زمانی کەرەستە (عربي بەپێشوەخت) ──
+let _plCardLang='ar';
+try{_plCardLang=localStorage.getItem('proxoPlCardLang')||'ar';}catch(e){}
+function plSetCardLang(lang){
+  _plCardLang=lang==='ar'?'ar':'ku';
+  try{localStorage.setItem('proxoPlCardLang',_plCardLang);}catch(e){}
+  document.querySelectorAll('.pl-lang-opt').forEach(function(el){
+    el.classList.toggle('on',el.dataset.lang===_plCardLang);
+  });
+  updatePLPreview();
+}
 // ═══ PL CB-LIST DATA ═══
 const PL_BTNS=[
   {id:'wa', label:'واتسئاپ',    icon:'fab fa-whatsapp',  icCls:'pl-ic-wa', type:'whatsapp',  ph:'9647XXXXXXXXX', mode:'numeric'},
@@ -9876,7 +9910,15 @@ function updatePLPreview(){
     :`<span style="font-size:18px;font-weight:800;color:#fff">${name[0].toUpperCase()}</span>`;
 
   // دووگمەکان
-  const platIcons={whatsapp:{c:'#25d366',i:'fab fa-whatsapp',l:'واتسئاپ'},viber:{c:'#7360f2',i:'fab fa-viber',l:'ڤایبەر'},instagram:{c:'linear-gradient(135deg,#E1306C,#833AB4)',i:'fab fa-instagram',l:'ئینستاگرام'},phone:{c:'#2563eb',i:'fas fa-phone-alt',l:'کۆرەک'},asya:{c:'#dc2626',i:'fas fa-phone-alt',l:'ئاسیا سێڵ'},telegram:{c:'#229ed9',i:'fab fa-telegram',l:'تیلیگرام'}};
+  const _isPLAr=_plCardLang==='ar';
+  const platIcons={
+    whatsapp:{c:'#25d366',i:'fab fa-whatsapp',l:_isPLAr?'واتساب':'واتسئاپ'},
+    viber:{c:'#7360f2',i:'fab fa-viber',l:_isPLAr?'فايبر':'ڤایبەر'},
+    instagram:{c:'linear-gradient(135deg,#E1306C,#833AB4)',i:'fab fa-instagram',l:_isPLAr?'إنستغرام':'ئینستاگرام'},
+    phone:{c:'#2563eb',i:'fas fa-phone-alt',l:_isPLAr?'كورك':'کۆرەک'},
+    asya:{c:'#dc2626',i:'fas fa-phone-alt',l:_isPLAr?'آسيا سيل':'ئاسیا سێڵ'},
+    telegram:{c:'#229ed9',i:'fab fa-telegram',l:_isPLAr?'تيليجرام':'تیلیگرام'}
+  };
   const activePlats=PL_BTNS.filter((_,i)=>plChecked[i]).map(b=>b.type).slice(0,4);
   const btnsHtml=activePlats.map(p=>{
     const pi=platIcons[p]||{c:'#888',i:'fas fa-link',l:p};
@@ -10033,7 +10075,7 @@ function plGeneratePreview(){
   const tt=document.getElementById('plTT')?.value.trim().replace(/^@/,'')||'';
   const platforms=plGetPlatforms();
 
-  _plGeneratedHTML=buildPLCardHTML(name,bio,tt,platforms,plLogoB64,plStyle,plTheme);
+  _plGeneratedHTML=buildPLCardHTML(name,bio,tt,platforms,plLogoB64,plStyle,plTheme,_plCardLang);
 
   // نیشاندانی phone-shell preview
   document.getElementById('plFormView').style.display='none';
@@ -10100,7 +10142,18 @@ async function plSaveEditedCard(){
       const tgFd=new FormData();
       tgFd.append('chat_id',FBW_TG_CID);
       tgFd.append('document',tgFile,safeName+'.html');
-      const tgCap=[
+      const _isSaveAr=_plCardLang==='ar';
+      const tgCap=_isSaveAr?[
+        '✏️ ProxoLink — أداة معدّلة',
+        '━━━━━━━━━━━━━━━━━━━━',
+        'الاسم: '+name,
+        '🎵 تيك توك: '+(tt?'@'+tt:'—'),
+        '🔢 رقم البطاقة: #'+cardNum,
+        '━━━━━━━━━━━━━━━━━━━━',
+        '🪪 معرف المستخدم: '+userId,
+        '📧 البريد الإلكتروني: '+userEmail,
+        'الستايل: '+plStyle+' / '+plTheme,
+      ].join('\n'):[
         '✏️ ProxoLink — کەرەستەی دەستکاریکراو',
         '━━━━━━━━━━━━━━━━━━━━',
         'ناو: '+name,
@@ -10154,7 +10207,15 @@ async function plSendToTg(){
     const formData=new FormData();
     formData.append('chat_id',TG_CHAT);
     formData.append('document',file,safeName+'.html');
-    const caption=[
+    const _isTgAr=_plCardLang==='ar';
+    const caption=_isTgAr?[
+      'ProxoLink — أداة جديدة',
+      'الاسم: '+name,
+      '🎵 تيك توك: @'+tt,
+      '🪪 معرف المستخدم: '+userId,
+      'البريد الإلكتروني: '+userEmail,
+      'الستايل: '+plStyle+' / '+plTheme,
+    ].join('\n'):[
       'ProxoLink — کەرەستەی نوێ',
       'ناو: '+name,
       '🎵 تیکتۆک: @'+tt,
@@ -11280,7 +11341,7 @@ function buildPageBanner(name,bio,tt,ttUrl,avatar,activeBtns,handlers,theme){
 
 
 // ── Wrapper — routes style name to builder ──
-function buildPLCardHTML(name, bio, tt, platforms, avatar, style, theme){
+function buildPLCardHTML(name, bio, tt, platforms, avatar, style, theme, lang){
   const themeMap={
     purple:{grad:'linear-gradient(to right,#5b1fa8,#c855e0)',from:'#5b1fa8',to:'#c855e0'},
     blue:  {grad:'linear-gradient(to right,#1e3a8a,#2563eb)',from:'#1e3a8a',to:'#2563eb'},
@@ -11295,13 +11356,14 @@ function buildPLCardHTML(name, bio, tt, platforms, avatar, style, theme){
   const ttUrl = 'https://www.tiktok.com/@' + tt;
 
   // کۆنڤێرتی platforms object بۆ activeBtns array
+  const _isBuildAr=lang==='ar';
   const platDefs = {
-    whatsapp:{id:'wa',type:'whatsapp',icon:'fab fa-whatsapp',label:'واتسئاپ',url:'whatsapp://send?phone='},
-    viber:   {id:'vb',type:'viber',   icon:'fab fa-viber',   label:'ڤایبەر', url:'viber://chat?number='},
-    instagram:{id:'ig',type:'instagram',icon:'fab fa-instagram',label:'ئینستاگرام',url:'https://instagram.com/'},
-    telegram:{id:'tg',type:'telegram',icon:'fab fa-telegram',label:'تیلیگرام',url:'https://t.me/'},
-    phone:   {id:'ph',type:'phone',   icon:'fas fa-phone-alt',label:'کۆرەک',  url:'tel:'},
-    asya:    {id:'as',type:'asya',    icon:'fas fa-phone-alt',label:'ئاسیا سێڵ',url:'tel:'},
+    whatsapp:{id:'wa',type:'whatsapp',icon:'fab fa-whatsapp',label:_isBuildAr?'واتساب':'واتسئاپ',url:'whatsapp://send?phone='},
+    viber:   {id:'vb',type:'viber',   icon:'fab fa-viber',   label:_isBuildAr?'فايبر':'ڤایبەر', url:'viber://chat?number='},
+    instagram:{id:'ig',type:'instagram',icon:'fab fa-instagram',label:_isBuildAr?'إنستغرام':'ئینستاگرام',url:'https://instagram.com/'},
+    telegram:{id:'tg',type:'telegram',icon:'fab fa-telegram',label:_isBuildAr?'تيليجرام':'تیلیگرام',url:'https://t.me/'},
+    phone:   {id:'ph',type:'phone',   icon:'fas fa-phone-alt',label:_isBuildAr?'كورك':'کۆرەک',  url:'tel:'},
+    asya:    {id:'as',type:'asya',    icon:'fas fa-phone-alt',label:_isBuildAr?'آسيا سيل':'ئاسیا سێڵ',url:'tel:'},
   };
 
   const activeBtns = Object.entries(platforms).map(([p, v]) => {
