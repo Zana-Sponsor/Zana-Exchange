@@ -14698,6 +14698,20 @@ function _startSettingsRealtimeListener() {
   } catch(e) {}
 }
 
+// ── Reload challenges when user switches language so titles update instantly ──
+// ── Also save language preference to Supabase so admin can send bilingual notifications ──
+document.addEventListener('proxolangchange', function(e) {
+  const wrap = document.getElementById('giftsChallengesList');
+  if (wrap && wrap.children.length > 0 && typeof _loadGiftsChallenges === 'function') {
+    _loadGiftsChallenges();
+  }
+  // Save user's language preference to profiles so admin sends right language notifications
+  const lang = e && e.detail && e.detail.lang ? e.detail.lang : (typeof ProxoLang !== 'undefined' ? ProxoLang.getLang() : 'ku');
+  if (typeof sb !== 'undefined' && typeof cu !== 'undefined' && cu && cu.id) {
+    try { sb.from('profiles').update({ lang_pref: lang }).eq('id', cu.id).then(function(){}); } catch(_) {}
+  }
+});
+
 </script>
 
 <!-- ══ PHONE REQUIRED OVERLAY ══ -->
@@ -14737,20 +14751,6 @@ if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostn
 
 
 
-
-// ── Reload challenges when user switches language so titles update instantly ──
-// ── Also save language preference to Supabase so admin can send bilingual notifications ──
-document.addEventListener('proxolangchange', function(e) {
-  const wrap = document.getElementById('giftsChallengesList');
-  if (wrap && wrap.children.length > 0 && typeof _loadGiftsChallenges === 'function') {
-    _loadGiftsChallenges();
-  }
-  // Save user's language preference to profiles so admin sends right language notifications
-  const lang = e && e.detail && e.detail.lang ? e.detail.lang : (typeof ProxoLang !== 'undefined' ? ProxoLang.getLang() : 'ku');
-  if (typeof sb !== 'undefined' && typeof cu !== 'undefined' && cu && cu.id) {
-    try { sb.from('profiles').update({ lang_pref: lang }).eq('id', cu.id).then(function(){}); } catch(_) {}
-  }
-});
 
 <!-- ===== Proxo Arabic/Kurdish language toggle (auto-injected) ===== -->
 <script id="proxo-i18n">
