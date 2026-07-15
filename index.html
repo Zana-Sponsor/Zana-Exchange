@@ -1632,11 +1632,10 @@ html{scroll-behavior:smooth;}
 .phone-req-err{font-size:12px;color:var(--rd);text-align:center;margin-top:10px;min-height:18px;}
 </style>
 <style id="ar-bilingual">
-.ar-sub{display:block;font-size:10.5px;color:var(--mt,#8b95a8);font-family:'Inter',sans-serif;font-weight:400;margin-top:1px;letter-spacing:0;direction:rtl;}
+.ar-sub{display:block;font-size:10.5px;color:var(--mt,#8b95a8);font-family:'Inter',sans-serif;font-weight:400;margin-top:2px;letter-spacing:0;direction:rtl;}
 .ar-sub-inline{font-size:10.5px;color:var(--mt,#8b95a8);font-family:'Inter',sans-serif;font-weight:400;direction:rtl;}
 small.ar-sub{font-size:10px;opacity:.75;}
 </style>
-
 <script>
 // ══ RESOURCE CACHE — فۆنت و وێنەکان ناو localStorage پاشەکەوت دەبن ══
 (function(){
@@ -2530,15 +2529,14 @@ function _clipboardFallback(text, onSuccess, onFail) {
         {
           "@type": "SiteNavigationElement",
           "position": 1,
-          "name": "بچۆ ژوورەوە / <span class='ar-sub-inline'>تسجيل الدخول</span>",
-          "description": "بچۆ ژوورەوە / <span class='ar-sub-inline'>تسجيل الدخول</span> بۆ هەژمارەکەت لە Proxo بۆ بەڕێوەبردنی ڕیکلامەکانی تیکتۆک
-<span class='ar-sub'>إدارة إعلانات تيك توك</span>.",
+          "name": "بچۆ ژوورەوە",
+          "description": "بچۆ ژوورەوە بۆ هەژمارەکەت لە Proxo بۆ بەڕێوەبردنی ڕیکلامەکانی تیکتۆک.",
           "url": "https://www.proxopages.com/login"
         },
         {
           "@type": "SiteNavigationElement",
           "position": 2,
-          "name": "خۆت تۆماربکە / <span class='ar-sub-inline'>إنشاء حساب</span>",
+          "name": "خۆت تۆماربکە",
           "description": "هەژمارێکی خۆڕایی دروست بکە لە Proxo و ڕیکلامەکانی تیکتۆکت لە کوردستان و عێراق بەڕێوە ببە.",
           "url": "https://www.proxopages.com/signup"
         }
@@ -2572,7 +2570,7 @@ function _toWebP(dataUrl,quality){
 <body>
 
 <!-- OFFLINE BANNER -->
-<div id="offlineBanner"><i class="fas fa-wifi-slash"></i> ئینتەرنێت پچڕاوە — تکایە پەیوەندی بکەرەوە | انقطع الإنترنت — يرجى إعادة الاتصال</div>
+<div id="offlineBanner"><i class="fas fa-wifi-slash"></i> ئینتەرنێت پچڕاوە — تکایە پەیوەندی بکەرەوە</div>
 
 <div id="maintOverlay">
   <div class="maint-card">
@@ -2601,14 +2599,13 @@ function _toWebP(dataUrl,quality){
   <div class="auth-inner">
     <div class="auth-brand">
       <h1>Proxo <span>App</span></h1>
-      <p>بەڕێوەبردنی ڕیکلامەکانی تیکتۆک
-<span class='ar-sub'>إدارة إعلانات تيك توك</span></p>
+      <p>بەڕێوەبردنی ڕیکلامەکانی تیکتۆک</p>
     </div>
     <div class="auth-card">
       <!-- Tab Switcher / Primary Site Navigation -->
       <nav class="atabs" id="atabs" style="display:none" aria-label="Primary Navigation">
-        <a class="atab on" id="tabL" href="https://www.proxopages.com/login" onclick="event.preventDefault();switchTab('login')" aria-current="page"><i class="fas fa-right-to-bracket"></i> بچۆ ژوورەوە / <span class='ar-sub-inline'>تسجيل الدخول</span></a>
-        <a class="atab" id="tabS" href="https://www.proxopages.com/signup"><i class="fas fa-user-plus"></i> خۆت تۆماربکە / <span class='ar-sub-inline'>إنشاء حساب</span></a>
+        <a class="atab on" id="tabL" href="https://www.proxopages.com/login" onclick="event.preventDefault();switchTab('login')" aria-current="page"><i class="fas fa-right-to-bracket"></i> بچۆ ژوورەوە</a>
+        <a class="atab" id="tabS" href="https://www.proxopages.com/signup"><i class="fas fa-user-plus"></i> خۆت تۆماربکە</a>
       </nav>
       <!-- Step Indicator -->
       <div class="auth-steps" id="authStepsWrap">
@@ -2620,8 +2617,8 @@ function _toWebP(dataUrl,quality){
           <i class="fas fa-user" style="font-size:28px;color:var(--dark)"></i>
         </div>
         <div class="auth-step-label">
-          <h3>ناوی هەژمار <span class='ar-sub' style='font-size:13px;font-weight:600'>/ اسم الحساب</span></h3>
-          <p>ناوت بنووسە — <span class='ar-sub'>أدخل اسمك لإنشاء الحساب</span></p>
+          <h3>ناوی هەژمار<span class='ar-sub'>اسم الحساب</span></h3>
+          <p>ناوت بنووسە بۆ دروستکردنی هەژمار</p>
         </div>
         <div class="auth-inp-wrap">
           <i class="fas fa-user auth-inp-ico"></i>
@@ -2629,11 +2626,11 @@ function _toWebP(dataUrl,quality){
         </div>
         <button class="abtn" onclick="nextAuthStep('name')">
           <i class="fas fa-arrow-left"></i>
-          <span>دواتر <small class='ar-sub'>التالي</small></span>
+          <span>دواتر / التالي</span>
         </button>
         <div class="amsg" id="authMsgName"></div>
         <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--mt)">
-          هەژمارت هەیە؟ / <span class='ar-sub-inline'>لديك حساب بالفعل؟</span> <span onclick="switchTab('login')" style="color:var(--dark);font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:2px">ئێستا بچۆ ژوورەوە / <span class='ar-sub-inline'>تسجيل الدخول</span></span>
+          هەژمارت هەیە؟ <span onclick="switchTab('login')" style="color:var(--dark);font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:2px">ئێستا بچۆ ژوورەوە</span>
         </div>
       </div>
       <!-- Step: Email -->
@@ -2642,8 +2639,8 @@ function _toWebP(dataUrl,quality){
           <i class="fas fa-envelope" style="font-size:28px;color:var(--dark)"></i>
         </div>
         <div class="auth-step-label">
-          <h3>ئیمەیل <span class='ar-sub' style='font-size:13px;font-weight:600'>/ البريد الإلكتروني</span></h3>
-          <p>ئیمەیڵێک بنووسە — <span class='ar-sub'>أدخل بريداً إلكترونياً</span></p>
+          <h3>ئیمەیل</h3>
+          <p>ئیمەیڵێک بنووسە</p>
         </div>
         <div class="auth-inp-wrap">
           <i class="fas fa-envelope auth-inp-ico"></i>
@@ -2651,11 +2648,11 @@ function _toWebP(dataUrl,quality){
         </div>
         <button class="abtn" onclick="nextAuthStep('email')">
           <i class="fas fa-arrow-left"></i>
-          <span>دواتر <small class='ar-sub'>التالي</small></span>
+          <span>دواتر / التالي</span>
         </button>
         <div class="amsg" id="authMsgEmail"></div>
         <div id="signupHintLink" style="text-align:center;margin-top:12px;font-size:13px;color:var(--mt)">
-          هەژمارت نییە؟ / <span class='ar-sub-inline'>ليس لديك حساب؟</span> <a href="https://www.proxopages.com/signup" style="color:var(--dark);font-weight:700;text-decoration:underline;text-underline-offset:2px">خۆت تۆماربکە / <span class='ar-sub-inline'>إنشاء حساب</span></a>
+          هەژمارت نییە؟ <a href="https://www.proxopages.com/signup" style="color:var(--dark);font-weight:700;text-decoration:underline;text-underline-offset:2px">خۆت تۆماربکە</a>
         </div>
         <div class="auth-step-back" id="authEmailBackBtn" style="display:none" onclick="prevAuthStep('email')">
           <i class="fas fa-arrow-right"></i> گەڕانەوە
@@ -2667,7 +2664,7 @@ function _toWebP(dataUrl,quality){
           <i class="fas fa-lock" style="font-size:28px;color:var(--dark)"></i>
         </div>
         <div class="auth-step-label">
-          <h3>وشەی نهێنی <span class='ar-sub' style='font-size:13px;font-weight:600'>/ كلمة المرور</span></h3>
+          <h3>وشەی نهێنی<span class='ar-sub'>كلمة المرور</span></h3>
           <p id="passStepSub">وشەی نهێنیت بنووسە</p>
         </div>
         <div class="pass-wrap" id="authPassWrap">
@@ -2682,7 +2679,7 @@ function _toWebP(dataUrl,quality){
         </div>
         <button class="abtn" id="authBtn" onclick="nextAuthStep('pass')">
           <i class="fas fa-arrow-left"></i>
-          <span id="authBtnTxt">چوونەژوورەوە</span>
+          <span id="authBtnTxt">چوونەژوورەوە / تسجيل الدخول</span>
         </button>
 
         <div class="terms-agree-wrap" id="termsAgreeWrap">
@@ -2697,7 +2694,7 @@ function _toWebP(dataUrl,quality){
         </div>
         <div class="amsg" id="authMsg"></div>
         <div id="forgotLinkWrap" style="display:none;text-align:center;margin-top:10px">
-          <span onclick="showForgotStep()" style="font-size:12px;color:var(--mt);cursor:pointer;text-decoration:underline">وشەی نهێنیم لەبیرکردووە / <span class='ar-sub'>نسيت كلمة المرور؟</span></span>
+          <span onclick="showForgotStep()" style="font-size:12px;color:var(--mt);cursor:pointer;text-decoration:underline">وشەی نهێنیم لەبیرکردووە</span>
         </div>
         <div class="auth-step-back" onclick="prevAuthStep('pass')">
           <i class="fas fa-arrow-right"></i> گەڕانەوە
@@ -2711,8 +2708,8 @@ function _toWebP(dataUrl,quality){
         <div id="fpStepA">
           <div style="text-align:center;margin-bottom:16px">
             <div style="width:56px;height:56px;border-radius:18px;background:rgba(28,35,51,.06);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px"><i class="fas fa-key" style="color:var(--dark)"></i></div>
-            <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px">ڕێستکردنەوەی وشەی نهێنی <span class='ar-sub'>إعادة تعيين كلمة المرور</span></div>
-            <div style="font-size:12px;color:var(--mt)">ئیمەیلت بنووسە، کۆدی دڵنیاکردنەوە / <span class='ar-sub-inline'>رمز التحقق</span> دەنێرینە<br><span class='ar-sub'>أدخل بريدك وسنرسل رمز التحقق</span></div>
+            <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px">ڕێستکردنەوەی وشەی نهێنی</div>
+            <div style="font-size:12px;color:var(--mt)">ئیمەیلت بنووسە، کۆدی دڵنیاکردنەوە دەنێرینە</div>
           </div>
           <div class="auth-inp-wrap">
             <i class="fas fa-envelope auth-inp-ico"></i>
@@ -2720,7 +2717,7 @@ function _toWebP(dataUrl,quality){
           </div>
           <button class="abtn" id="forgotSendBtn" onclick="doForgotSendOtp()">
             <i class="fas fa-paper-plane"></i>
-            <span>ناردنی کۆدی دڵنیاکردنەوە / <span class='ar-sub-inline'>رمز التحقق</span> <small class='ar-sub'>إرسال رمز التحقق</small></span>
+            <span>ناردنی کۆدی دڵنیاکردنەوە</span>
           </button>
           <div class="amsg" id="fpMsgA"></div>
           <div style="text-align:center;margin-top:12px">
@@ -2732,7 +2729,7 @@ function _toWebP(dataUrl,quality){
         <div id="fpStepB" style="display:none">
           <div style="text-align:center;margin-bottom:16px">
             <div style="width:56px;height:56px;border-radius:18px;background:rgba(28,35,51,.06);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px"><i class="fas fa-shield-halved" style="color:var(--dark)"></i></div>
-            <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px">کۆدی دڵنیاکردنەوە / <span class='ar-sub-inline'>رمز التحقق</span></div>
+            <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px">کۆدی دڵنیاکردنەوە</div>
             <div style="font-size:12px;color:var(--mt)" id="fpOtpLbl">کۆدی ٦ ژمارە بۆ ئیمەیلەکەت نێردرا</div>
           </div>
           <div class="otp-inputs">
@@ -2743,12 +2740,12 @@ function _toWebP(dataUrl,quality){
             <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="fp5" oninput="fpOtpMove(this,'fp4','fp6')" onkeydown="fpOtpBack(event,this,'fp4')">
             <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="fp6" oninput="fpOtpMove(this,'fp5',null)" onkeydown="fpOtpBack(event,this,'fp5')">
           </div>
-          <div class="otp-timer" id="fpTimerWrap" style="margin-top:10px">ماوەی ئەم کۆدە / <span class='ar-sub-inline'>صلاحية الرمز:</span> <span id="fpTimerVal">10:00</span></div>
-          <div class="otp-resend" id="fpResendBtn" onclick="fpResendOtp()" style="display:none"><i class="fas fa-rotate-right" style="margin-left:5px"></i>کۆدی نوێ بنێرە / <span class='ar-sub-inline'>إعادة الإرسال</span></div>
+          <div class="otp-timer" id="fpTimerWrap" style="margin-top:10px">ماوەی ئەم کۆدە: <span id="fpTimerVal">10:00</span></div>
+          <div class="otp-resend" id="fpResendBtn" onclick="fpResendOtp()" style="display:none"><i class="fas fa-rotate-right" style="margin-left:5px"></i>کۆدی نوێ بنێرە</div>
           <div class="amsg" id="fpMsgB" style="display:none;margin-top:10px"></div>
           <button class="abtn" id="fpVerifyBtn" onclick="doForgotVerifyOtp()" style="margin-top:12px">
             <i class="fas fa-check"></i>
-            <span>دڵنیاکردنەوە <small class='ar-sub'>تأكيد</small></span>
+            <span>دڵنیاکردنەوە</span>
           </button>
           <div style="text-align:center;margin-top:10px">
             <span onclick="fpBackToA()" style="font-size:12px;color:var(--mt);cursor:pointer"><i class="fas fa-arrow-right" style="margin-left:5px"></i>گەڕانەوە / رجوع</span>
@@ -2759,8 +2756,8 @@ function _toWebP(dataUrl,quality){
         <div id="fpStepC" style="display:none">
           <div style="text-align:center;margin-bottom:18px">
             <div style="width:56px;height:56px;border-radius:18px;background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px"><i class="fas fa-circle-check" style="color:#16a34a"></i></div>
-            <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px">ناسنامەت دڵنیاکرایەوە <span class='ar-sub'>تم التحقق من هويتك</span></div>
-            <div style="font-size:12px;color:var(--mt)">ئێستا وشەی نهێنیی نوێت بنووسە — <span class='ar-sub'>أدخل كلمة مرورك الجديدة</span></div>
+            <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px">ناسنامەت دڵنیاکرایەوە</div>
+            <div style="font-size:12px;color:var(--mt)">ئێستا وشەی نهێنیی نوێت بنووسە</div>
           </div>
           <div class="pass-wrap" style="margin-bottom:0">
             <input class="finp" type="password" id="fpNewPass" placeholder="وشەی نهێنیی نوێ — کەمترین ٦ پیت" dir="ltr"
@@ -2778,7 +2775,7 @@ function _toWebP(dataUrl,quality){
           <div class="amsg" id="fpMsgC" style="display:none;margin-bottom:12px"></div>
           <button class="abtn" id="fpSaveBtn" onclick="doForgotSavePass()">
             <i class="fas fa-lock"></i>
-            <span>پاشەکەوتکردنی وشەی نهێنیی نوێ <small class='ar-sub'>حفظ كلمة المرور الجديدة</small></span>
+            <span>پاشەکەوتکردنی وشەی نهێنیی نوێ</span>
           </button>
         </div>
 
@@ -2788,7 +2785,7 @@ function _toWebP(dataUrl,quality){
       <div id="otpStep">
         <div style="text-align:center;margin-bottom:16px">
           <div style="width:56px;height:56px;border-radius:18px;background:rgba(28,35,51,.06);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px"><i class="fas fa-shield-halved" style="color:var(--dark)"></i></div>
-          <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px">کۆدی دڵنیاکردنەوە / <span class='ar-sub-inline'>رمز التحقق</span></div>
+          <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px">کۆدی دڵنیاکردنەوە</div>
           <div style="font-size:12px;color:var(--mt)" id="otpEmailLbl">کۆدی ٦ ژمارەی بۆ ئیمەیلەکەت نێردرا</div>
         </div>
         <div class="otp-inputs">
@@ -2799,11 +2796,11 @@ function _toWebP(dataUrl,quality){
           <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="otp5" oninput="otpMove(this,'otp4','otp6')" onkeydown="otpBack(event,this,'otp4')">
           <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="otp6" oninput="otpMove(this,'otp5',null)" onkeydown="otpBack(event,this,'otp5')">
         </div>
-        <div class="otp-timer" id="otpTimerWrap">ماوەی ئەم کۆدە / <span class='ar-sub-inline'>صلاحية الرمز:</span> <span id="otpTimerVal">10:00</span></div>
-        <div class="otp-resend" id="otpResendBtn" onclick="resendOtp()"><i class="fas fa-rotate-right" style="margin-left:5px"></i>کۆدی نوێ بنێرە / <span class='ar-sub-inline'>إعادة الإرسال</span></div>
+        <div class="otp-timer" id="otpTimerWrap">ماوەی ئەم کۆدە: <span id="otpTimerVal">10:00</span></div>
+        <div class="otp-resend" id="otpResendBtn" onclick="resendOtp()"><i class="fas fa-rotate-right" style="margin-left:5px"></i>کۆدی نوێ بنێرە</div>
         <button class="abtn" id="otpVerifyBtn" onclick="verifyOtp()" style="margin-top:12px">
           <i class="fas fa-check"></i>
-          <span>دڵنیاکردنەوە <small class='ar-sub'>تأكيد</small></span>
+          <span>دڵنیاکردنەوە</span>
         </button>
         <div class="amsg" id="otpMsg"></div>
         <div style="text-align:center;margin-top:12px">
@@ -2853,47 +2850,47 @@ function _toWebP(dataUrl,quality){
     <div class="sidebar-body">
       <div class="sidebar-bal">
         <div>
-          <div class="sidebar-bal-lbl">باڵانس / الرصيد</div>
+          <div class="sidebar-bal-lbl">باڵانس<span class='ar-sub'>الرصيد</span></div>
           <div class="sidebar-bal-val" id="sidebarBal">0 IQD</div>
         </div>
         <div onclick="openDeposit();closeSidebar();" style="background:rgba(255,255,255,.15);border-radius:10px;padding:8px 12px;font-size:12px;color:#fff;cursor:pointer;"><i class="fas fa-plus"></i> بارکردن</div>
       </div>
-      <div class="sb-sect">هەژمار / الحساب</div>
+      <div class="sb-sect">هەژمار<span class='ar-sub'>الحساب</span></div>
       <!-- ٠ — پرۆفایل -->
       <div class="sidebar-item" onclick="goPage('profile');closeSidebar()">
         <div class="sidebar-item-ico" style="background:rgba(14,120,255,.12);color:#0E78FF"><i class="fas fa-user-gear"></i></div>
-        <div class="sidebar-item-txt">پرۆفایل / الملف الشخصي</div>
+        <div class="sidebar-item-txt">پرۆفایل<span class='ar-sub'>الملف الشخصي</span></div>
       </div>
       <!-- ١ — پارە زیادکردن -->
       <div class="sidebar-item" onclick="openDeposit();closeSidebar()">
         <div class="sidebar-item-ico" style="background:rgba(22,163,74,.12);color:#16a34a"><i class="fas fa-wallet"></i></div>
-        <div class="sidebar-item-txt">پارە زیادکردن / إضافة رصيد</div>
+        <div class="sidebar-item-txt">پارە زیادکردن<span class='ar-sub'>إضافة رصيد</span></div>
       </div>
       <!-- ٢ — مێژووی مامەڵەکان -->
       <div class="sidebar-item" onclick="goPage('txhistory');closeSidebar()">
         <div class="sidebar-item-ico" style="background:rgba(99,102,241,.12);color:#6366f1"><i class="fas fa-receipt"></i></div>
-        <div class="sidebar-item-txt">مێژووی مامەڵەکان / سجل المعاملات</div>
+        <div class="sidebar-item-txt">مێژووی مامەڵەکان<span class='ar-sub'>سجل المعاملات</span></div>
       </div>
-      <div class="sb-sect">خزمەتگوزاری / الخدمات</div>
+      <div class="sb-sect">خزمەتگوزاری<span class='ar-sub'>الخدمات</span></div>
       <!-- ٤ — کۆدی داشکاندن -->
       <div class="sidebar-item" onclick="goPage('promocodes');closeSidebar()">
         <div class="sidebar-item-ico" style="background:rgba(202,138,4,.13);color:#ca8a04"><i class="fas fa-percent"></i></div>
-        <div class="sidebar-item-txt">کۆدی داشکاندن / كود الخصم</div>
+        <div class="sidebar-item-txt">کۆدی داشکاندن<span class='ar-sub'>كود الخصم</span></div>
       </div>
       <!-- ٤c — ئەرکەکان -->
       <div class="sidebar-item" onclick="goPage('challenges');closeSidebar()">
         <div class="sidebar-item-ico" style="background:rgba(168,85,247,.12);color:#a855f7"><i class="fas fa-list-check"></i></div>
-        <div class="sidebar-item-txt">ئەرکەکان / المهام</div>
+        <div class="sidebar-item-txt">ئەرکەکان<span class='ar-sub'>المهام</span></div>
       </div>
       <!-- ٤d — ئاستەکان -->
       <div class="sidebar-item" onclick="goPage('levels');closeSidebar()">
         <div class="sidebar-item-ico" style="background:rgba(245,158,11,.12);color:#f59e0b"><i class="fas fa-layer-group"></i></div>
-        <div class="sidebar-item-txt">ئاستەکان / المستويات</div>
+        <div class="sidebar-item-txt">ئاستەکان<span class='ar-sub'>المستويات</span></div>
       </div>
       <!-- ٤e — فاوچەرەکان (فاوچەر کۆد + دیاری تۆمارکردن) -->
       <div class="sidebar-item" onclick="goPage('gifts');closeSidebar()">
         <div class="sidebar-item-ico" style="background:rgba(219,39,119,.12);color:#db2777"><i class="fas fa-ticket"></i></div>
-        <div class="sidebar-item-txt">فاوچەرەکان / القسائم</div>
+        <div class="sidebar-item-txt">فاوچەرەکان<span class='ar-sub'>القسائم</span></div>
       </div>
       <div style="text-align:center;padding:14px 0 12px;font-size:11px;color:var(--mt);font-family:'Inter',sans-serif;letter-spacing:.5px;font-weight:500">
         v<span id="sidebarVersionLbl">1.0.1</span>
@@ -2901,7 +2898,7 @@ function _toWebP(dataUrl,quality){
       <div style="border-top:1px solid var(--b1);padding-top:10px;margin-top:4px">
         <div class="sidebar-item red" onclick="closeSidebar();setTimeout(doLogout,180);" style="-webkit-tap-highlight-color:transparent">
           <div class="sidebar-item-ico"><i class="fas fa-right-from-bracket"></i></div>
-          <div class="sidebar-item-txt">چوونەدەرەوە / تسجيل الخروج</div>
+          <div class="sidebar-item-txt">چوونەدەرەوە<span class='ar-sub'>تسجيل الخروج</span></div>
           <i class="fas fa-chevron-left" style="font-size:10px;color:rgba(220,38,38,.35)"></i>
         </div>
       </div>
@@ -2929,8 +2926,8 @@ function _toWebP(dataUrl,quality){
     <div class="home-card" onclick="goPage('create')" style="border-color:rgba(99,102,241,.15);">
       <div class="home-card-ico" style="background:rgba(99,102,241,.18);color:#6366f1;"><i class="fas fa-rectangle-ad" style="color:#6366f1;"></i></div>
       <div class="home-card-info">
-        <div class="home-card-title">دروستکردنی ڕیکلام / إنشاء إعلان</div>
-        <div class="home-card-sub">ڕیکلامێکی تیکتۆک دەستپێ بکە / ابدأ إعلان تيك توك</div>
+        <div class="home-card-title">دروستکردنی ڕیکلام<span class='ar-sub'>إنشاء إعلان</span></div>
+        <div class="home-card-sub">ڕیکلامێکی تیکتۆک دەستپێ بکە<span class='ar-sub'>ابدأ إعلان تيك توك</span></div>
       </div>
       <i class="fas fa-chevron-left home-card-arr"></i>
     </div>
@@ -2939,8 +2936,8 @@ function _toWebP(dataUrl,quality){
     <div class="home-card" onclick="goPage('myads')" style="border-color:rgba(22,163,74,.15);">
       <div class="home-card-ico" style="background:rgba(22,163,74,.18);color:#16a34a;"><i class="fas fa-bullhorn" style="color:#16a34a;"></i></div>
       <div class="home-card-info">
-        <div class="home-card-title">ڕیکلامەکانم / إعلاناتي</div>
-        <div class="home-card-sub">بینینی ڕیکلامە چالاکەکانت / عرض الإعلانات النشطة</div>
+        <div class="home-card-title">ڕیکلامەکانم<span class='ar-sub'>إعلاناتي</span></div>
+        <div class="home-card-sub">بینینی ڕیکلامە چالاکەکانت<span class='ar-sub'>عرض إعلاناتك النشطة</span></div>
       </div>
       <i class="fas fa-chevron-left home-card-arr"></i>
     </div>
@@ -2968,7 +2965,7 @@ function _toWebP(dataUrl,quality){
 
     <!-- ── Balance Card ── -->
     <div class="pcard2">
-      <div class="pcard2-label"><i class="fas fa-wallet" style="margin-left:6px;opacity:.6"></i>باڵانس / الرصيدەکەت</div>
+      <div class="pcard2-label"><i class="fas fa-wallet" style="margin-left:6px;opacity:.6"></i>باڵانسەکەت<span class='ar-sub'>رصيدك</span></div>
       <div class="pcard2-bal-row">
         <div class="bal-num" id="profBal">0.00</div>
         <div class="pcard2-cur">IQD</div>
@@ -2986,11 +2983,11 @@ function _toWebP(dataUrl,quality){
     <!-- ── Referral Card ── -->
     <div class="pcard2" id="referralCard">
       <div class="pcard2-ref-top">
-        <div class="pcard2-label"><i class="fas fa-gift" style="margin-left:6px;color:#d97706"></i>بانگێشتکردنی هاوڕێ / دعوة صديق</div>
+        <div class="pcard2-label"><i class="fas fa-gift" style="margin-left:6px;color:#d97706"></i>بانگێشتکردنی هاوڕێ<span class='ar-sub'>دعوة صديق</span></div>
         <span class="pcard2-ref-earn" id="refEarnedLbl"></span>
       </div>
       <div class="pcard2-ref-desc">
-        هاوڕێیەکت بانگێشت بکە — ادعُ صديقاً — کاتێک خۆی تۆمار کرد
+        هاوڕێیەکت بانگێشت بکە<span class='ar-sub'>ادعُ صديقاً</span> — کاتێک خۆی تۆمار کرد
         <b style="color:var(--dark)">+٥٠ <i class="fas fa-coins" style="color:#d97706"></i></b> وەردەگریت،
         ئەوەش <b style="color:var(--dark)">+٥٠ <i class="fas fa-coins" style="color:#d97706"></i></b> وەردەگرێت
       </div>
@@ -3007,40 +3004,40 @@ function _toWebP(dataUrl,quality){
 
     <!-- ── Settings Card ── -->
     <div class="pcard2">
-      <div class="pcard2-sec-title">ڕێکخستنەکان / الإعدادات</div>
+      <div class="pcard2-sec-title">ڕێکخستنەکان<span class='ar-sub'>الإعدادات</span></div>
       <button id="setupDbBtn" onclick="setupDatabase()" style="display:none;width:100%;padding:13px;background:rgba(37,99,235,.08);border:1.5px solid rgba(37,99,235,.2);border-radius:13px;color:var(--bl);font-family:'R',sans-serif;font-size:13px;font-weight:700;cursor:pointer;align-items:center;justify-content:center;gap:7px;margin-bottom:10px">
         <i class="fas fa-database"></i> دانانی فەنکشنی داتابەیس
       </button>
       <div class="plist-item" onclick="showUpdateProfile()">
         <div class="plist-ico"><i class="fas fa-user-pen"></i></div>
-        <div class="plist-txt">دەستکاری پرۆفایل / تعديل الملف الشخصي</div>
+        <div class="plist-txt">دەستکاری پرۆفایل<span class='ar-sub'>تعديل الملف الشخصي</span></div>
         <i class="fas fa-chevron-left plist-arr"></i>
       </div>
       <div class="plist-item" onclick="openChangePass()">
         <div class="plist-ico"><i class="fas fa-lock"></i></div>
-        <div class="plist-txt">گۆڕینی وشەی نهێنی / تغيير كلمة المرور</div>
+        <div class="plist-txt">گۆڕینی وشەی نهێنی<span class='ar-sub'>تغيير كلمة المرور</span></div>
         <i class="fas fa-chevron-left plist-arr"></i>
       </div>
       <div class="plist-item" onclick="openTermsModal()">
         <div class="plist-ico"><i class="fas fa-file-lines"></i></div>
-        <div class="plist-txt">مەرج و یاساکان / الشروط والأحكام</div>
+        <div class="plist-txt">مەرج و یاساکان / الشروط والأحكام<span class='ar-sub'>الشروط والأحكام</span></div>
         <i class="fas fa-chevron-left plist-arr"></i>
       </div>
       <div class="plist-item green" onclick="openWA()">
         <div class="plist-ico"><i class="fab fa-whatsapp"></i></div>
-        <div class="plist-txt">گفتوگۆ لەگەڵ ئەدمین / التواصل مع الإدارة</div>
+        <div class="plist-txt">گفتوگۆ لەگەڵ ئەدمین<span class='ar-sub'>التواصل مع الإدارة</span></div>
         <i class="fas fa-chevron-left plist-arr" style="color:var(--gr)"></i>
       </div>
       <div class="plist-item red" onclick="doLogout()">
         <div class="plist-ico"><i class="fas fa-right-from-bracket"></i></div>
-        <div class="plist-txt">چوونەدەرەوە / تسجيل الخروج</div>
+        <div class="plist-txt">چوونەدەرەوە<span class='ar-sub'>تسجيل الخروج</span></div>
         <i class="fas fa-chevron-left plist-arr" style="color:var(--rd)"></i>
       </div>
     </div>
 
     <!-- ── TX History (hidden, shown by JS) ── -->
     <div class="pcard2" id="txPanel" style="display:none">
-      <div class="pcard2-sec-title">مێژووی مامەڵەکان / سجل المعاملات</div>
+      <div class="pcard2-sec-title">مێژووی مامەڵەکان<span class='ar-sub'>سجل المعاملات</span></div>
       <div id="txList"><div style="text-align:center;padding:16px;color:var(--mt);font-size:12px"><i class="fas fa-circle-notch fa-spin"></i></div></div>
     </div>
 
@@ -3054,11 +3051,11 @@ function _toWebP(dataUrl,quality){
     <div class="ad-date-card">
       <div class="ad-date-card-top">
         <div class="ad-date-card-ico"><i class="fas fa-pen"></i></div>
-        <div class="ad-date-card-lbl">ناوی ڕیکلام / اسم الإعلان</div>
+        <div class="ad-date-card-lbl">ناوی ڕیکلام<span class='ar-sub'>اسم الإعلان</span></div>
         <div class="ad-date-card-date" id="todayLbl"></div>
       </div>
       <div class="ad-date-inp-wrap">
-        <input class="ad-date-inp" id="adNameTitle" type="text" placeholder="ناوی ڕیکلام / اسم الإعلانەکەت بنووسە..." maxlength="50" dir="auto">
+        <input class="ad-date-inp" id="adNameTitle" type="text" placeholder="ناوی ڕیکلامەکەت بنووسە..." maxlength="50" dir="auto">
       </div>
     </div>
 
@@ -3066,18 +3063,18 @@ function _toWebP(dataUrl,quality){
     <div class="create-sec">
       <div class="create-sec-hdr">
         <div class="create-sec-ico"><i class="fas fa-bullseye"></i></div>
-        <div class="create-sec-lbl">ئامانجی ڕیکلام / هدف الإعلان</div>
+        <div class="create-sec-lbl">ئامانجی ڕیکلام<span class='ar-sub'>هدف الإعلان</span></div>
         <span class="cstep">١</span>
       </div>
       <div class="gseg-wrap" id="goalSegWrap">
         <div class="gseg-pill" id="goalSegPill"></div>
         <button class="gseg-opt on" data-g="messages" onclick="pickGoal(this)">
           <div class="gseg-ico msg-c"><i class="fas fa-comments"></i></div>
-          <div class="gseg-title">نامە / رسالة</div>
+          <div class="gseg-title">نامە<span class='ar-sub'>رسالة</span></div>
         </button>
         <button class="gseg-opt" data-g="views" onclick="pickGoal(this)">
           <div class="gseg-ico views-c"><i class="fas fa-eye"></i></div>
-          <div class="gseg-title">بینەر / مشاهدة</div>
+          <div class="gseg-title">بینەر<span class='ar-sub'>مشاهدة</span></div>
         </button>
       </div>
     </div>
@@ -3122,12 +3119,12 @@ function _toWebP(dataUrl,quality){
     <div class="create-sec">
       <div class="create-sec-hdr">
         <div class="create-sec-ico"><i class="fas fa-users"></i></div>
-        <div class="create-sec-lbl">ئامانج / الاستهداف</div>
+        <div class="create-sec-lbl">ئامانج<span class='ar-sub'>الاستهداف</span></div>
         <span class="cstep">٢</span>
       </div>
 
       <!-- Age -->
-      <div class="csub" style="margin-top:12px">تەمەن / العمر</div>
+      <div class="csub" style="margin-top:12px">تەمەن<span class='ar-sub'>العمر</span></div>
       <div class="age-groups-wrap" id="ageGroupsWrap">
         <div class="age-grp age-grp-all on" data-age="all" onclick="pickAge(this)">
           <i class="fas fa-users"></i> هەموو
@@ -3142,27 +3139,27 @@ function _toWebP(dataUrl,quality){
       <div id="ageSelectedDisplay" style="font-size:11px;color:var(--mt2);margin-bottom:12px;margin-top:4px"></div>
 
       <!-- Gender -->
-      <div class="csub">ڕەگەز / الجنس</div>
+      <div class="csub">ڕەگەز<span class='ar-sub'>الجنس</span></div>
       <div class="gender-wrap">
         <div class="gender-dark-pill" id="genDarkPill"></div>
         <button class="gender-pill on" data-gen="all" onclick="pickGen(this)">
-          <i class="fas fa-users"></i><span>هەموو / الكل</span>
+          <i class="fas fa-users"></i><span>هەموو</span>
         </button>
         <button class="gender-pill" data-gen="male" onclick="pickGen(this)">
-          <i class="fas fa-mars"></i><span>نێر / ذكر</span>
+          <i class="fas fa-mars"></i><span>نێر<span class='ar-sub'>ذكر</span></span>
         </button>
         <button class="gender-pill" data-gen="female" onclick="pickGen(this)">
-          <i class="fas fa-venus"></i><span>مێ / أنثى</span>
+          <i class="fas fa-venus"></i><span>مێ<span class='ar-sub'>أنثى</span></span>
         </button>
       </div>
 
       <!-- Location -->
-      <div class="csub">شوێن <span style="color:var(--rd)">*</span></div>
+      <div class="csub">شوێن<span class='ar-sub'>الموقع</span> <span style="color:var(--rd)">*</span></div>
       <div class="loc-chips-wrap">
         <div class="loc-dark-pill" id="locDarkPill"></div>
-        <div class="fchip on" data-loc="all" onclick="pickLoc(this)">هەموو / الكل</div>
-        <div class="fchip" data-loc="kurdistan" onclick="pickLoc(this)">کوردستان / كردستان</div>
-        <div class="fchip" data-loc="iraq" onclick="pickLoc(this)">عێراق / العراق</div>
+        <div class="fchip on" data-loc="all" onclick="pickLoc(this)">هەموو<span class='ar-sub'>الكل</span></div>
+        <div class="fchip" data-loc="kurdistan" onclick="pickLoc(this)">کوردستان</div>
+        <div class="fchip" data-loc="iraq" onclick="pickLoc(this)">عێراق</div>
       </div>
     </div>
 
@@ -3170,13 +3167,13 @@ function _toWebP(dataUrl,quality){
     <div class="create-sec">
       <div class="create-sec-hdr">
         <div class="create-sec-ico"><i class="fas fa-wallet"></i></div>
-        <div class="create-sec-lbl">بودجە و ماوە / الميزانية والمدة</div>
+        <div class="create-sec-lbl">بودجە و ماوە<span class='ar-sub'>الميزانية والمدة</span></div>
         <span class="cstep">٣</span>
       </div>
 
       <div class="bud-rings-grid">
         <div class="bud-ring-col">
-          <div class="bud-ring-label">بودجەی ڕۆژانە / الميزانية اليومية</div>
+          <div class="bud-ring-label">بودجەی ڕۆژانە<span class='ar-sub'>الميزانية اليومية</span></div>
           <div class="ring-sm-wrap">
             <svg viewBox="0 0 100 100" class="ring-svg-sm">
               <circle class="ring-bg-c" cx="50" cy="50" r="38"/>
@@ -3194,7 +3191,7 @@ function _toWebP(dataUrl,quality){
         </div>
         <div class="bud-rings-divider"></div>
         <div class="bud-ring-col">
-          <div class="bud-ring-label">ماوەی ڕیکلام / مدة الإعلان</div>
+          <div class="bud-ring-label">ماوەی ڕیکلام<span class='ar-sub'>مدة الإعلان</span></div>
           <div class="ring-sm-wrap">
             <svg viewBox="0 0 100 100" class="ring-svg-sm">
               <circle class="ring-bg-c" cx="50" cy="50" r="38"/>
@@ -3212,7 +3209,7 @@ function _toWebP(dataUrl,quality){
         </div>
       </div>
       <div class="bud-total-soft">
-        <div class="bud-total-soft-lbl">کۆی گشتی / الإجمالي</div>
+        <div class="bud-total-soft-lbl">کۆی گشتی<span class='ar-sub'>الإجمالي</span></div>
         <div class="bud-total-soft-right">
           <span class="bud-total-soft-usd" id="totalBud">$10</span>
           <span class="bud-total-soft-days" id="totalDaysBadge">1 ڕۆژ</span>
@@ -3224,14 +3221,14 @@ function _toWebP(dataUrl,quality){
     <div class="create-sec">
       <div class="create-sec-hdr">
         <div class="create-sec-ico"><i class="fas fa-chart-line"></i></div>
-        <div class="create-sec-lbl">ئەنجامی چاوەڕوانکراو / النتائج المتوقعة</div>
+        <div class="create-sec-lbl">ئەنجامی چاوەڕوانکراو<span class='ar-sub'>النتائج المتوقعة</span></div>
       </div>
       <div class="est5-grid">
         <div class="est5-card est5-views" id="estViewsRow">
           <div class="est5-ico-wrap"><i class="fas fa-eye"></i></div>
           <div class="est5-card-info">
             <div id="estViewsVal" class="est5-range">133,000 – 167,000</div>
-            <div class="est5-lbl">بینەری چاوەڕوانکراو / المشاهدات المتوقعة</div>
+            <div class="est5-lbl">بینەری چاوەڕوانکراو<span class='ar-sub'>المشاهدات المتوقعة</span></div>
           </div>
           <div class="est5-badge">CPM</div>
           <div id="estViewsCpm" style="display:none"></div>
@@ -3252,24 +3249,24 @@ function _toWebP(dataUrl,quality){
     <div class="create-sec">
       <div class="create-sec-hdr">
         <div class="create-sec-ico"><i class="fab fa-tiktok"></i></div>
-        <div class="create-sec-lbl">ناوەڕۆکی تیکتۆک / محتوى تيك توك</div>
+        <div class="create-sec-lbl">ناوەڕۆکی تیکتۆک<span class='ar-sub'>محتوى تيك توك</span></div>
         <span class="cstep">٤</span>
       </div>
-      <div class="csub">لینکی ڤیدیۆ</div>
+      <div class="csub">لینکی ڤیدیۆ<span class='ar-sub'>رابط الفيديو</span></div>
       <div class="tt-inp-wrap" style="margin-bottom:10px">
         <div class="tt-inp-ico"><i class="fas fa-link"></i></div>
         <input class="tt-inp" type="url" id="adLink" placeholder="لینکی ڤیدیۆی تیک تۆک دابنێ" autocomplete="off" spellcheck="false">
         <button class="tt-paste-btn" onclick="pasteToField('adLink')" title="لکاندن"><i class="fas fa-clipboard"></i></button>
       </div>
-      <div class="csub">کۆدی پۆست / كود المنشور</div>
+      <div class="csub">کۆدی پۆست<span class='ar-sub'>كود المنشور</span></div>
       <div class="tt-inp-wrap" style="margin-bottom:10px">
         <div class="tt-inp-ico"><i class="fas fa-code"></i></div>
-        <input class="tt-inp" type="text" id="adCode" placeholder="کۆدی پۆست / كود المنشوری تیکتۆکەکەت لێرە دابنێ" autocomplete="off" spellcheck="false">
+        <input class="tt-inp" type="text" id="adCode" placeholder="کۆدی پۆستی تیکتۆکەکەت لێرە دابنێ" autocomplete="off" spellcheck="false">
         <button class="tt-paste-btn" onclick="pasteToField('adCode')" title="لکاندن"><i class="fas fa-clipboard"></i></button>
       </div>
       <div class="create-warning">
         <i class="fas fa-triangle-exclamation"></i>
-        <div class="create-warning-txt"><strong>گرنگ:</strong> تەواوی زانیاریەکان بەدروووستی پر بکەوە — بەپێچەوانەوە بەرپرسیار نابین — لن نتحمل المسؤولية.</div>
+        <div class="create-warning-txt"><strong>گرنگ:</strong> تەواوی زانیاریەکان بەدروووستی پر بکەوە — بەپێچەوانەوە بەرپرسیار نابین.</div>
       </div>
     </div>
 
@@ -3277,7 +3274,7 @@ function _toWebP(dataUrl,quality){
     <div class="create-sec">
       <div class="create-sec-hdr">
         <div class="create-sec-ico"><i class="fas fa-clock"></i></div>
-        <div class="create-sec-lbl">کات بۆ دانراو / مجدول <span style="font-size:10px;color:var(--mt);font-weight:400">(ئیختیاری)</span></div>
+        <div class="create-sec-lbl">کات بۆ دانراو <span style="font-size:10px;color:var(--mt);font-weight:400">(ئیختیاری)</span></div>
         <span class="cstep">٥</span>
       </div>
       <div style="font-size:11.5px;color:var(--mt2);background:rgba(8,145,178,.04);border:1px solid rgba(8,145,178,.15);border-radius:10px;padding:9px 12px;margin-bottom:10px;line-height:1.7"><i class="fas fa-info-circle" style="margin-left:5px;color:#0891b2;font-size:10px"></i>ئەگەر نەتەوێت ڕیکلامەکەت ئێستا بکرێت، بەروار و کاتی دلخوازت دیاری بکە. ئیختیاریە — ئەگەر بەتاڵ بهێڵیت ئادمین خۆی چالاکی دەکات.</div>
@@ -3303,7 +3300,7 @@ function _toWebP(dataUrl,quality){
         <input class="finp promo-inp" type="text" id="promoCodeInp" placeholder="PROXO-XXXXXXXX" dir="ltr"
           oninput="this.value=this.value.toUpperCase();clearPromoResult()">
         <button class="promo-apply-btn" id="promoApplyBtn" onclick="applyPromoCode()">
-          <i class="fas fa-check"></i> دڵنیاکردنەوە
+          <i class="fas fa-check"></i> دڵنیاکردنەوە<span class='ar-sub'>تأكيد</span>
         </button>
       </div>
       <div class="promo-result" id="promoResult"></div>
@@ -3313,34 +3310,34 @@ function _toWebP(dataUrl,quality){
     <div class="create-sec">
       <div class="create-sec-hdr">
         <div class="create-sec-ico"><i class="fas fa-receipt"></i></div>
-        <div class="create-sec-lbl">وردەکاری نرخ / تفاصيل السعر</div>
+        <div class="create-sec-lbl">وردەکاری نرخ<span class='ar-sub'>تفاصيل السعر</span></div>
         <span class="cstep">٦</span>
       </div>
       <div class="create-price-box">
         <div class="create-price-row">
-          <span class="create-price-lbl">نرخی سپۆنسەر / سعر الإعلان</span>
+          <span class="create-price-lbl">نرخی سپۆنسەر<span class='ar-sub'>سعر الإعلان</span></span>
           <span id="bdSponsor" class="create-price-val">15,417 IQD</span>
         </div>
         <div class="create-price-row">
-          <span class="create-price-lbl">کرێی خزمەتگوزاری / رسوم الخدمة</span>
+          <span class="create-price-lbl">کرێی خزمەتگوزاری<span class='ar-sub'>رسوم الخدمة</span></span>
           <span id="bdService" class="create-price-val">3,083 IQD</span>
         </div>
         <div id="bdLevelDiscountRow" class="create-price-row" style="display:none">
-          <span style="color:var(--gr);display:flex;align-items:center;gap:5px"><i class="fas fa-medal" style="font-size:11px"></i><span id="bdLevelDiscountLbl">داشکاندنی ئاست</span></span>
+          <span style="color:var(--gr);display:flex;align-items:center;gap:5px"><i class="fas fa-medal" style="font-size:11px"></i><span id="bdLevelDiscountLbl">داشکاندنی ئاست<span class='ar-sub'>خصم المستوى</span></span></span>
           <span id="bdLevelDiscount" style="color:var(--gr);font-weight:700;font-family:'Inter',sans-serif">-0 IQD</span>
         </div>
         <div id="bdDiscountRow" class="create-price-row" style="display:none">
-          <span style="color:var(--rd)">بڕی داشکان</span>
+          <span style="color:var(--rd)">بڕی داشکان<span class='ar-sub'>مبلغ الخصم</span></span>
           <span id="bdDiscount" style="color:var(--rd);font-weight:700;font-family:'Inter',sans-serif">-0 IQD</span>
         </div>
         <div class="create-price-total">
-          <span id="bdTotalLbl" style="font-size:13px;font-weight:800;color:var(--dark)">کۆی گشتی / الإجمالي (1 ڕۆژ)</span>
+          <span id="bdTotalLbl" style="font-size:13px;font-weight:800;color:var(--dark)">کۆی گشتی (1 ڕۆژ)</span>
           <span id="bdTotal" style="font-size:15px;font-weight:900;color:var(--dark);font-family:'Inter',sans-serif">18,500 IQD</span>
         </div>
       </div>
       <button class="create-submit" id="submitBtn" onclick="submitAd()" style="margin-top:16px">
         <i class="fas fa-paper-plane"></i>
-        ناردنی داواکاری / إرسال الطلب
+        ناردنی داواکاری<span class='ar-sub'>إرسال الطلب</span>
       </button>
     </div>
 
@@ -3351,7 +3348,7 @@ function _toWebP(dataUrl,quality){
   <div class="pg" id="pgMyads">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
       <div style="display:flex;align-items:center;gap:10px">
-        <div class="pg-title">ڕیکلامەکانم / إعلاناتي</div>
+        <div class="pg-title">ڕیکلامەکانم<span class='ar-sub'>إعلاناتي</span></div>
         <button id="sponsorRefreshBtn" onclick="refreshSponsorships()" style="width:34px;height:34px;border-radius:50%;background:var(--bg);border:1.5px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mt);font-size:13px;transition:all .2s;flex-shrink:0">
           <i class="fas fa-rotate-right" id="sponsorRefreshIco"></i>
         </button>
@@ -3361,12 +3358,12 @@ function _toWebP(dataUrl,quality){
       </button>
     </div>
     <div class="ads-filter" id="adsFilter">
-      <div class="fchip on" data-f="all" onclick="filterAds(this)">هەموو / الكل</div>
-      <div class="fchip" data-f="active" onclick="filterAds(this)">چالاک / نشط</div>
-      <div class="fchip" data-f="pending" onclick="filterAds(this)">چاوەڕوان / قيد الانتظار</div>
-      <div class="fchip" data-f="scheduled" onclick="filterAds(this)">کات بۆ دانراو / مجدول</div>
-      <div class="fchip" data-f="rejected" onclick="filterAds(this)">ڕەتکراوە / مرفوض</div>
-      <div class="fchip" data-f="completed" onclick="filterAds(this)">تەواوبوو / منتهي</div>
+      <div class="fchip on" data-f="all" onclick="filterAds(this)">هەموو<span class='ar-sub'>الكل</span></div>
+      <div class="fchip" data-f="active" onclick="filterAds(this)">چالاک<span class='ar-sub'>نشط</span></div>
+      <div class="fchip" data-f="pending" onclick="filterAds(this)">چاوەڕوان<span class='ar-sub'>قيد الانتظار</span></div>
+      <div class="fchip" data-f="scheduled" onclick="filterAds(this)">کات بۆ دانراو</div>
+      <div class="fchip" data-f="rejected" onclick="filterAds(this)">ڕەتکراوە<span class='ar-sub'>مرفوض</span></div>
+      <div class="fchip" data-f="completed" onclick="filterAds(this)">تەواوبوو<span class='ar-sub'>منتهي</span></div>
     </div>
     <div id="myAdsWrap"></div>
     <div style="height:14px"></div>
@@ -3380,9 +3377,9 @@ function _toWebP(dataUrl,quality){
   <!-- PROXOLINK -->
   <div class="pg" id="pgProxolink">
     <div id="plListView">
-      <div class="pg-title" style="margin-bottom:14px">کەرەستەی پەیوەندی / وسيلة التواصل</div>
+      <div class="pg-title" style="margin-bottom:14px">کەرەستەی پەیوەندی<span class='ar-sub'>وسيلة التواصل</span></div>
       <button class="proxo-create-btn" onclick="showPLForm()">
-        <i class="fas fa-plus"></i>دروستکردنی کەرەستەی نوێ / إنشاء وسيلة جديدة
+        <i class="fas fa-plus"></i>دروستکردنی کەرەستەی نوێ<span class='ar-sub'>إنشاء وسيلة جديدة</span>
       </button>
       <div class="slbl">کەرەستەکانت</div>
       <div class="proxo-cards" id="proxoCardsList">
@@ -3520,7 +3517,7 @@ function _toWebP(dataUrl,quality){
     <div id="plPreviewView" style="display:none">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
         <button onclick="plBackFromPreview()" style="padding:10px 16px;background:var(--bg);border:1px solid var(--b1);border-radius:12px;font-family:'R',sans-serif;font-size:13px;color:var(--mt);cursor:pointer;display:flex;align-items:center;gap:6px"><i class="fas fa-arrow-right"></i>گەڕانەوە / رجوع</button>
-        <div style="font-size:15px;font-weight:800;color:var(--dark);flex:1;text-align:center">پێشبینی کەرەستە</div>
+        <div style="font-size:15px;font-weight:800;color:var(--dark);flex:1;text-align:center">پێشبینی کەرەستە<span class='ar-sub'>معاينة الوسيلة</span></div>
       </div>
       <!-- phone shell -->
       <div class="pl-phone-shell">
@@ -3542,9 +3539,9 @@ function _toWebP(dataUrl,quality){
   ════════════════════════════════════════════════ -->
   <div class="pg" id="pgNotifications">
     <div class="notif-pg-hdr">
-      <div class="notif-pg-title">ئاگادارییەکان / الإشعارات</div>
+      <div class="notif-pg-title">ئاگادارییەکان<span class='ar-sub'>الإشعارات</span></div>
       <button onclick="markAllRead()" class="notif-markall-btn">
-        <i class="fas fa-check-double"></i> هەموو خوێندرایەوە / تحديد الكل مقروء
+        <i class="fas fa-check-double"></i> هەموو خوێندرایەوە<span class='ar-sub'>تحديد الكل مقروء</span>
       </button>
     </div>
     <div id="notifList">
@@ -3555,7 +3552,7 @@ function _toWebP(dataUrl,quality){
 
   <!-- SUPPORT -->
   <div class="pg" id="pgSupport">
-    <div class="pg-title" style="margin-bottom:14px">سەپۆرت / الدعم</div>
+    <div class="pg-title" style="margin-bottom:14px">سەپۆرت<span class='ar-sub'>الدعم</span></div>
     <div class="chat-outer">
       <div class="chat-body" id="chatBody">
         <div style="text-align:center;padding:30px;color:var(--mt)">
@@ -3574,7 +3571,7 @@ function _toWebP(dataUrl,quality){
   <!-- TRANSACTION HISTORY PAGE -->
   <div class="pg" id="pgTxhistory">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
-      <div class="pg-title">مێژووی مامەڵەکان / سجل المعاملات</div>
+      <div class="pg-title">مێژووی مامەڵەکان<span class='ar-sub'>سجل المعاملات</span></div>
     </div>
 
     <!-- ── کاوتداون بانەر ── -->
@@ -3623,7 +3620,7 @@ function _toWebP(dataUrl,quality){
 
     <!-- فیلتەر -->
     <div style="display:flex;gap:7px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch">
-      <div class="fchip on" data-txf="all" onclick="filterTxHistory(this)">هەموو / الكل</div>
+      <div class="fchip on" data-txf="all" onclick="filterTxHistory(this)">هەموو<span class='ar-sub'>الكل</span></div>
       <div class="fchip" data-txf="deposit" onclick="filterTxHistory(this)"><i class="fas fa-plus-circle" style="font-size:9px;margin-left:3px"></i>زیادکردن</div>
       <div class="fchip" data-txf="voucher" onclick="filterTxHistory(this)"><i class="fas fa-ticket" style="font-size:9px;margin-left:3px"></i>فاوچەر</div>
       <div class="fchip" data-txf="spend" onclick="filterTxHistory(this)"><i class="fas fa-bullhorn" style="font-size:9px;margin-left:3px"></i>ڕیکلام</div>
@@ -3706,7 +3703,7 @@ function _toWebP(dataUrl,quality){
   <!-- ══ CHALLENGES ══ -->
   <div class="pg" id="pgChallenges">
     <div class="pg-hdr">
-      <div class="pg-title"><i class="fas fa-list-check" style="margin-left:8px;color:#a855f7"></i>ئەرکەکان / المهام</div>
+      <div class="pg-title"><i class="fas fa-list-check" style="margin-left:8px;color:#a855f7"></i>ئەرکەکان<span class='ar-sub'>المهام</span></div>
     </div>
 
     <div class="gifts-sec-hdr" style="margin-top:2px">
@@ -3723,7 +3720,7 @@ function _toWebP(dataUrl,quality){
   <!-- ══ LEVELS ══ -->
   <div class="pg" id="pgLevels">
     <div class="pg-hdr">
-      <div class="pg-title"><i class="fas fa-layer-group" style="margin-left:8px;color:#f59e0b"></i>ئاستەکان / المستويات</div>
+      <div class="pg-title"><i class="fas fa-layer-group" style="margin-left:8px;color:#f59e0b"></i>ئاستەکان<span class='ar-sub'>المستويات</span></div>
     </div>
 
     <!-- ══ Level / Rank Card ══ -->
@@ -3772,7 +3769,7 @@ function _toWebP(dataUrl,quality){
   <!-- ══ GIFTS (SIGNUP BONUS + ADMIN-TARGETED VOUCHERS) ══ -->
   <div class="pg" id="pgGifts">
     <div class="pg-hdr">
-      <div class="pg-title"><i class="fas fa-ticket" style="margin-left:8px;color:#06b6d4"></i>فاوچەرەکان / القسائم</div>
+      <div class="pg-title"><i class="fas fa-ticket" style="margin-left:8px;color:#06b6d4"></i>فاوچەرەکان<span class='ar-sub'>القسائم</span></div>
     </div>
 
     <!-- ══ داخڵکردنی کۆدی فاوچەر (دیزاینی سادە) ══ -->
@@ -3828,7 +3825,7 @@ function _toWebP(dataUrl,quality){
     <div class="wallet-hero">
       <div class="wallet-bal-label">
         <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 6px #4ade80"></span>
-        باڵانس / الرصيدی ئێستا (ژیوە)
+        باڵانسی ئێستا (ژیوە)
       </div>
       <div class="wallet-bal-amount" id="wBal">0</div>
       <div class="wallet-bal-cur">دینار عێراقی · IQD</div>
@@ -3854,25 +3851,25 @@ function _toWebP(dataUrl,quality){
       <div>• نرخی گۆڕین: <strong>1$ = 1,800 IQD</strong></div>
     </div>
 
-    <!-- ══ گەڕانەوەی باڵانس / الرصيدی خۆکارانە ══ -->
+    <!-- ══ گەڕانەوەی باڵانسی خۆکارانە ══ -->
     <div style="background:linear-gradient(135deg,rgba(22,163,74,.07),rgba(22,163,74,.03));border:1px solid rgba(22,163,74,.2);border-radius:16px;padding:16px;margin-bottom:16px">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
         <div style="width:36px;height:36px;border-radius:11px;background:rgba(22,163,74,.15);display:flex;align-items:center;justify-content:center;font-size:16px;color:#16a34a;flex-shrink:0">
           <i class="fas fa-rotate-left"></i>
         </div>
         <div style="flex:1">
-          <div style="font-size:13.5px;font-weight:800;color:var(--dark)">گەڕانەوەی باڵانس / الرصيدی خۆکارانە</div>
+          <div style="font-size:13.5px;font-weight:800;color:var(--dark)">گەڕانەوەی باڵانسی خۆکارانە</div>
           <div style="font-size:11px;color:var(--mt);margin-top:2px">ئیمەیلی ئاگادارکردنەوە دەنێردرێت</div>
         </div>
         <div style="display:flex;align-items:center;gap:5px;padding:4px 10px;background:rgba(22,163,74,.1);border:1px solid rgba(22,163,74,.25);border-radius:20px;flex-shrink:0">
           <span style="width:6px;height:6px;border-radius:50%;background:#16a34a;display:inline-block;animation:pulse 1.5s infinite"></span>
-          <span style="font-size:11px;font-weight:700;color:#16a34a">چالاک / نشط</span>
+          <span style="font-size:11px;font-weight:700;color:#16a34a">چالاک</span>
         </div>
       </div>
       <div style="background:var(--w);border-radius:12px;padding:12px 14px;border:1px solid rgba(22,163,74,.12)">
         <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:12px;color:var(--dark);line-height:1.7">
           <i class="fas fa-circle-check" style="color:#16a34a;font-size:10px;margin-top:4px;flex-shrink:0"></i>
-          <span>کاتێک ڕیکلامەکەت ڕەتدەکرێت، بودجەکەت بە شێوەی خۆکار دەگەڕێتەوە بۆ باڵانس / الرصيدەکەت</span>
+          <span>کاتێک ڕیکلامەکەت ڕەتدەکرێت، بودجەکەت بە شێوەی خۆکار دەگەڕێتەوە بۆ باڵانسەکەت</span>
         </div>
         <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:12px;color:var(--dark);line-height:1.7">
           <i class="fas fa-circle-check" style="color:#16a34a;font-size:10px;margin-top:4px;flex-shrink:0"></i>
@@ -4129,7 +4126,7 @@ function _toWebP(dataUrl,quality){
     <!-- Message -->
     <div id="wdMsg" style="display:none;padding:10px 13px;border-radius:11px;font-size:12.5px;font-weight:600;margin-bottom:12px"></div>
     <button class="dep-submit" id="wdSubmitBtn" onclick="submitWalletDeposit()">
-      <i class="fas fa-paper-plane"></i> ناردنی داواکاری / إرسال الطلب
+      <i class="fas fa-paper-plane"></i> ناردنی داواکاری<span class='ar-sub'>إرسال الطلب</span>
     </button>
     <div style="text-align:center;font-size:11px;color:var(--mt);margin-top:12px;line-height:1.7">
       <i class="fas fa-shield-halved" style="color:#10b981;margin-left:4px"></i>
@@ -4143,7 +4140,7 @@ function _toWebP(dataUrl,quality){
   <div class="mbox">
     <div class="mbar"></div>
     <div class="mhdr">
-      <h3><i class="fas fa-minus-circle" style="color:#dc2626;margin-left:7px"></i>داواکاری کەمکردنی باڵانس / الرصيد</h3>
+      <h3><i class="fas fa-minus-circle" style="color:#dc2626;margin-left:7px"></i>داواکاری کەمکردنی باڵانس</h3>
       <button class="mclose" onclick="closeMo('moWalletWithdraw')"><i class="fas fa-xmark"></i></button>
     </div>
     <div class="slbl">بڕی داواکراو <span style="font-size:10px;color:var(--mt);font-weight:400">(کەمترین ١,٠٠٠ IQD)</span></div>
@@ -4153,7 +4150,7 @@ function _toWebP(dataUrl,quality){
     <input class="finp" type="text" id="wwNote" placeholder="هۆکاری داواکاری بنووسە..." style="margin-bottom:12px">
     <div id="wwMsg" style="display:none;padding:10px 13px;border-radius:11px;font-size:12.5px;font-weight:600;margin-bottom:10px"></div>
     <button class="abtn" id="wwSubmitBtn" onclick="submitWalletWithdraw()" style="background:#dc2626">
-      <i class="fas fa-paper-plane"></i> ناردنی داواکاری / إرسال الطلب
+      <i class="fas fa-paper-plane"></i> ناردنی داواکاری<span class='ar-sub'>إرسال الطلب</span>
     </button>
   </div>
 </div>
@@ -4268,16 +4265,16 @@ function _toWebP(dataUrl,quality){
       </div>
       <div class="coins-info-item">
         <div class="coins-info-ico" style="background:rgba(220,38,38,.08);color:var(--rd)"><i class="fas fa-circle-minus"></i></div>
-        <div>ئەگەر ئەدمین ڕیکلامەکەت ڕەتکردەوە، <strong>50 کۆین</strong> کەم دەکرێتەوە (یان 500 IQD لە باڵانس / الرصيد).</div>
+        <div>ئەگەر ئەدمین ڕیکلامەکەت ڕەتکردەوە، <strong>50 کۆین</strong> کەم دەکرێتەوە (یان 500 IQD لە باڵانس).</div>
       </div>
       <div class="coins-info-item">
         <div class="coins-info-ico" style="background:rgba(37,99,235,.08);color:var(--bl)"><i class="fas fa-repeat"></i></div>
-        <div>کەمترین <span style="font-family:'R',sans-serif">500</span> کۆین پێویستە بۆ گۆڕینەوە بۆ <span style="font-family:'R',sans-serif">500</span> IQD باڵانس / الرصيد.</div>
+        <div>کەمترین <span style="font-family:'R',sans-serif">500</span> کۆین پێویستە بۆ گۆڕینەوە بۆ <span style="font-family:'R',sans-serif">500</span> IQD باڵانس.</div>
       </div>
     </div>
     <!-- Exchange Button (shown when >= 500) -->
     <button class="coins-exchange-btn" id="coinsExchangeBtn" onclick="exchangeCoins()" style="display:none">
-      <i class="fas fa-arrow-right-arrow-left"></i> گۆڕینەوە بۆ باڵانس / الرصيد
+      <i class="fas fa-arrow-right-arrow-left"></i> گۆڕینەوە بۆ باڵانس
     </button>
     <div class="coins-need-more" id="coinsNeedMore">
       <i class="fas fa-lock" style="color:var(--mt)"></i>
@@ -4291,7 +4288,7 @@ function _toWebP(dataUrl,quality){
   <div class="mbox">
     <div class="mbar"></div>
     <div class="mhdr">
-      <h3 style="font-size:17px">زیادکردنی باڵانس / الرصيد</h3>
+      <h3 style="font-size:17px">زیادکردنی باڵانس</h3>
       <button class="mclose" onclick="closeMo('moAmount')"><i class="fas fa-xmark"></i></button>
     </div>
     <!-- Method row (click to change) -->
@@ -4379,13 +4376,13 @@ function _toWebP(dataUrl,quality){
     <textarea id="depositNote" placeholder="بۆ نموونە: هەر زانیاریەکی تر..." style="width:100%;padding:12px 14px;background:var(--bg);border:1.5px solid var(--b1);border-radius:13px;color:var(--tx);font-family:'R',sans-serif;font-size:14px;outline:none;resize:none;min-height:60px;margin-bottom:14px;transition:border-color .2s" onfocus="this.style.borderColor='var(--dark)'" onblur="this.style.borderColor='var(--b1)'"></textarea>
 
     <button class="submit-btn" onclick="submitDeposit()">
-      <i class="fas fa-paper-plane"></i> ناردنی داواکاری / إرسال الطلب
+      <i class="fas fa-paper-plane"></i> ناردنی داواکاری<span class='ar-sub'>إرسال الطلب</span>
     </button>
 
     <!-- ── تێبینی چالاکبوون ── -->
     <div style="margin-top:12px;text-align:center;font-size:12px;color:var(--mt);line-height:1.8">
       <i class="fas fa-clock" style="margin-left:5px;color:var(--yw)"></i>
-      باڵانس / الرصيدەکەت لە ماوەی <strong style="color:var(--dark)">٥ بۆ ١٥ خولەک</strong>دا زیاد دەکرێت دوای وردبینی.
+      باڵانسەکەت لە ماوەی <strong style="color:var(--dark)">٥ بۆ ١٥ خولەک</strong>دا زیاد دەکرێت دوای وردبینی.
     </div>
   </div>
 </div>
@@ -4517,7 +4514,7 @@ function _toWebP(dataUrl,quality){
   <div class="mbox">
     <div class="mbar"></div>
     <div class="mhdr">
-      <h3>دەستکاری پرۆفایل / تعديل الملف الشخصي</h3>
+      <h3>دەستکاری پرۆفایل</h3>
       <button class="mclose" onclick="closeMo('moUpdateProfile')"><i class="fas fa-xmark"></i></button>
     </div>
     <div style="text-align:center;margin-bottom:20px">
@@ -4548,7 +4545,7 @@ function _toWebP(dataUrl,quality){
   <div class="mbox">
     <div class="mbar"></div>
     <div class="mhdr">
-      <h3><i class="fas fa-lock" style="color:var(--dark);margin-left:8px"></i>گۆڕینی وشەی نهێنی / تغيير كلمة المرور</h3>
+      <h3><i class="fas fa-lock" style="color:var(--dark);margin-left:8px"></i>گۆڕینی وشەی نهێنی<span class='ar-sub'>كلمة المرور</span></h3>
       <button class="mclose" onclick="closeChangePasMo()"><i class="fas fa-xmark"></i></button>
     </div>
 
@@ -4567,11 +4564,11 @@ function _toWebP(dataUrl,quality){
         <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="cp5" oninput="cpOtpMove(this,'cp4','cp6')" onkeydown="cpOtpBack(event,this,'cp4')">
         <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="cp6" oninput="cpOtpMove(this,'cp5',null)" onkeydown="cpOtpBack(event,this,'cp5')">
       </div>
-      <div class="otp-timer" id="cpTimerWrap">ماوەی ئەم کۆدە / <span class='ar-sub-inline'>صلاحية الرمز:</span> <span id="cpTimerVal">10:00</span></div>
-      <div class="otp-resend" id="cpResendBtn" onclick="cpResendOtp()" style="display:none"><i class="fas fa-rotate-right" style="margin-left:5px"></i>کۆدی نوێ بنێرە / <span class='ar-sub-inline'>إعادة الإرسال</span></div>
+      <div class="otp-timer" id="cpTimerWrap">ماوەی ئەم کۆدە: <span id="cpTimerVal">10:00</span></div>
+      <div class="otp-resend" id="cpResendBtn" onclick="cpResendOtp()" style="display:none"><i class="fas fa-rotate-right" style="margin-left:5px"></i>کۆدی نوێ بنێرە</div>
       <div id="cpOtpMsg" style="display:none;font-size:12px;padding:10px 13px;border-radius:11px;margin:10px 0;text-align:center"></div>
       <button class="save-btn" onclick="doVerifyCpOtp()" id="cpOtpBtn" style="margin-top:6px">
-        <i class="fas fa-check"></i> دڵنیاکردنەوە
+        <i class="fas fa-check"></i> دڵنیاکردنەوە<span class='ar-sub'>تأكيد</span>
       </button>
     </div>
 
@@ -4579,8 +4576,8 @@ function _toWebP(dataUrl,quality){
     <div id="cpStep2" style="display:none">
       <div style="text-align:center;margin-bottom:18px">
         <div style="width:52px;height:52px;border-radius:16px;background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:22px"><i class="fas fa-circle-check" style="color:#16a34a"></i></div>
-        <div style="font-size:13px;font-weight:800;color:var(--dark);margin-bottom:3px">ناسنامەت دڵنیاکرایەوە <span class='ar-sub'>تم التحقق من هويتك</span></div>
-        <div style="font-size:11.5px;color:var(--mt)">ئێستا وشەی نهێنیی نوێت بنووسە — <span class='ar-sub'>أدخل كلمة مرورك الجديدة</span></div>
+        <div style="font-size:13px;font-weight:800;color:var(--dark);margin-bottom:3px">ناسنامەت دڵنیاکرایەوە</div>
+        <div style="font-size:11.5px;color:var(--mt)">ئێستا وشەی نهێنیی نوێت بنووسە</div>
       </div>
       <div class="mlbl">وشەی نهێنیی نوێ</div>
       <div class="pass-wrap" style="margin-bottom:0">
@@ -4599,7 +4596,7 @@ function _toWebP(dataUrl,quality){
       </div>
       <div id="changePassMsg" style="display:none;font-size:12px;padding:10px 13px;border-radius:11px;margin-bottom:12px;text-align:center"></div>
       <button class="save-btn" onclick="doChangePassFinal()" id="changePassBtn">
-        <i class="fas fa-lock"></i> گۆڕینی وشەی نهێنی / تغيير كلمة المرور
+        <i class="fas fa-lock"></i> گۆڕینی وشەی نهێنی
       </button>
     </div>
 
@@ -4895,14 +4892,14 @@ window.addEventListener('offline',()=>{
 
 // ═══ SESSION CHECK WRAPPER ═══
 async function withSession(fn){
-  if(!cu){showToast('تکایە دووبارە بچۆ ژوورەوە / <span class='ar-sub-inline'>تسجيل الدخول</span>','err');showAuth();return;}
+  if(!cu){showToast('تکایە دووبارە بچۆ ژوورەوە','err');showAuth();return;}
   try{
     const{data:{session}}=await sb.auth.getSession();
-    if(!session){showToast('سێشنت بەسەرچووە، دووبارە بچۆ ژوورەوە / <span class='ar-sub-inline'>تسجيل الدخول</span>','err');showAuth();return;}
+    if(!session){showToast('سێشنت بەسەرچووە، دووبارە بچۆ ژوورەوە','err');showAuth();return;}
     await fn();
   }catch(e){
     if(e.message?.includes('JWT')||e.message?.includes('expired')){
-      showToast('سێشنت بەسەرچووە، دووبارە بچۆ ژوورەوە / <span class='ar-sub-inline'>تسجيل الدخول</span>','err');
+      showToast('سێشنت بەسەرچووە، دووبارە بچۆ ژوورەوە','err');
       await sb.auth.signOut();cu=null;showAuth();
     } else {
       showToast('هەڵە: '+e.message,'err');
@@ -5214,7 +5211,7 @@ function nextAuthStep(from) {
     goAuthStep('pass');
   } else if(from === 'pass') {
     if (!_termsAgreed) {
-      _showStepMsg('authMsg', 'تکایە سەرەتا ڕازیبە بەهەموو مەرج و یاساکان / الشروط والأحكام', 'err');
+      _showStepMsg('authMsg', 'تکایە سەرەتا ڕازیبە بەهەموو مەرج و یاساکان', 'err');
       const r = document.getElementById('termsAgreeRow');
       if (r) { r.style.animation = 'none'; void r.offsetWidth; r.style.animation = 'termsShake .4s ease'; }
       return;
@@ -5379,7 +5376,7 @@ async function verifyOtp() {
         if(!data.session) {
           const { data: ld, error: le } = await sb.auth.signInWithPassword({ email: _otpEmail, password: _otpPendingData.pass });
           if(!le && ld?.session) { newUser = ld.user; }
-          else { cancelOtp(); showAmsg('هەژماری دروستکرا — ئێستا بچۆ ژوورەوە / <span class='ar-sub-inline'>تسجيل الدخول</span>', 'ok'); return; }
+          else { cancelOtp(); showAmsg('هەژماری دروستکرا — ئێستا بچۆ ژوورەوە', 'ok'); return; }
         }
         cu = newUser;
         // ── تۆمارکردنی دیوایس دوای سەرکەوتن ──
@@ -5491,7 +5488,7 @@ function kuErr(msg){
     'Signup disabled':'تۆمارکردن ئێستا گرتراوەتەوە',
     'Email rate limit exceeded':'زۆر جار ئیمەیل نێردرا، کەمێک چاوەڕوان بە',
     'New password should be different from the old password':'وشەی نهێنیی نوێ دەبێت جیاوازی لە وشەی نهێنیی کۆن بێت',
-    'Auth session missing':'تکایە دووبارە بچۆ ژوورەوە / <span class='ar-sub-inline'>تسجيل الدخول</span>',
+    'Auth session missing':'تکایە دووبارە بچۆ ژوورەوە',
   };
   return m[msg] || msg;
 }
@@ -5576,16 +5573,16 @@ async function doForgotSendOtp(){
   try{
     const {data,error}=await sb.from('profiles').select('id').eq('email',email).maybeSingle();
     if(error&&error.code!=='PGRST116') throw {message:'هەڵەی پشکنین، دووبارە هەوڵ بدەرەوە'};
-    if(!data){fpShowMsg('A','ئەم ئیمەیلە تۆمارنەکراوە','err');btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> ناردنی کۆدی دڵنیاکردنەوە / <span class='ar-sub-inline'>رمز التحقق</span>';return;}
+    if(!data){fpShowMsg('A','ئەم ئیمەیلە تۆمارنەکراوە','err');btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> ناردنی کۆدی دڵنیاکردنەوە';return;}
   }catch(e){
     fpShowMsg('A',e.message||'هەڵەی پشکنین','err');
-    btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> ناردنی کۆدی دڵنیاکردنەوە / <span class='ar-sub-inline'>رمز التحقق</span>';return;
+    btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> ناردنی کۆدی دڵنیاکردنەوە';return;
   }
   // کۆد بنێرە
   btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> دەنێردرێت...';
   const result=await requestOtp(email,'reset_password');
   btn.disabled=false;
-  btn.innerHTML='<i class="fas fa-paper-plane"></i> ناردنی کۆدی دڵنیاکردنەوە / <span class='ar-sub-inline'>رمز التحقق</span>';
+  btn.innerHTML='<i class="fas fa-paper-plane"></i> ناردنی کۆدی دڵنیاکردنەوە';
   if(!result.success){fpShowMsg('A',result.message||'هەڵەی ناردنی کۆد','err');return;}
   _fpEmail=email;
   document.getElementById('fpOtpLbl').textContent='کۆدی ٦ ژمارە بۆ '+email+' نێردرا';
@@ -5839,7 +5836,7 @@ async function doChangePassFinal(){
     showCPMsg(kuErr(e.message)||'هەڵەیەک ڕووی دا','err');
   }finally{
     btn.disabled=false;
-    btn.innerHTML='<i class="fas fa-lock"></i> گۆڕینی وشەی نهێنی / تغيير كلمة المرور';
+    btn.innerHTML='<i class="fas fa-lock"></i> گۆڕینی وشەی نهێنی';
   }
 }
 
@@ -6111,8 +6108,8 @@ function startWalletListener() {
   if (_wBalUnsub) ref.off('value', _wBalUnsub);
   _wBalUnsub = ref.on('value', function(snap) {
     // ── گرنگ: ئەگەر ئەم ڕێڕەوە هێشتا لە Firebase دروست نەکرابێت (snap بەتاڵە)
-    // مامەڵەی وەک 0 لەگەڵی مەکە، چونکە ئەوە باڵانس / الرصيدی ڕاستی کاش کراو لە Supabase دەسڕێتەوە.
-    // سەرچاوەی ڕاستی باڵانس / الرصيد هەمیشە Supabase (pa_wallets) ـە، ئەمە تەنها مرۆر بۆ realtime ـە.
+    // مامەڵەی وەک 0 لەگەڵی مەکە، چونکە ئەوە باڵانسی ڕاستی کاش کراو لە Supabase دەسڕێتەوە.
+    // سەرچاوەی ڕاستی باڵانس هەمیشە Supabase (pa_wallets) ـە، ئەمە تەنها مرۆر بۆ realtime ـە.
     if (!snap.exists()) return;
     const bal = Math.round(parseFloat(snap.val() || 0));
     _runningBalIQD = bal;
@@ -6156,7 +6153,7 @@ function startReqListener() {
           _showNotifToast(
             '✅ داواکارییەکەت پەسەندکرا',
             isDep
-              ? Math.round(r.amount || 0).toLocaleString() + ' IQD زیادکرا بۆ باڵانس / الرصيدەکەت'
+              ? Math.round(r.amount || 0).toLocaleString() + ' IQD زیادکرا بۆ باڵانسەکەت'
               : 'داواکاری کەمکردنت پەسەندکرا'
           );
           loadBal();
@@ -6213,7 +6210,7 @@ function startNotifListener() {
     // toast disabled — badge only
   });
 
-  // گوێگرتن بۆ گۆڕانکاری لە باڵانس / الرصيد و داواکاریەکان
+  // گوێگرتن بۆ گۆڕانکاری لە باڵانس و داواکاریەکان
   const adsRef = db.ref('pa_ads/' + uid);
   adsRef.on('child_changed', function(snap) {
     const a = snap.val();
@@ -6228,12 +6225,12 @@ function startNotifListener() {
   // ════════════════════════════════════════════════════════════════
   let _balTrigSeen = 0, _adsTrigSeen = 0, _profileTrigSeen = 0, _txTrigSeen = 0;
 
-  // ── 1. باڵانس / الرصيد: کاتێک ئادمین پارە زیاد/کەم دەکات ──
+  // ── 1. باڵانس: کاتێک ئادمین پارە زیاد/کەم دەکات ──
   db.ref('realtime_triggers/' + uid + '/balance').on('value', function(snap) {
     const d = snap.val();
     if (!d || !d.timestamp || d.timestamp <= _balTrigSeen) return;
     _balTrigSeen = d.timestamp;
-    // نوێکردنەوەی باڵانس / الرصيدی topbar و profil و sidebar یەکسەر
+    // نوێکردنەوەی باڵانسی topbar و profil و sidebar یەکسەر
     loadBal();
     checkNotifBell();
     // نوێکردنەوەی مێژووی مامەڵەکان ئەگەر کراوەیە
@@ -6357,7 +6354,7 @@ function openWalletDeposit() {
   // Start at method selector (step 0)
   document.getElementById('moMethod').classList.add('on');
 }
-// ══ گەڕانەوەی باڵانس / الرصيدی خۆکارانە — ناردنی ئیمەیل لە ڕێگای n8n Webhook ══
+// ══ گەڕانەوەی باڵانسی خۆکارانە — ناردنی ئیمەیل لە ڕێگای n8n Webhook ══
 const PROXO_REFUND_WEBHOOK='https://n8n.proxopages.com/webhook/proxo-ot';
 async function sendRefundEmailNotif(email,amountIQD,adNumber,reason){
   if(!email)return;
@@ -6504,7 +6501,7 @@ async function submitWalletDeposit() {
     _wMsg('wdMsg', 'هەڵەیەک: ' + e.message, false);
   } finally {
     btn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-paper-plane"></i> ناردنی داواکاری / إرسال الطلب';
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> ناردنی داواکاری';
   }
 }
 
@@ -6521,7 +6518,7 @@ async function submitWalletWithdraw() {
     var snap = await db.ref('wallets/' + cu.id + '/balance').once('value');
     var bal = parseFloat(snap.val() || 0);
     if (amt > bal) {
-      _wMsg('wwMsg', 'باڵانس / الرصيدی پێویستت نییە (' + Math.round(bal).toLocaleString() + ' IQD)', false);
+      _wMsg('wwMsg', 'باڵانسی پێویستت نییە (' + Math.round(bal).toLocaleString() + ' IQD)', false);
       return;
     }
   } catch(_) {}
@@ -6573,7 +6570,7 @@ async function submitWalletWithdraw() {
     _wMsg('wwMsg', 'هەڵەیەک: ' + e.message, false);
   } finally {
     btn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-paper-plane"></i> ناردنی داواکاری / إرسال الطلب';
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> ناردنی داواکاری';
   }
 }
 // ════════════════════════════════════════════════════════════════
@@ -6850,7 +6847,7 @@ async function boot(){
         if(newSt === 'approved'){
           _showNotifToast(
             isWd ? '✅ کەمکردنەکەت پەسەندکرا' : '✅ واریزەکەت پەسەندکرا',
-            isWd ? amt+' IQD کەمکرا لە باڵانس / الرصيدەکەت' : amt+' IQD زیادکرا بۆ باڵانس / الرصيدەکەت'
+            isWd ? amt+' IQD کەمکرا لە باڵانسەکەت' : amt+' IQD زیادکرا بۆ باڵانسەکەت'
           );
           loadBal();
           startWalletListener();
@@ -6864,7 +6861,7 @@ async function boot(){
         // نوێکردنەوەی مێژووی مامەڵەکان ئەگەر بەشەکە کراوەیە
         const pgTx = document.getElementById('pgTxhistory');
         if(pgTx && pgTx.classList.contains('on')) loadTxHistory();
-        // نوێکردنەوەی پانێلی باڵانس / الرصيدی پرۆفایل
+        // نوێکردنەوەی پانێلی باڵانسی پرۆفایل
         const pgPr = document.getElementById('pgProfile');
         if(pgPr && pgPr.classList.contains('on')) loadBal();
       }
@@ -6879,7 +6876,7 @@ async function boot(){
       setTimeout(checkNotifBell, 600);
       const pgNotif = document.getElementById('pgNotifications');
       if(pgNotif && pgNotif.classList.contains('on')) loadNotifications();
-      // ══ گەڕانەوەی باڵانس / الرصيدی خۆکارانە — تریگەری ناردنی ئیمەیل ══
+      // ══ گەڕانەوەی باڵانسی خۆکارانە — تریگەری ناردنی ئیمەیل ══
       const _nType=payload.new?.type||'';
       if(_nType==='refund'||_nType==='refund_rejected_ad'){
         const _body=payload.new?.body||'';
@@ -7036,7 +7033,7 @@ function _tutRenderFiltered(){
     'دەستپێک':{grad:'linear-gradient(135deg,#f97316,#ef4444)',icon:'fa-rocket',tc:'#f97316'},
     'ڕیکلام':{grad:'linear-gradient(135deg,#2563eb,#0ea5e9)',icon:'fa-bullhorn',tc:'#2563eb'},
     'ئامراز':{grad:'linear-gradient(135deg,#7c3aed,#a855f7)',icon:'fa-tools',tc:'#7c3aed'},
-    'باڵانس / الرصيد':{grad:'linear-gradient(135deg,#16a34a,#10b981)',icon:'fa-wallet',tc:'#16a34a'},
+    'باڵانس':{grad:'linear-gradient(135deg,#16a34a,#10b981)',icon:'fa-wallet',tc:'#16a34a'},
     'کۆین':{grad:'linear-gradient(135deg,#d97706,#f59e0b)',icon:'fa-coins',tc:'#d97706'},
     'گشتگیر':{grad:'linear-gradient(135deg,#0ea5e9,#6366f1)',icon:'fa-info-circle',tc:'#0ea5e9'}
   };
@@ -7064,7 +7061,7 @@ function _tutRenderFiltered(){
     'دەستپێک':'fas fa-rocket',
     'ڕیکلام':'fas fa-bullhorn',
     'ئامراز':'fas fa-wrench',
-    'باڵانس / الرصيد':'fas fa-wallet',
+    'باڵانس':'fas fa-wallet',
     'کۆین':'fas fa-coins',
     'گشتگیر':'fas fa-graduation-cap',
     'تیکتۆک':'fab fa-tiktok',
@@ -7075,7 +7072,7 @@ function _tutRenderFiltered(){
   // Section icon color map
   var secHdrColor={
     'دەستپێک':'#f97316','ڕیکلام':'#2563eb','ئامراز':'#7c3aed',
-    'باڵانس / الرصيد':'#16a34a','کۆین':'#d97706','گشتگیر':'#6366f1',
+    'باڵانس':'#16a34a','کۆین':'#d97706','گشتگیر':'#6366f1',
     'تیکتۆک':'#000','یوتیوب':'#dc2626','ئینستاگرام':'#e1306c','فەیسبووک':'#1877f2'
   };
   var html='<div class="tut-list">';
@@ -7116,7 +7113,7 @@ function _tutBuildFilterChips(){
   var sections=[...new Set(_tutAllRows.map(function(t){return t.section;}).filter(Boolean))];
   if(!sections.length){filterWrap.style.display='none';return;}
   filterWrap.style.display='flex';
-  var secIcons={'دەستپێک':'fa-rocket','ڕیکلام':'fa-bullhorn','ئامراز':'fa-tools','باڵانس / الرصيد':'fa-wallet','کۆین':'fa-coins','گشتگیر':'fa-info-circle'};
+  var secIcons={'دەستپێک':'fa-rocket','ڕیکلام':'fa-bullhorn','ئامراز':'fa-tools','باڵانس':'fa-wallet','کۆین':'fa-coins','گشتگیر':'fa-info-circle'};
   var html='<span class="tut-cat on" onclick="_tutSetFilter(\'all\',this)"><i class="fas fa-th-large"></i> هەموو</span>';
   sections.forEach(function(s){
     var ico=secIcons[s]||'fa-circle';
@@ -7269,12 +7266,12 @@ function _tutCardClick(el){
 // ئایکۆنی بەش
 var _secIcoMap={
   'دەستپێک':'fa-rocket','ڕیکلام':'fa-bullhorn','ئامراز':'fa-wrench',
-  'باڵانس / الرصيد':'fa-wallet','کۆین':'fa-coins','گشتگیر':'fa-graduation-cap',
+  'باڵانس':'fa-wallet','کۆین':'fa-coins','گشتگیر':'fa-graduation-cap',
   'تیکتۆک':'fa-tiktok','یوتیوب':'fa-youtube','ئینستاگرام':'fa-instagram','فەیسبووک':'fa-facebook'
 };
 var _secColorMap={
   'دەستپێک':'#f97316','ڕیکلام':'#2563eb','ئامراز':'#7c3aed',
-  'باڵانس / الرصيد':'#16a34a','کۆین':'#d97706','گشتگیر':'#6366f1',
+  'باڵانس':'#16a34a','کۆین':'#d97706','گشتگیر':'#6366f1',
   'تیکتۆک':'#000','یوتیوب':'#dc2626','ئینستاگرام':'#e1306c','فەیسبووک':'#1877f2'
 };
 
@@ -7401,8 +7398,8 @@ async function loadBal(){
   const profBalEl=document.getElementById('profBal');if(profBalEl)profBalEl.textContent=b;
   const sidebarBalEl=document.getElementById('sidebarBal');if(sidebarBalEl)sidebarBalEl.textContent=b+' IQD';
   const wBalEl=document.getElementById('wBal');if(wBalEl)wBalEl.textContent=b;
-  // ── هاوکاتکردنی مرۆری Firebase بە باڵانس / الرصيدی ڕاستی Supabase ──
-  // ئەمە پێشوازیدەکات لەوەی گوێگری realtime باڵانس / الرصيد بگەڕێنێتەوە بۆ 0
+  // ── هاوکاتکردنی مرۆری Firebase بە باڵانسی ڕاستی Supabase ──
+  // ئەمە پێشوازیدەکات لەوەی گوێگری realtime باڵانس بگەڕێنێتەوە بۆ 0
   // کاتێک ڕێڕەوی Firebase هێشتا دروست نەکراوە یان دەرکەوتووە.
   try{
     const _db=getFwDb();
@@ -7462,7 +7459,7 @@ async function addCoins(amount, reason){
   const current=parseInt(data?.coins_balance||0);
 
   if(amount<0){
-    // کەمکردنەوە — ئەگەر کۆینی هەبوو لێی بکە، ئەگەر نەبوو 500 IQD لە باڵانس / الرصيد بکەرەوە
+    // کەمکردنەوە — ئەگەر کۆینی هەبوو لێی بکە، ئەگەر نەبوو 500 IQD لە باڵانس بکەرەوە
     const deduct=Math.abs(amount);
     if(current>=deduct){
       // کۆین بەسە — لێی بکە
@@ -7472,7 +7469,7 @@ async function addCoins(amount, reason){
       updateCoinsBadge(newBal);
       return newBal;
     } else {
-      // کۆین بەسنییە — 500 IQD لە باڵانس / الرصيد کەم بکە (= deduct*10 IQD / 1800)
+      // کۆین بەسنییە — 500 IQD لە باڵانس کەم بکە (= deduct*10 IQD / 1800)
       const usdPenalty=parseFloat((deduct*COINS_TO_IQD/1800).toFixed(6));
       const{data:wd}=await sb.from('pa_wallets').select('balance').eq('user_id',cu.id).single();
       const curBal=parseFloat(wd?.balance||0);
@@ -7547,19 +7544,19 @@ async function exchangeCoins(){
     // Log coin transaction (تەنها لەم جدولدا تۆماردەکرێت — دووجار ناکرێت)
     await sb.from('pa_coin_transactions').insert({
       user_id:cu.id, amount:-coins,
-      reason:'گۆڕینەوە بۆ باڵانس / الرصيد — '+iqToAdd.toLocaleString()+' IQD',
+      reason:'گۆڕینەوە بۆ باڵانس — '+iqToAdd.toLocaleString()+' IQD',
       balance_after:0
     }).maybeSingle();
 
     updateCoinsBadge(0);
     await loadBal();
     closeMo('moCoins');
-    showToast(iqToAdd.toLocaleString()+' IQD زیادکرا بۆ باڵانس / الرصيدەکەت!','ok');
+    showToast(iqToAdd.toLocaleString()+' IQD زیادکرا بۆ باڵانسەکەت!','ok');
   }catch(e){
     showToast('هەڵەیەک ڕوویدا: '+e.message,'err');
   }finally{
     btn.disabled=false;
-    btn.innerHTML='<i class="fas fa-arrow-right-arrow-left"></i> گۆڕینەوە بۆ باڵانس / الرصيد';
+    btn.innerHTML='<i class="fas fa-arrow-right-arrow-left"></i> گۆڕینەوە بۆ باڵانس';
   }
 }
 function openWA(){window.open('https://wa.me/9647512345678','_blank');}
@@ -7766,7 +7763,7 @@ function goPage(p){
   if(p==='wallet'){startWalletListener();startReqListener();}
   updateSidebarActive(p);
 
-  // نیشاندانی باڵانس / الرصيد / ناو بەس لەبەشی هۆم و پرۆفایل
+  // نیشاندانی باڵانس / ناو بەس لەبەشی هۆم و پرۆفایل
   const isMain=(p==='home'||p==='profile');
   const hbalDiv=document.querySelector('.hbal');
   const tpGreet=document.querySelector('.topbar-greet');
@@ -8147,7 +8144,7 @@ async function loadTx(){
     const[sc,sl]=(sm[t.status]||'sb-p چاوەڕوان').split(' ');
     const isAdminDeduct=t.type==='withdrawal'&&(t.note||'').includes('ئادمین');
     const isReward=t.type==='reward';
-    const lbl=isAdminDeduct?'بڕدرا لەلایەن ئادمینەوە':isReward?'خەڵاتی تیروپشکی هەفتانە':t.status==='approved'&&t.type!=='withdrawal'?'زیادکردنی باڵانس / الرصيد لەلایەن ئادمینەوە':(mn[t.method]||'—');
+    const lbl=isAdminDeduct?'بڕدرا لەلایەن ئادمینەوە':isReward?'خەڵاتی تیروپشکی هەفتانە':t.status==='approved'&&t.type!=='withdrawal'?'زیادکردنی باڵانس لەلایەن ئادمینەوە':(mn[t.method]||'—');
     const icoClass=isAdminDeduct?'tx-out':isReward?'tx-reward':'tx-in';
     const icoName=isAdminDeduct?'fa-arrow-up-long':isReward?'fa-trophy':'fa-arrow-down-long';
     const amtColor=isAdminDeduct?'var(--rd)':isReward?'#d97706':'var(--gr)';
@@ -8215,7 +8212,7 @@ function updateEstResults(){
 function getAdRate(usd){ return usd<=10 ? 1850 : 1800; }
 
 // ══════════════════════════════════════════════════════════════
-// ══ SPONSORSHIP TIER PRICING — نرخی سپۆنسەر / سعر الإعلانی بەپێی پلە ══
+// ══ SPONSORSHIP TIER PRICING — نرخی سپۆنسەری بەپێی پلە ══
 // ڕێژەی گۆڕینەوە: ١٠ دۆلار = ١٨,٥٠٠ دینار (١ دۆلار = ١,٨٥٠ دینار)
 // پلەکان: Bronze (بێ داشکاندن) / Silver (%٥) / Diamond (%١٠) / Diamond+ (%١٥)
 // ══════════════════════════════════════════════════════════════
@@ -8307,7 +8304,7 @@ function updateBudgetDisplay(){
   budget=totalUSD*rate;
   dailyCost=dailyUSD*rate;
 
-  // بودجەی ڕۆژانە / الميزانية اليومية
+  // بودجەی ڕۆژانە
   const dud=document.getElementById('dailyUSDDisp'); if(dud)dud.textContent='$'+dailyUSD;
   // ڕۆژ
   const dd=document.getElementById('daysDisp'); if(dd)dd.textContent=days;
@@ -8318,12 +8315,12 @@ function updateBudgetDisplay(){
   updateEstResults();
   if(typeof _updateBudRing==='function'){_updateBudRing();_updateDaysRing();}
 
-  // وردەکاری نرخ / تفاصيل السعر — هەموو بە IQD
+  // وردەکاری نرخ — هەموو بە IQD
   const service=Math.round(budget/6);
   const sponsor=budget-service;
   const s=document.getElementById('bdSponsor'); if(s)s.textContent=sponsor.toLocaleString()+' IQD';
   const sv=document.getElementById('bdService'); if(sv)sv.textContent=service.toLocaleString()+' IQD';
-  const btl=document.getElementById('bdTotalLbl'); if(btl)btl.textContent='کۆی گشتی / الإجمالي ('+days+' ڕۆژ)';
+  const btl=document.getElementById('bdTotalLbl'); if(btl)btl.textContent='کۆی گشتی ('+days+' ڕۆژ)';
   const bdr=document.getElementById('bdDiscountRow'); if(bdr)bdr.style.display='none';
 
   // داشکاندنی ئاست
@@ -8770,7 +8767,7 @@ function pickCard(el,id){
 
   // لینک یان کۆد دەبێت هەبێت
   if(!link&&!code){
-    showToast('تکایە لینکی ڤیدیۆ یان کۆدی پۆست / كود المنشوری تیکتۆک دابنێ','err');
+    showToast('تکایە لینکی ڤیدیۆ یان کۆدی پۆستی تیکتۆک دابنێ','err');
     document.getElementById('adLink').style.borderColor='var(--rd)';
     document.getElementById('adCode').style.borderColor='var(--rd)';
     hasErr=true;
@@ -8804,7 +8801,7 @@ function pickCard(el,id){
   const{data:walletData}=await sb.from('pa_wallets').select('balance').eq('user_id',cu.id).single();
   const bal=Math.floor(parseFloat(walletData?.balance||0)*1800);
   if(bal<finalTotal){
-    showToast(`باڵانس / الرصيدی پێویستت نییە — ${finalTotal.toLocaleString()} IQD پێویستە، باڵانس / الرصيدەکەت ${bal.toLocaleString()} IQD ە`,'err');
+    showToast(`باڵانسی پێویستت نییە — ${finalTotal.toLocaleString()} IQD پێویستە، باڵانسەکەت ${bal.toLocaleString()} IQD ە`,'err');
     setTimeout(()=>openDeposit(),1200);
     return;
   }
@@ -8874,11 +8871,11 @@ function pickCard(el,id){
           }).select('id,ad_number').single();
           if(_adErr)throw new Error(_adErr.message);
           _fallbackAdNum=String(_newAd?.ad_number||_adNum); // پاراستنی ژمارە بۆ دەرەوەی بلۆک
-          // 3. کەمکردنی باڵانس / الرصيد
+          // 3. کەمکردنی باڵانس
           const{data:_wb}=await sb.from('pa_wallets').select('balance').eq('user_id',cu.id).single();
           const _newWalBal=Math.max(0,parseFloat(_wb?.balance||0)-finalTotal/1800);
           await sb.from('pa_wallets').update({balance:_newWalBal}).eq('user_id',cu.id);
-          // 4. تۆمارکردنی مامەڵە (لەگەڵ باڵانس / الرصيدی ڕاستەقینەی دوای مامەڵەکە)
+          // 4. تۆمارکردنی مامەڵە (لەگەڵ باڵانسی ڕاستەقینەی دوای مامەڵەکە)
           await sb.from('pa_transactions').insert({
             user_id:cu.id,
             amount:finalTotal/1800,
@@ -8894,8 +8891,8 @@ function pickCard(el,id){
           // بەردەوام بە — مامەڵەکە سەرکەوتوو بوو
         }else{
           const msgs={
-            'insufficient_balance':'موازەنەت بەسنییە، تکایە باڵانس / الرصيد زیاد بکە',
-            'wallet_not_found':'جزدانت نەدۆزرایەوە، تکایە دووبارە بچۆ ژوورەوە / <span class='ar-sub-inline'>تسجيل الدخول</span>',
+            'insufficient_balance':'موازەنەت بەسنییە، تکایە باڵانس زیاد بکە',
+            'wallet_not_found':'جزدانت نەدۆزرایەوە، تکایە دووبارە بچۆ ژوورەوە',
             'invalid_budget':'بودجەی نادروست',
             'foreign key':'کەرەستەکە دروست نییە — تکایە کەرەستەیەکی دیکە هەڵبژێرە یان دووبارە هەوڵبدەرەوە',
             'violates':'داتای هەڵبژێردراو دروست نییە — تکایە فۆرمەکە پر بکەرەوە و دووبارە هەوڵبدەرەوە',
@@ -8908,7 +8905,7 @@ function pickCard(el,id){
       // ژمارەی ڕیکلام (بۆ هەردوو ڕێگای RPC و فالبەک) — بەکاردێت بۆ تۆمارکردنی داشکاندن
       const _adNumFinal = _fallbackAdNum || (typeof data === 'string' ? data : (data?.ad_number || data?.id || null));
 
-      // ── پاشکەوتکردنی ناوی ڕیکلام / اسم الإعلان (title) — تەنها کاتێک RPC کردووە ──
+      // ── پاشکەوتکردنی ناوی ڕیکلام (title) — تەنها کاتێک RPC کردووە ──
       if(!_fallbackAdNum){
         const _adTitleVal=document.getElementById('adNameTitle')?.value?.trim();
         if(_adTitleVal){
@@ -8948,7 +8945,7 @@ function pickCard(el,id){
       }
 
       await loadBal();
-      // ── تۆمارکردنی باڵانس / الرصيدی ڕاستەقینەی دوای مامەڵە بۆ ڕێگای RPC ──
+      // ── تۆمارکردنی باڵانسی ڕاستەقینەی دوای مامەڵە بۆ ڕێگای RPC ──
       // (بۆ فالبەک ئەمە پێشتر لەگەڵ خۆی مامەڵەکەدا تۆمارکراوە)
       if(_adNumFinal && !_fallbackAdNum){
         try{
@@ -9032,9 +9029,9 @@ function pickCard(el,id){
           +'📍 <b>شوێن:</b> '+(adLocation||'—')+'\n'
           +'👥 <b>ڕەگەز:</b> '+(gender||'—')+'\n'
           +'━━━━━━━━━━━━━━━━\n'
-          +'💵 <b>بودجەی ڕۆژانە / الميزانية اليومية:</b> $'+(dailyUSD||0)+' ('+(dailyCost||0).toLocaleString()+' IQD)\n'
+          +'💵 <b>بودجەی ڕۆژانە:</b> $'+(dailyUSD||0)+' ('+(dailyCost||0).toLocaleString()+' IQD)\n'
           +'📅 <b>ژمارەی ڕۆژ:</b> '+(days||1)+' ڕۆژ\n'
-          +'💰 <b>کۆی گشتی / الإجمالي:</b> $'+_totalUSD+' ('+finalTotal.toLocaleString()+' IQD)\n'
+          +'💰 <b>کۆی گشتی:</b> $'+_totalUSD+' ('+finalTotal.toLocaleString()+' IQD)\n'
           +'━━━━━━━━━━━━━━━━\n'
           +'🕐 <b>کاتی دەستپێکردن:</b> '+_adDate+' '+_adTime+'\n'
           +'🎟 <b>کۆدی پرۆمۆ:</b> '+_promo+'\n'
@@ -9059,7 +9056,7 @@ function pickCard(el,id){
     }
     finally{
       btn.disabled=false;
-      btn.innerHTML='<i class="fas fa-paper-plane"></i> ناردنی داواکاری / إرسال الطلب';
+      btn.innerHTML='<i class="fas fa-paper-plane"></i> ناردنی داواکاری';
     }
   });
 }
@@ -9138,7 +9135,7 @@ function renderAds(){
       statusLbl='<i class="fas fa-pause" style="font-size:9px;margin-left:4px"></i>وەستا';
     }else if(st==='scheduled'){
       statusCls='spons-status-scheduled';
-      statusLbl='<i class="fas fa-clock" style="font-size:9px;margin-left:4px"></i>کات بۆ دانراو / مجدول';
+      statusLbl='<i class="fas fa-clock" style="font-size:9px;margin-left:4px"></i>کات بۆ دانراو';
     }else if(isActive){
       statusCls='spons-status-active';
       statusLbl='<i class="fas fa-circle-check" style="font-size:9px;margin-left:4px"></i>چالاک';
@@ -9169,7 +9166,7 @@ function renderAds(){
     // تێبینی چاوەڕوانی تەنها بۆ ئەوانەی نە تەرمینالن و نە چالاکن
     const pendingNote=(!isTerminal&&!isActive&&st!=='scheduled')?`<div class="spons-pending-overlay"><i class="fas fa-hourglass-half" style="flex-shrink:0"></i><span>بۆ چالاکبوون چاوەڕوانی ئادمین بە، ئینجا ئەنجامەکان بەخۆکاری دەکەوێتە ئاستی ڕاستەوخۆ.</span></div>`:'';
 
-    // کات بۆ دانراو / مجدول note
+    // کات بۆ دانراو note
     const _schedDate=ad.start_date||'';
     const _schedTime=ad.start_time||'';
     const scheduledNote=(st==='scheduled'&&(_schedDate||_schedTime))?`
@@ -9180,7 +9177,7 @@ function renderAds(){
     <div style="width:30px;height:30px;border-radius:10px;background:rgba(8,145,178,.15);border:1px solid rgba(8,145,178,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
       <i class="fas fa-calendar-clock" style="font-size:12px;color:#0891b2"></i>
     </div>
-    <span style="font-size:11.5px;font-weight:800;color:#0891b2;letter-spacing:.2px">کات بۆ دانراو / مجدول</span>
+    <span style="font-size:11.5px;font-weight:800;color:#0891b2;letter-spacing:.2px">کات بۆ دانراو</span>
     <span class="sched-dot"></span>
   </div>
   <div style="display:flex;gap:8px;position:relative">
@@ -9217,7 +9214,7 @@ function renderAds(){
         </div>
       </div>
 
-      <!-- ── ناوی ڕیکلام / اسم الإعلان ── -->
+      <!-- ── ناوی ڕیکلام ── -->
       <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:14px;line-height:1.5;text-align:right">${adName}</div>
 
       ${scheduledNote}
@@ -9279,13 +9276,13 @@ async function duplicateAd(ad) {
   goPage('create');
   await new Promise(r => setTimeout(r, 80));
 
-  // ناوی ڕیکلام / اسم الإعلان
+  // ناوی ڕیکلام
   const nameInp = document.getElementById('adNameTitle');
   if (nameInp) nameInp.value = 'کۆپی — ' + (ad.title || ('New Ad ' + new Date(ad.created_at || Date.now()).toLocaleDateString('en-GB')));
   const tl = document.getElementById('todayLbl');
   if (tl) tl.textContent = new Date().toLocaleDateString('en-GB');
 
-  // ئامانجی ڕیکلام / هدف الإعلان
+  // ئامانجی ڕیکلام
   goal = ad.goal || 'messages';
   document.querySelectorAll('.gseg-opt,.goal-tab,.goal-tab-v2').forEach(x => x.classList.toggle('on', x.dataset.g === goal));
   setTimeout(() => { if (typeof _animGoalPill === 'function') _animGoalPill(); }, 40);
@@ -9483,7 +9480,7 @@ async function showAdDetail(ad){
   requestAnimationFrame(function(){ov.classList.add('on');sh.classList.add('on');});
 
   var goalMap={messages:'نامە',engagement:'کارلێک و بینەر',views:'کارلێک و بینەر'};
-  var statusMap={pending:['as-p','چاوەڕوان'],active:['as-a','چالاک'],rejected:['as-r','ڕەتکراوە'],completed:['as-c','تەواوبوو'],paused:['as-pa','وەستا'],scheduled:['as-sc','کات بۆ دانراو / مجدول']};
+  var statusMap={pending:['as-p','چاوەڕوان'],active:['as-a','چالاک'],rejected:['as-r','ڕەتکراوە'],completed:['as-c','تەواوبوو'],paused:['as-pa','وەستا'],scheduled:['as-sc','کات بۆ دانراو']};
   var genderMap={all:'هەموو',male:'پیاو',female:'լն'};
   var locMap={kurdistan:'کوردستان',iraq:'عێراق',all:'کورد و عەرەب'};
 
@@ -9513,7 +9510,7 @@ async function showAdDetail(ad){
 
   var promoCode=usage&&usage.promo_codes?usage.promo_codes.code:null;
 
-  // ── ئەنجامی چاوەڕوانکراو / النتائج المتوقعة — حساب ناوخۆیی، IQD هەرگیز بە دۆلار پیشان نادرێت ──
+  // ── ئەنجامی چاوەڕوانکراو — حساب ناوخۆیی، IQD هەرگیز بە دۆلار پیشان نادرێت ──
   var internalExchangeRate=1800;
   var budgetIQD=finalTotal;
   var budgetUSD=budgetIQD/internalExchangeRate;
@@ -9544,18 +9541,18 @@ async function showAdDetail(ad){
   h+='<div style="font-size:17px;font-weight:900;color:var(--dark);margin-bottom:16px;line-height:1.4;word-break:break-all">'+_adLabel+'</div>';
   h+='<div class="ad-sheet-sec"><i class="fas fa-info-circle" style="margin-left:5px"></i>زانیاری گشتی</div>';
   h+='<div class="ad-sheet-row"><span class="ad-sheet-lbl">لینک / کۆدی ڤیدیۆ</span><span class="ad-sheet-val" style="direction:ltr;text-align:left;font-size:11px;word-break:break-all">'+_adVideoLink+'</span></div>';
-  h+='<div class="ad-sheet-row"><span class="ad-sheet-lbl">ئامانجی ڕیکلام / هدف الإعلان</span><span class="ad-sheet-val" style="direction:rtl;text-align:right">'+(goalMap[ad.goal]||ad.goal||'—')+'</span></div>';
+  h+='<div class="ad-sheet-row"><span class="ad-sheet-lbl">ئامانجی ڕیکلام</span><span class="ad-sheet-val" style="direction:rtl;text-align:right">'+(goalMap[ad.goal]||ad.goal||'—')+'</span></div>';
   if(estLabel&&estValue!=null) h+='<div class="ad-sheet-row"><span class="ad-sheet-lbl">'+estLabel+'</span><span class="ad-sheet-val" style="direction:ltr;text-align:left;color:var(--gr);font-size:13px">~'+estValue.toLocaleString()+'</span></div>';
   h+='<div class="ad-sheet-row"><span class="ad-sheet-lbl">پلاتفۆرم</span><span class="ad-sheet-val"><i class="fab fa-tiktok" style="margin-left:4px"></i>TikTok</span></div>';
-  h+='<div class="ad-sheet-row"><span class="ad-sheet-lbl">ماوەی ڕیکلام / مدة الإعلان</span><span class="ad-sheet-val" style="direction:rtl;text-align:right">'+days+' ڕۆլ</span></div>';
+  h+='<div class="ad-sheet-row"><span class="ad-sheet-lbl">ماوەی ڕیکلام</span><span class="ad-sheet-val" style="direction:rtl;text-align:right">'+days+' ڕۆլ</span></div>';
   h+='<div class="ad-sheet-row"><span class="ad-sheet-lbl">ڕێکەوتی دەستپێکردن</span><span class="ad-sheet-val">'+(ad.start_date||'—')+'</span></div>';
   h+='<div class="ad-sheet-row"><span class="ad-sheet-lbl">ڕێکەوتی کۆتایی</span><span class="ad-sheet-val">'+endDateStr+'</span></div>';
   if(ad.status==='scheduled'){
     var _sSched=ad.start_date||'';var _tSched=ad.start_time||'';
-    h+='<div style="background:rgba(8,145,178,.05);border:1.5px solid rgba(8,145,178,.2);border-radius:12px;padding:11px 13px;margin:8px 0;display:flex;align-items:center;gap:10px"><div style="width:34px;height:34px;border-radius:11px;background:rgba(8,145,178,.12);color:#0891b2;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0"><i class="fas fa-clock"></i></div><div><div style="font-size:10px;color:#0891b2;font-weight:800;letter-spacing:.3px;margin-bottom:3px">کات بۆ دانراو / مجدول</div><div style="font-size:14px;font-weight:900;color:#0891b2;font-family:Inter,sans-serif">'+_sSched+(_sSched&&_tSched?' &nbsp;·&nbsp; ':'')+_tSched+'</div></div></div>';
+    h+='<div style="background:rgba(8,145,178,.05);border:1.5px solid rgba(8,145,178,.2);border-radius:12px;padding:11px 13px;margin:8px 0;display:flex;align-items:center;gap:10px"><div style="width:34px;height:34px;border-radius:11px;background:rgba(8,145,178,.12);color:#0891b2;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0"><i class="fas fa-clock"></i></div><div><div style="font-size:10px;color:#0891b2;font-weight:800;letter-spacing:.3px;margin-bottom:3px">کات بۆ دانراو</div><div style="font-size:14px;font-weight:900;color:#0891b2;font-family:Inter,sans-serif">'+_sSched+(_sSched&&_tSched?' &nbsp;·&nbsp; ':'')+_tSched+'</div></div></div>';
   }
   if(ageStr) h+='<div class="ad-sheet-row"><span class="ad-sheet-lbl">تەمەنی ئامانج</span><span class="ad-sheet-val" style="direction:rtl;text-align:right;font-size:11px">'+ageStr+'</span></div>';
-  if(ad.gender&&ad.gender!=='all') h+='<div class="ad-sheet-row"><span class="ad-sheet-lbl">ڕەگەز / الجنس</span><span class="ad-sheet-val" style="direction:rtl;text-align:right">'+(genderMap[ad.gender]||ad.gender)+'</span></div>';
+  if(ad.gender&&ad.gender!=='all') h+='<div class="ad-sheet-row"><span class="ad-sheet-lbl">ڕەگەز</span><span class="ad-sheet-val" style="direction:rtl;text-align:right">'+(genderMap[ad.gender]||ad.gender)+'</span></div>';
   if(ad.location&&ad.location!=='all') h+='<div class="ad-sheet-row"><span class="ad-sheet-lbl">شوێن</span><span class="ad-sheet-val" style="direction:rtl;text-align:right">'+(locMap[ad.location]||ad.location)+'</span></div>';
   if(ad.reject_reason) h+='<div style="background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.12);border-radius:10px;padding:9px 12px;margin-top:10px;font-size:11.5px;color:rgba(185,28,28,.8);line-height:1.7"><i class="fas fa-circle-exclamation" style="margin-left:6px;opacity:.65;font-size:11px"></i>'+ad.reject_reason+'</div>';
   // ── ئامارەکان بە ئایکۆنی جوان ──
@@ -9580,7 +9577,7 @@ async function showAdDetail(ad){
     h+='<div style="font-size:10px;color:var(--mt);font-weight:600;margin-top:2px">خەرجکراو</div></div>';
     h+='</div>';
   }
-  h+='<div class="ad-sheet-sec" style="margin-top:18px"><i class="fas fa-receipt" style="margin-left:5px"></i>وردەکاری نرخ / تفاصيل السعر</div>';
+  h+='<div class="ad-sheet-sec" style="margin-top:18px"><i class="fas fa-receipt" style="margin-left:5px"></i>وردەکاری نرخ</div>';
   h+='<div class="ad-price-box">';
   h+='<div class="ad-price-row"><span>نرخی بنەڕەتی</span><span>'+originalTotal.toLocaleString()+' IQD</span></div>';
   if(levelDiscIQD2>0) h+='<div class="ad-price-row" style="margin-top:3px"><span style="display:flex;align-items:center;gap:6px"><i class="fas fa-medal" style="color:#a855f7;font-size:10px"></i>داشکاندنی ئاست'+(levelDiscName2?' ('+levelDiscName2+(levelDiscPct2>0?' · %'+levelDiscPct2:'')+')':'')+'</span><span style="color:#a855f7;font-weight:800">- '+levelDiscIQD2.toLocaleString()+' IQD</span></div>';
@@ -11442,7 +11439,7 @@ async function loadNotifications(){
     deposit_approved:  {ico:'fas fa-circle-check',        cls:'notif-gr', title:'پارەدانت پەسەندکرا'},
     deposit_rejected:  {ico:'fas fa-circle-xmark',        cls:'notif-rd', title:'پارەدانت ڕەتکرا'},
     deposit_pending:   {ico:'fas fa-clock',               cls:'notif-yw', title:'پارەدانت چاوەڕوانە'},
-    balance_added:     {ico:'fas fa-wallet',              cls:'notif-gr', title:'باڵانس / الرصيدت زیادکرا'},
+    balance_added:     {ico:'fas fa-wallet',              cls:'notif-gr', title:'باڵانست زیادکرا'},
     // ── گەڕانەوەی پارە ──
     refund:            {ico:'fas fa-rotate-left',         cls:'notif-gr', title:'پارەکەت گەڕایەوە 🔄'},
     refund_rejected_ad:{ico:'fas fa-rotate-left',         cls:'notif-gr', title:'پارەی ڕیکلامی ڕەتکراو گەڕایەوە 💸'},
@@ -11705,19 +11702,19 @@ function showReceipt(t){
     {ico:'fas fa-paper-plane', lbl:'داواکاری نێردرا',      done:true,  color:'#6366f1'},
     {ico:'fas fa-magnifying-glass', lbl:'وردبینی ئادمین',  done:t.status!=='pending', color:'#d97706'},
     {ico:t.status==='approved'?'fas fa-check-circle':t.status==='rejected'?'fas fa-times-circle':'fas fa-clock',
-      lbl:t.status==='approved'?'پەسەندکرا — باڵانس / الرصيد زیادکرا':t.status==='rejected'?'ڕەتکرا':'چاوەڕوانی پەسەندکردن',
+      lbl:t.status==='approved'?'پەسەندکرا — باڵانس زیادکرا':t.status==='rejected'?'ڕەتکرا':'چاوەڕوانی پەسەندکردن',
       done:t.status==='approved'||t.status==='rejected',
       color:t.status==='approved'?'#16a34a':t.status==='rejected'?'#dc2626':'#8b95a8'},
   ] : isRefund ? [
     {ico:'fas fa-times-circle',   lbl:'ڕیکلام ڕەتکرا',         done:true, color:'#dc2626'},
     {ico:'fas fa-rotate-left',    lbl:'گەڕانەوەی خۆکاری پارە', done:true, color:'#16a34a'},
-    {ico:'fas fa-wallet',         lbl:'باڵانس / الرصيد نوێکرایەوە',     done:true, color:'#6366f1'},
+    {ico:'fas fa-wallet',         lbl:'باڵانس نوێکرایەوە',     done:true, color:'#6366f1'},
   ] : isAdminDeduct ? [
     {ico:'fas fa-user-shield',    lbl:'بڕدرا لەلایەن ئادمینەوە', done:true, color:'#dc2626'},
-    {ico:'fas fa-wallet',         lbl:Math.round(amount*1800).toLocaleString()+' IQD کەم کرایەوە لە باڵانس / الرصيد', done:true, color:'#dc2626'},
+    {ico:'fas fa-wallet',         lbl:Math.round(amount*1800).toLocaleString()+' IQD کەم کرایەوە لە باڵانس', done:true, color:'#dc2626'},
   ] : isReward ? [
     {ico:'fas fa-trophy',         lbl:'برنامەدەری قورعەی هەفتانە', done:true, color:'#d97706'},
-    {ico:'fas fa-wallet',         lbl:Math.round(amount*1800).toLocaleString()+' IQD زیادکرا بۆ باڵانس / الرصيد', done:true, color:'#16a34a'},
+    {ico:'fas fa-wallet',         lbl:Math.round(amount*1800).toLocaleString()+' IQD زیادکرا بۆ باڵانس', done:true, color:'#16a34a'},
   ] : [
     {ico:'fas fa-paper-plane',    lbl:'ڕیکلام نێردرا',          done:true, color:'#6366f1'},
     {ico:'fas fa-money-bill',     lbl:Math.round(amount*1800).toLocaleString()+' IQD کەم کرایەوە', done:true, color:'#dc2626'},
@@ -11790,7 +11787,7 @@ function showReceipt(t){
         ${(isSpend||isAdminDeduct)?'-':'+'}${Math.round(amount*1800).toLocaleString()} IQD
       </div>
       <div style="font-size:12px;color:rgba(255,255,255,.45);margin-top:5px;position:relative">
-        ${isDeposit?'زیادکردنی باڵانس / الرصيد':isRefund?'گەڕانەوەی پارە':isAdminDeduct?'بڕدرا لەلایەن ئادمینەوە':isReward?'خەڵاتی تیروپشکی هەفتانە':'خەرجکردنی باڵانس / الرصيد'}
+        ${isDeposit?'زیادکردنی باڵانس':isRefund?'گەڕانەوەی پارە':isAdminDeduct?'بڕدرا لەلایەن ئادمینەوە':isReward?'خەڵاتی تیروپشکی هەفتانە':'خەرجکردنی باڵانس'}
       </div>
       <!-- badge -->
       <div style="display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:7px 16px;border-radius:30px;background:${st.bg};border:1px solid ${accentBorder};position:relative">
@@ -11875,7 +11872,7 @@ async function loadTxHistory(){
       kind='voucher';
       const code = noteStr.replace('فاوچەر:','').trim();
       label='فاوچەر' + (code?' — '+code:'');
-      sub='ڕاستەوخۆ بۆ باڵانس / الرصيد';
+      sub='ڕاستەوخۆ بۆ باڵانس';
     } else if(isRefund){
       kind='refund';
       label='گەڕانەوەی پارەی ڕیکلام'+(t.ad_number?' — #'+t.ad_number:'');
@@ -11886,7 +11883,7 @@ async function loadTxHistory(){
       sub='خەڵاتی ئەرک';
     } else if(isAdminDed){
       kind='admin_deduct';
-      label='کەمکردنی باڵانس / الرصيد لەلایەن ئادمین';
+      label='کەمکردنی باڵانس لەلایەن ئادمین';
       sub=noteStr||'';
     } else if(isWithdraw){
       kind='withdraw';
@@ -11896,7 +11893,7 @@ async function loadTxHistory(){
       // deposit
       kind='deposit';
       if(t.status==='approved'){
-        label='واریزی باڵانس / الرصيد'+(t.method?' — '+(mn[t.method]||t.method):'');
+        label='واریزی باڵانس'+(t.method?' — '+(mn[t.method]||t.method):'');
         sub='پەسەندکرا لەلایەن ئادمینەوە';
       } else {
         label='داواکاری واریز'+(t.method?' — '+(mn[t.method]||t.method):'');
@@ -11932,7 +11929,7 @@ async function loadTxHistory(){
   const coinItems = coinTxs.filter(c=>parseInt(c.amount)<0&&(c.reason||'').includes('گۆڕینەوە')).map(c=>{
     const coins=Math.abs(parseInt(c.amount));
     return {id:c.id, kind:'coin_exchange',
-      label:'گۆڕینەوەی کۆین بۆ باڵانس / الرصيد',
+      label:'گۆڕینەوەی کۆین بۆ باڵانس',
       sub:coins.toLocaleString()+' کۆین',
       coins_amount:coins, amount:parseFloat((coins*COINS_TO_USD).toFixed(2)),
       amtIQD:Math.round(coins*COINS_TO_IQD),
@@ -11942,7 +11939,7 @@ async function loadTxHistory(){
   allTxHistory=[...txItems,...spendItems,...coinItems].sort((a,b)=>new Date(b.date)-new Date(a.date));
   _txMap={}; allTxHistory.forEach((t,i)=>{ _txMap[t.id+'_'+i]=t; });
 
-  // ── حسابکردنی باڵانس / الرصيدی پاش هەر مامەڵەیەک ──
+  // ── حسابکردنی باڵانسی پاش هەر مامەڵەیەک ──
   let _runBal = _runningBalIQD;
   if(!_runBal){
     const{data:_wdat}=await sb.from('pa_wallets').select('balance').eq('user_id',cu.id).single();
@@ -11952,7 +11949,7 @@ async function loadTxHistory(){
 
   allTxHistory.forEach(t=>{
     if(t.balance_after!=null){
-      // باڵانس / الرصيدی ڕاستەقینەی تۆمارکراو لە کاتی مامەڵەکەدا — پشتگیری دەکات لەوەی
+      // باڵانسی ڕاستەقینەی تۆمارکراو لە کاتی مامەڵەکەدا — پشتگیری دەکات لەوەی
       // هەڵەی داهاتووی سیستەم لە حساباتدا کاریگەری لەسەر مێژووی پێشوو نەبێت
       t._balanceAfter=t.balance_after;
       _runBal=t.balance_after;
@@ -12050,8 +12047,8 @@ function renderTxHistory(){
       const amtSign  = isRejectedSpend?'':( isIn?'+':'-' );
       const amtStyle = isRejectedSpend?'text-decoration:line-through;color:var(--mt)':'';
 
-      // باڵانس / الرصيدی پاش مامەڵەکە
-      const balAfter = t._balanceAfter!==undefined?`<div style="font-size:10px;color:var(--mt2);font-weight:600;margin-top:2px;direction:rtl">باڵانس / الرصيد: ${Math.max(0,t._balanceAfter).toLocaleString()} IQD</div>`:'';
+      // باڵانسی پاش مامەڵەکە
+      const balAfter = t._balanceAfter!==undefined?`<div style="font-size:10px;color:var(--mt2);font-weight:600;margin-top:2px;direction:rtl">باڵانس: ${Math.max(0,t._balanceAfter).toLocaleString()} IQD</div>`:'';
 
       // badge — نیشان نادرێت
 
@@ -12329,9 +12326,9 @@ async function checkDbReady(){
         <div class="lc-step">
           <div class="lc-step-hd"><span class="lc-step-num">2</span> کێشەکەت دەربارەی کام بەشە؟</div>
           <div class="lc-cat-grid" id="lcCatChips">
-            <button type="button" class="lc-cat-item" data-val="باڵانس / الرصيد و پارە" onclick="lcPickCat(this)"><i class="fas fa-wallet"></i><span>باڵانس / الرصيد و پارە</span></button>
+            <button type="button" class="lc-cat-item" data-val="باڵانس و پارە" onclick="lcPickCat(this)"><i class="fas fa-wallet"></i><span>باڵانس و پارە</span></button>
             <button type="button" class="lc-cat-item" data-val="ڕیکلامەکان" onclick="lcPickCat(this)"><i class="fas fa-bullhorn"></i><span>ڕیکلامەکان</span></button>
-            <button type="button" class="lc-cat-item" data-val="هەژمار" onclick="lcPickCat(this)"><i class="fas fa-user-gear"></i><span>هەژمار / الحساب</span></button>
+            <button type="button" class="lc-cat-item" data-val="هەژمار" onclick="lcPickCat(this)"><i class="fas fa-user-gear"></i><span>هەژمار<span class='ar-sub'>الحساب</span></span></button>
             <button type="button" class="lc-cat-item" data-val="فاوچەر/داشکاندن" onclick="lcPickCat(this)"><i class="fas fa-ticket"></i><span>فاوچەر/داشکاندن</span></button>
             <button type="button" class="lc-cat-item" data-val="کێشەی تەکنیکی" onclick="lcPickCat(this)"><i class="fas fa-bug"></i><span>تەکنیکی</span></button>
             <button type="button" class="lc-cat-item" data-val="شتێکی تر" onclick="lcPickCat(this)"><i class="fas fa-ellipsis"></i><span>شتێکی تر</span></button>
@@ -12652,7 +12649,7 @@ window.lcResumeFromHistory=function(id){
           if(!document.getElementById('lcNewChatAfterClose')){
             const bw=document.createElement('div');bw.id='lcNewChatAfterClose';
             bw.style.cssText='display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap';
-            bw.innerHTML='<button onclick="lcGoToHistory()" style="padding:8px 16px;background:var(--lc-bubble-in);color:var(--lc-ink);border:none;border-radius:20px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-history" style="margin-left:5px"></i>گەڕانەوە / رجوع</button>'+'<button onclick="lcStartNewChat()" style="padding:8px 16px;background:var(--lc-accent);color:#fff;border:none;border-radius:20px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-plus" style="margin-left:5px"></i>چاتی نوێ</button>';
+            bw.innerHTML='<button onclick="lcGoToHistory()" style="padding:8px 16px;background:var(--lc-bubble-in);color:var(--lc-ink);border:none;border-radius:20px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-history" style="margin-left:5px"></i>گەڕانەوە</button>'+'<button onclick="lcStartNewChat()" style="padding:8px 16px;background:var(--lc-accent);color:#fff;border:none;border-radius:20px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-plus" style="margin-left:5px"></i>چاتی نوێ</button>';
             const cb=document.getElementById('lcClosedBanner');
             cb.parentNode.insertBefore(bw,cb.nextSibling);
           }
@@ -12681,7 +12678,7 @@ window.lcResumeFromHistory=function(id){
         if(!document.getElementById('lcNewChatAfterClose')){
           const bw=document.createElement('div');bw.id='lcNewChatAfterClose';
           bw.style.cssText='display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap';
-          bw.innerHTML='<button onclick="lcGoToHistory()" style="padding:8px 16px;background:var(--lc-bubble-in);color:var(--lc-ink);border:none;border-radius:20px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-history" style="margin-left:5px"></i>گەڕانەوە / رجوع</button>'+
+          bw.innerHTML='<button onclick="lcGoToHistory()" style="padding:8px 16px;background:var(--lc-bubble-in);color:var(--lc-ink);border:none;border-radius:20px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-history" style="margin-left:5px"></i>گەڕانەوە</button>'+
             '<button onclick="lcStartNewChat()" style="padding:8px 16px;background:var(--lc-accent);color:#fff;border:none;border-radius:20px;font-family:\'R\',sans-serif;font-size:12px;font-weight:700;cursor:pointer"><i class="fas fa-plus" style="margin-left:5px"></i>چاتی نوێ</button>';
           const cb=document.getElementById('lcClosedBanner');
           cb.parentNode.insertBefore(bw,cb.nextSibling);
@@ -13771,17 +13768,17 @@ function _resetTermsAgree() {
           <div class="tms-sec-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="16" r="1.5" fill="#fff"/></svg></div>
           <div class="tms-sec-meta"><div class="tms-sec-num">SECTION 01</div><div class="tms-sec-title">پاراستنی هەژمار و سیکیوریتی</div></div>
         </div>
-        <div class="tms-rule"><div class="tms-rule-dot"></div><div><b>چوونەژوورەوەی پارێزراو:</b> بۆ زیاتر پاراستنی باڵانس / الرصيد و زانیارییەکانت، چوونەژوورەوە تەنها لە ڕێگەی ئیمێڵ و پاسۆرد و کۆدی دڵنیایی (OTP) دەبێت کە بۆ ئیمێڵەکەت دێت.</div></div>
+        <div class="tms-rule"><div class="tms-rule-dot"></div><div><b>چوونەژوورەوەی پارێزراو:</b> بۆ زیاتر پاراستنی باڵانس و زانیارییەکانت، چوونەژوورەوە تەنها لە ڕێگەی ئیمێڵ و پاسۆرد و کۆدی دڵنیایی (OTP) دەبێت کە بۆ ئیمێڵەکەت دێت.</div></div>
         <div class="tms-rule"><div class="tms-rule-dot"></div><div><b>نهێنیبوونی زانیاری:</b> زانیارییەکانی تۆ بە تەواوی پارێزراون. هیچ کەسێک، تەنانەت کارمەندانی ئێمەش، ناتوانن بچنە ناو هەژمارەکەت یان دەستیان بە زانیارییە تایبەتییەکانت بگات.</div></div>
       </div>
       <div class="tms-sec green">
         <div class="tms-sec-hd">
           <div class="tms-sec-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><line x1="12" y1="2" x2="12" y2="22" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <div class="tms-sec-meta"><div class="tms-sec-num">SECTION 02</div><div class="tms-sec-title">سیستەمی باڵانس / الرصيد و ڕیفاوند</div></div>
+          <div class="tms-sec-meta"><div class="tms-sec-num">SECTION 02</div><div class="tms-sec-title">سیستەمی باڵانس و ڕیفاوند</div></div>
         </div>
-        <div class="tms-rule"><div class="tms-rule-dot"></div><div><b>گەڕانەوەی باڵانس / الرصيد:</b> ئەگەر ڕیکلامەکەت لەلایەن تیکتۆکەوە ڕەتکرایەوە، بڕی تێچووی ئەو ڕیکلامە ڕاستەوخۆ و بەبێ کەمکردنەوە دەگەڕێتەوە بۆ سەر باڵانس / الرصيدی هەژمارەکەت لەناو ئەپەکەدا.</div></div>
-        <div class="tms-rule"><div class="tms-rule-dot"></div><div><b>گۆڕینەوەی باڵانس / الرصيد:</b> ئەو باڵانس / الرصيدەی لەناو هەژمارەکەتدا ماوە، تەنها بۆ خزمەتگوزارییەکانی ناو ئەپەکە بەکاردێت و بە هیچ شێوەیەک ناتوانرێت بکرێتەوە بە پارەی کاش.</div></div>
-        <div class="tms-rule"><div class="tms-rule-dot"></div><div><b>زیادکردنی باڵانس / الرصيد:</b> لە کاتی بارگاوی کردنی هەژمارەکەت، هیچ بڕە پارەیەک وەک لێبڕین یان زیادە وەرناگیرێت؛ چەند بڕە پارە بنێریت، بەتەواوی دەبێتە باڵانس / الرصيد لە هەژمارەکەتدا.</div></div>
+        <div class="tms-rule"><div class="tms-rule-dot"></div><div><b>گەڕانەوەی باڵانس:</b> ئەگەر ڕیکلامەکەت لەلایەن تیکتۆکەوە ڕەتکرایەوە، بڕی تێچووی ئەو ڕیکلامە ڕاستەوخۆ و بەبێ کەمکردنەوە دەگەڕێتەوە بۆ سەر باڵانسی هەژمارەکەت لەناو ئەپەکەدا.</div></div>
+        <div class="tms-rule"><div class="tms-rule-dot"></div><div><b>گۆڕینەوەی باڵانس:</b> ئەو باڵانسەی لەناو هەژمارەکەتدا ماوە، تەنها بۆ خزمەتگوزارییەکانی ناو ئەپەکە بەکاردێت و بە هیچ شێوەیەک ناتوانرێت بکرێتەوە بە پارەی کاش.</div></div>
+        <div class="tms-rule"><div class="tms-rule-dot"></div><div><b>زیادکردنی باڵانس:</b> لە کاتی بارگاوی کردنی هەژمارەکەت، هیچ بڕە پارەیەک وەک لێبڕین یان زیادە وەرناگیرێت؛ چەند بڕە پارە بنێریت، بەتەواوی دەبێتە باڵانس لە هەژمارەکەتدا.</div></div>
       </div>
       <div class="tms-sec amber">
         <div class="tms-sec-hd">
@@ -13789,7 +13786,7 @@ function _resetTermsAgree() {
           <div class="tms-sec-meta"><div class="tms-sec-num">SECTION 03</div><div class="tms-sec-title">ناردنی ڕیکلام و زانیارییەکان</div></div>
         </div>
         <div class="tms-rule"><div class="tms-rule-dot"></div><div><b>دروستی زانیاری:</b> تکایە دڵنیابەرەوە لە ناردنی زانیاری دروست. لە حاڵەتی ناردنی زانیاری هەڵە، ڕیکلامەکەت ڕەتدەکرێتەوە.</div></div>
-        <div class="tms-rule"><div class="tms-rule-dot"></div><div><b>ئاگادارکردنەوە:</b> لە کاتی هەر کێشەیەک یان ڕەتکردنەوەیەک، ئێمە لە ڕێگەی ئیمێڵ و بەشی ئاگادارییەکان / الإشعاراتی ناو ئەپەکە ئاگادارت دەکەینەوە تاوەکو زانیارییەکان ڕاست بکەیتەوە و دووبارە ڕیکلامەکە بنێریتەوە.</div></div>
+        <div class="tms-rule"><div class="tms-rule-dot"></div><div><b>ئاگادارکردنەوە:</b> لە کاتی هەر کێشەیەک یان ڕەتکردنەوەیەک، ئێمە لە ڕێگەی ئیمێڵ و بەشی ئاگادارییەکانی ناو ئەپەکە ئاگادارت دەکەینەوە تاوەکو زانیارییەکان ڕاست بکەیتەوە و دووبارە ڕیکلامەکە بنێریتەوە.</div></div>
       </div>
       <div class="tms-sec purple">
         <div class="tms-sec-hd">
@@ -13806,7 +13803,7 @@ function _resetTermsAgree() {
     <div class="tms-foot">
       <button class="tms-close-btn" onclick="closeTermsModal()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        خوێندمەوە — ڕازیم بەهەموو مەرج و یاساکان / الشروط والأحكام
+        خوێندمەوە — ڕازیم بەهەموو مەرج و یاساکان
       </button>
     </div>
   </div>
@@ -13955,7 +13952,7 @@ function _vMsg(txt, ok) {
 
 // ── کۆرەی چالاککردنی فاوچەر — بەکاردێت هەم لە مۆداڵی داخڵکردنی کۆد بەدەستی و هەم لە دووگمەی چالاککردنی ڕاستەوخۆی بەشی دیاریەکان ──
 async function _claimVoucherCore(code) {
-  if (!cu) return { ok: false, reason: 'no_session', msg: 'تکایە دووبارە بچۆ ژوورەوە / <span class='ar-sub-inline'>تسجيل الدخول</span>' };
+  if (!cu) return { ok: false, reason: 'no_session', msg: 'تکایە دووبارە بچۆ ژوورەوە' };
   code = (code || '').trim().toUpperCase();
   if (!code) return { ok: false, reason: 'empty_code', msg: 'تکایە کۆدی فاوچەرەکەت بنووسە' };
 
@@ -14031,7 +14028,7 @@ async function _claimVoucherCore(code) {
     await sb.from('pa_notifications').insert({
       user_id: uid,
       type: 'balance_added',
-      title: 'باڵانس / الرصيد زیادکرا',
+      title: 'باڵانس زیادکرا',
       body: amtIQD.toLocaleString() + ' IQD بە فاوچەر زیادکرا',
       is_read: false,
       created_at: new Date().toISOString()
@@ -14051,7 +14048,7 @@ async function _claimVoucherCore(code) {
 }
 
 async function claimVoucher() {
-  if (!cu) { showToast('تکایە دووبارە بچۆ ژوورەوە / <span class='ar-sub-inline'>تسجيل الدخول</span>', 'err'); return; }
+  if (!cu) { showToast('تکایە دووبارە بچۆ ژوورەوە', 'err'); return; }
   const code = (document.getElementById('voucherCodeInp').value || '').trim().toUpperCase();
   if (!code) { _vMsg('تکایە کۆدی فاوچەرەکەت بنووسە', false); return; }
 
@@ -14072,7 +14069,7 @@ async function claimVoucher() {
       return;
     }
     document.getElementById('voucherCodeInp').value = '';
-    _vMsg('🎉 ' + res.amtIQD.toLocaleString() + ' IQD زیادکرا بۆ باڵانس / الرصيدەکەت — باڵانس / الرصيدی نوێ: ' + res.newBalIQD.toLocaleString() + ' IQD', true);
+    _vMsg('🎉 ' + res.amtIQD.toLocaleString() + ' IQD زیادکرا بۆ باڵانسەکەت — باڵانسی نوێ: ' + res.newBalIQD.toLocaleString() + ' IQD', true);
     showToast('فاوچەرەکەت بەسەرکەوتوویی بەکارهێنرا', 'ok');
     await Promise.all([loadBal(), _loadGiftsVoucher()]);
   });
@@ -14080,7 +14077,7 @@ async function claimVoucher() {
 
 // ── چالاککردنی ڕاستەوخۆی فاوچەر لە کارتێکی بەشی دیاریەکان (بێ پێویستی بە نووسینی کۆد) ──
 async function activateGiftVoucher(code, btnEl) {
-  if (!cu) { showToast('تکایە دووبارە بچۆ ژوورەوە / <span class='ar-sub-inline'>تسجيل الدخول</span>', 'err'); return; }
+  if (!cu) { showToast('تکایە دووبارە بچۆ ژوورەوە', 'err'); return; }
   const originalHtml = btnEl ? btnEl.innerHTML : '';
   if (btnEl) { btnEl.disabled = true; btnEl.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i><span>چاوەڕوانبە...</span>'; }
   await withSession(async () => {
@@ -14090,7 +14087,7 @@ async function activateGiftVoucher(code, btnEl) {
       if (btnEl) { btnEl.disabled = false; btnEl.innerHTML = originalHtml; }
       return;
     }
-    showToast('🎉 ' + res.amtIQD.toLocaleString() + ' IQD زیادکرا بۆ باڵانس / الرصيدەکەت', 'ok');
+    showToast('🎉 ' + res.amtIQD.toLocaleString() + ' IQD زیادکرا بۆ باڵانسەکەت', 'ok');
     await Promise.all([loadBal(), _loadGiftsVoucher()]);
   });
 }
