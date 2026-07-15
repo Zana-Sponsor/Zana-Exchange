@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Proxo App</title>
+<title>Proxo App — TikTok Ad Manager for Kurdistan &amp; Iraq</title>
 <meta name="description" content="Proxo helps you launch, manage, and track TikTok ad campaigns — all from your phone. Reach thousands of viewers across Kurdistan and Iraq in minutes.">
 <meta name="keywords" content="TikTok ads, Kurdistan, Iraq, ad manager, social media advertising, Proxo">
 <meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.proxopages.com/">
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
@@ -224,7 +225,7 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .auth-brand p{font-size:13px;color:var(--mt);margin-top:6px;}
 .auth-card{background:var(--w);border:1px solid rgba(232,234,240,.75);border-radius:26px;padding:28px 24px;box-shadow:0 4px 24px rgba(0,0,0,.06);}
 .atabs{display:flex;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:22px;}
-.atab{flex:1;padding:10px;text-align:center;font-size:13px;border-radius:10px;cursor:pointer;font-family:'R',sans-serif;border:none;background:transparent;color:var(--mt);transition:all .2s;}
+.atab{flex:1;padding:10px;text-align:center;font-size:13px;border-radius:10px;cursor:pointer;font-family:'R',sans-serif;border:none;background:transparent;color:var(--mt);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:5px;text-decoration:none;}
 .atab.on{background:var(--dark);color:#fff;font-weight:700;box-shadow:0 2px 8px rgba(28,35,51,.2);}
 .finp{width:100%;padding:16px 18px;background:var(--bg);border:1.5px solid rgba(232,234,240,.9);border-radius:15px;color:var(--tx);font-family:'R',sans-serif;font-size:16px;outline:none;transition:all .25s ease;margin-bottom:12px;}
 .finp:focus{border-color:var(--dark);background:var(--w);}
@@ -2494,6 +2495,51 @@ function _clipboardFallback(text, onSuccess, onFail) {
 .bn-fab.fab-bounce{animation:fabBounce .46s cubic-bezier(.36,.07,.19,.97) both;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+
+<!-- JSON-LD: WebSite + SiteNavigationElement for Google Sitelinks -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://www.proxopages.com/#website",
+      "url": "https://www.proxopages.com/",
+      "name": "Proxo App",
+      "description": "TikTok Ad Management Platform for Kurdistan and Iraq — launch, manage, and track campaigns from your phone.",
+      "inLanguage": ["ckb", "en"],
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://www.proxopages.com/?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "ItemList",
+      "name": "Proxo App Primary Navigation",
+      "itemListElement": [
+        {
+          "@type": "SiteNavigationElement",
+          "position": 1,
+          "name": "Login",
+          "description": "Sign in to your Proxo account to manage TikTok ad campaigns.",
+          "url": "https://www.proxopages.com/login"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "position": 2,
+          "name": "Register",
+          "description": "Create a free Proxo account and start running TikTok ads in Kurdistan and Iraq.",
+          "url": "https://www.proxopages.com/signup"
+        }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 
 <script>
@@ -2551,11 +2597,11 @@ function _toWebP(dataUrl,quality){
       <p>بەڕێوەبردنی ڕیکلامەکانی تیکتۆک</p>
     </div>
     <div class="auth-card">
-      <!-- Tab Switcher -->
-      <div class="atabs" id="atabs" style="display:none">
-        <button class="atab on" id="tabL" onclick="switchTab('login')"><i class="fas fa-right-to-bracket"></i> چوونەژوورەوە</button>
-        <button class="atab" id="tabS" onclick="window.location.href='/signup.html'"><i class="fas fa-user-plus"></i> تۆمارکردن</button>
-      </div>
+      <!-- Tab Switcher / Primary Site Navigation -->
+      <nav class="atabs" id="atabs" style="display:none" aria-label="Primary Navigation">
+        <a class="atab on" id="tabL" href="https://www.proxopages.com/login" onclick="event.preventDefault();switchTab('login')" aria-current="page"><i class="fas fa-right-to-bracket"></i> Login — چوونەژوورەوە</a>
+        <a class="atab" id="tabS" href="https://www.proxopages.com/signup"><i class="fas fa-user-plus"></i> Register — تۆمارکردن</a>
+      </nav>
       <!-- Step Indicator -->
       <div class="auth-steps" id="authStepsWrap">
         <div class="auth-steps-track" id="authStepsTrack"></div>
@@ -2601,7 +2647,7 @@ function _toWebP(dataUrl,quality){
         </button>
         <div class="amsg" id="authMsgEmail"></div>
         <div id="signupHintLink" style="text-align:center;margin-top:12px;font-size:13px;color:var(--mt)">
-          هەژمارت نییە؟ <span onclick="window.location.href='/signup.html'" style="color:var(--dark);font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:2px">هەژمارێک دروست بکە</span>
+          هەژمارت نییە؟ <a href="https://www.proxopages.com/signup" style="color:var(--dark);font-weight:700;text-decoration:underline;text-underline-offset:2px">Register — هەژمارێک دروست بکە</a>
         </div>
         <div class="auth-step-back" id="authEmailBackBtn" style="display:none" onclick="prevAuthStep('email')">
           <i class="fas fa-arrow-right"></i> گەڕانەوە
@@ -6620,7 +6666,7 @@ async function boot(){
   document.getElementById('authWrap').style.display='none';
   document.getElementById('app').style.display='flex';
   document.getElementById('bnav').style.display='block';
-  if(!window._lcFabDismissed){const _fw=document.getElementById('lcFabWrap');if(_fw){_fw.classList.remove('hide');_fw.classList.add('show');}}
+  _lcUpdateFabVisibility();
   const _avb=document.getElementById('authVersionBar');if(_avb)_avb.style.display='none';
   await Promise.all([loadAppSectionLocks(), ensureWallet(), ensureCoinsWallet()]);
   await Promise.all([loadBal(), loadCoins()]);
@@ -7542,6 +7588,7 @@ function goPageDirect(p){
     if(bn)bn.classList.toggle('on',x===p);
   });
   updateSidebarActive(p);
+  if(typeof _lcUpdateFabVisibility==='function')_lcUpdateFabVisibility();
 }
 
 // نەقشەی پەڕە بۆ ناسنامەی بەش
@@ -7694,6 +7741,7 @@ function goPage(p){
     const bn=document.getElementById('bn_'+x);
     if(bn)bn.classList.toggle('on',x===p);
   });
+  if(typeof _lcUpdateFabVisibility==='function')_lcUpdateFabVisibility();
   if(p==='myads')loadMyAds();
   if(p==='proxolink'){loadProxoCards();hidePLForm();}
   if(p==='notifications'){loadNotifications();setTimeout(markAllRead,2500);}
@@ -12838,10 +12886,19 @@ document.getElementById('lcOverlay').addEventListener('transitionend',function()
 window.lcOpenChat=function(){ lcInitDirectChat(); };
 window.lcShowHistoryOrForm=function(){ lcInitDirectChat(); };
 
+// ── دووگمەی پشتگیری ڕاستەوخۆ تەنها لە بەشی سەرەکی (ماڵەوە) دەردەکەوێت، لە بەشەکانی تر شاراوەیە ──
+window._lcUpdateFabVisibility=function(){
+  const _fw=document.getElementById('lcFabWrap');
+  if(!_fw)return;
+  const _appEl=document.getElementById('app');
+  const shouldShow=!window._lcFabDismissed&&_appEl&&_appEl.style.display!=='none'&&typeof _currentPage!=='undefined'&&_currentPage==='home';
+  if(shouldShow){_fw.classList.remove('hide');_fw.classList.add('show');}
+  else{_fw.classList.remove('show');_fw.classList.add('hide');}
+};
+
 window.lcCloseChat=function(){
   document.getElementById('lcOverlay').classList.remove('show');
-  const _appEl=document.getElementById('app');
-  if(!window._lcFabDismissed&&_appEl&&_appEl.style.display!=='none'){const _fw=document.getElementById('lcFabWrap');if(_fw){_fw.classList.remove('hide');_fw.classList.add('show');}}
+  _lcUpdateFabVisibility();
 };
 
 window.lcDismissFab=function(e){

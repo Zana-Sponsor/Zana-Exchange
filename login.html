@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>چوونەژوورەوە | Proxo App</title>
-<meta name="description" content="بچۆ ژوورەوە بۆ Proxo — ئەپی بەڕێوەبردنی ڕیکلامی تیکتۆک بۆ کوردستان و عێراق.">
+<title>Login to Proxo App — TikTok Ad Manager for Kurdistan &amp; Iraq</title>
+<meta name="description" content="Log in to your Proxo account and manage your TikTok ad campaigns across Kurdistan and Iraq. New user? Register for free.">
 <meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.proxopages.com/login">
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
@@ -104,6 +105,49 @@ button,a{touch-action:manipulation;}
 .otp-resend{font-size:12px;color:var(--bl);text-align:center;margin-top:8px;cursor:pointer;display:none;}
 </style>
 
+<!-- JSON-LD: WebPage + SiteNavigationElement for Google Sitelinks -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://www.proxopages.com/login#webpage",
+      "url": "https://www.proxopages.com/login",
+      "name": "Login to Proxo App — TikTok Ad Manager for Kurdistan & Iraq",
+      "description": "Log in to your Proxo account and manage your TikTok ad campaigns across Kurdistan and Iraq.",
+      "inLanguage": ["ckb", "en"],
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": "https://www.proxopages.com/#website",
+        "url": "https://www.proxopages.com/",
+        "name": "Proxo App"
+      }
+    },
+    {
+      "@type": "ItemList",
+      "name": "Proxo App Primary Navigation",
+      "itemListElement": [
+        {
+          "@type": "SiteNavigationElement",
+          "position": 1,
+          "name": "Login",
+          "description": "Sign in to your Proxo account to manage TikTok ad campaigns.",
+          "url": "https://www.proxopages.com/login"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "position": 2,
+          "name": "Register",
+          "description": "Create a free Proxo account and start running TikTok ads in Kurdistan and Iraq.",
+          "url": "https://www.proxopages.com/signup"
+        }
+      ]
+    }
+  ]
+}
+</script>
+
 <!-- ══ RESOURCE CACHE — فۆنتی Rabar لە localStorage پاشەکەوت دەبێت بۆ کارکردن بەبێ ئینتەرنێت ══ -->
 <script>
 (function(){
@@ -172,9 +216,9 @@ button,a{touch-action:manipulation;}
           <span>دواتر</span>
         </button>
         <div class="amsg" id="authMsgEmail"></div>
-        <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--mt)">
-          هەژمارت نییە؟ <span onclick="window.location.href='/signup.html'" style="color:var(--dark);font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:2px">هەژمارێک دروست بکە</span>
-        </div>
+        <nav aria-label="Authentication Navigation" style="text-align:center;margin-top:14px;font-size:13px;color:var(--mt)">
+          هەژمارت نییە؟ <a href="https://www.proxopages.com/signup" style="color:var(--dark);font-weight:700;text-decoration:underline;text-underline-offset:2px">Register — هەژمارێک دروست بکە</a>
+        </nav>
       </div>
 
       <!-- Step: Password -->

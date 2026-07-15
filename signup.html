@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>تۆمارکردن | Proxo App</title>
-<meta name="description" content="هەژمارێکی نوێ دروست بکە لە Proxo — ئەپی بەڕێوەبردنی ڕیکلامی تیکتۆک بۆ کوردستان و عێراق.">
+<title>Register on Proxo App — Create Your TikTok Ad Account Free</title>
+<meta name="description" content="Create a free Proxo account and start managing TikTok ad campaigns across Kurdistan and Iraq. Already have an account? Log in.">
 <meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.proxopages.com/signup">
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
@@ -121,6 +122,49 @@ button,a{touch-action:manipulation;}
 .tms-tick-path{stroke-dasharray:20;stroke-dashoffset:20;animation:checkDraw .25s ease forwards .05s;}
 </style>
 
+<!-- JSON-LD: WebPage + SiteNavigationElement for Google Sitelinks -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://www.proxopages.com/signup#webpage",
+      "url": "https://www.proxopages.com/signup",
+      "name": "Register on Proxo App — Create Your TikTok Ad Account Free",
+      "description": "Create a free Proxo account and start managing TikTok ad campaigns across Kurdistan and Iraq.",
+      "inLanguage": ["ckb", "en"],
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": "https://www.proxopages.com/#website",
+        "url": "https://www.proxopages.com/",
+        "name": "Proxo App"
+      }
+    },
+    {
+      "@type": "ItemList",
+      "name": "Proxo App Primary Navigation",
+      "itemListElement": [
+        {
+          "@type": "SiteNavigationElement",
+          "position": 1,
+          "name": "Login",
+          "description": "Sign in to your Proxo account to manage TikTok ad campaigns.",
+          "url": "https://www.proxopages.com/login"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "position": 2,
+          "name": "Register",
+          "description": "Create a free Proxo account and start running TikTok ads in Kurdistan and Iraq.",
+          "url": "https://www.proxopages.com/signup"
+        }
+      ]
+    }
+  ]
+}
+</script>
+
 <!-- ══ RESOURCE CACHE — فۆنتی Rabar لە localStorage پاشەکەوت دەبێت بۆ کارکردن بەبێ ئینتەرنێت ══ -->
 <script>
 (function(){
@@ -188,9 +232,9 @@ button,a{touch-action:manipulation;}
           <span>دواتر</span>
         </button>
         <div class="amsg" id="authMsgName"></div>
-        <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--mt)">
-          هەژمارت هەیە؟ <span onclick="window.location.href='/'" style="color:var(--dark);font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:2px">ئێستا بچۆ ژوورەوە</span>
-        </div>
+        <nav aria-label="Authentication Navigation" style="text-align:center;margin-top:14px;font-size:13px;color:var(--mt)">
+          هەژمارت هەیە؟ <a href="https://www.proxopages.com/login" style="color:var(--dark);font-weight:700;text-decoration:underline;text-underline-offset:2px">Login — ئێستا بچۆ ژوورەوە</a>
+        </nav>
       </div>
 
       <!-- Step: Email -->
@@ -716,20 +760,7 @@ async function verifyOtp() {
       }
       // ── فاوچەری بەخێرهاتنی کڕیاری نوێ ──
       try {
-        const { error: svErr } = await sb.rpc('handle_signup_voucher', { p_user_id: cu.id });
-        if(svErr) {
-          const { data: cfg } = await sb.from('pa_settings').select('value').eq('key','signup_gift_config').maybeSingle();
-          if(cfg?.value) {
-            try {
-              const gc = JSON.parse(cfg.value);
-              if(gc?.enabled && parseFloat(gc?.amount_iqd||0)>0) {
-                const vCode='SGV-'+Date.now().toString(36).toUpperCase().slice(-4)+'-'+Math.random().toString(36).substring(2,6).toUpperCase();
-                const exp=gc.expires_days?new Date(Date.now()+Number(gc.expires_days)*86400000).toISOString():null;
-                await sb.from('pa_vouchers').insert({code:vCode,amount_iqd:parseFloat(gc.amount_iqd),is_active:true,assigned_user_id:cu.id,expires_at:exp,note:'دیاری تۆمارکردنی نوێ'});
-              }
-            } catch(_) {}
-          }
-        }
+        await sb.rpc('handle_signup_voucher', { p_user_id: cu.id });
       } catch(_) {}
       showOtpMsg('بەسەرکەوتوویی تۆمارکرا! ڕەوانەدەکرێیت...', 'ok');
       setTimeout(()=>{ window.location.href='/'; }, 900);
