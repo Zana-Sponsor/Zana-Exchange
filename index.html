@@ -549,6 +549,18 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .gifts-chal-reward{font-size:11px;font-weight:800;color:#a855f7;font-family:'Inter',sans-serif;white-space:nowrap;background:rgba(168,85,247,.08);padding:4px 9px;border-radius:8px;}
 .gifts-empty{text-align:center;padding:40px 20px;color:var(--mt);}
 .gifts-empty i{font-size:30px;opacity:.35;margin-bottom:10px;display:block;}
+.levels-tier-row{display:flex;align-items:center;gap:12px;background:var(--w);border:1px solid var(--b1);border-radius:16px;padding:13px 14px;margin-bottom:10px;transition:border-color .2s;}
+.levels-tier-row.current{border-color:rgba(245,158,11,.4);background:linear-gradient(135deg,rgba(245,158,11,.05),transparent)}
+.levels-tier-ico{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;color:#fff;}
+.levels-tier-name{font-size:13.5px;font-weight:800;color:var(--dark);display:flex;align-items:center;gap:7px;}
+.levels-tier-min{font-size:11px;color:var(--mt);font-weight:600;margin-top:2px;font-family:'Inter',sans-serif}
+.levels-tier-badge{font-size:10px;font-weight:800;color:#16a34a;background:rgba(22,163,74,.1);padding:4px 9px;border-radius:8px;white-space:nowrap;}
+.levels-tier-current-tag{font-size:9.5px;font-weight:800;color:#f59e0b;background:rgba(245,158,11,.12);padding:3px 8px;border-radius:7px;letter-spacing:.2px;}
+.levels-info-card{background:var(--w);border:1px solid var(--b1);border-radius:16px;padding:16px;}
+.levels-point-row{display:flex;align-items:center;justify-content:space-between;padding:11px 4px;border-bottom:1px solid var(--b1);}
+.levels-point-row:last-child{border-bottom:none;}
+.levels-point-iqd{font-size:13px;font-weight:800;color:var(--dark);font-family:'Inter',sans-serif;direction:ltr;}
+.levels-point-pts{font-size:12px;font-weight:800;color:#6366f1;background:rgba(99,102,241,.08);padding:5px 11px;border-radius:9px;font-family:'Inter',sans-serif;}
 .pcard-hdr{font-size:11px;color:var(--mt);display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .pcard-hdr-left{display:flex;align-items:center;gap:6px;}
 .bal-row{display:flex;align-items:baseline;gap:6px;}
@@ -2815,7 +2827,17 @@ function _toWebP(dataUrl,quality){
         <div class="sidebar-item-ico" style="background:rgba(6,182,212,.13);color:#06b6d4"><i class="fas fa-ticket-simple"></i></div>
         <div class="sidebar-item-txt">فاوچەر کۆد</div>
       </div>
-      <!-- ٤c — دیاریەکان (ئاست، چاڵنج، فاوچەری بەخۆڕایی) -->
+      <!-- ٤c — چاڵنجەکان -->
+      <div class="sidebar-item" onclick="goPage('challenges');closeSidebar()">
+        <div class="sidebar-item-ico" style="background:rgba(168,85,247,.12);color:#a855f7"><i class="fas fa-flag-checkered"></i></div>
+        <div class="sidebar-item-txt">چاڵنجەکان</div>
+      </div>
+      <!-- ٤d — ئاستەکان -->
+      <div class="sidebar-item" onclick="goPage('levels');closeSidebar()">
+        <div class="sidebar-item-ico" style="background:rgba(245,158,11,.12);color:#f59e0b"><i class="fas fa-layer-group"></i></div>
+        <div class="sidebar-item-txt">ئاستەکان</div>
+      </div>
+      <!-- ٤e — دیاریەکان (دیاری تۆمارکردن) -->
       <div class="sidebar-item" onclick="goPage('gifts');closeSidebar()">
         <div class="sidebar-item-ico" style="background:rgba(219,39,119,.12);color:#db2777"><i class="fas fa-gifts"></i></div>
         <div class="sidebar-item-txt">دیاریەکان</div>
@@ -3628,10 +3650,28 @@ function _toWebP(dataUrl,quality){
 
 
 
-  <!-- ══ GIFTS / LEVELS / CHALLENGES ══ -->
-  <div class="pg" id="pgGifts">
+  <!-- ══ CHALLENGES ══ -->
+  <div class="pg" id="pgChallenges">
     <div class="pg-hdr">
-      <div class="pg-title"><i class="fas fa-gift" style="margin-left:8px;color:#a855f7"></i>خەڵاتەکان</div>
+      <div class="pg-title"><i class="fas fa-flag-checkered" style="margin-left:8px;color:#a855f7"></i>چاڵنجەکان</div>
+    </div>
+
+    <div class="gifts-sec-hdr" style="margin-top:2px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="gifts-sec-ico"><i class="fas fa-flag-checkered"></i></div>
+        <span>ئەرکەکانت</span>
+      </div>
+      <span style="font-size:10.5px;color:var(--mt);font-weight:600">خەڵاتی خۆت وەربگرە</span>
+    </div>
+    <div id="giftsChallengesList" style="margin-bottom:100px">
+      <div style="text-align:center;padding:30px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin" style="font-size:20px"></i></div>
+    </div>
+  </div>
+
+  <!-- ══ LEVELS ══ -->
+  <div class="pg" id="pgLevels">
+    <div class="pg-hdr">
+      <div class="pg-title"><i class="fas fa-layer-group" style="margin-left:8px;color:#f59e0b"></i>ئاستەکان</div>
     </div>
 
     <!-- ══ Level / Rank Card ══ -->
@@ -3654,6 +3694,35 @@ function _toWebP(dataUrl,quality){
       </div>
     </div>
 
+    <div class="gifts-sec-hdr">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="gifts-sec-ico" style="background:rgba(245,158,11,.1);color:#f59e0b"><i class="fas fa-ranking-star"></i></div>
+        <span>پلەکانی ئاست</span>
+      </div>
+      <span style="font-size:10.5px;color:var(--mt);font-weight:600">داشکاندنی هەر ئاستێک</span>
+    </div>
+    <div id="levelsLadderList" style="margin-bottom:14px">
+      <div style="text-align:center;padding:30px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin" style="font-size:20px"></i></div>
+    </div>
+
+    <div class="gifts-sec-hdr">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="gifts-sec-ico" style="background:rgba(99,102,241,.1);color:#6366f1"><i class="fas fa-bullhorn"></i></div>
+        <span>چۆن خاڵ بەدەستبهێنیت</span>
+      </div>
+    </div>
+    <div class="levels-info-card" style="margin-bottom:100px">
+      <div style="font-size:12px;color:var(--mt);line-height:1.8;margin-bottom:12px">هەرکاتێک ڕیکلامێک دروست بکەیت بەپێی بڕی بودجەکەت خاڵت بۆ زیاد دەکرێت، بۆ نموونە:</div>
+      <div id="levelsPointsExamples"></div>
+    </div>
+  </div>
+
+  <!-- ══ GIFTS (SIGNUP BONUS ONLY) ══ -->
+  <div class="pg" id="pgGifts">
+    <div class="pg-hdr">
+      <div class="pg-title"><i class="fas fa-gifts" style="margin-left:8px;color:#db2777"></i>دیاریەکان</div>
+    </div>
+
     <!-- ══ Welcome Voucher ══ -->
     <div id="giftsVoucherBox" class="gifts-voucher-card">
       <div class="gifts-voucher-shine"></div>
@@ -3670,15 +3739,10 @@ function _toWebP(dataUrl,quality){
       <div id="giftsVoucherCode" style="margin-top:12px;font-family:'Inter',sans-serif;font-weight:800;letter-spacing:3px;font-size:16px;color:#0e7490;direction:ltr;text-align:center;background:#fff;border:1.5px dashed rgba(6,182,212,.4);border-radius:11px;padding:10px;position:relative;z-index:1"></div>
     </div>
 
-    <div class="gifts-sec-hdr">
-      <div style="display:flex;align-items:center;gap:8px">
-        <div class="gifts-sec-ico"><i class="fas fa-flag-checkered"></i></div>
-        <span>چاڵنجەکان</span>
-      </div>
-      <span style="font-size:10.5px;color:var(--mt);font-weight:600">خەڵاتی خۆت وەربگرە</span>
-    </div>
-    <div id="giftsChallengesList" style="margin-bottom:100px">
-      <div style="text-align:center;padding:30px;color:var(--mt)"><i class="fas fa-circle-notch fa-spin" style="font-size:20px"></i></div>
+    <div id="giftsEmptyState" class="gifts-empty" style="display:none">
+      <i class="fas fa-gift"></i>
+      دیاری تۆمارکردنت بەکارهاتووە یان بەسەرچووە<br>
+      <span style="font-size:11px;opacity:.75">دیاری تۆمارکردن تەنها یەکجار بۆ هەژمارە نوێیەکان دەدرێت</span>
     </div>
   </div>
 
@@ -7502,7 +7566,7 @@ async function exchangeCoins(){
 }
 function openWA(){window.open('https://wa.me/9647512345678','_blank');}
 
-const pages=['home','profile','create','myads','proxolink','notifications','support','tutorials','tutplayer','txhistory','promocodes','adcalc','wallet','gifts'];
+const pages=['home','profile','create','myads','proxolink','notifications','support','tutorials','tutplayer','txhistory','promocodes','adcalc','wallet','challenges','levels','gifts'];
 let _currentPage='home';
 
 // ══ SECTION LOCKS ══
@@ -7696,6 +7760,8 @@ function goPage(p){
   if(p==='txhistory')loadTxHistory();
   if(p==='tutorials')loadTutorials();
   if(p==='promocodes')loadPromocodesPage();
+  if(p==='challenges')loadChallengesPage();
+  if(p==='levels')loadLevelsPage();
   if(p==='gifts')loadGiftsPage();
   if(p==='wallet'){startWalletListener();startReqListener();}
   updateSidebarActive(p);
@@ -14115,7 +14181,55 @@ async function createSignupVoucher(userId) {
 
 async function loadGiftsPage() {
   if (!cu) return;
-  await Promise.all([_loadGiftsLevel(), _loadGiftsVoucher(), _loadGiftsChallenges()]);
+  await _loadGiftsVoucher();
+}
+
+async function loadLevelsPage() {
+  if (!cu) return;
+  await Promise.all([_loadGiftsLevel(), _loadLevelsLadder(), _loadLevelsPointsExamples()]);
+}
+
+async function loadChallengesPage() {
+  if (!cu) return;
+  await _loadGiftsChallenges();
+}
+
+// ── تیایاندنی هەموو ئاستەکان (پلاتینیۆم، زیو، بڕۆنز، ئەڵماس...) لەگەڵ داشکاندنی هەریەکە ──
+async function _loadLevelsLadder() {
+  const wrap = document.getElementById('levelsLadderList');
+  if (!wrap) return;
+  const defs = await _getLevelThresholds();
+  const { data } = await sb.from('pa_user_points').select('points').eq('user_id', cu.id).single();
+  const points = parseFloat(data?.points || 0);
+  const { cur } = _levelForPoints(points, defs);
+  wrap.innerHTML = defs.map(l => {
+    const isCurrent = l.key === cur.key;
+    const grad = l.grad || ['#94a3b8', '#64748b'];
+    const discTxt = l.discount > 0 ? ('%' + Math.round(l.discount * 100) + ' داشکاندن') : 'بەبێ داشکاندن';
+    return '<div class="levels-tier-row' + (isCurrent ? ' current' : '') + '">' +
+      '<div class="levels-tier-ico" style="background:linear-gradient(135deg,' + grad[0] + ',' + grad[1] + ')"><i class="fas ' + l.icon + '"></i></div>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div class="levels-tier-name">' + l.name + (isCurrent ? '<span class="levels-tier-current-tag">ئاستی ئێستا</span>' : '') + '</div>' +
+        '<div class="levels-tier-min">لە ' + l.min.toLocaleString() + ' خاڵەوە</div>' +
+      '</div>' +
+      '<div class="levels-tier-badge">' + discTxt + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+// ── نموونەی خاڵی وەرگیراو بەپێی بڕی ڕیکلام (بۆ زانیاری بەکارهێنەر — ڕێژەی ڕاستەقینە لەلایەن ئادمینەوە لە Supabase دیاریدەکرێت) ──
+async function _loadLevelsPointsExamples() {
+  const wrap = document.getElementById('levelsPointsExamples');
+  if (!wrap) return;
+  const examples = (typeof TIERS !== 'undefined' && TIERS && TIERS.length)
+    ? TIERS.slice(0, 4).map(t => ({ iqd: t.iqd, pts: t.usd }))
+    : [{ iqd: 18500, pts: 10 }, { iqd: 36000, pts: 20 }];
+  wrap.innerHTML = examples.map(e =>
+    '<div class="levels-point-row">' +
+      '<span class="levels-point-iqd">' + e.iqd.toLocaleString() + ' IQD</span>' +
+      '<span class="levels-point-pts">+' + e.pts + ' خاڵ</span>' +
+    '</div>'
+  ).join('');
 }
 
 async function _loadGiftsLevel() {
@@ -14147,15 +14261,18 @@ async function _loadGiftsLevel() {
 
 async function _loadGiftsVoucher() {
   const box = document.getElementById('giftsVoucherBox');
+  const empty = document.getElementById('giftsEmptyState');
   const { data } = await sb.from('pa_vouchers')
     .select('*').eq('assigned_user_id', cu.id).eq('is_signup_bonus', true)
     .order('created_at', { ascending: false }).limit(1);
   const v = data && data[0];
   if (!v || v.used_by || (v.expires_at && new Date(v.expires_at) < new Date())) {
     box.style.display = 'none';
+    if (empty) empty.style.display = 'block';
     return;
   }
   box.style.display = 'block';
+  if (empty) empty.style.display = 'none';
   const left = Math.max(0, Math.ceil((new Date(v.expires_at) - new Date()) / (1000 * 60 * 60 * 24)));
   document.getElementById('giftsVoucherDesc').textContent =
     'دیاری بەخێرهاتنی ' + parseFloat(v.amount_iqd).toLocaleString() + ' IQD — ' + left + ' ڕۆژی تر ماوە بۆ بەکارهێنانی. تەنها تۆ دەتوانیت ئەم کۆدە بەکاربهێنیت.';
