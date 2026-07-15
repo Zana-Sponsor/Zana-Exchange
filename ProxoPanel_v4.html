@@ -192,6 +192,7 @@ tr:hover td{background:rgba(28,35,51,.015);}
 .badge.banned{background:rgba(124,58,237,.08);color:var(--pu);border:1px solid rgba(124,58,237,.15);}
 .badge.paused{background:var(--bg);color:var(--mt);border:1px solid var(--b1);}
 .badge.scheduled{background:rgba(8,145,178,.08);color:#0891b2;border:1px solid rgba(8,145,178,.22);}
+.badge.review{background:rgba(37,99,235,.09);color:#1d4ed8;border:1px solid rgba(37,99,235,.22);}
 .badge.spent{background:rgba(220,38,38,.06);color:var(--rd);border:1px solid rgba(220,38,38,.18);}
 
 /* ══ ACTION BUTTONS ══ */
@@ -2350,9 +2351,11 @@ async function loadDepBadge(){
 }
 async function loadAdBadge(){
   const{count}=await sb.from('pa_ads').select('*',{count:'exact',head:true}).eq('status','pending');
+  // Count review status ads too for approval badge
+  const{count:reviewCount}=await sb.from('pa_ads').select('*',{count:'exact',head:true}).eq('status','review');
   document.getElementById('sbAdsCount').textContent=count||0;
-  // Approval Workflow badge
-  const pendingCount = count||0;
+  // Approval Workflow badge: pending + review
+  const pendingCount = (count||0) + (reviewCount||0);
   const approvalBadge = document.getElementById('sbApprovalCount');
   if(approvalBadge){
     approvalBadge.textContent = pendingCount;
@@ -3573,7 +3576,7 @@ async function loadApprovalWorkflow(){
   const wrap = document.getElementById('approvalTableWrap');
   if(!wrap) return;
   wrap.innerHTML = '<div class="loading"><i class="fas fa-circle-notch fa-spin"></i> بارکردن...</div>';
-  const {data: adsRaw} = await sb.from('pa_ads').select('*').eq('status','pending').order('created_at',{ascending:false});
+  const {data: adsRaw} = await sb.from('pa_ads').select('*').in('status',['pending','review']).order('created_at',{ascending:false});
   const uids = [...new Set((adsRaw||[]).map(a=>a.user_id).filter(Boolean))];
   const {data: profs} = await (uids.length ? sb.from('profiles').select('id,full_name,email').in('id',uids) : Promise.resolve({data:[]}));
   const profMap = {}; (profs||[]).forEach(p=>{profMap[p.id]=p;});
@@ -3599,7 +3602,8 @@ async function loadApprovalWorkflow(){
       <td style="font-size:11px">${gs[a.goal]||a.goal||'—'}</td>
       <td style="font-size:11px;color:var(--mt)">${new Date(a.created_at).toLocaleDateString('ku')}</td>
       <td><div class="act-grp">
-        <div class="act-btn gr" onclick="openApproveModal('${a.id}')"><i class="fas fa-check-circle"></i> Review</div>
+        ${a.status==='pending'?`<div class="act-btn" style="background:rgba(37,99,235,.08);color:#1d4ed8;border-color:rgba(37,99,235,.25)" onclick="startReview('${a.id}')"><i class="fas fa-magnifying-glass"></i> دەستپێکردنی پێداچوونەوە</div>`:''}
+        ${a.status==='review'?`<div class="act-btn gr" onclick="openApproveModal('${a.id}')"><i class="fas fa-check-circle"></i> پەسەندکردن</div>`:''}
         <div class="act-btn rd" onclick="showRejectReason('${a.id}','ad')"><i class="fas fa-times"></i> ڕەت</div>
       </div></td>
     </tr>`).join('')}</tbody></table>`;
@@ -3612,7 +3616,7 @@ async function loadApprovalWorkflow(){
           <div class="ad-card-name">${a.title||(a.created_at?'New Ad '+new Date(a.created_at).toLocaleDateString('en-GB').replace(/\//g,'/'):'ڕیکلامی #'+(a.ad_number||'?'))}</div>
           <div class="ad-card-sub">${a.profiles?.full_name||'—'} • ${a.profiles?.email||'—'}</div>
         </div>
-        <span class="badge pending">چاوەڕوان</span>
+        <span class="badge ${a.status==='review'?'review':'pending'}">${a.status==='review'?'لەژێر پێداچوونەوەدایە':'چاوەڕوان'}</span>
       </div>
       <div class="ad-card-meta">
         <div class="user-card-stat rd"><i class="fas fa-coins" style="font-size:10px"></i> ${Math.round(parseFloat(a.budget||0)*1800).toLocaleString()} IQD</div>
@@ -3620,7 +3624,8 @@ async function loadApprovalWorkflow(){
         <div class="user-card-date">${new Date(a.created_at).toLocaleDateString('ku')}</div>
       </div>
       <div class="ad-card-actions">
-        <div class="act-btn gr" onclick="openApproveModal('${a.id}')"><i class="fas fa-check-circle"></i> Review</div>
+        ${a.status==='pending'?`<div class="act-btn" style="background:rgba(37,99,235,.08);color:#1d4ed8;border-color:rgba(37,99,235,.25);flex:1" onclick="startReview('${a.id}')"><i class="fas fa-magnifying-glass"></i> دەستپێکردنی پێداچوونەوە</div>`:''}
+        ${a.status==='review'?`<div class="act-btn gr" style="flex:1" onclick="openApproveModal('${a.id}')"><i class="fas fa-check-circle"></i> پەسەندکردن</div>`:''}
         <div class="act-btn rd" onclick="showRejectReason('${a.id}','ad')"><i class="fas fa-times"></i> ڕەتکردنەوە</div>
       </div>
     </div>`).join('')}</div>`;
@@ -3629,6 +3634,32 @@ async function loadApprovalWorkflow(){
 }
 
 let _approveAdId = '', _approveUserId = '', _approveAdBudget = 0, _approveAdNumber = '';
+
+// ══ START REVIEW: دۆخ دەگۆڕێت بۆ 'review' و ئاگاداری بەکارهێنەر دەنێردرێت ══
+async function startReview(adId){
+  const ad = allAds.find(a=>a.id===adId) || _approvalPendingAds.find(a=>a.id===adId);
+  if(!ad){ showToast('ڕیکلام نەدۆزرایەوە','rd'); return; }
+  try{
+    const {error} = await sb.from('pa_ads').update({status:'review'}).eq('id',adId);
+    if(error && !isNetHttpErr(error)){ showToast('هەڵە: '+error.message,'rd'); return; }
+    // ئاگادارکردنەوەی بەکارهێنەر کە ڕیکلامەکەی لەژێر پێداچوونەوەدایە
+    try{
+      await sb.from('pa_notifications').insert({
+        user_id: ad.user_id,
+        type: 'general',
+        title: 'ڕیکلامەکەت لەژێر پێداچوونەوەدایە 🔍',
+        body: `ڕیکلامی ژمارە #${ad.ad_number||'—'} ئێستا لەلایەن تیمی Proxo پێداچوونەوەی تێدەکرێت. بەرزەبوونەوەیەک بچاوەڕێ.`,
+        is_read: false
+      });
+      _fbPushNotif(ad.user_id,'ڕیکلامەکەت لەژێر پێداچوونەوەدایە 🔍',`ڕیکلامی #${ad.ad_number||'—'} لەژێر پێداچوونەوەی تیمی Proxo دایە`,'general');
+    }catch(e){}
+    showToast('✅ دۆخ گۆڕا بۆ "لەژێر پێداچوونەوەدایە" — ئێستا دەتوانی پەسەندی بکەی','gr');
+    loadApprovalWorkflow();
+    loadAdBadge();
+  }catch(e){
+    if(!isNetHttpErr(e)) showToast('هەڵەیەک ڕوویدا: '+e.message,'rd');
+  }
+}
 
 function openApproveModal(adId){
   const ad = allAds.find(a=>a.id===adId) || _approvalPendingAds.find(a=>a.id===adId);
@@ -5059,7 +5090,7 @@ async function createVoucherCode(){
   if(targetEnabled&&targetUserId){
     const expTxt=expiry?('تا '+new Date(expiry).toLocaleDateString('ku')):'بێ کۆتایی';
     const notifTitle='🎁 فاوچەرێکی تایبەت بۆت نێردرا';
-    const notifBody='ئادمین فاوچەرێکی '+Math.round(amountIqd).toLocaleString()+' IQD بۆت ناردووە — هۆکار: '+reason+'. سەردانی بەشی «فاوچەرەکان» بکە بۆ چالاککردنی. ('+expTxt+')';
+    const notifBody='ئادمین فاوچەرێکی '+Math.round(amountIqd).toLocaleString()+' IQD بۆت ناردووە. سەردانی بەشی «فاوچەرەکان» بکە بۆ چالاککردنی. ('+expTxt+')';
     await sb.from('pa_notifications').insert({user_id:targetUserId,type:'general',title:notifTitle,body:notifBody,is_read:false,created_at:new Date().toISOString()});
     _fbPushNotif(targetUserId,notifTitle,notifBody,'general');
     showToast('✅ ڤاوچەری '+code+' نێردرا بۆ '+(targetName||'بەکارهێنەر')+' — '+Math.round(amountIqd).toLocaleString()+' IQD','gr');
@@ -5331,7 +5362,7 @@ async function saveRaffleTarget(){
 // ══ GIVEAWAY ══
 
 function statusKu(s){
-  return{pending:'چاوەڕوان',approved:'پەسەندکرا',rejected:'ڕەتکرا',active:'چالاک',completed:'تەواوبوو',paused:'وەستاوە',banned:'بانکراو',spent:'خەرجکرا',scheduled:'کات بۆ دانراو'}[s]||s;
+  return{pending:'چاوەڕوان',review:'لەژێر پێداچوونەوەدایە',approved:'پەسەندکرا',rejected:'ڕەتکرا',active:'چالاک',completed:'تەواوبوو',paused:'وەستاوە',banned:'بانکراو',spent:'خەرجکرا',scheduled:'کات بۆ دانراو'}[s]||s;
 }
 function openMo(id){document.getElementById(id).classList.add('on');}
 function closeMo(id){document.getElementById(id).classList.remove('on');}

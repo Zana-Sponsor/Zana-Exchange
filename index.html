@@ -674,6 +674,7 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .spons-status-completed{background:rgba(99,102,241,.09);color:#4f46e5;border:1px solid rgba(99,102,241,.25);}
 .spons-status-paused{background:rgba(107,114,128,.09);color:#4b5563;border:1px solid rgba(107,114,128,.25);}
 .spons-status-scheduled{background:linear-gradient(135deg,rgba(8,145,178,.13),rgba(6,182,212,.09));color:#0891b2;border:1px solid rgba(8,145,178,.3);font-weight:800;}
+.spons-status-review{background:rgba(37,99,235,.09);color:#1d4ed8;border:1px solid rgba(37,99,235,.22);}
 @keyframes sched-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.75)}}
 .sched-dot{width:7px;height:7px;border-radius:50%;background:#0891b2;display:inline-block;animation:sched-pulse 1.6s ease-in-out infinite;margin-left:5px;vertical-align:middle;}
 .spons-title{font-size:15px;font-weight:800;color:var(--dark);margin-bottom:12px;line-height:1.4;direction:rtl;text-align:right;}
@@ -8984,10 +8985,12 @@ function pickCard(el,id){
       // ── خاڵ بۆ ئاست و پێشکەوتنی ئەرکەکان (ڕێژەکە لە لایەن ئادمینەوە دیاریدەکرێت) ──
       try{ await sb.rpc('register_ad_activity',{p_user_id:cu.id,p_usd:finalTotal/1800}); }catch(e){}
 
-      // ── ئەگەر بەروار دابرا → دۆخ بگۆڕە بۆ scheduled ──
-      if(adDateVal && _adNumFinal){
+      // ── دۆخی دروست دیاری بکە: scheduled ئەگەر بەروار هەبوو، وەکوو واز pending ──
+      // (ئەمە پاراستنێکە بۆ ئەوەی RPC status='active' نەکات بەپێی چۆنیەتی دروستکردنەکەی)
+      if(_adNumFinal){
         try{
-          await sb.from('pa_ads').update({status:'scheduled'}).eq('ad_number',String(_adNumFinal));
+          const _targetStatus = adDateVal ? 'scheduled' : 'pending';
+          await sb.from('pa_ads').update({status:_targetStatus}).eq('ad_number',String(_adNumFinal));
         }catch(e){}
       }
 
@@ -9137,6 +9140,8 @@ function renderAds(){
       ${filterStatus==='all'?`<button class="empty-btn" onclick="goPage('create')"><i class="fas fa-plus"></i> سپۆنسەرێکی نوێ دروست بکە</button>`:''}
     </div>`;return;
   }
+  var _isAr=typeof ProxoLang!=='undefined'&&ProxoLang.getLang()==='ar';
+  var _lbl={views:_isAr?'مشاهدات':'بینین',clicks:_isAr?'نقرات':'کلیک',spent:_isAr?'الإنفاق':'خەرجکراو'};
   var _adsSlice=_adsShowAll?filtered:filtered.slice(0,2);
   wrap.innerHTML=_adsSlice.map(ad=>{
     // ── تۆمارکردنی حاڵەتی دروست ──
@@ -9159,6 +9164,9 @@ function renderAds(){
     }else if(st==='scheduled'){
       statusCls='spons-status-scheduled';
       statusLbl='<i class="fas fa-clock" style="font-size:9px;margin-left:4px"></i>کات بۆ دانراو';
+    }else if(st==='review'){
+      statusCls='spons-status-review';
+      statusLbl='<i class="fas fa-magnifying-glass" style="font-size:9px;margin-left:4px"></i>لەژێر پێداچوونەوەدایە';
     }else if(isActive){
       statusCls='spons-status-active';
       statusLbl='<i class="fas fa-circle-check" style="font-size:9px;margin-left:4px"></i>چالاک';
@@ -9187,7 +9195,11 @@ function renderAds(){
     }
 
     // تێبینی چاوەڕوانی تەنها بۆ ئەوانەی نە تەرمینالن و نە چالاکن
-    const pendingNote=(!isTerminal&&!isActive&&st!=='scheduled')?`<div class="spons-pending-overlay"><i class="fas fa-hourglass-half" style="flex-shrink:0"></i><span>بۆ چالاکبوون چاوەڕوانی ئادمین بە، ئینجا ئەنجامەکان بەخۆکاری دەکەوێتە ئاستی ڕاستەوخۆ.</span></div>`:'';
+    const pendingNote=(!isTerminal&&!isActive&&st!=='scheduled')
+      ? (st==='review'
+          ? `<div class="spons-pending-overlay" style="background:rgba(37,99,235,.06);border-color:rgba(37,99,235,.25);color:#1d4ed8"><i class="fas fa-magnifying-glass" style="flex-shrink:0"></i><span>ئێستا تیمی Proxo ڕیکلامەکەت پێداچوونەوە دەکات — بەرزەبوونەوەیەک بچاوەڕێ.</span></div>`
+          : `<div class="spons-pending-overlay"><i class="fas fa-hourglass-half" style="flex-shrink:0"></i><span>بۆ چالاکبوون چاوەڕوانی ئادمین بە، ئینجا ئەنجامەکان بەخۆکاری دەکەوێتە ئاستی ڕاستەوخۆ.</span></div>`)
+      : '';
 
     // کات بۆ دانراو note
     const _schedDate=ad.start_date||'';
@@ -9248,17 +9260,17 @@ function renderAds(){
         <div style="flex:1;border-radius:16px;padding:12px 6px 10px;text-align:center;background:`+(isRejected?'var(--bg)':'rgba(124,58,237,.07)')+`;border:1.5px solid `+(isRejected?'var(--b1)':'rgba(124,58,237,.18)')+`;`+_opac+`">
           <div style="width:34px;height:34px;border-radius:12px;background:`+(isRejected?'rgba(139,149,168,.1)':'rgba(124,58,237,.13)')+`;color:`+(isRejected?'#9ca3af':'#7c3aed')+`;display:flex;align-items:center;justify-content:center;font-size:15px;margin:0 auto 7px"><i class="fas fa-eye"></i></div>
           <div style="font-size:16px;font-weight:900;color:`+(isRejected?'#9ca3af':'#7c3aed')+`;font-family:'Inter',sans-serif;line-height:1">`+_fmtNum(impr)+`</div>
-          <div style="font-size:10px;color:var(--mt);font-weight:700;margin-top:4px">بینین</div>
+          <div style="font-size:10px;color:var(--mt);font-weight:700;margin-top:4px">`+_lbl.views+`</div>
         </div>
         <div style="flex:1;border-radius:16px;padding:12px 6px 10px;text-align:center;background:`+(isRejected?'var(--bg)':'rgba(37,99,235,.07)')+`;border:1.5px solid `+(isRejected?'var(--b1)':'rgba(37,99,235,.18)')+`;`+_opac+`">
           <div style="width:34px;height:34px;border-radius:12px;background:`+(isRejected?'rgba(139,149,168,.1)':'rgba(37,99,235,.13)')+`;color:`+(isRejected?'#9ca3af':'#2563eb')+`;display:flex;align-items:center;justify-content:center;font-size:15px;margin:0 auto 7px"><i class="fas fa-arrow-pointer"></i></div>
           <div style="font-size:16px;font-weight:900;color:`+(isRejected?'#9ca3af':'#2563eb')+`;font-family:'Inter',sans-serif;line-height:1">`+_fmtNum(clicks)+`</div>
-          <div style="font-size:10px;color:var(--mt);font-weight:700;margin-top:4px">کلیک</div>
+          <div style="font-size:10px;color:var(--mt);font-weight:700;margin-top:4px">`+_lbl.clicks+`</div>
         </div>
         <div style="flex:1;border-radius:16px;padding:12px 6px 10px;text-align:center;background:`+(isRejected?'var(--bg)':'rgba(22,163,74,.07)')+`;border:1.5px solid `+(isRejected?'var(--b1)':'rgba(22,163,74,.18)')+`;`+_opac+`">
           <div style="width:34px;height:34px;border-radius:12px;background:`+(isRejected?'rgba(139,149,168,.1)':'rgba(22,163,74,.13)')+`;color:`+(isRejected?'#9ca3af':'#16a34a')+`;display:flex;align-items:center;justify-content:center;font-size:15px;margin:0 auto 7px"><i class="fas fa-dollar-sign"></i></div>
           <div style="font-size:16px;font-weight:900;color:`+(isRejected?'#9ca3af':'#16a34a')+`;font-family:'Inter',sans-serif;line-height:1">`+spendFmt+`</div>
-          <div style="font-size:10px;color:var(--mt);font-weight:700;margin-top:4px">خەرجکراو</div>
+          <div style="font-size:10px;color:var(--mt);font-weight:700;margin-top:4px">`+_lbl.spent+`</div>
         </div>
       </div>`)}
 
@@ -9426,7 +9438,7 @@ async function initPublicAdView(adId){
         body.innerHTML=`<div class="empty-box"><div class="empty-box-ico" style="width:70px;height:70px;border-radius:22px;font-size:28px"><i class="fas fa-triangle-exclamation"></i></div><h3>ئەم لینکە بەردەست نییە</h3><p>ڕیکلامەکە دۆزرایەوە یان دۆخی هاوبەشکردنی چالاک نییە</p></div>`;
         return;
       }
-      const statusMap={pending:'چاوەڕوان',active:'چالاک',rejected:'ڕەتکراوە',completed:'تەواوبوو',paused:'وەستا'};
+      const statusMap={pending:'چاوەڕوان',review:'لەژێر پێداچوونەوەدایە',active:'چالاک',rejected:'ڕەتکراوە',completed:'تەواوبوو',paused:'وەستا'};
       const adLabel=ad.title||'ڕیکلامی Proxo';
       document.getElementById('pubAdTitle').textContent=adLabel;
       const impr=_fmtNum(parseInt(ad.impressions||0));
@@ -9434,9 +9446,10 @@ async function initPublicAdView(adId){
       const spend='$'+parseFloat(ad.spend||0).toFixed(2);
       let h='';
       h+='<div class="pub-stats-grid">';
-      h+='<div class="pub-stat-card"><div class="pub-stat-ico" style="background:rgba(124,58,237,.1);color:#7c3aed"><i class="fas fa-eye"></i></div><div class="pub-stat-val" style="color:#7c3aed">'+impr+'</div><div class="pub-stat-lbl">بینین</div></div>';
-      h+='<div class="pub-stat-card"><div class="pub-stat-ico" style="background:rgba(37,99,235,.1);color:#2563eb"><i class="fas fa-arrow-pointer"></i></div><div class="pub-stat-val" style="color:#2563eb">'+clicks+'</div><div class="pub-stat-lbl">کلیک</div></div>';
-      h+='<div class="pub-stat-card"><div class="pub-stat-ico" style="background:rgba(22,163,74,.1);color:#16a34a"><i class="fas fa-dollar-sign"></i></div><div class="pub-stat-val" style="color:#16a34a">'+spend+'</div><div class="pub-stat-lbl">خەرجکراو</div></div>';
+      var _pubIsAr=typeof ProxoLang!=='undefined'&&ProxoLang.getLang()==='ar';
+      h+='<div class="pub-stat-card"><div class="pub-stat-ico" style="background:rgba(124,58,237,.1);color:#7c3aed"><i class="fas fa-eye"></i></div><div class="pub-stat-val" style="color:#7c3aed">'+impr+'</div><div class="pub-stat-lbl">'+(_pubIsAr?'مشاهدات':'بینین')+'</div></div>';
+      h+='<div class="pub-stat-card"><div class="pub-stat-ico" style="background:rgba(37,99,235,.1);color:#2563eb"><i class="fas fa-arrow-pointer"></i></div><div class="pub-stat-val" style="color:#2563eb">'+clicks+'</div><div class="pub-stat-lbl">'+(_pubIsAr?'نقرات':'کلیک')+'</div></div>';
+      h+='<div class="pub-stat-card"><div class="pub-stat-ico" style="background:rgba(22,163,74,.1);color:#16a34a"><i class="fas fa-dollar-sign"></i></div><div class="pub-stat-val" style="color:#16a34a">'+spend+'</div><div class="pub-stat-lbl">'+(_pubIsAr?'الإنفاق':'خەرجکراو')+'</div></div>';
       h+='</div>';
       h+='<div class="pub-info-box">';
       h+='<div class="pub-info-row"><span class="pub-info-lbl">دۆخ</span><span class="pub-info-val">'+(statusMap[ad.status]||ad.status||'—')+'</span></div>';
@@ -9503,7 +9516,7 @@ async function showAdDetail(ad){
   requestAnimationFrame(function(){ov.classList.add('on');sh.classList.add('on');});
 
   var goalMap={messages:'نامە',engagement:'کارلێک و بینەر',views:'کارلێک و بینەر'};
-  var statusMap={pending:['as-p','چاوەڕوان'],active:['as-a','چالاک'],rejected:['as-r','ڕەتکراوە'],completed:['as-c','تەواوبوو'],paused:['as-pa','وەستا'],scheduled:['as-sc','کات بۆ دانراو']};
+  var statusMap={pending:['as-p','چاوەڕوان'],review:['as-p','لەژێر پێداچوونەوەدایە'],active:['as-a','چالاک'],rejected:['as-r','ڕەتکراوە'],completed:['as-c','تەواوبوو'],paused:['as-pa','وەستا'],scheduled:['as-sc','کات بۆ دانراو']};
   var genderMap={all:'هەموو',male:'پیاو',female:'լն'};
   var locMap={kurdistan:'کوردستان',iraq:'عێراق',all:'کورد و عەرەب'};
 
@@ -9589,15 +9602,15 @@ async function showAdDetail(ad){
     h+='<div style="flex:1;background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.15);border-radius:14px;padding:12px 8px;text-align:center">';
     h+='<div style="width:34px;height:34px;border-radius:11px;background:rgba(124,58,237,.12);color:#7c3aed;display:flex;align-items:center;justify-content:center;font-size:14px;margin:0 auto 6px"><i class="fas fa-eye"></i></div>';
     h+='<div style="font-size:15px;font-weight:900;color:#7c3aed;font-family:Inter,sans-serif">'+_fmtNum(adImpr)+'</div>';
-    h+='<div style="font-size:10px;color:var(--mt);font-weight:600;margin-top:2px">بینین</div></div>';
+    var _detIsAr=typeof ProxoLang!=='undefined'&&ProxoLang.getLang()==='ar';
+    h+='<div style="font-size:10px;color:var(--mt);font-weight:600;margin-top:2px">'+(_detIsAr?'مشاهدات':'بینین')+'</div></div>';
     h+='<div style="flex:1;background:rgba(37,99,235,.07);border:1px solid rgba(37,99,235,.15);border-radius:14px;padding:12px 8px;text-align:center">';
     h+='<div style="width:34px;height:34px;border-radius:11px;background:rgba(37,99,235,.12);color:#2563eb;display:flex;align-items:center;justify-content:center;font-size:14px;margin:0 auto 6px"><i class="fas fa-arrow-pointer"></i></div>';
     h+='<div style="font-size:15px;font-weight:900;color:#2563eb;font-family:Inter,sans-serif">'+_fmtNum(adClicks)+'</div>';
-    h+='<div style="font-size:10px;color:var(--mt);font-weight:600;margin-top:2px">کلیک</div></div>';
+    h+='<div style="font-size:10px;color:var(--mt);font-weight:600;margin-top:2px">'+(_detIsAr?'نقرات':'کلیک')+'</div></div>';
     h+='<div style="flex:1;background:rgba(22,163,74,.07);border:1px solid rgba(22,163,74,.15);border-radius:14px;padding:12px 8px;text-align:center">';
     h+='<div style="width:34px;height:34px;border-radius:11px;background:rgba(22,163,74,.12);color:#16a34a;display:flex;align-items:center;justify-content:center;font-size:14px;margin:0 auto 6px"><i class="fas fa-dollar-sign"></i></div>';
-    h+='<div style="font-size:15px;font-weight:900;color:#16a34a;font-family:Inter,sans-serif">'+'$'+(adSpend>0?adSpend.toFixed(2):'0.00')+'</div>';
-    h+='<div style="font-size:10px;color:var(--mt);font-weight:600;margin-top:2px">خەرجکراو</div></div>';
+    h+='<div style="font-size:15px;font-weight:900;color:#16a34a;font-family:Inter,sans-serif">'+'
     h+='</div>';
   }
   h+='<div class="ad-sheet-sec" style="margin-top:18px"><i class="fas fa-receipt" style="margin-left:5px"></i>وردەکاری نرخ</div>';
