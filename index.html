@@ -6290,7 +6290,23 @@ function startNotifListener() {
   });
 }
 
-function _showNotifToast(title, body) { /* disabled — badge only */ }
+function _showNotifToast(title, body) {
+  // Create a styled in-app notification toast
+  var t = document.createElement('div');
+  t.style.cssText = 'position:fixed;top:70px;right:12px;left:12px;z-index:99999;background:var(--card,#1c1c1e);border:1px solid var(--b1,rgba(255,255,255,.08));border-radius:16px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,.35);animation:_ntSlideIn .3s ease;max-width:420px;margin:0 auto';
+  t.innerHTML = '<div style="width:34px;height:34px;border-radius:10px;background:rgba(168,85,247,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-bell" style="color:#a855f7;font-size:14px"></i></div>'
+    + '<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:800;color:var(--dark);margin-bottom:2px;line-height:1.3">' + (title||'') + '</div>'
+    + (body ? '<div style="font-size:11.5px;color:var(--mt);line-height:1.5">' + body + '</div>' : '') + '</div>'
+    + '<div onclick="this.parentElement.remove()" style="width:22px;height:22px;border-radius:7px;background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0"><i class="fas fa-xmark" style="font-size:10px;color:var(--mt)"></i></div>';
+  if (!document.getElementById('_ntStyle')) {
+    var s = document.createElement('style');
+    s.id = '_ntStyle';
+    s.textContent = '@keyframes _ntSlideIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}';
+    document.head.appendChild(s);
+  }
+  document.body.appendChild(t);
+  setTimeout(function(){ if(t.parentNode) t.style.animation='_ntSlideIn .3s ease reverse'; setTimeout(function(){ t.remove(); },300); }, 5000);
+}
 
 function _renderWalletReqs(reqs) {
   const list = document.getElementById('wReqList');
@@ -6828,15 +6844,29 @@ async function boot(){
       const oldSt = payload.old?.status;
       const adNum = payload.new?.ad_number || '';
       if(newSt && oldSt && newSt !== oldSt){
-        const msgs = {
-          running:  ['🟢 ڕیکلامەکەت دەستی پێکرد', 'ڕیکلام #'+adNum+' ئێستا چالاکە'],
-          approved: ['✅ ڕیکلامەکەت پەسەندکرا',   'ڕیکلام #'+adNum+' پەسەندکرا'],
-          rejected: ['❌ ڕیکلامەکەت ڕەتکرا',      'ڕیکلام #'+adNum+' ڕەتکرا'],
-          done:     ['🏁 ڕیکلامەکەت تەواو بوو',   'ڕیکلام #'+adNum+' تەواو بوو'],
-          paused:   ['⏸ ڕیکلامەکەت وەستاندرا',    'ڕیکلام #'+adNum+' وەستاندرا']
+        const _rtLang = (typeof ProxoLang !== 'undefined' && ProxoLang.getLang) ? ProxoLang.getLang() : 'ku';
+        const _n = adNum ? '#' + adNum : '';
+        const _rtMsgs = {
+          ku: {
+            review:    ['ڕیکلامەکەت لەژێر پێداچوونەوەدایە',  'ڕیکلامی ژمارە ' + _n + ' - لەژێر پێداچوونەوەدایە'],
+            active:    ['ڕیکلامەکەت پەسەندکرا',              'ڕیکلامی ژمارە ' + _n + ' - پەسەندکرا'],
+            scheduled: ['ڕیکلامەکەت پەسەندکرا',              'ڕیکلامی ژمارە ' + _n + ' - پەسەندکرا'],
+            rejected:  ['ڕیکلامەکەت ڕەتکرایەوە',            'ڕیکلامی ژمارە ' + _n + ' - ڕەتکرایەوە'],
+            completed: ['ڕیکلامەکەت تەواو بوو',              'ڕیکلامی ژمارە ' + _n + ' - تەواو بوو'],
+            paused:    ['ڕیکلامەکەت وەستاندرا',              'ڕیکلامی ژمارە ' + _n + ' - وەستاندرا'],
+          },
+          ar: {
+            review:    ['إعلانك قيد المراجعة',   'الإعلان رقم ' + _n + ' - قيد المراجعة'],
+            active:    ['تم قبول إعلانك',        'الإعلان رقم ' + _n + ' - تم القبول'],
+            scheduled: ['تم قبول إعلانك',        'الإعلان رقم ' + _n + ' - تم القبول'],
+            rejected:  ['تم رفض إعلانك',         'الإعلان رقم ' + _n + ' - مرفوض'],
+            completed: ['اكتمل إعلانك',          'الإعلان رقم ' + _n + ' - اكتمل'],
+            paused:    ['إعلانك متوقف مؤقتاً',   'الإعلان رقم ' + _n + ' - متوقف'],
+          }
         };
-        const m = msgs[newSt];
-        // toast disabled
+        const _msgMap = _rtMsgs[_rtLang] || _rtMsgs.ku;
+        const _m = _msgMap[newSt];
+        if (_m) _showNotifToast(_m[0], _m[1]);
         checkNotifBell();
       }
       // نوێکردنەوەی لیستی ڕیکلامەکان ئەگەر بەشەکە کراوەیە
@@ -14462,25 +14492,32 @@ async function _loadGiftsChallenges() {
   const wrap = document.getElementById('giftsChallengesList');
   const { data: challenges } = await sb.from('pa_challenges').select('*').eq('is_active', true).order('created_at', { ascending: false });
   if (!challenges || !challenges.length) {
-    wrap.innerHTML = '<div class="gifts-empty"><i class="fas fa-list-check"></i>هیچ ئەرکێکی چالاک نییە لە ئێستادا<br><span style="font-size:11px;opacity:.75">دواتر سەردانی ئەم بەشە بکەرەوە</span></div>';
+    const _emLang2 = (typeof ProxoLang !== 'undefined' && ProxoLang.getLang) ? ProxoLang.getLang() : 'ku';
+    wrap.innerHTML = '<div class="gifts-empty"><i class="fas fa-list-check"></i>' +
+      (_emLang2 === 'ar' ? 'لا توجد مهام نشطة الآن<br><span style=\'font-size:11px;opacity:.75\'>عد لاحقاً لهذا القسم</span>' :
+       'هیچ ئەرکێکی چالاک نییە لە ئێستادا<br><span style=\'font-size:11px;opacity:.75\'>دواتر سەردانی ئەم بەشە بکەرەوە</span>') +
+    '</div>';
     return;
   }
   const { data: progressRows } = await sb.from('pa_challenge_progress').select('*').eq('user_id', cu.id);
   const progMap = {};
   (progressRows || []).forEach(p => { progMap[p.challenge_id] = p; });
 
+  const _uiLang = (typeof ProxoLang !== 'undefined' && ProxoLang.getLang) ? ProxoLang.getLang() : 'ku';
   wrap.innerHTML = challenges.map(c => {
     const pr = progMap[c.id] || { progress: 0, claimed: false };
     const pct = Math.min(100, Math.round((pr.progress / c.goal_value) * 100));
     const done = pr.progress >= c.goal_value;
     const isAdsGoal = c.goal_type === 'ads_count';
-    const unit = isAdsGoal ? 'ڕیکلام' : 'دۆلار';
+    const unit = isAdsGoal ? (_uiLang === 'ar' ? 'إعلان' : 'ڕیکلام') : (_uiLang === 'ar' ? 'دولار' : 'دۆلار');
     const icoCls = isAdsGoal ? 'fa-bullhorn' : 'fa-sack-dollar';
     const icoGrad = pr.claimed ? ['#22c55e','#15803d'] : (done ? ['#c084fc','#7c3aed'] : ['#818cf8','#4f46e5']);
     const rewardTxt = [
       c.reward_iqd > 0 ? (parseFloat(c.reward_iqd).toLocaleString() + ' IQD') : null,
-      c.reward_points > 0 ? (c.reward_points + ' خاڵ') : null,
+      c.reward_points > 0 ? (c.reward_points + (_uiLang === 'ar' ? ' نقطة' : ' خاڵ')) : null,
     ].filter(Boolean).join(' + ');
+    const displayTitle = (_uiLang === 'ar' && c.title_ar) ? c.title_ar : (c.title || '');
+    const displayDesc  = (_uiLang === 'ar' && c.description_ar) ? c.description_ar : (c.description || '');
     let dateTxt = '';
     if (c.created_at) {
       const d = new Date(c.created_at);
@@ -14490,9 +14527,9 @@ async function _loadGiftsChallenges() {
     }
     let btn;
     if (pr.claimed) {
-      btn = '<div style="font-size:12px;font-weight:800;color:var(--gr);display:flex;align-items:center;gap:6px"><i class="fas fa-check-circle"></i> وەرگیرا</div>';
+      btn = '<div style="font-size:12px;font-weight:800;color:var(--gr);display:flex;align-items:center;gap:6px"><i class="fas fa-check-circle"></i> ' + (_uiLang === 'ar' ? 'تم الاستلام' : 'وەرگیرا') + '</div>';
     } else if (done) {
-      btn = '<button class="abtn" style="padding:9px 18px;font-size:12.5px;width:auto" onclick="claimChallenge(\''+c.id+'\')"><i class="fas fa-gift"></i> وەرگرتنی خەڵات</button>';
+      btn = '<button class="abtn" style="padding:9px 18px;font-size:12.5px;width:auto" onclick="claimChallenge(\''+c.id+'\')"><i class="fas fa-gift"></i> ' + (_uiLang === 'ar' ? 'استلام المكافأة' : 'وەرگرتنی خەڵات') + '</button>';
     } else {
       btn = '<div style="font-size:11px;color:var(--mt);font-weight:700;font-family:\'Inter\',sans-serif">' + Math.floor(pr.progress) + ' / ' + c.goal_value + ' <span style="font-family:\'R\',sans-serif;font-weight:600">' + unit + '</span></div>';
     }
@@ -14502,10 +14539,10 @@ async function _loadGiftsChallenges() {
         '<div class="gifts-chal-ico" style="background:linear-gradient(135deg,' + icoGrad[0] + ',' + icoGrad[1] + ');color:#fff;box-shadow:0 4px 12px ' + icoGrad[1] + '40"><i class="fas ' + icoCls + '"></i></div>' +
         '<div style="flex:1;min-width:0">' +
           '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">' +
-            '<div style="font-size:13.5px;font-weight:800;color:var(--dark)">' + (c.title || '') + '</div>' +
+            '<div style="font-size:13.5px;font-weight:800;color:var(--dark)">' + displayTitle + '</div>' +
             '<div class="gifts-chal-reward">' + rewardTxt + '</div>' +
           '</div>' +
-          (c.description ? '<div style="font-size:11.5px;color:var(--mt);margin-top:4px;line-height:1.6">' + c.description + '</div>' : '') +
+          (displayDesc ? '<div style="font-size:11.5px;color:var(--mt);margin-top:4px;line-height:1.6">' + displayDesc + '</div>' : '') +
         '</div>' +
       '</div>' +
       '<div style="height:7px;border-radius:7px;background:var(--b1);overflow:hidden;margin-bottom:11px">' +
@@ -14699,6 +14736,21 @@ if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostn
 
 
 
+
+
+// ── Reload challenges when user switches language so titles update instantly ──
+// ── Also save language preference to Supabase so admin can send bilingual notifications ──
+document.addEventListener('proxolangchange', function(e) {
+  const wrap = document.getElementById('giftsChallengesList');
+  if (wrap && wrap.children.length > 0 && typeof _loadGiftsChallenges === 'function') {
+    _loadGiftsChallenges();
+  }
+  // Save user's language preference to profiles so admin sends right language notifications
+  const lang = e && e.detail && e.detail.lang ? e.detail.lang : (typeof ProxoLang !== 'undefined' ? ProxoLang.getLang() : 'ku');
+  if (typeof sb !== 'undefined' && typeof cu !== 'undefined' && cu && cu.id) {
+    try { sb.from('profiles').update({ lang_pref: lang }).eq('id', cu.id).then(function(){}); } catch(_) {}
+  }
+});
 
 <!-- ===== Proxo Arabic/Kurdish language toggle (auto-injected) ===== -->
 <script id="proxo-i18n">

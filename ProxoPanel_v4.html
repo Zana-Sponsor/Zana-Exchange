@@ -1893,14 +1893,30 @@ tr:hover td{background:rgba(28,35,51,.015);}
       <h3><i class="fas fa-flag-checkered" style="margin-left:8px;color:#a855f7"></i>چاڵنجی نوێ</h3>
       <div class="modal-close" onclick="closeMo('moCreateChallenge')"><i class="fas fa-xmark"></i></div>
     </div>
-    <div class="field-wrap">
-      <label class="modal-lbl">ناونیشانی چاڵنج <span style="color:var(--rd)">*</span></label>
-      <input class="minp" type="text" id="chTitle" placeholder="بۆ نموونە: ٥ ڕیکلام لەم هەفتەیەدا" oninput="clearFieldErr('chTitle')">
-      <div class="field-err" id="chTitle-err">ناونیشان پڕ بکەرەوە</div>
+    <div style="display:flex;gap:6px;margin-bottom:14px;background:var(--bg);border:1px solid var(--b1);border-radius:12px;padding:5px">
+      <button type="button" id="chLangTabKu" onclick="chSwitchLang('ku')" style="flex:1;padding:8px;border-radius:9px;border:none;background:#a855f7;color:#fff;font-family:'R',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s"><i class="fas fa-language"></i> کوردی</button>
+      <button type="button" id="chLangTabAr" onclick="chSwitchLang('ar')" style="flex:1;padding:8px;border-radius:9px;border:none;background:transparent;color:var(--mt);font-family:'R',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s"><i class="fas fa-language"></i> عەرەبی</button>
     </div>
-    <div class="field-wrap">
-      <label class="modal-lbl">وەسف <span style="font-size:10px;color:var(--mt)">(ئۆپشنی)</span></label>
-      <input class="minp" type="text" id="chDesc" placeholder="وەسفێکی کورت بۆ بەکارهێنەر">
+    <div id="chPanelKu">
+      <div class="field-wrap">
+        <label class="modal-lbl">ناونیشان (کوردی) <span style="color:var(--rd)">*</span></label>
+        <input class="minp" type="text" id="chTitle" placeholder="بۆ نموونە: ٥ ڕیکلام لەم هەفتەیەدا" oninput="clearFieldErr('chTitle')">
+        <div class="field-err" id="chTitle-err">ناونیشان پڕ بکەرەوە</div>
+      </div>
+      <div class="field-wrap">
+        <label class="modal-lbl">وەسف (کوردی) <span style="font-size:10px;color:var(--mt)">(ئۆپشنی)</span></label>
+        <input class="minp" type="text" id="chDesc" placeholder="وەسفێکی کورت بۆ بەکارهێنەر">
+      </div>
+    </div>
+    <div id="chPanelAr" style="display:none">
+      <div class="field-wrap">
+        <label class="modal-lbl" style="direction:rtl;text-align:right">العنوان (عربي) <span style="color:var(--rd)">*</span></label>
+        <input class="minp" type="text" id="chTitleAr" placeholder="مثال: ٥ إعلانات هذا الأسبوع" dir="rtl" style="text-align:right">
+      </div>
+      <div class="field-wrap">
+        <label class="modal-lbl" style="direction:rtl;text-align:right">الوصف (عربي) <span style="font-size:10px;color:var(--mt)">(اختياري)</span></label>
+        <input class="minp" type="text" id="chDescAr" placeholder="وصف قصير للمستخدم" dir="rtl" style="text-align:right">
+      </div>
     </div>
     <div class="field-wrap">
       <label class="modal-lbl">جۆری ئامانج <span style="color:var(--rd)">*</span></label>
@@ -3548,8 +3564,11 @@ async function updateAdStatus(id,userId,newStatus,budget){
         await sb.from('pa_notifications').insert({user_id:userId,type:'ad_paused',title:'ڕیکلامەکەت وەستاوە ⏸',body:'ئادمین ڕیکلامەکەت بۆ ماوەیەک وەستاندووە.',is_read:false});
         _fbPushNotif(userId,'ڕیکلامەکەت وەستاوە ⏸','ئادمین ڕیکلامەکەت بۆ ماوەیەک وەستاندووە.','ad_paused');
       } else if(newStatus==='completed'){
-        await sb.from('pa_notifications').insert({user_id:userId,type:'ad_completed',title:'ڕیکلامەکەت تەواوبوو ✅',body:'کامپینی ڕیکلامەکەت بە سەرکەوتوویی تەواوبوو — سوپاس بۆ بەکارهێنانی Proxo!',is_read:false});
-        _fbPushNotif(userId,'ڕیکلامەکەت تەواوبوو ✅','کامپینی ڕیکلامەکەت بە سەرکەوتوویی تەواوبوو.','ad_completed');
+        const _cpLang = await _getUserLang(userId).catch(()=>'ku');
+        const _cpAdNum = (allAds.find(a=>a.id===id)||{}).ad_number || id;
+        const _cpN = _adNotifTexts(_cpAdNum, 'completed', _cpLang);
+        await sb.from('pa_notifications').insert({user_id:userId,type:'ad_completed',title:_cpN.title,body:_cpN.body,is_read:false});
+        _fbPushNotif(userId, _cpN.title, _cpN.body, 'ad_completed');
       } else if(newStatus==='active' && parseFloat(budget||0)<20){
         await sb.from('pa_notifications').insert({user_id:userId,type:'ad_active',title:'ڕیکلامەکەت دووبارە چالاک بوو ▶️',body:'ئادمین ڕیکلامەکەت دووبارە چالاک کردووەتەوە — ئێستا ژیوەیە.',is_read:false});
         _fbPushNotif(userId,'ڕیکلامەکەت دووبارە چالاک بوو ▶️','ئادمین ڕیکلامەکەت دووبارە چالاک کردووەتەوە.','ad_active');
@@ -3644,14 +3663,16 @@ async function startReview(adId){
     if(error && !isNetHttpErr(error)){ showToast('هەڵە: '+error.message,'rd'); return; }
     // ئاگادارکردنەوەی بەکارهێنەر کە ڕیکلامەکەی لەژێر پێداچوونەوەدایە
     try{
+      const _rvLang = await _getUserLang(ad.user_id);
+      const _rvN = _adNotifTexts(ad.ad_number, 'review', _rvLang);
       await sb.from('pa_notifications').insert({
         user_id: ad.user_id,
-        type: 'general',
-        title: 'ڕیکلامەکەت لەژێر پێداچوونەوەدایە 🔍',
-        body: `ڕیکلامی ژمارە #${ad.ad_number||'—'} ئێستا لەلایەن تیمی Proxo پێداچوونەوەی تێدەکرێت. بەرزەبوونەوەیەک بچاوەڕێ.`,
+        type: 'ad_review',
+        title: _rvN.title,
+        body: _rvN.body,
         is_read: false
       });
-      _fbPushNotif(ad.user_id,'ڕیکلامەکەت لەژێر پێداچوونەوەدایە 🔍',`ڕیکلامی #${ad.ad_number||'—'} لەژێر پێداچوونەوەی تیمی Proxo دایە`,'general');
+      _fbPushNotif(ad.user_id, _rvN.title, _rvN.body, 'ad_review');
     }catch(e){}
     showToast('✅ دۆخ گۆڕا بۆ "لەژێر پێداچوونەوەدایە" — ئێستا دەتوانی پەسەندی بکەی','gr');
     loadApprovalWorkflow();
@@ -3734,25 +3755,19 @@ async function submitApproval(){
     try{ await recordAdRevenue(_approveAdId, _approveUserId, _approveAdBudget); }catch(e){}
     // خاڵی ئاست: کاتێک ڕیکلام وەردەگیرێت و چالاک دەبێت خاڵ زیاد بکە
     try{ await awardAdPoints(_approveUserId, _approveAdBudget); }catch(e){}
-    // User notification — status changes to "Live" in the app
-    // FIX: was type:'general' — must be 'ad_approved' so the notification
-    // appears correctly in the notification list and routes to /my-ads on tap.
-    const _notifTitle = _finalStatus === 'scheduled'
-      ? 'ڕیکلامەکەت پەسەندکرا — کات بۆ دانراو 📅'
-      : 'ڕیکلامەکەت چالاک بوو ✅';
-    const _notifBody = _finalStatus === 'scheduled'
-      ? `ڕیکلامی ژمارە #${_approveAdNumber || 'نادیار'} پەسەندکرا — لە ${startDate} دەستپێدەکات`
-      : `ئێستا ڕیکلامی ژمارە #${_approveAdNumber || 'نادیار'} چالاکە`;
+    // User notification — bilingual ad_approved
+    const _apLang = await _getUserLang(_approveUserId);
+    const _apN = _adNotifTexts(_approveAdNumber, 'approved', _apLang);
     await sb.from('pa_notifications').insert({
       user_id: _approveUserId,
       type: 'ad_approved',
-      title: _notifTitle,
-      body: _notifBody,
+      title: _apN.title,
+      body: _apN.body,
       is_read: false,
       meta: { ad_id: _approveAdId, ad_number: _approveAdNumber }
     });
     // ── Firebase realtime push (پەسەندکردنی ڕیکلام) ──
-    _fbPushNotif(_approveUserId, _notifTitle, _notifBody, 'ad_approved');
+    _fbPushNotif(_approveUserId, _apN.title, _apN.body, 'ad_approved');
     _fbTriggerAds(_approveUserId, _approveAdId, _finalStatus);
     // ══ ناردنی ئیمەیلی پەسەندکردنی ڕیکلام لە ڕێگای webhook ══
     try{
@@ -3919,17 +3934,20 @@ async function confirmReject(){
         // was missing — only refund_rejected_ad was inserted — so ads without a
         // budget (or when refund was not triggered) showed no notification at all.
         try{
+          const _rjLang = await _getUserLang(adObj.user_id);
+          const _rjN = _adNotifTexts(adObj.ad_number || id, 'rejected', _rjLang);
           await sb.from('pa_notifications').insert({
             user_id:adObj.user_id,
             type:'ad_rejected',
-            title:`ڕیکلامی ژمارە #${adObj.ad_number||id} ڕەتکرایەوە ❌`,
-            body:'هۆکاری ڕەتکردنەوە: '+reason,
+            title:_rjN.title,
+            body:_rjN.body,
             is_read:false
           });
         }catch(_niErr){ console.warn('[ad_rejected] notification insert failed:',_niErr); }
         // ── Firebase realtime push (ڕەتکردنی ڕیکلام) ──
-        // push_only:true لە _fbPushNotif دا — چونکە pa_notifications پێشتر داخرێنراوە
-        _fbPushNotif(adObj.user_id,`ڕیکلامی ژمارە #${adObj.ad_number||id} ڕەتکرایەوە ❌`,'هۆکاری ڕەتکردنەوە: '+reason,'ad_rejected');
+        const _rjLang2 = await _getUserLang(adObj.user_id).catch(()=>'ku');
+        const _rjN2 = _adNotifTexts(adObj.ad_number || id, 'rejected', _rjLang2);
+        _fbPushNotif(adObj.user_id, _rjN2.title, _rjN2.body, 'ad_rejected');
         _fbTriggerAds(adObj.user_id, id, 'rejected');
         // ══ ناردنی ئیمەیلی ڕەتکردنەوەی ڕیکلام لە ڕێگای webhook ══
         try{
@@ -5279,11 +5297,13 @@ async function loadChallenges(){
       c.reward_iqd>0?(parseFloat(c.reward_iqd).toLocaleString()+' IQD'):null,
       c.reward_points>0?(c.reward_points+' خاڵ'):null,
     ].filter(Boolean).join(' + ')||'—';
+    const arBadge=c.title_ar?'<span style="font-size:10px;background:#a855f710;color:#a855f7;border-radius:6px;padding:2px 7px;margin-right:6px;font-weight:700">AR ✓</span>':'<span style="font-size:10px;background:#f59e0b10;color:#f59e0b;border-radius:6px;padding:2px 6px;margin-right:6px;font-weight:700">AR ✗</span>';
     return '<div class="user-card">'+
       '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'+
-        '<div style="font-size:13.5px;font-weight:800;color:var(--dark)">'+(c.title||'')+'</div>'+
+        '<div style="font-size:13.5px;font-weight:800;color:var(--dark);display:flex;align-items:center;flex-wrap:wrap;gap:4px">'+(c.title||'')+arBadge+'</div>'+
         '<div class="act-btn '+(c.is_active?'gr':'yw')+'" style="padding:4px 10px;font-size:11px" onclick="toggleChallenge(\''+c.id+'\','+c.is_active+')"><i class="fas fa-toggle-'+(c.is_active?'on':'off')+'"></i> '+(c.is_active?'چالاک':'ناچالاک')+'</div>'+
       '</div>'+
+      (c.title_ar?'<div style="font-size:11px;color:var(--mt);margin-bottom:5px;direction:rtl;text-align:right;background:var(--bg);border-radius:8px;padding:5px 8px"><i class="fas fa-language" style="margin-left:5px;color:#a855f7;font-size:10px"></i>'+c.title_ar+(c.description_ar?' — '+c.description_ar:'')+'</div>':'')+
       (c.description?'<div style="font-size:11.5px;color:var(--mt);margin-bottom:8px">'+c.description+'</div>':'')+
       '<div style="font-size:11.5px;color:var(--mt);margin-bottom:8px"><i class="fas fa-bullseye" style="margin-left:5px"></i>ئامانج: '+c.goal_value+' '+unit+'</div>'+
       '<div style="font-size:11.5px;color:#a855f7;font-weight:700;margin-bottom:10px"><i class="fas fa-gift" style="margin-left:5px"></i>خەڵات: '+rewardTxt+'</div>'+
@@ -5294,9 +5314,21 @@ async function loadChallenges(){
   }).join('')+'</div>';
 }
 
+function chSwitchLang(lang){
+  const isAr=lang==='ar';
+  document.getElementById('chPanelKu').style.display=isAr?'none':'block';
+  document.getElementById('chPanelAr').style.display=isAr?'block':'none';
+  document.getElementById('chLangTabKu').style.background=isAr?'transparent':'#a855f7';
+  document.getElementById('chLangTabKu').style.color=isAr?'var(--mt)':'#fff';
+  document.getElementById('chLangTabAr').style.background=isAr?'#a855f7':'transparent';
+  document.getElementById('chLangTabAr').style.color=isAr?'#fff':'var(--mt)';
+}
+
 async function createChallenge(){
   const title=(document.getElementById('chTitle').value||'').trim();
+  const titleAr=(document.getElementById('chTitleAr').value||'').trim();
   const desc=(document.getElementById('chDesc').value||'').trim();
+  const descAr=(document.getElementById('chDescAr').value||'').trim();
   const goalType=document.getElementById('chGoalType').value;
   const goalValue=parseFloat(document.getElementById('chGoalValue').value);
   const rewardIqd=parseFloat(document.getElementById('chRewardIqd').value)||0;
@@ -5304,11 +5336,13 @@ async function createChallenge(){
   const startsAt=document.getElementById('chStartsAt').value;
   const endsAt=document.getElementById('chEndsAt').value;
   let valid=true;
-  if(!title){showFieldErr('chTitle');valid=false;}
+  if(!title){chSwitchLang('ku');showFieldErr('chTitle');valid=false;}
   if(isNaN(goalValue)||goalValue<=0){showFieldErr('chGoalValue');valid=false;}
   if(!valid)return;
   const row={
-    title,description:desc||null,goal_type:goalType,goal_value:goalValue,
+    title,title_ar:titleAr||null,
+    description:desc||null,description_ar:descAr||null,
+    goal_type:goalType,goal_value:goalValue,
     reward_iqd:rewardIqd,reward_points:rewardPoints,is_active:true,
     starts_at:startsAt?new Date(startsAt).toISOString():null,
     ends_at:endsAt?new Date(endsAt).toISOString():null,
@@ -5317,7 +5351,8 @@ async function createChallenge(){
   if(error){showToast('هەڵە: '+error.message,'rd');return;}
   showToast('✅ چاڵنج دروستکرا','gr');
   closeMo('moCreateChallenge');
-  ['chTitle','chDesc','chGoalValue','chRewardIqd','chRewardPoints','chStartsAt','chEndsAt'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['chTitle','chTitleAr','chDesc','chDescAr','chGoalValue','chRewardIqd','chRewardPoints','chStartsAt','chEndsAt'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  chSwitchLang('ku');
   loadChallenges();
 }
 
@@ -6499,6 +6534,32 @@ function getFbAdminDb(){
 
 
 // ═══ FIREBASE REALTIME HELPERS (ئاگادارکردنی ڕاستەوخۆ بۆ ئاپی بەکارهێنەر) ═══
+
+// ══ BILINGUAL AD NOTIFICATION HELPERS ══
+async function _getUserLang(userId) {
+  try {
+    const { data } = await sb.from('profiles').select('lang_pref').eq('id', userId).single();
+    return data?.lang_pref === 'ar' ? 'ar' : 'ku';
+  } catch(e) { return 'ku'; }
+}
+
+function _adNotifTexts(adNum, type, lang) {
+  const n = adNum ? '#' + adNum : '';
+  const ku = {
+    review:    { title: 'ڕیکلامەکەت لەژێر پێداچوونەوەدایە',  body: 'ڕیکلامی ژمارە ' + n + ' - لەژێر پێداچوونەوەدایە' },
+    approved:  { title: 'ڕیکلامەکەت پەسەندکرا',              body: 'ڕیکلامی ژمارە ' + n + ' - پەسەندکرا' },
+    rejected:  { title: 'ڕیکلامەکەت ڕەتکرایەوە',            body: 'ڕیکلامی ژمارە ' + n + ' - ڕەتکرایەوە' },
+    completed: { title: 'ڕیکلامەکەت تەواو بوو',              body: 'ڕیکلامی ژمارە ' + n + ' - تەواو بوو' },
+  };
+  const ar = {
+    review:    { title: 'إعلانك قيد المراجعة',   body: 'الإعلان رقم ' + n + ' - قيد المراجعة' },
+    approved:  { title: 'تم قبول إعلانك',        body: 'الإعلان رقم ' + n + ' - تم القبول' },
+    rejected:  { title: 'تم رفض إعلانك',         body: 'الإعلان رقم ' + n + ' - مرفوض' },
+    completed: { title: 'اكتمل إعلانك',          body: 'الإعلان رقم ' + n + ' - اكتمل' },
+  };
+  return (lang === 'ar' ? ar : ku)[type] || ku[type];
+}
+
 async function _fbPushNotif(uid, title, body, type) {
   // ── 1. Firebase Realtime DB (کاتی کراوەبوونی ئەپ) ────────────────────────
   try {
