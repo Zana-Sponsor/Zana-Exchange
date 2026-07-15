@@ -1961,6 +1961,17 @@ tr:hover td{background:rgba(28,35,51,.015);}
       <input class="minp" type="datetime-local" id="voucherExpiry" dir="ltr" style="font-family:'Inter'">
     </div>
     <div class="field-wrap">
+      <label class="modal-lbl">ئەم فاوچەرە بۆچییە؟ <span style="color:var(--rd)">*</span></label>
+      <select class="minp" id="voucherReason" onchange="onVoucherReasonChange(this.value)">
+        <option value="پاداشت">🎁 پاداشت</option>
+        <option value="گەڕانەوەی پارە">💸 گەڕانەوەی پارە</option>
+        <option value="قەرەبووکردنەوە">🤝 قەرەبووکردنەوەی کێشەیەک</option>
+        <option value="other">✏️ هەرشتێکی تر (خۆت بنووسە)</option>
+      </select>
+      <input class="minp" type="text" id="voucherReasonOther" placeholder="بۆ نموونە: بۆنی نەورۆز" style="display:none;margin-top:8px" oninput="clearFieldErr('voucherReasonOther')">
+      <div class="field-err" id="voucherReasonOther-err">تکایە هۆکارەکە بنووسە</div>
+    </div>
+    <div class="field-wrap">
       <label class="modal-lbl" style="margin-bottom:8px">بار</label>
       <div style="display:flex;align-items:center;gap:10px;background:var(--bg);border:1.5px solid var(--b1);border-radius:12px;padding:10px 14px">
         <i class="fas fa-toggle-on" style="color:#f59e0b;font-size:18px"></i>
@@ -4842,6 +4853,10 @@ function genVoucherCode(){
   if(inp)inp.value=code;
 }
 
+function onVoucherReasonChange(val){
+  document.getElementById('voucherReasonOther').style.display = val==='other' ? 'block' : 'none';
+}
+
 // ── فەنکشنەکانی ناردنی ڤاوچەر بۆ بەکارهێنەرێکی تایبەت ──
 function toggleVoucherTarget(cb){
   const wrap=document.getElementById('voucherTargetWrap');
@@ -4976,7 +4991,7 @@ function renderVouchers(){
     wrap.innerHTML='<div class="empty"><i class="fas fa-ticket"></i><p>هیچ کۆدێک دروست نەکراوە</p></div>';
     return;
   }
-  var thead='<table><thead><tr><th>کۆد</th><th>بڕ (IQD)</th><th>بۆ کێ</th><th>بار</th><th>بەکارهێنراو لەلایەن</th><th>کۆتایی</th><th>نێردراوە</th><th>کردارەکان</th></tr></thead><tbody>';
+  var thead='<table><thead><tr><th>کۆد</th><th>بڕ (IQD)</th><th>هۆکار</th><th>بۆ کێ</th><th>بار</th><th>بەکارهێنراو لەلایەن</th><th>کۆتایی</th><th>نێردراوە</th><th>کردارەکان</th></tr></thead><tbody>';
   var tbody='';
   var cards='<div class="user-cards">';
   for(var i=0;i<av.length;i++){
@@ -5005,8 +5020,9 @@ function renderVouchers(){
     var vid=v.id; var vcode=v.code; var vactive=v.is_active;
     var tbtn=!claimed?('<div class="act-btn '+(vactive?'yw':'gr')+'" style="flex:1" data-id="'+vid+'" data-active="'+vactive+'" onclick="toggleVoucher(this.dataset.id,this.dataset.active===\'true\')"><i class="fas fa-toggle-'+(vactive?'on':'off')+'"></i> '+(vactive?'ناچالاككردن':'چالاككردن')+'</div>'):'';
     var dbtn='<div class="act-btn rd" style="'+(claimed?'flex:1;':'')+'padding:4px 8px;font-size:11px" data-id="'+vid+'" data-code="'+vcode+'" onclick="deleteVoucher(this.dataset.id,this.dataset.code)"><i class="fas fa-trash"></i></div>';
-    tbody+='<tr><td><b style="font-family:Inter;font-weight:800;letter-spacing:2px">'+vcode+'</b></td><td><b style="color:#f59e0b;font-family:Inter">'+amt+' IQD</b></td><td>'+tcell+'</td><td><span class="badge '+sclass+'">'+slabel+'</span></td><td>'+ucell+'</td><td style="font-size:11px;color:var(--mt)">'+ecell+'</td><td style="font-size:11px;color:var(--mt);white-space:nowrap">'+cdate+'</td><td>'+dbtn+'</td></tr>';
-    cards+='<div class="user-card"><div class="user-card-header"><div class="user-card-info"><div class="user-card-name">'+vcode+'</div><div class="user-card-date"><i class="fas fa-calendar-plus" style="font-size:9px;opacity:.5;margin-left:3px"></i>'+cdate+'</div></div><span class="badge '+sclass+'">'+slabel+'</span></div>'+(v.assigned_user_id?'<div style="font-size:10.5px;color:var(--mt);margin-bottom:8px;padding:5px 10px;background:rgba(245,158,11,.06);border-radius:8px;border:1px solid rgba(245,158,11,.18)"><i class="fas fa-user" style="margin-left:4px;font-size:9px"></i>بۆ: '+(tname||'نازانراو')+'</div>':'')+(v.expires_at?'<div style="font-size:10.5px;color:'+(expired?'var(--rd)':'var(--mt)')+';margin-bottom:8px;padding:5px 10px;background:'+(expired?'rgba(220,38,38,.06)':'var(--bg)')+';border-radius:8px;border:1px solid '+(expired?'rgba(220,38,38,.15)':'var(--b1)')+'"><i class="fas fa-clock" style="margin-left:4px;font-size:9px"></i>کۆتایی: '+new Date(v.expires_at).toLocaleDateString('ku')+'</div>':'')+'<div class="user-card-actions">'+tbtn+dbtn.replace('padding:4px 8px;font-size:11px','flex:1')+'</div></div>';
+    var rcell=v.reason?('<span style="font-size:11px;color:var(--dark);font-weight:600">'+v.reason+'</span>'):'<span style="color:var(--mt);font-size:11px">—</span>';
+    tbody+='<tr><td><b style="font-family:Inter;font-weight:800;letter-spacing:2px">'+vcode+'</b></td><td><b style="color:#f59e0b;font-family:Inter">'+amt+' IQD</b></td><td>'+rcell+'</td><td>'+tcell+'</td><td><span class="badge '+sclass+'">'+slabel+'</span></td><td>'+ucell+'</td><td style="font-size:11px;color:var(--mt)">'+ecell+'</td><td style="font-size:11px;color:var(--mt);white-space:nowrap">'+cdate+'</td><td>'+dbtn+'</td></tr>';
+    cards+='<div class="user-card"><div class="user-card-header"><div class="user-card-info"><div class="user-card-name">'+vcode+'</div><div class="user-card-date"><i class="fas fa-calendar-plus" style="font-size:9px;opacity:.5;margin-left:3px"></i>'+cdate+'</div></div><span class="badge '+sclass+'">'+slabel+'</span></div>'+(v.reason?'<div style="font-size:10.5px;color:var(--mt);margin-bottom:8px;padding:5px 10px;background:var(--bg);border-radius:8px;border:1px solid var(--b1)"><i class="fas fa-circle-info" style="margin-left:4px;font-size:9px"></i>هۆکار: '+v.reason+'</div>':'')+(v.assigned_user_id?'<div style="font-size:10.5px;color:var(--mt);margin-bottom:8px;padding:5px 10px;background:rgba(245,158,11,.06);border-radius:8px;border:1px solid rgba(245,158,11,.18)"><i class="fas fa-user" style="margin-left:4px;font-size:9px"></i>بۆ: '+(tname||'نازانراو')+'</div>':'')+(v.expires_at?'<div style="font-size:10.5px;color:'+(expired?'var(--rd)':'var(--mt)')+';margin-bottom:8px;padding:5px 10px;background:'+(expired?'rgba(220,38,38,.06)':'var(--bg)')+';border-radius:8px;border:1px solid '+(expired?'rgba(220,38,38,.15)':'var(--b1)')+'"><i class="fas fa-clock" style="margin-left:4px;font-size:9px"></i>کۆتایی: '+new Date(v.expires_at).toLocaleDateString('ku')+'</div>':'')+'<div class="user-card-actions">'+tbtn+dbtn.replace('padding:4px 8px;font-size:11px','flex:1')+'</div></div>';
   }
   wrap.innerHTML=thead+tbody+'</tbody></table>'+cards+'</div>';
 }
@@ -5019,15 +5035,19 @@ async function createVoucherCode(){
   const targetEnabled=document.getElementById('voucherTargetToggle').checked;
   const targetUserId=(document.getElementById('voucherTargetUserId').value||'').trim();
   const targetName=(document.getElementById('voucherTargetName')?.textContent||'').trim();
+  const reasonSel=document.getElementById('voucherReason').value;
+  const reasonOther=(document.getElementById('voucherReasonOther').value||'').trim();
+  const reason=reasonSel==='other'?reasonOther:reasonSel;
   let valid=true;
   if(!code){showFieldErr('voucherCode');valid=false;}
   if(isNaN(amountIqd)||amountIqd<100){showFieldErr('voucherAmount');valid=false;}
+  if(reasonSel==='other'&&!reasonOther){showFieldErr('voucherReasonOther');valid=false;}
   if(targetEnabled&&!targetUserId){showToast('تکایە بەکارهێنەرێک هەڵبژێرە کە فاوچەرەکەی بۆ بنێردرێت','rd');return;}
   if(!valid)return;
   if(!/^[A-Z0-9]{4,20}$/.test(code)){showToast('کۆد دەبێت تەنها ئینگلیزی بزیک و ژمارە بێت (٤ تا ٢٠ پیت)','rd');return;}
   const dup=_allVouchers.find(v=>v.code===code);
   if(dup){showToast('ئەم کۆدە پێشتر هەیە','rd');return;}
-  const row={code,amount_iqd:amountIqd,is_active:isActive,used_by:null,used_at:null,created_at:new Date().toISOString()};
+  const row={code,amount_iqd:amountIqd,is_active:isActive,used_by:null,used_at:null,created_at:new Date().toISOString(),reason};
   if(expiry)row.expires_at=new Date(expiry).toISOString();
   if(targetEnabled&&targetUserId)row.assigned_user_id=targetUserId;
   const btn=document.querySelector('[onclick="createVoucherCode()"]');
@@ -5039,7 +5059,7 @@ async function createVoucherCode(){
   if(targetEnabled&&targetUserId){
     const expTxt=expiry?('تا '+new Date(expiry).toLocaleDateString('ku')):'بێ کۆتایی';
     const notifTitle='🎁 فاوچەرێکی تایبەت بۆت نێردرا';
-    const notifBody='ئادمین فاوچەرێکی '+Math.round(amountIqd).toLocaleString()+' IQD بۆت ناردووە. سەردانی بەشی «دیاریەکان» بکە بۆ چالاککردنی. ('+expTxt+')';
+    const notifBody='ئادمین فاوچەرێکی '+Math.round(amountIqd).toLocaleString()+' IQD بۆت ناردووە — هۆکار: '+reason+'. سەردانی بەشی «فاوچەرەکان» بکە بۆ چالاککردنی. ('+expTxt+')';
     await sb.from('pa_notifications').insert({user_id:targetUserId,type:'general',title:notifTitle,body:notifBody,is_read:false,created_at:new Date().toISOString()});
     _fbPushNotif(targetUserId,notifTitle,notifBody,'general');
     showToast('✅ ڤاوچەری '+code+' نێردرا بۆ '+(targetName||'بەکارهێنەر')+' — '+Math.round(amountIqd).toLocaleString()+' IQD','gr');
@@ -5051,6 +5071,9 @@ async function createVoucherCode(){
   document.getElementById('voucherAmount').value='';
   document.getElementById('voucherExpiry').value='';
   document.getElementById('voucherIsActive').checked=true;
+  document.getElementById('voucherReason').value='پاداشت';
+  document.getElementById('voucherReasonOther').value='';
+  document.getElementById('voucherReasonOther').style.display='none';
   document.getElementById('voucherTargetToggle').checked=false;
   document.getElementById('voucherTargetWrap').style.display='none';
   document.getElementById('voucherTargetTrack').style.background='#ccc';
