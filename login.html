@@ -180,8 +180,46 @@ button,a{touch-action:manipulation;}
 
 </head>
 <body>
+<!-- ══ BILINGUAL SYSTEM (KU/EN) ══ -->
+<style>
+#langToggleBtn{position:fixed;bottom:72px;right:12px;z-index:99999;background:#1c2333;color:#fff;border:none;border-radius:22px;padding:7px 15px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.6px;box-shadow:0 3px 14px rgba(0,0,0,.28);transition:transform .15s,opacity .15s;-webkit-tap-highlight-color:transparent;user-select:none;}
+#langToggleBtn:active{transform:scale(.93);opacity:.85;}
+</style>
+<script>
+(function(){
+  var LANG_KEY='proxo_lang';
+  window._lang='ku';
+  try{window._lang=localStorage.getItem(LANG_KEY)||'ku';}catch(e){}
+  function _applyLang(lang){
+    window._lang=lang;
+    try{localStorage.setItem(LANG_KEY,lang);}catch(e){}
+    var isEn=(lang==='en');
+    document.documentElement.lang=isEn?'en':'ku';
+    document.documentElement.dir=isEn?'ltr':'rtl';
+    document.querySelectorAll('[data-ku][data-en]').forEach(function(el){
+      el.textContent=isEn?el.dataset.en:el.dataset.ku;
+    });
+    document.querySelectorAll('[data-ku-ph]').forEach(function(el){
+      el.placeholder=isEn?(el.getAttribute('data-en-ph')||''):
+                          (el.getAttribute('data-ku-ph')||'');
+    });
+    var tb=document.getElementById('langToggleBtn');
+    if(tb) tb.textContent=isEn?'\u06a9\u0648':'EN';
+  }
+  window.applyLang=_applyLang;
+  window._t=function(ku,en){return window._lang==='en'?en:ku;};
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',function(){_applyLang(window._lang);});
+  }else{
+    setTimeout(function(){_applyLang(window._lang);},0);
+  }
+  window.addEventListener('load',function(){_applyLang(window._lang);});
+})();
+</script>
+<button id="langToggleBtn" onclick="applyLang(window._lang==='ku'?'en':'ku')">EN</button>
 
-<div id="offlineBanner"><i class="fas fa-wifi-slash"></i> ئینتەرنێت پچڕاوە — تکایە پەیوەندی بکەرەوە</div>
+
+<div id="offlineBanner"><i class="fas fa-wifi-slash"></i> <span data-ku="ئینتەرنێت پچڕاوە — تکایە پەیوەندی بکەرەوە" data-en="No internet — please reconnect">ئینتەرنێت پچڕاوە — تکایە پەیوەندی بکەرەوە</span></div>
 <div class="toast" id="toast"></div>
 
 <!-- ══ LOGIN SCREEN ══ -->
@@ -189,7 +227,7 @@ button,a{touch-action:manipulation;}
   <div class="auth-inner">
     <div class="auth-brand">
       <h1>Proxo <span>App</span></h1>
-      <p>بەڕێوەبردنی ڕیکلامەکانی تیکتۆک</p>
+      <p><span data-ku="بەڕێوەبردنی <span data-ku="ڕیکلام" data-en="Ad">ڕیکلام</span>ەکانی تیکتۆک" data-en="TikTok Ads Management">بەڕێوەبردنی <span data-ku="ڕیکلام" data-en="Ad">ڕیکلام</span>ەکانی تیکتۆک</span></p>
     </div>
     <div class="auth-card">
 
@@ -204,8 +242,8 @@ button,a{touch-action:manipulation;}
           <i class="fas fa-envelope" style="font-size:28px;color:var(--dark)"></i>
         </div>
         <div class="auth-step-label">
-          <h3>چوونەژوورەوە</h3>
-          <p>ئیمەیڵەکەت بنووسە</p>
+          <h3><span data-ku="چوونەژوورەوە" data-en="Log In">چوونەژوورەوە</span></h3>
+          <p><span data-ku="ئیمەیڵەکەت بنووسە" data-en="Enter your email">ئیمەیڵەکەت بنووسە</span></p>
         </div>
         <div class="auth-inp-wrap">
           <i class="fas fa-envelope auth-inp-ico"></i>
@@ -213,11 +251,11 @@ button,a{touch-action:manipulation;}
         </div>
         <button class="abtn" onclick="nextAuthStep('email')">
           <i class="fas fa-arrow-left"></i>
-          <span>دواتر</span>
+          <span><span data-ku="دواتر" data-en="Next">دواتر</span></span>
         </button>
         <div class="amsg" id="authMsgEmail"></div>
         <nav aria-label="Authentication Navigation" style="text-align:center;margin-top:14px;font-size:13px;color:var(--mt)">
-          هەژمارت نییە؟ <a href="https://www.proxopages.com/signup" style="color:var(--dark);font-weight:700;text-decoration:underline;text-underline-offset:2px">خۆت تۆماربکە</a>
+          <span data-ku="<span data-ku="هەژمار" data-en="Account">هەژمار</span>ت نییە؟" data-en="No account yet?"><span data-ku="هەژمار" data-en="Account">هەژمار</span>ت نییە؟</span> <a href="https://www.proxopages.com/signup" style="color:var(--dark);font-weight:700;text-decoration:underline;text-underline-offset:2px"><span data-ku="خۆت تۆماربکە" data-en="Sign Up">خۆت تۆماربکە</span></a>
         </nav>
       </div>
 
@@ -227,24 +265,24 @@ button,a{touch-action:manipulation;}
           <i class="fas fa-lock" style="font-size:28px;color:var(--dark)"></i>
         </div>
         <div class="auth-step-label">
-          <h3>وشەی نهێنی</h3>
-          <p>وشەی نهێنیت بنووسە بۆ چوونەژوورەوە</p>
+          <h3><span data-ku="وشەی نهێنی" data-en="Password">وشەی نهێنی</span></h3>
+          <p><span data-ku="<span data-ku="<span data-ku="وشەی نهێنی" data-en="Password">وشەی نهێنی</span>ت بنووسە" data-en="Enter your password"><span data-ku="وشەی نهێنی" data-en="Password">وشەی نهێنی</span>ت بنووسە</span> بۆ <span data-ku="چوونەژوورەوە" data-en="Log In">چوونەژوورەوە</span>" data-en="Enter your password to log in"><span data-ku="<span data-ku="وشەی نهێنی" data-en="Password">وشەی نهێنی</span>ت بنووسە" data-en="Enter your password"><span data-ku="وشەی نهێنی" data-en="Password">وشەی نهێنی</span>ت بنووسە</span> بۆ <span data-ku="چوونەژوورەوە" data-en="Log In">چوونەژوورەوە</span></span></p>
         </div>
         <div class="pass-wrap">
-          <input class="finp" type="password" id="authPass" placeholder="وشەی نهێنی" dir="ltr"
+          <input class="finp" type="password" id="authPass" placeholder="وشەی نهێنی" data-ku-ph="وشەی نهێنی" data-en-ph="Password" dir="ltr"
             onkeydown="if(event.key==='Enter')nextAuthStep('pass')">
           <button type="button" class="pass-eye" onclick="togglePass('authPass',this)"><i class="fas fa-eye-slash"></i></button>
         </div>
         <button class="abtn" id="authBtn" onclick="nextAuthStep('pass')">
           <i class="fas fa-arrow-left"></i>
-          <span id="authBtnTxt">چوونەژوورەوە</span>
+          <span id="authBtnTxt"><span data-ku="چوونەژوورەوە" data-en="Log In">چوونەژوورەوە</span></span>
         </button>
         <div class="amsg" id="authMsg"></div>
         <div id="forgotLinkWrap" style="text-align:center;margin-top:10px">
-          <span onclick="showForgotStep()" style="font-size:12px;color:var(--mt);cursor:pointer;text-decoration:underline">وشەی نهێنیم لەبیرکردووە</span>
+          <span onclick="showForgotStep()" style="font-size:12px;color:var(--mt);cursor:pointer;text-decoration:underline"><span data-ku="<span data-ku="وشەی نهێنی" data-en="Password">وشەی نهێنی</span>م لەبیرکردووە" data-en="Forgot my password"><span data-ku="وشەی نهێنی" data-en="Password">وشەی نهێنی</span>م لەبیرکردووە</span></span>
         </div>
         <div class="auth-step-back" onclick="goAuthStep('email')">
-          <i class="fas fa-arrow-right"></i> گەڕانەوە
+          <i class="fas fa-arrow-right"></i> <span data-ku="گەڕانەوە" data-en="Back">گەڕانەوە</span>
         </div>
       </div>
 
@@ -255,20 +293,20 @@ button,a{touch-action:manipulation;}
         <div id="fpStepA">
           <div style="text-align:center;margin-bottom:16px">
             <div style="width:56px;height:56px;border-radius:18px;background:rgba(28,35,51,.06);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px"><i class="fas fa-key" style="color:var(--dark)"></i></div>
-            <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px">ڕێستکردنەوەی وشەی نهێنی</div>
-            <div style="font-size:12px;color:var(--mt)">ئیمەیلت بنووسە، کۆدی دڵنیاکردنەوە دەنێرینە</div>
+            <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px"><span data-ku="ڕێستکردنەوەی <span data-ku="وشەی نهێنی" data-en="Password">وشەی نهێنی</span>" data-en="Reset Password">ڕێستکردنەوەی <span data-ku="وشەی نهێنی" data-en="Password">وشەی نهێنی</span></span></div>
+            <div style="font-size:12px;color:var(--mt)"><span data-ku="<span data-ku="ئیمەیل" data-en="Email">ئیمەیل</span>ت بنووسە، <span data-ku="کۆدی <span data-ku="دڵنیاکردنەوە" data-en="Verify">دڵنیاکردنەوە</span>" data-en="Verification Code">کۆدی <span data-ku="دڵنیاکردنەوە" data-en="Verify">دڵنیاکردنەوە</span></span> دە<span data-ku="نێر" data-en="Male">نێر</span>ینە" data-en="Enter your email, we'll send a verification code"><span data-ku="ئیمەیل" data-en="Email">ئیمەیل</span>ت بنووسە، <span data-ku="کۆدی <span data-ku="دڵنیاکردنەوە" data-en="Verify">دڵنیاکردنەوە</span>" data-en="Verification Code">کۆدی <span data-ku="دڵنیاکردنەوە" data-en="Verify">دڵنیاکردنەوە</span></span> دە<span data-ku="نێر" data-en="Male">نێر</span>ینە</span></div>
           </div>
           <div class="auth-inp-wrap">
             <i class="fas fa-envelope auth-inp-ico"></i>
-            <input class="finp" type="email" id="forgotEmail" placeholder="ئیمەیل" dir="ltr" onkeydown="if(event.key==='Enter')doForgotSendOtp()">
+            <input class="finp" type="email" id="forgotEmail" placeholder="ئیمەیل" data-ku-ph="ئیمەیل" data-en-ph="Email" dir="ltr" onkeydown="if(event.key==='Enter')doForgotSendOtp()">
           </div>
           <button class="abtn" id="forgotSendBtn" onclick="doForgotSendOtp()">
             <i class="fas fa-paper-plane"></i>
-            <span>ناردنی کۆدی دڵنیاکردنەوە</span>
+            <span><span data-ku="ناردنی <span data-ku="کۆدی <span data-ku="دڵنیاکردنەوە" data-en="Verify">دڵنیاکردنەوە</span>" data-en="Verification Code">کۆدی <span data-ku="دڵنیاکردنەوە" data-en="Verify">دڵنیاکردنەوە</span></span>" data-en="Send Verification Code">ناردنی <span data-ku="کۆدی <span data-ku="دڵنیاکردنەوە" data-en="Verify">دڵنیاکردنەوە</span>" data-en="Verification Code">کۆدی <span data-ku="دڵنیاکردنەوە" data-en="Verify">دڵنیاکردنەوە</span></span></span></span>
           </button>
           <div class="amsg" id="fpMsgA"></div>
           <div style="text-align:center;margin-top:12px">
-            <span onclick="cancelForgotStep()" style="font-size:12px;color:var(--mt);cursor:pointer"><i class="fas fa-arrow-right" style="margin-left:5px"></i>گەڕانەوە</span>
+            <span onclick="cancelForgotStep()" style="font-size:12px;color:var(--mt);cursor:pointer"><i class="fas fa-arrow-right" style="margin-left:5px"></i><span data-ku="گەڕانەوە" data-en="Back">گەڕانەوە</span></span>
           </div>
         </div>
 
@@ -276,8 +314,8 @@ button,a{touch-action:manipulation;}
         <div id="fpStepB" style="display:none">
           <div style="text-align:center;margin-bottom:16px">
             <div style="width:56px;height:56px;border-radius:18px;background:rgba(28,35,51,.06);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px"><i class="fas fa-shield-halved" style="color:var(--dark)"></i></div>
-            <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px">کۆدی دڵنیاکردنەوە</div>
-            <div style="font-size:12px;color:var(--mt)" id="fpOtpLbl">کۆدی ٦ ژمارە بۆ ئیمەیلەکەت نێردرا</div>
+            <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px"><span data-ku="کۆدی <span data-ku="دڵنیاکردنەوە" data-en="Verify">دڵنیاکردنەوە</span>" data-en="Verification Code">کۆدی <span data-ku="دڵنیاکردنەوە" data-en="Verify">دڵنیاکردنەوە</span></span></div>
+            <div style="font-size:12px;color:var(--mt)" id="fpOtpLbl"><span data-ku="کۆدی ٦ ژمارە بۆ <span data-ku="ئیمەیل" data-en="Email">ئیمەیل</span>ەکەت <span data-ku="<span data-ku="نێر" data-en="Male">نێر</span>درا" data-en="Submitted"><span data-ku="نێر" data-en="Male">نێر</span>درا</span>" data-en="A 6-digit code was sent to your email">کۆدی ٦ ژمارە بۆ <span data-ku="ئیمەیل" data-en="Email">ئیمەیل</span>ەکەت <span data-ku="<span data-ku="نێر" data-en="Male">نێر</span>درا" data-en="Submitted"><span data-ku="نێر" data-en="Male">نێر</span>درا</span></span></div>
           </div>
           <div class="otp-inputs">
             <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="fp1" oninput="fpOtpMove(this,null,'fp2')" onkeydown="fpOtpBack(event,this,null)">
@@ -287,15 +325,15 @@ button,a{touch-action:manipulation;}
             <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="fp5" oninput="fpOtpMove(this,'fp4','fp6')" onkeydown="fpOtpBack(event,this,'fp4')">
             <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="fp6" oninput="fpOtpMove(this,'fp5',null)" onkeydown="fpOtpBack(event,this,'fp5')">
           </div>
-          <div class="otp-timer" id="fpTimerWrap" style="margin-top:10px">ماوەی ئەم کۆدە: <span id="fpTimerVal">10:00</span></div>
-          <div class="otp-resend" id="fpResendBtn" onclick="fpResendOtp()"><i class="fas fa-rotate-right" style="margin-left:5px"></i>کۆدی نوێ بنێرە</div>
+          <div class="otp-timer" id="fpTimerWrap" style="margin-top:10px"><span data-ku="ماوەی ئەم کۆدە:" data-en="Code expires in:">ماوەی ئەم کۆدە:</span> <span id="fpTimerVal">10:00</span></div>
+          <div class="otp-resend" id="fpResendBtn" onclick="fpResendOtp()"><i class="fas fa-rotate-right" style="margin-left:5px"></i><span data-ku="کۆدی <span data-ku="نوێ" data-en="New">نوێ</span> ب<span data-ku="نێر" data-en="Male">نێر</span>ە" data-en="Resend code">کۆدی <span data-ku="نوێ" data-en="New">نوێ</span> ب<span data-ku="نێر" data-en="Male">نێر</span>ە</span></div>
           <div class="amsg" id="fpMsgB" style="display:none;margin-top:10px"></div>
           <button class="abtn" id="fpVerifyBtn" onclick="doForgotVerifyOtp()" style="margin-top:12px">
             <i class="fas fa-check"></i>
-            <span>دڵنیاکردنەوە</span>
+            <span><span data-ku="دڵنیاکردنەوە" data-en="Verify">دڵنیاکردنەوە</span></span>
           </button>
           <div style="text-align:center;margin-top:10px">
-            <span onclick="fpBackToA()" style="font-size:12px;color:var(--mt);cursor:pointer"><i class="fas fa-arrow-right" style="margin-left:5px"></i>گەڕانەوە</span>
+            <span onclick="fpBackToA()" style="font-size:12px;color:var(--mt);cursor:pointer"><i class="fas fa-arrow-right" style="margin-left:5px"></i><span data-ku="گەڕانەوە" data-en="Back">گەڕانەوە</span></span>
           </div>
         </div>
 
@@ -303,11 +341,11 @@ button,a{touch-action:manipulation;}
         <div id="fpStepC" style="display:none">
           <div style="text-align:center;margin-bottom:18px">
             <div style="width:56px;height:56px;border-radius:18px;background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px"><i class="fas fa-circle-check" style="color:#16a34a"></i></div>
-            <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px">ناسنامەت دڵنیاکرایەوە</div>
-            <div style="font-size:12px;color:var(--mt)">ئێستا وشەی نهێنیی نوێت بنووسە</div>
+            <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px"><span data-ku="ناس<span data-ku="نامە" data-en="Messages">نامە</span>ت دڵنیاکرایەوە" data-en="Identity verified">ناس<span data-ku="نامە" data-en="Messages">نامە</span>ت دڵنیاکرایەوە</span></div>
+            <div style="font-size:12px;color:var(--mt)"><span data-ku="ئێستا <span data-ku="<span data-ku="وشەی نهێنی" data-en="Password">وشەی نهێنی</span>ی <span data-ku="نوێ" data-en="New">نوێ</span>" data-en="New Password"><span data-ku="وشەی نهێنی" data-en="Password">وشەی نهێنی</span>ی <span data-ku="نوێ" data-en="New">نوێ</span></span>ت بنووسە" data-en="Now enter your new password">ئێستا <span data-ku="<span data-ku="وشەی نهێنی" data-en="Password">وشەی نهێنی</span>ی <span data-ku="نوێ" data-en="New">نوێ</span>" data-en="New Password"><span data-ku="وشەی نهێنی" data-en="Password">وشەی نهێنی</span>ی <span data-ku="نوێ" data-en="New">نوێ</span></span>ت بنووسە</span></div>
           </div>
           <div class="pass-wrap" style="margin-bottom:0">
-            <input class="finp" type="password" id="fpNewPass" placeholder="وشەی نهێنیی نوێ — کەمترین ٦ پیت" dir="ltr"
+            <input class="finp" type="password" id="fpNewPass" placeholder="وشەی نهێنیی نوێ — کەمترین ٦ پیت" data-ku-ph="وشەی نهێنیی نوێ — کەمترین ٦ پیت" data-en-ph="New password — min 6 chars" dir="ltr"
               oninput="updateStrength('fpNewPass','fpStrFill','fpStrTxt')">
             <button type="button" class="pass-eye" onclick="togglePass('fpNewPass',this)"><i class="fas fa-eye-slash"></i></button>
           </div>
@@ -316,13 +354,13 @@ button,a{touch-action:manipulation;}
             <div id="fpStrTxt" style="font-size:10.5px;font-weight:800;min-width:38px;color:var(--mt);text-align:right"></div>
           </div>
           <div class="pass-wrap" style="margin-bottom:14px">
-            <input class="finp" type="password" id="fpConfirmPass" placeholder="دووبارە وشەی نهێنیی نوێ" dir="ltr">
+            <input class="finp" type="password" id="fpConfirmPass" placeholder="دووبارە وشەی نهێنیی نوێ" data-ku-ph="دووبارە وشەی نهێنیی نوێ" data-en-ph="Confirm new password" dir="ltr">
             <button type="button" class="pass-eye" onclick="togglePass('fpConfirmPass',this)"><i class="fas fa-eye-slash"></i></button>
           </div>
           <div class="amsg" id="fpMsgC" style="display:none;margin-bottom:12px"></div>
           <button class="abtn" id="fpSaveBtn" onclick="doForgotSavePass()">
             <i class="fas fa-lock"></i>
-            <span>پاشەکەوتکردنی وشەی نهێنیی نوێ</span>
+            <span><span data-ku="<span data-ku="پاشەکەوتکردن" data-en="Save">پاشەکەوتکردن</span>ی <span data-ku="<span data-ku="وشەی نهێنی" data-en="Password">وشەی نهێنی</span>ی <span data-ku="نوێ" data-en="New">نوێ</span>" data-en="New Password"><span data-ku="وشەی نهێنی" data-en="Password">وشەی نهێنی</span>ی <span data-ku="نوێ" data-en="New">نوێ</span></span>" data-en="Save New Password"><span data-ku="پاشەکەوتکردن" data-en="Save">پاشەکەوتکردن</span>ی <span data-ku="<span data-ku="وشەی نهێنی" data-en="Password">وشەی نهێنی</span>ی <span data-ku="نوێ" data-en="New">نوێ</span>" data-en="New Password"><span data-ku="وشەی نهێنی" data-en="Password">وشەی نهێنی</span>ی <span data-ku="نوێ" data-en="New">نوێ</span></span></span></span>
           </button>
         </div>
 
@@ -332,8 +370,8 @@ button,a{touch-action:manipulation;}
       <div id="otpStep" style="display:none">
         <div style="text-align:center;margin-bottom:16px">
           <div style="width:56px;height:56px;border-radius:18px;background:rgba(28,35,51,.06);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px"><i class="fas fa-shield-halved" style="color:var(--dark)"></i></div>
-          <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px">کۆدی دڵنیاکردنەوە</div>
-          <div style="font-size:12px;color:var(--mt)" id="otpEmailLbl">کۆدی ٦ ژمارەی بۆ ئیمەیلەکەت نێردرا</div>
+          <div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px"><span data-ku="کۆدی <span data-ku="دڵنیاکردنەوە" data-en="Verify">دڵنیاکردنەوە</span>" data-en="Verification Code">کۆدی <span data-ku="دڵنیاکردنەوە" data-en="Verify">دڵنیاکردنەوە</span></span></div>
+          <div style="font-size:12px;color:var(--mt)" id="otpEmailLbl"><span data-ku="کۆدی ٦ ژمارەی بۆ <span data-ku="ئیمەیل" data-en="Email">ئیمەیل</span>ەکەت <span data-ku="<span data-ku="نێر" data-en="Male">نێر</span>درا" data-en="Submitted"><span data-ku="نێر" data-en="Male">نێر</span>درا</span>" data-en="A 6-digit code was sent to your email">کۆدی ٦ ژمارەی بۆ <span data-ku="ئیمەیل" data-en="Email">ئیمەیل</span>ەکەت <span data-ku="<span data-ku="نێر" data-en="Male">نێر</span>درا" data-en="Submitted"><span data-ku="نێر" data-en="Male">نێر</span>درا</span></span></div>
         </div>
         <div class="otp-inputs">
           <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="otp1" oninput="otpMove(this,null,'otp2')" onkeydown="otpBack(event,this,null)">
@@ -343,15 +381,15 @@ button,a{touch-action:manipulation;}
           <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="otp5" oninput="otpMove(this,'otp4','otp6')" onkeydown="otpBack(event,this,'otp4')">
           <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="otp6" oninput="otpMove(this,'otp5',null)" onkeydown="otpBack(event,this,'otp5')">
         </div>
-        <div class="otp-timer" id="otpTimerWrap">ماوەی ئەم کۆدە: <span id="otpTimerVal">10:00</span></div>
-        <div class="otp-resend" id="otpResendBtn" onclick="resendOtp()"><i class="fas fa-rotate-right" style="margin-left:5px"></i>کۆدی نوێ بنێرە</div>
+        <div class="otp-timer" id="otpTimerWrap"><span data-ku="ماوەی ئەم کۆدە:" data-en="Code expires in:">ماوەی ئەم کۆدە:</span> <span id="otpTimerVal">10:00</span></div>
+        <div class="otp-resend" id="otpResendBtn" onclick="resendOtp()"><i class="fas fa-rotate-right" style="margin-left:5px"></i><span data-ku="کۆدی <span data-ku="نوێ" data-en="New">نوێ</span> ب<span data-ku="نێر" data-en="Male">نێر</span>ە" data-en="Resend code">کۆدی <span data-ku="نوێ" data-en="New">نوێ</span> ب<span data-ku="نێر" data-en="Male">نێر</span>ە</span></div>
         <button class="abtn" id="otpVerifyBtn" onclick="verifyOtp()" style="margin-top:12px">
           <i class="fas fa-check"></i>
-          <span>دڵنیاکردنەوە</span>
+          <span><span data-ku="دڵنیاکردنەوە" data-en="Verify">دڵنیاکردنەوە</span></span>
         </button>
         <div class="amsg" id="otpMsg"></div>
         <div style="text-align:center;margin-top:12px">
-          <span onclick="cancelOtp()" style="font-size:12px;color:var(--mt);cursor:pointer"><i class="fas fa-arrow-right" style="margin-left:5px"></i>گەڕانەوە</span>
+          <span onclick="cancelOtp()" style="font-size:12px;color:var(--mt);cursor:pointer"><i class="fas fa-arrow-right" style="margin-left:5px"></i><span data-ku="گەڕانەوە" data-en="Back">گەڕانەوە</span></span>
         </div>
       </div>
 
@@ -468,7 +506,7 @@ function otpRateClear(email) { try { localStorage.removeItem(_rlKey(email)); } c
 async function requestOtp(email, purpose='login') {
   const sendChk = otpSendCheck(email);
   if (!sendChk.ok) {
-    return { success: false, message: 'ناردنی کۆد بۆ ئەم ئیمەیلە قفڵکراوە — تکایە ' + sendChk.remaining + ' خولەکی تر هەوڵ بدەرەوە' };
+    return { success: false, message: _t('ناردنی کۆد بۆ ئەم ئیمەیلە قفڵکراوە — تکایە ','Code sending locked for this email — please wait ') + sendChk.remaining + ' '+_t('خولەکی تر هەوڵ بدەرەوە','minutes then try again') };
   }
   try {
     const res = await fetch(N8N_WEBHOOK, {
@@ -480,9 +518,9 @@ async function requestOtp(email, purpose='login') {
     try { const txt = await res.text(); if(txt.trim()) data = JSON.parse(txt); } catch(_) {}
     if(res.ok && data.success !== false) {
       otpSendRecord(email);
-      return { success: true, message: data.message || 'کۆدەکە نێردرا' };
+      return { success: true, message: data.message || _t('کۆدەکە نێردرا','Code sent') };
     }
-    return { success: false, message: data.message || 'هەڵەی ناردنی کۆد' };
+    return { success: false, message: data.message || _t('هەڵەی ناردنی کۆد','Error sending code') };
   } catch(e) {
     return { success: false, message: 'هەڵەی تۆڕ: ' + e.message };
   }
@@ -490,7 +528,7 @@ async function requestOtp(email, purpose='login') {
 
 async function verifyOtpCode(email, code) {
   try {
-    if (!sb) return { success: false, message: 'سیستەم ئامادە نییە، دووبارە هەوڵ بدەرەوە' };
+    if (!sb) return { success: false, message: _t('سیستەم ئامادە نییە، دووبارە هەوڵ بدەرەوە','System not ready, try again') };
     const codeStr = String(code).trim();
     const emailStr = String(email).trim();
     const { data: rows, error } = await sb
@@ -561,8 +599,8 @@ function updateStrength(inputId, fillId, txtId) {
   if (!val) { fill.style.width = '0'; txt.textContent = ''; return; }
   const levels = [
     { w: '33%',  c: '#ef4444', t: 'ئاسان' },
-    { w: '66%',  c: '#f97316', t: 'مامناوەند' },
-    { w: '100%', c: '#22c55e', t: 'بەهێز' }
+    { w: '66%',  c: '#f97316', t: _t('مامناوەند','Fair') },
+    { w: '100%', c: '#22c55e', t: _t('بەهێز','Strong') }
   ];
   const lvl = levels[passStrength(val) - 1];
   fill.style.width = lvl.w; fill.style.background = lvl.c;
@@ -711,7 +749,7 @@ function startBanCountdown(email, msgElId, resendBtnId) {
     const el = document.getElementById(msgElId);
     if (!el) { clearInterval(_banIntervals[msgElId]); return; }
     if (!c.ok) {
-      el.textContent = 'تکایە ' + c.remaining + ' خولەکی تر هەوڵ بدەرەوە';
+      el.textContent = 'تکایە ' + c.remaining + ' '+_t('خولەکی تر هەوڵ بدەرەوە','minutes then try again');
       el.className = 'amsg err'; el.style.display = 'block';
     } else {
       clearInterval(_banIntervals[msgElId]);
@@ -733,7 +771,7 @@ async function verifyOtp() {
 
   const rlChk = otpRateCheck(_otpEmail);
   if(!rlChk.ok) {
-    showOtpMsg('قفڵکراوە — تکایە ' + rlChk.remaining + ' خولەکی تر هەوڵ بدەرەوە', 'err');
+    showOtpMsg('قفڵکراوە — تکایە ' + rlChk.remaining + ' '+_t('خولەکی تر هەوڵ بدەرەوە','minutes then try again'), 'err');
     startBanCountdown(_otpEmail, 'otpMsg', 'otpResendBtn');
     return;
   }
@@ -749,7 +787,7 @@ async function verifyOtp() {
   if(!result.success) {
     const rl = otpRateRecord(_otpEmail);
     if(rl && !rl.ok) {
-      showOtpMsg('زۆر جار هەوڵت دا — تکایە ' + rl.remaining + ' خولەکی تر هەوڵ بدەرەوە', 'err');
+      showOtpMsg('زۆر جار هەوڵت دا — تکایە ' + rl.remaining + ' '+_t('خولەکی تر هەوڵ بدەرەوە','minutes then try again'), 'err');
       startBanCountdown(_otpEmail, 'otpMsg', 'otpResendBtn');
     } else {
       showOtpMsg(result.message || 'کۆدی هەڵە', 'err');
@@ -785,7 +823,7 @@ async function verifyOtp() {
 async function resendOtp() {
   const chk = otpRateCheck(_otpEmail);
   if (!chk.ok) {
-    showOtpMsg('تکایە ' + chk.remaining + ' خولەکی تر هەوڵ بدەرەوە', 'err');
+    showOtpMsg('تکایە ' + chk.remaining + ' '+_t('خولەکی تر هەوڵ بدەرەوە','minutes then try again'), 'err');
     startBanCountdown(_otpEmail, 'otpMsg', 'otpResendBtn');
     return;
   }
@@ -862,7 +900,7 @@ function fpOtpBack(e,el,prevId){if(e.key==='Backspace'&&!el.value&&prevId)docume
 async function fpResendOtp(){
   const chk = otpRateCheck(_fpEmail);
   if (!chk.ok) {
-    fpShowMsg('B','تکایە ' + chk.remaining + ' خولەکی تر هەوڵ بدەرەوە','err');
+    fpShowMsg('B','تکایە ' + chk.remaining + ' '+_t('خولەکی تر هەوڵ بدەرەوە','minutes then try again'),'err');
     startBanCountdown(_fpEmail, 'fpMsgB', 'fpResendBtn');
     return;
   }
@@ -895,11 +933,11 @@ async function doForgotSendOtp(){
     fpShowMsg('A',e.message||'هەڵەی پشکنین','err');
     btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> ناردنی کۆدی دڵنیاکردنەوە';return;
   }
-  btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> دەنێردرێت...';
+  btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> '+_t('دەنێردرێت...','Sending...')+';
   const result=await requestOtp(email,'reset_password');
   btn.disabled=false;
   btn.innerHTML='<i class="fas fa-paper-plane"></i> ناردنی کۆدی دڵنیاکردنەوە';
-  if(!result.success){fpShowMsg('A',result.message||'هەڵەی ناردنی کۆد','err');return;}
+  if(!result.success){fpShowMsg('A',result.message||_t('هەڵەی ناردنی کۆد','Error sending code'),'err');return;}
   _fpEmail=email;
   document.getElementById('fpOtpLbl').textContent='کۆدی ٦ ژمارە بۆ '+email+' نێردرا';
   ['fp1','fp2','fp3','fp4','fp5','fp6'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
@@ -920,7 +958,7 @@ async function doForgotVerifyOtp(){
 
   const rlChk = otpRateCheck(_fpEmail);
   if(!rlChk.ok){
-    fpShowMsg('B','قفڵکراوە — تکایە ' + rlChk.remaining + ' خولەکی تر هەوڵ بدەرەوە','err');
+    fpShowMsg('B','قفڵکراوە — تکایە ' + rlChk.remaining + ' '+_t('خولەکی تر هەوڵ بدەرەوە','minutes then try again'),'err');
     startBanCountdown(_fpEmail, 'fpMsgB', 'fpResendBtn');
     return;
   }
@@ -933,7 +971,7 @@ async function doForgotVerifyOtp(){
   if(!result.success){
     const rl = otpRateRecord(_fpEmail);
     if(rl && !rl.ok){
-      fpShowMsg('B','زۆر جار هەوڵت دا — تکایە ' + rl.remaining + ' خولەکی تر هەوڵ بدەرەوە','err');
+      fpShowMsg('B','زۆر جار هەوڵت دا — تکایە ' + rl.remaining + ' '+_t('خولەکی تر هەوڵ بدەرەوە','minutes then try again'),'err');
       startBanCountdown(_fpEmail, 'fpMsgB', 'fpResendBtn');
     } else {
       fpShowMsg('B',result.message||'کۆدی هەڵە','err');
@@ -1016,12 +1054,12 @@ async function doAuth(){
       return;
     }
     try{ await sb.auth.signOut(); }catch(_){}
-    btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> کۆد دەنێردرێت...';
+    btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> کۆد '+_t('دەنێردرێت...','Sending...')+';
     _otpPendingData={pass};
     _otpPurpose='login';
     const result=await requestOtp(email,'login');
     if(!result.success){
-      showAmsg(result.message||'هەڵەی ناردنی کۆد','err');
+      showAmsg(result.message||_t('هەڵەی ناردنی کۆد','Error sending code'),'err');
       btn.disabled=false;
       btn.innerHTML='<i class="fas fa-arrow-left"></i><span id="authBtnTxt">چوونەژوورەوە</span>';
       return;
