@@ -7042,16 +7042,23 @@ async function boot(){
       if(newSt && oldSt && newSt !== oldSt){
         const amt = Math.round(parseFloat(payload.new?.amount || 0)).toLocaleString();
         const isWd = payload.new?.type === 'withdrawal';
+        const _txLang = (typeof ProxoLang !== 'undefined' && ProxoLang.getLang) ? ProxoLang.getLang() : 'ku';
         if(newSt === 'approved'){
           _showNotifToast(
-            isWd ? '✅ کەمکردنەکەت پەسەندکرا' : '✅ واریزەکەت پەسەندکرا',
-            isWd ? amt+' IQD کەمکرا لە باڵانسەکەت' : amt+' IQD زیادکرا بۆ باڵانسەکەت'
+            isWd
+              ? (_txLang==='ar' ? '✅ تمت الموافقة على طلب السحب'   : '✅ کەمکردنەکەت پەسەندکرا')
+              : (_txLang==='ar' ? '✅ تمت الموافقة على إيداعك'       : '✅ واریزەکەت پەسەندکرا'),
+            isWd
+              ? (_txLang==='ar' ? amt+' IQD تم خصمها من رصيدك'      : amt+' IQD کەمکرا لە باڵانسەکەت')
+              : (_txLang==='ar' ? amt+' IQD تمت إضافتها إلى رصيدك'  : amt+' IQD زیادکرا بۆ باڵانسەکەت')
           );
           loadBal();
           startWalletListener();
         } else if(newSt === 'rejected'){
           _showNotifToast(
-            isWd ? '❌ کەمکردنەکەت ڕەتکرا' : '❌ واریزەکەت ڕەتکرا',
+            isWd
+              ? (_txLang==='ar' ? '❌ تم رفض طلب السحب'  : '❌ کەمکردنەکەت ڕەتکرا')
+              : (_txLang==='ar' ? '❌ تم رفض إيداعك'      : '❌ واریزەکەت ڕەتکرا'),
             payload.new?.note || ''
           );
         }

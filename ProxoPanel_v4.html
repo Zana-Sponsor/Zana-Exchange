@@ -2814,11 +2814,13 @@ async function confirmAddBalance(){
   const{error}=await sb.from('pa_wallets').update({balance:newBal,updated_at:new Date().toISOString()}).eq('user_id',uid);
   if(error && !isNetHttpErr(error)){showToast('هەڵە: '+error.message,'rd');return;}
   await sb.from('pa_transactions').insert({user_id:uid,amount:amtUSD,type:'admin_adjustment',status:'approved',note:`ئادمین (${adminEmail}): زیادکردن — ${note}`,balance_after:Math.round(newBal*1800)});
-  await sb.from('pa_notifications').insert({user_id:uid,type:'balance_added',title:'باڵانست زیادکرا 💰',body:`ئادمین ${Math.round(amtIQD).toLocaleString()} IQD زیادی کرد بۆ باڵانسەکەت.`,is_read:false});
+  const _baLang = await _getUserLang(uid).catch(()=>'ku');
+  const _baN = _txNotifTexts('balance_added', _baLang, {amtIQD});
+  await sb.from('pa_notifications').insert({user_id:uid,type:'balance_added',title:_baN.title,body:_baN.body,is_read:false});
   showToast('✅ '+Math.round(amtIQD).toLocaleString()+' IQD زیادکرا','gr');
   // ── Firebase realtime sync ──
   _fbSyncBalance(uid, newBal);
-  _fbPushNotif(uid,'باڵانست زیادکرا 💰',`ئادمین ${Math.round(amtIQD).toLocaleString()} IQD زیادی کرد بۆ باڵانسەکەت.`,'balance_added');
+  _fbPushNotif(uid, _baN.title, _baN.body, 'balance_added');
   _fbTriggerTx(uid);
   // ── ئیمێڵی وەسڵی زیادکردنی باڵانس ──
   try {
@@ -2876,11 +2878,13 @@ async function confirmDeductBalance(){
   const{error}=await sb.from('pa_wallets').update({balance:newBal,updated_at:new Date().toISOString()}).eq('user_id',uid);
   if(error && !isNetHttpErr(error)){showToast('هەڵە: '+error.message,'rd');return;}
   await sb.from('pa_transactions').insert({user_id:uid,amount:amtUSD,type:'admin_adjustment',status:'approved',note:`ئادمین (${adminEmail}): وەرگرتن — ${note}`,balance_after:Math.round(newBal*1800)});
-  await sb.from('pa_notifications').insert({user_id:uid,type:'balance_deducted',title:'باڵانسەکەت کەم کرایەوە ⚠️',body:`ئادمین ${Math.round(amtIQD).toLocaleString()} IQD لە باڵانسەکەت وەرگرت. هۆکار: ${note}`,is_read:false});
+  const _bdLang = await _getUserLang(uid).catch(()=>'ku');
+  const _bdN = _txNotifTexts('balance_deducted', _bdLang, {amtIQD, reason: note});
+  await sb.from('pa_notifications').insert({user_id:uid,type:'balance_deducted',title:_bdN.title,body:_bdN.body,is_read:false});
   showToast('✅ '+Math.round(amtIQD).toLocaleString()+' IQD وەرگیرا','gr');
   // ── Firebase realtime sync ──
   _fbSyncBalance(uid, newBal);
-  _fbPushNotif(uid,'باڵانسەکەت کەم کرایەوە ⚠️',`ئادمین ${Math.round(amtIQD).toLocaleString()} IQD لە باڵانسەکەت وەرگرت. هۆکار: ${note}`,'balance_deducted');
+  _fbPushNotif(uid, _bdN.title, _bdN.body, 'balance_deducted');
   _fbTriggerTx(uid);
   // ── ئیمێڵی ئاگادارکردنی کەمکردنی باڵانس ──
   try {
@@ -3110,11 +3114,13 @@ async function approveDeposit(id,userId,amount){
       if(e1){showToast('هەڵە: '+e1.message,'rd');return;}
       const{error:e3}=await sb.from('pa_wallets').update({balance:newBal,updated_at:new Date().toISOString()}).eq('user_id',userId);
       if(e3 && !isNetHttpErr(e3)){showToast('هەڵەی نوێکردنەوەی باڵانس: '+e3.message,'rd');return;}
-      await sb.from('pa_notifications').insert({user_id:userId,type:'deposit_approved',title:'پارەدانت پەسەندکرا ✅',body:`${Math.round(parseFloat(amount)*1800).toLocaleString()} IQD زیادکرا بۆ باڵانسەکەت.`,is_read:false});
+      const _dpLang = await _getUserLang(userId).catch(()=>'ku');
+      const _dpN = _txNotifTexts('deposit_approved', _dpLang, {amtIQD: Math.round(parseFloat(amount)*1800)});
+      await sb.from('pa_notifications').insert({user_id:userId,type:'deposit_approved',title:_dpN.title,body:_dpN.body,is_read:false});
       showToast('✅ پارەدان پەسەندکرا','gr');
       // ── Firebase realtime sync ──
       _fbSyncBalance(userId, newBal);
-      _fbPushNotif(userId,'پارەدانت پەسەندکرا ✅',`${Math.round(parseFloat(amount)*1800).toLocaleString()} IQD زیادکرا بۆ باڵانسەکەت.`,'deposit_approved');
+      _fbPushNotif(userId, _dpN.title, _dpN.body, 'deposit_approved');
       _fbTriggerTx(userId);
       try{
         const{data:prof,error:_pe}=await sb.from('profiles').select('full_name,email').eq('id',userId).single();
@@ -3546,8 +3552,10 @@ async function updateAdStatus(id,userId,newStatus,budget){
         {user_id:userId,user_name:prof?.full_name||prof?.email||'بێ ناو',user_email:prof?.email||null,week_start:weekStart},
         {onConflict:'user_id,week_start',ignoreDuplicates:true}
       );
-      await sb.from('pa_notifications').insert({user_id:userId,type:'general',title:'بەشداری قورعەی هەفتانە 🎁',body:'ڕیکلامەکەت پەسەندکرا و خۆت دانرا بۆ قورعەی خەڵاتی هەفتانە — 18,000 IQD دەخەڵەتێیت!',is_read:false});
-      _fbPushNotif(userId,'بەشداری قورعەی هەفتانە 🎁','ڕیکلامەکەت پەسەندکرا و خۆت دانرا بۆ قورعەی خەڵاتی هەفتانە!','general');
+      const _gwLang1 = await _getUserLang(userId).catch(()=>'ku');
+      const _gwN1 = _txNotifTexts('giveaway', _gwLang1);
+      await sb.from('pa_notifications').insert({user_id:userId,type:'general',title:_gwN1.title,body:_gwN1.body,is_read:false});
+      _fbPushNotif(userId, _gwN1.title, _gwN1.body, 'general');
     }catch(e){}
   }
   // ── داهاتی ڕیکلام: تەنها کاتێک ستاتۆس بووه‌ته‌ active ──
@@ -3564,8 +3572,10 @@ async function updateAdStatus(id,userId,newStatus,budget){
   if(userId){
     try{
       if(newStatus==='paused'){
-        await sb.from('pa_notifications').insert({user_id:userId,type:'ad_paused',title:'ڕیکلامەکەت وەستاوە ⏸',body:'ئادمین ڕیکلامەکەت بۆ ماوەیەک وەستاندووە.',is_read:false});
-        _fbPushNotif(userId,'ڕیکلامەکەت وەستاوە ⏸','ئادمین ڕیکلامەکەت بۆ ماوەیەک وەستاندووە.','ad_paused');
+        const _psLang = await _getUserLang(userId).catch(()=>'ku');
+        const _psN = _adNotifTexts(null, 'paused', _psLang);
+        await sb.from('pa_notifications').insert({user_id:userId,type:'ad_paused',title:_psN.title,body:_psN.body,is_read:false});
+        _fbPushNotif(userId, _psN.title, _psN.body, 'ad_paused');
       } else if(newStatus==='completed'){
         const _cpLang = await _getUserLang(userId).catch(()=>'ku');
         const _cpAdNum = (allAds.find(a=>a.id===id)||{}).ad_number || id;
@@ -3573,8 +3583,10 @@ async function updateAdStatus(id,userId,newStatus,budget){
         await sb.from('pa_notifications').insert({user_id:userId,type:'ad_completed',title:_cpN.title,body:_cpN.body,is_read:false});
         _fbPushNotif(userId, _cpN.title, _cpN.body, 'ad_completed');
       } else if(newStatus==='active' && parseFloat(budget||0)<20){
-        await sb.from('pa_notifications').insert({user_id:userId,type:'ad_active',title:'ڕیکلامەکەت دووبارە چالاک بوو ▶️',body:'ئادمین ڕیکلامەکەت دووبارە چالاک کردووەتەوە — ئێستا ژیوەیە.',is_read:false});
-        _fbPushNotif(userId,'ڕیکلامەکەت دووبارە چالاک بوو ▶️','ئادمین ڕیکلامەکەت دووبارە چالاک کردووەتەوە.','ad_active');
+        const _acLang = await _getUserLang(userId).catch(()=>'ku');
+        const _acN = _adNotifTexts(null, 'active', _acLang);
+        await sb.from('pa_notifications').insert({user_id:userId,type:'ad_active',title:_acN.title,body:_acN.body,is_read:false});
+        _fbPushNotif(userId, _acN.title, _acN.body, 'ad_active');
       }
     }catch(_){}
   }
@@ -3750,8 +3762,10 @@ async function submitApproval(){
           {user_id:_approveUserId,user_name:prof?.full_name||prof?.email||'بێ ناو',user_email:prof?.email||null,week_start:weekStart},
           {onConflict:'user_id,week_start',ignoreDuplicates:true}
         );
-        await sb.from('pa_notifications').insert({user_id:_approveUserId,type:'general',title:'بەشداری قورعەی هەفتانە 🎁',body:'ڕیکلامەکەت پەسەندکرا و خۆت دانرا بۆ قورعەی خەڵاتی هەفتانە!',is_read:false});
-        _fbPushNotif(_approveUserId,'بەشداری قورعەی هەفتانە 🎁','ڕیکلامەکەت پەسەندکرا و خۆت دانرا بۆ قورعەی خەڵاتی هەفتانە!','general');
+        const _gwLang2 = await _getUserLang(_approveUserId).catch(()=>'ku');
+        const _gwN2 = _txNotifTexts('giveaway', _gwLang2);
+        await sb.from('pa_notifications').insert({user_id:_approveUserId,type:'general',title:_gwN2.title,body:_gwN2.body,is_read:false});
+        _fbPushNotif(_approveUserId, _gwN2.title, _gwN2.body, 'general');
       }catch(e){}
     }
     // Revenue record
@@ -3834,15 +3848,17 @@ async function confirmReject(){
     const res={error:null};
     const dep=allDeposits.find(d=>d.id===id);
     if(dep){
+      const _drLang = await _getUserLang(dep.user_id).catch(()=>'ku');
+      const _drN = _txNotifTexts('deposit_rejected', _drLang, {reason});
       await sb.from('pa_notifications').insert({
         user_id:dep.user_id,
         type:'deposit_rejected',
-        title:'پارەدانت ڕەتکراوە ❌',
-        body:'هۆکار: '+reason,
+        title:_drN.title,
+        body:_drN.body,
         is_read:false
       });
       // ── Firebase realtime push ──
-      _fbPushNotif(dep.user_id,'پارەدانت ڕەتکراوە ❌','هۆکار: '+reason,'deposit_rejected');
+      _fbPushNotif(dep.user_id, _drN.title, _drN.body, 'deposit_rejected');
     }
     loadDeposits();
   } else {
@@ -3875,11 +3891,13 @@ async function confirmReject(){
           note:`گەڕانەوەی پارەی ڕیکلام #${adObj.ad_number||''} — ${refundIQD.toLocaleString()} IQD`,
           balance_after:Math.round(newRefBal*1800)
         });
+        const _rfLang = await _getUserLang(adObj.user_id).catch(()=>'ku');
+        const _rfN = _txNotifTexts('refund_rejected_ad', _rfLang, {amtIQD: refundIQD, adNum: adObj.ad_number||null});
         await sb.from('pa_notifications').insert({
           user_id:adObj.user_id,
           type:'refund_rejected_ad',
-          title:`پارەی ڕیکلامی ڕەتکراو گەڕایەوە 💸`,
-          body:`${adObj.ad_number?'#'+adObj.ad_number+' — ':''}${refundIQD.toLocaleString()} IQD گەڕایەوە بۆ باڵانسەکەت — هۆکار: ڕەتکردنەوەی ڕیکلام`,
+          title:_rfN.title,
+          body:_rfN.body,
           is_read:false
         });
         // ── Firebase realtime sync (گەڕانەوەی پارە) ──
@@ -6550,15 +6568,44 @@ function _adNotifTexts(adNum, type, lang) {
   const n = adNum ? '#' + adNum : '';
   const ku = {
     review:    { title: 'ڕیکلامەکەت لەژێر پێداچوونەوەدایە',  body: 'ڕیکلامی ژمارە ' + n + ' - لەژێر پێداچوونەوەدایە' },
-    approved:  { title: 'ڕیکلامەکەت پەسەندکرا',              body: 'ڕیکلامی ژمارە ' + n + ' - پەسەندکرا' },
-    rejected:  { title: 'ڕیکلامەکەت ڕەتکرایەوە',            body: 'ڕیکلامی ژمارە ' + n + ' - ڕەتکرایەوە' },
-    completed: { title: 'ڕیکلامەکەت تەواو بوو',              body: 'ڕیکلامی ژمارە ' + n + ' - تەواو بوو' },
+    approved:  { title: 'ڕیکلامەکەت پەسەندکرا ✅',            body: 'ڕیکلامی ژمارە ' + n + ' - پەسەندکرا' },
+    rejected:  { title: 'ڕیکلامەکەت ڕەتکرایەوە ❌',          body: 'ڕیکلامی ژمارە ' + n + ' - ڕەتکرایەوە' },
+    completed: { title: 'ڕیکلامەکەت تەواو بوو 🏁',            body: 'ڕیکلامی ژمارە ' + n + ' - تەواو بوو' },
+    paused:    { title: 'ڕیکلامەکەت وەستاوە ⏸',              body: 'ئادمین ڕیکلامەکەت بۆ ماوەیەک وەستاندووە.' },
+    active:    { title: 'ڕیکلامەکەت دووبارە چالاک بوو ▶️',   body: 'ئادمین ڕیکلامەکەت دووبارە چالاک کردووەتەوە — ئێستا ژیوەیە.' },
   };
   const ar = {
-    review:    { title: 'إعلانك قيد المراجعة',   body: 'الإعلان رقم ' + n + ' - قيد المراجعة' },
-    approved:  { title: 'تم قبول إعلانك',        body: 'الإعلان رقم ' + n + ' - تم القبول' },
-    rejected:  { title: 'تم رفض إعلانك',         body: 'الإعلان رقم ' + n + ' - مرفوض' },
-    completed: { title: 'اكتمل إعلانك',          body: 'الإعلان رقم ' + n + ' - اكتمل' },
+    review:    { title: 'إعلانك قيد المراجعة',      body: 'الإعلان رقم ' + n + ' - قيد المراجعة' },
+    approved:  { title: 'تم قبول إعلانك ✅',         body: 'الإعلان رقم ' + n + ' - تم القبول' },
+    rejected:  { title: 'تم رفض إعلانك ❌',          body: 'الإعلان رقم ' + n + ' - مرفوض' },
+    completed: { title: 'اكتمل إعلانك 🏁',           body: 'الإعلان رقم ' + n + ' - اكتمل' },
+    paused:    { title: 'إعلانك متوقف مؤقتاً ⏸',    body: 'تم إيقاف إعلانك مؤقتاً من قِبَل الإدارة.' },
+    active:    { title: 'إعلانك نشط مجدداً ▶️',      body: 'تم تفعيل إعلانك مجدداً من قِبَل الإدارة — هو الآن مباشر.' },
+  };
+  return (lang === 'ar' ? ar : ku)[type] || ku[type];
+}
+
+// ── ئاگاداریەکانی مامەڵە / باڵانس / گەڕانەوە ──
+function _txNotifTexts(type, lang, p) {
+  p = p || {};
+  const amt = p.amtIQD ? Math.round(p.amtIQD).toLocaleString() : '';
+  const rsn = p.reason || '';
+  const adN = p.adNum  ? '#' + p.adNum : '';
+  const ku = {
+    deposit_approved:   { title: 'پارەدانت پەسەندکرا ✅',              body: amt + ' IQD زیادکرا بۆ باڵانسەکەت.' },
+    deposit_rejected:   { title: 'پارەدانت ڕەتکراوە ❌',              body: 'هۆکار: ' + rsn },
+    balance_added:      { title: 'باڵانست زیادکرا 💰',                body: 'ئادمین ' + amt + ' IQD زیادی کرد بۆ باڵانسەکەت.' },
+    balance_deducted:   { title: 'باڵانسەکەت کەم کرایەوە ⚠️',         body: 'ئادمین ' + amt + ' IQD لە باڵانسەکەت وەرگرت. هۆکار: ' + rsn },
+    refund_rejected_ad: { title: 'پارەی ڕیکلامی ڕەتکراو گەڕایەوە 💸', body: (adN ? adN + ' — ' : '') + amt + ' IQD گەڕایەوە بۆ باڵانسەکەت.' },
+    giveaway:           { title: 'بەشداری قورعەی هەفتانە 🎁',          body: 'ڕیکلامەکەت پەسەندکرا و خۆت دانرا بۆ قورعەی خەڵاتی هەفتانە — 18,000 IQD دەخەڵەتێیت!' },
+  };
+  const ar = {
+    deposit_approved:   { title: 'تمت الموافقة على إيداعك ✅',             body: amt + ' IQD تمت إضافتها إلى رصيدك.' },
+    deposit_rejected:   { title: 'تم رفض إيداعك ❌',                      body: 'السبب: ' + rsn },
+    balance_added:      { title: 'تمت إضافة رصيد 💰',                     body: 'أضاف المشرف ' + amt + ' IQD إلى رصيدك.' },
+    balance_deducted:   { title: 'تم خصم من رصيدك ⚠️',                    body: 'خصم المشرف ' + amt + ' IQD من رصيدك. السبب: ' + rsn },
+    refund_rejected_ad: { title: 'تم استرداد رسوم الإعلان المرفوض 💸',     body: (adN ? adN + ' — ' : '') + amt + ' IQD تمت إضافتها إلى رصيدك.' },
+    giveaway:           { title: 'مشاركة في سحب الأسبوع 🎁',              body: 'تم قبول إعلانك وتسجيلك في قرعة جائزة الأسبوع — لديك فرصة للفوز بـ 18,000 IQD!' },
   };
   return (lang === 'ar' ? ar : ku)[type] || ku[type];
 }
