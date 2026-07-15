@@ -216,7 +216,7 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .phone-flag{padding:12px 14px;background:var(--bg);border:1.5px solid var(--b1);border-radius:13px;font-size:15px;flex-shrink:0;}
 
 /* ══ AUTH ══ */
-#authWrap{min-height:100vh;min-height:-webkit-fill-available;display:flex;align-items:flex-start;justify-content:center;padding:36px 24px 80px;background:var(--w);}html{background:var(--w);}
+#authWrap{min-height:100vh;min-height:-webkit-fill-available;display:flex;align-items:flex-start;justify-content:center;padding:36px 24px 80px;background:var(--w);}html{background:var(--bg);}
 .auth-inner{width:100%;max-width:400px;}
 .auth-brand{text-align:center;margin-bottom:60px;}
 .auth-brand h1{font-size:22px;font-weight:700;color:var(--dark);letter-spacing:-.3px;font-family:"Inter",sans-serif;}
@@ -543,10 +543,12 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .gifts-sec-hdr{display:flex;align-items:center;justify-content:space-between;margin:18px 4px 12px;}
 .gifts-sec-hdr>div{font-size:14.5px;font-weight:800;color:var(--dark);}
 .gifts-sec-ico{width:26px;height:26px;border-radius:8px;background:rgba(168,85,247,.1);color:#a855f7;display:flex;align-items:center;justify-content:center;font-size:12px;}
-.gifts-chal-card{background:var(--w);border:1px solid var(--b1);border-radius:16px;padding:16px;margin-bottom:11px;transition:border-color .2s;}
-.gifts-chal-card.done{border-color:rgba(22,163,74,.3);background:linear-gradient(135deg,rgba(22,163,74,.03),transparent);}
-.gifts-chal-ico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.gifts-chal-card{background:var(--w);border:1px solid var(--b1);border-radius:18px;padding:16px;margin-bottom:12px;transition:border-color .2s;box-shadow:0 1px 8px rgba(0,0,0,.03);}
+.gifts-chal-card.done{border-color:rgba(22,163,74,.3);background:linear-gradient(135deg,rgba(22,163,74,.04),transparent);}
+.gifts-chal-ico{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
 .gifts-chal-reward{font-size:11px;font-weight:800;color:#a855f7;font-family:'Inter',sans-serif;white-space:nowrap;background:rgba(168,85,247,.08);padding:4px 9px;border-radius:8px;}
+.chal-date-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:var(--mt);background:var(--bg);padding:4px 9px;border-radius:8px;margin-bottom:11px;font-family:'Inter',sans-serif;letter-spacing:.2px;}
+.chal-date-badge i{font-size:9.5px;opacity:.75;}
 .gifts-empty{text-align:center;padding:40px 20px;color:var(--mt);}
 .gifts-empty i{font-size:30px;opacity:.35;margin-bottom:10px;display:block;}
 .levels-tier-row{display:flex;align-items:center;gap:12px;background:var(--w);border:1px solid var(--b1);border-radius:16px;padding:13px 14px;margin-bottom:10px;transition:border-color .2s;}
@@ -2827,10 +2829,10 @@ function _toWebP(dataUrl,quality){
         <div class="sidebar-item-ico" style="background:rgba(6,182,212,.13);color:#06b6d4"><i class="fas fa-ticket-simple"></i></div>
         <div class="sidebar-item-txt">فاوچەر کۆد</div>
       </div>
-      <!-- ٤c — چاڵنجەکان -->
+      <!-- ٤c — ئەرکەکان -->
       <div class="sidebar-item" onclick="goPage('challenges');closeSidebar()">
-        <div class="sidebar-item-ico" style="background:rgba(168,85,247,.12);color:#a855f7"><i class="fas fa-flag-checkered"></i></div>
-        <div class="sidebar-item-txt">چاڵنجەکان</div>
+        <div class="sidebar-item-ico" style="background:rgba(168,85,247,.12);color:#a855f7"><i class="fas fa-list-check"></i></div>
+        <div class="sidebar-item-txt">ئەرکەکان</div>
       </div>
       <!-- ٤d — ئاستەکان -->
       <div class="sidebar-item" onclick="goPage('levels');closeSidebar()">
@@ -3653,12 +3655,12 @@ function _toWebP(dataUrl,quality){
   <!-- ══ CHALLENGES ══ -->
   <div class="pg" id="pgChallenges">
     <div class="pg-hdr">
-      <div class="pg-title"><i class="fas fa-flag-checkered" style="margin-left:8px;color:#a855f7"></i>چاڵنجەکان</div>
+      <div class="pg-title"><i class="fas fa-list-check" style="margin-left:8px;color:#a855f7"></i>ئەرکەکان</div>
     </div>
 
     <div class="gifts-sec-hdr" style="margin-top:2px">
       <div style="display:flex;align-items:center;gap:8px">
-        <div class="gifts-sec-ico"><i class="fas fa-flag-checkered"></i></div>
+        <div class="gifts-sec-ico" style="background:rgba(168,85,247,.1);color:#a855f7"><i class="fas fa-list-check"></i></div>
         <span>ئەرکەکانت</span>
       </div>
       <span style="font-size:10.5px;color:var(--mt);font-weight:600">خەڵاتی خۆت وەربگرە</span>
@@ -3741,8 +3743,8 @@ function _toWebP(dataUrl,quality){
 
     <div id="giftsEmptyState" class="gifts-empty" style="display:none">
       <i class="fas fa-gift"></i>
-      دیاری تۆمارکردنت بەکارهاتووە یان بەسەرچووە<br>
-      <span style="font-size:11px;opacity:.75">دیاری تۆمارکردن تەنها یەکجار بۆ هەژمارە نوێیەکان دەدرێت</span>
+      <div style="font-size:14px;font-weight:800;color:var(--dark);margin-bottom:6px">هیچ دیاریەکی چالاک نییە</div>
+      <div style="font-size:12px;color:var(--mt);line-height:1.7">دیاری بەخێرهاتن تەنها یەکجار بۆ هەژمارە نوێیەکان دەدرێت، و لەبەرئەوەی پێشتر بەکارتهێناوە یان بەسەرچووە ئێستا لێرە نیشان نادرێت.</div>
     </div>
   </div>
 
@@ -8961,7 +8963,7 @@ function pickCard(el,id){
       }
       // Award 50 Proxo Coins for submitting an ad
       await addCoins(COINS_PER_AD, 'ناردنی ڕیکلام — کۆینی پاداشت');
-      // ── خاڵ بۆ ئاست و پێشکەوتنی چاڵنجەکان (ڕێژەکە لە لایەن ئادمینەوە دیاریدەکرێت) ──
+      // ── خاڵ بۆ ئاست و پێشکەوتنی ئەرکەکان (ڕێژەکە لە لایەن ئادمینەوە دیاریدەکرێت) ──
       try{ await sb.rpc('register_ad_activity',{p_user_id:cu.id,p_usd:finalTotal/1800}); }catch(e){}
 
       // ── ئەگەر بەروار دابرا → دۆخ بگۆڕە بۆ scheduled ──
@@ -11882,8 +11884,8 @@ async function loadTxHistory(){
       sub='';
     } else if(isReward){
       kind='reward';
-      label=noteStr||'چاڵنجی هەفتانە';
-      sub='خەڵاتی چاڵنج';
+      label=noteStr||'ئەرکی هەفتانە';
+      sub='خەڵاتی ئەرک';
     } else if(isAdminDed){
       kind='admin_deduct';
       label='کەمکردنی باڵانس لەلایەن ئادمین';
@@ -14283,7 +14285,7 @@ async function _loadGiftsChallenges() {
   const wrap = document.getElementById('giftsChallengesList');
   const { data: challenges } = await sb.from('pa_challenges').select('*').eq('is_active', true).order('created_at', { ascending: false });
   if (!challenges || !challenges.length) {
-    wrap.innerHTML = '<div class="gifts-empty"><i class="fas fa-flag-checkered"></i>هیچ چاڵنجێکی چالاک نییە لە ئێستادا<br><span style="font-size:11px;opacity:.75">دواتر سەردانی ئەم بەشە بکەرەوە</span></div>';
+    wrap.innerHTML = '<div class="gifts-empty"><i class="fas fa-list-check"></i>هیچ ئەرکێکی چالاک نییە لە ئێستادا<br><span style="font-size:11px;opacity:.75">دواتر سەردانی ئەم بەشە بکەرەوە</span></div>';
     return;
   }
   const { data: progressRows } = await sb.from('pa_challenge_progress').select('*').eq('user_id', cu.id);
@@ -14296,13 +14298,19 @@ async function _loadGiftsChallenges() {
     const done = pr.progress >= c.goal_value;
     const isAdsGoal = c.goal_type === 'ads_count';
     const unit = isAdsGoal ? 'ڕیکلام' : 'دۆلار';
-    const icoCls = isAdsGoal ? 'fa-bullhorn' : 'fa-dollar-sign';
-    const icoColor = pr.claimed ? '#16a34a' : (done ? '#a855f7' : '#6366f1');
-    const icoBg = pr.claimed ? 'rgba(22,163,74,.1)' : (done ? 'rgba(168,85,247,.1)' : 'rgba(99,102,241,.1)');
+    const icoCls = isAdsGoal ? 'fa-bullhorn' : 'fa-sack-dollar';
+    const icoGrad = pr.claimed ? ['#22c55e','#15803d'] : (done ? ['#c084fc','#7c3aed'] : ['#818cf8','#4f46e5']);
     const rewardTxt = [
       c.reward_iqd > 0 ? (parseFloat(c.reward_iqd).toLocaleString() + ' IQD') : null,
       c.reward_points > 0 ? (c.reward_points + ' خاڵ') : null,
     ].filter(Boolean).join(' + ');
+    let dateTxt = '';
+    if (c.created_at) {
+      const d = new Date(c.created_at);
+      const dateStr = d.toLocaleDateString('en-GB').replace(/\//g,'/');
+      const timeStr = d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+      dateTxt = dateStr + ' — ' + timeStr;
+    }
     let btn;
     if (pr.claimed) {
       btn = '<div style="font-size:12px;font-weight:800;color:var(--gr);display:flex;align-items:center;gap:6px"><i class="fas fa-check-circle"></i> وەرگیرا</div>';
@@ -14312,8 +14320,9 @@ async function _loadGiftsChallenges() {
       btn = '<div style="font-size:11px;color:var(--mt);font-weight:700;font-family:\'Inter\',sans-serif">' + Math.floor(pr.progress) + ' / ' + c.goal_value + ' <span style="font-family:\'R\',sans-serif;font-weight:600">' + unit + '</span></div>';
     }
     return '<div class="gifts-chal-card' + (pr.claimed ? ' done' : '') + '">' +
+      (dateTxt ? '<div class="chal-date-badge"><i class="fas fa-calendar-days"></i>' + dateTxt + '</div>' : '') +
       '<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px">' +
-        '<div class="gifts-chal-ico" style="background:' + icoBg + ';color:' + icoColor + '"><i class="fas ' + icoCls + '"></i></div>' +
+        '<div class="gifts-chal-ico" style="background:linear-gradient(135deg,' + icoGrad[0] + ',' + icoGrad[1] + ');color:#fff;box-shadow:0 4px 12px ' + icoGrad[1] + '40"><i class="fas ' + icoCls + '"></i></div>' +
         '<div style="flex:1;min-width:0">' +
           '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">' +
             '<div style="font-size:13.5px;font-weight:800;color:var(--dark)">' + (c.title || '') + '</div>' +
@@ -14323,7 +14332,7 @@ async function _loadGiftsChallenges() {
         '</div>' +
       '</div>' +
       '<div style="height:7px;border-radius:7px;background:var(--b1);overflow:hidden;margin-bottom:11px">' +
-        '<div style="height:100%;width:' + pct + '%;border-radius:7px;background:linear-gradient(90deg,#a855f7,#7c3aed);transition:width .4s ease"></div>' +
+        '<div style="height:100%;width:' + pct + '%;border-radius:7px;background:linear-gradient(90deg,' + icoGrad[0] + ',' + icoGrad[1] + ');transition:width .4s ease"></div>' +
       '</div>' +
       '<div style="display:flex;justify-content:flex-end">' + btn + '</div>' +
     '</div>';
