@@ -5612,7 +5612,7 @@ async function doForgotSendOtp(){
     btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> ناردنی کۆدی دڵنیاکردنەوە';return;
   }
   // کۆد بنێرە
-  btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> '+_t('دەنێردرێت...','Sending...')+';
+  btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> '+_t('دەنێردرێت...','Sending...');
   const result=await requestOtp(email,'reset_password');
   btn.disabled=false;
   btn.innerHTML='<i class="fas fa-paper-plane"></i> ناردنی کۆدی دڵنیاکردنەوە';
@@ -5783,7 +5783,7 @@ async function openChangePass(){
   document.getElementById('changePassMsg').style.display='none';
   document.getElementById('moChangePass').classList.add('on');
   // خۆکار کۆد بنێرە
-  document.getElementById('cpOtpLbl').textContent='کۆدی ٦ ژمارە بۆ '+cu.email+' '+_t('دەنێردرێت...','Sending...')+';
+  document.getElementById('cpOtpLbl').textContent='کۆدی ٦ ژمارە بۆ '+cu.email+' '+_t('دەنێردرێت...','Sending...');
   const result=await requestOtp(cu.email,'change_password');
   if(result.success){
     document.getElementById('cpOtpLbl').textContent='کۆدی ٦ ژمارە بۆ '+cu.email+' نێردرا';
@@ -5931,7 +5931,7 @@ async function doAuth(){
       if(chkErr){showAmsg('ئیمەیل یان وشەی نهێنی هەڵەیە','err');btn.innerHTML='<i class="fas fa-arrow-left"></i> دواتر';btn.disabled=false;return;}
       try{ await sb.auth.signOut(); }catch(_){}
     }
-    btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> کۆد '+_t('دەنێردرێت...','Sending...')+';
+    btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> کۆد '+_t('دەنێردرێت...','Sending...');
     const name=aMode==='signup'?(document.getElementById('authName').value.trim()||email.split('@')[0]):'';
     _otpPendingLogin=(aMode==='login');
     _otpPendingData={pass,name};
@@ -6456,7 +6456,7 @@ async function submitWalletDeposit() {
   if (!db || !cu) { _wMsg('wdMsg','هەڵەی پەیوەندی Firebase',false); return; }
   var btn = document.getElementById('wdSubmitBtn');
   btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> '+_t('دەنێردرێت...','Sending...')+';
+  btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> '+_t('دەنێردرێت...','Sending...');
   try {
     var amtUSD = parseFloat((amt / 1800).toFixed(6));
     var req = {
@@ -6557,7 +6557,7 @@ async function submitWalletWithdraw() {
   } catch(_) {}
   var btn = document.getElementById('wwSubmitBtn');
   btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> '+_t('دەنێردرێت...','Sending...')+';
+  btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> '+_t('دەنێردرێت...','Sending...');
   try {
     var req = {
       type: 'withdraw',

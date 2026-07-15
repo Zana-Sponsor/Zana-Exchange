@@ -895,7 +895,7 @@ async function doAuth(){
       setTimeout(()=>{ window.location.href='/'; },1800);
       return;
     }
-    btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> کۆد '+_t('دەنێردرێت...','Sending...')+';
+    btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> کۆد '+_t('دەنێردرێت...','Sending...');
     const name=document.getElementById('authName').value.trim()||email.split('@')[0];
     _otpPendingData={pass,name};
     _otpPurpose='signup';

@@ -933,7 +933,7 @@ async function doForgotSendOtp(){
     fpShowMsg('A',e.message||'هەڵەی پشکنین','err');
     btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> ناردنی کۆدی دڵنیاکردنەوە';return;
   }
-  btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> '+_t('دەنێردرێت...','Sending...')+';
+  btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> '+_t('دەنێردرێت...','Sending...');
   const result=await requestOtp(email,'reset_password');
   btn.disabled=false;
   btn.innerHTML='<i class="fas fa-paper-plane"></i> ناردنی کۆدی دڵنیاکردنەوە';
@@ -1054,7 +1054,7 @@ async function doAuth(){
       return;
     }
     try{ await sb.auth.signOut(); }catch(_){}
-    btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> کۆد '+_t('دەنێردرێت...','Sending...')+';
+    btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> کۆد '+_t('دەنێردرێت...','Sending...');
     _otpPendingData={pass};
     _otpPurpose='login';
     const result=await requestOtp(email,'login');
