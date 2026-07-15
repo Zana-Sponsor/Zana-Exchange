@@ -3704,10 +3704,12 @@ async function submitApproval(){
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> چاوەڕوانبە...';
   try{
-    // Update ad row: status=active + tiktok details
+    // Update ad row: status = scheduled (بەروار پێشووتر) یان active (ئەمڕۆ یان پێشتر)
     const targetBudget = parseFloat(document.getElementById('approveTargetBudget').value||'0') || 0;
+    const _todayStr = new Date().toISOString().split('T')[0];
+    const _finalStatus = (startDate && startDate > _todayStr) ? 'scheduled' : 'active';
     const {error} = await sb.from('pa_ads').update({
-      status: 'active',
+      status: _finalStatus,
       tiktok_ad_id: tiktokId,
       tiktok_campaign_id: campaignId,
       start_date: startDateTime,
@@ -3735,20 +3737,23 @@ async function submitApproval(){
     // User notification — status changes to "Live" in the app
     // FIX: was type:'general' — must be 'ad_approved' so the notification
     // appears correctly in the notification list and routes to /my-ads on tap.
+    const _notifTitle = _finalStatus === 'scheduled'
+      ? 'ڕیکلامەکەت پەسەندکرا — کات بۆ دانراو 📅'
+      : 'ڕیکلامەکەت چالاک بوو ✅';
+    const _notifBody = _finalStatus === 'scheduled'
+      ? `ڕیکلامی ژمارە #${_approveAdNumber || 'نادیار'} پەسەندکرا — لە ${startDate} دەستپێدەکات`
+      : `ئێستا ڕیکلامی ژمارە #${_approveAdNumber || 'نادیار'} چالاکە`;
     await sb.from('pa_notifications').insert({
-  user_id: _approveUserId,
-  type: 'ad_approved',
-  title: 'ڕیکلامەکەت چالاک بوو ✅',
-  body: `ئێستا ڕیکلامی ژمارە #${_approveAdNumber || 'نادیار'} چالاکە`,
-  is_read: false,
-  meta: {                          // ← ئەمە زیاد بکە
-    ad_id: _approveAdId,
-    ad_number: _approveAdNumber
-  }
-});
+      user_id: _approveUserId,
+      type: 'ad_approved',
+      title: _notifTitle,
+      body: _notifBody,
+      is_read: false,
+      meta: { ad_id: _approveAdId, ad_number: _approveAdNumber }
+    });
     // ── Firebase realtime push (پەسەندکردنی ڕیکلام) ──
-   _fbPushNotif(_approveUserId,'ڕیکلامەکەت چالاک بوو ✅',`ئێستا ڕیکلامی ژمارە #${_approveAdNumber || 'نادیار'} چالاکە`,'ad_approved');
-    _fbTriggerAds(_approveUserId, _approveAdId, 'active');
+    _fbPushNotif(_approveUserId, _notifTitle, _notifBody, 'ad_approved');
+    _fbTriggerAds(_approveUserId, _approveAdId, _finalStatus);
     // ══ ناردنی ئیمەیلی پەسەندکردنی ڕیکلام لە ڕێگای webhook ══
     try{
       const{data:_apProf}=await sb.from('profiles').select('email,full_name').eq('id',_approveUserId).single();
@@ -3771,7 +3776,7 @@ async function submitApproval(){
         });
       }
     }catch(_apErr){/* silent */}
-    showToast('✅ ڕیکلام پەسەندکرا — دۆخ: چالاک ','gr');
+    showToast(_finalStatus === 'scheduled' ? '✅ ڕیکلام پەسەندکرا — دۆخ: کات بۆ دانراو 📅' : '✅ ڕیکلام پەسەندکرا — دۆخ: چالاک','gr');
     closeMo('moApproveAd');
     loadAds();
     loadApprovalWorkflow();

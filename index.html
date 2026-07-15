@@ -3365,6 +3365,7 @@ function _toWebP(dataUrl,quality){
       <div class="fchip on" data-f="all" onclick="filterAds(this)">هەموو</div>
       <div class="fchip" data-f="active" onclick="filterAds(this)">چالاک</div>
       <div class="fchip" data-f="pending" onclick="filterAds(this)">چاوەڕوان</div>
+      <div class="fchip" data-f="review" onclick="filterAds(this)">پێداچوونەوە</div>
       <div class="fchip" data-f="scheduled" onclick="filterAds(this)">کات بۆ دانراو</div>
       <div class="fchip" data-f="rejected" onclick="filterAds(this)">ڕەتکراوە</div>
       <div class="fchip" data-f="completed" onclick="filterAds(this)">تەواوبوو</div>
@@ -8889,7 +8890,7 @@ function pickCard(el,id){
             age_groups:ageGroups?JSON.stringify(ageGroups):null,
             gender,
             location:adLocation,
-            status: adDateVal ? 'scheduled' : 'pending',
+            status: 'pending',
             ad_number:_adNum,
             title:document.getElementById('adNameTitle')?.value?.trim()||null
           }).select('id,ad_number').single();
@@ -8985,12 +8986,11 @@ function pickCard(el,id){
       // ── خاڵ بۆ ئاست و پێشکەوتنی ئەرکەکان (ڕێژەکە لە لایەن ئادمینەوە دیاریدەکرێت) ──
       try{ await sb.rpc('register_ad_activity',{p_user_id:cu.id,p_usd:finalTotal/1800}); }catch(e){}
 
-      // ── دۆخی دروست دیاری بکە: scheduled ئەگەر بەروار هەبوو، وەکوو واز pending ──
-      // (ئەمە پاراستنێکە بۆ ئەوەی RPC status='active' نەکات بەپێی چۆنیەتی دروستکردنەکەی)
+      // ── دۆخی دروست دیاری بکە: هەمیشە pending — ئادمین خۆی scheduled یان active دەکات ──
+      // (ئەمە پاراستنێکە بۆ ئەوەی RPC status='active' یان 'scheduled' نەکات بەخۆی)
       if(_adNumFinal){
         try{
-          const _targetStatus = adDateVal ? 'scheduled' : 'pending';
-          await sb.from('pa_ads').update({status:_targetStatus}).eq('ad_number',String(_adNumFinal));
+          await sb.from('pa_ads').update({status:'pending'}).eq('ad_number',String(_adNumFinal));
         }catch(e){}
       }
 
