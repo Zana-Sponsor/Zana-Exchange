@@ -4554,239 +4554,159 @@ function _toWebP(dataUrl,quality){
 
 <!-- CHANGE PASSWORD — FULL SCREEN -->
 <style>
-@keyframes cpFadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-@keyframes cpBlobPulse{0%,100%{transform:scale(1);opacity:.18}50%{transform:scale(1.12);opacity:.28}}
-@keyframes cpShieldFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-@keyframes cpRingPing{0%{transform:scale(.9);opacity:.7}100%{transform:scale(1.5);opacity:0}}
-.cp-step-visible{animation:cpFadeUp .32s cubic-bezier(.22,.61,.36,1) both;}
-.cp-otp-box{width:48px;height:58px;border-radius:14px;border:2px solid var(--b1);background:var(--bg);font-size:24px;font-weight:900;color:var(--dark);text-align:center;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s,background .2s,box-shadow .2s;-webkit-appearance:none;caret-color:transparent;}
-.cp-otp-box:focus{border-color:var(--dark);background:var(--w);box-shadow:0 0 0 4px rgba(28,35,51,.08);}
-.cp-otp-box.filled{border-color:var(--dark);background:var(--w);}
-.cp-info-pill{display:flex;align-items:center;gap:10px;padding:13px 16px;border-radius:16px;font-size:13px;font-weight:700;}
-.cp-send-btn{width:100%;padding:17px;background:linear-gradient(135deg,#1c2333 0%,#2e3a50 100%);color:#fff;border:none;border-radius:17px;font-family:'R',sans-serif;font-size:15.5px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 24px rgba(28,35,51,.28);transition:all .22s ease;letter-spacing:.2px;}
-.cp-send-btn:active{opacity:.88;transform:scale(.985);}
-.cp-send-btn:disabled{opacity:.5;pointer-events:none;}
-.cp-verify-btn{width:100%;padding:17px;background:linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);color:#fff;border:none;border-radius:17px;font-family:'R',sans-serif;font-size:15.5px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 24px rgba(37,99,235,.32);transition:all .22s ease;}
-.cp-verify-btn:active{opacity:.88;transform:scale(.985);}
-.cp-verify-btn:disabled{opacity:.5;pointer-events:none;}
-.cp-save-btn{width:100%;padding:17px;background:linear-gradient(135deg,#16a34a 0%,#15803d 100%);color:#fff;border:none;border-radius:17px;font-family:'R',sans-serif;font-size:15.5px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 24px rgba(22,163,74,.3);transition:all .22s ease;}
-.cp-save-btn:active{opacity:.88;transform:scale(.985);}
-.cp-save-btn:disabled{opacity:.5;pointer-events:none;}
-.cp-back-link{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--mt);cursor:pointer;font-weight:700;padding:9px 16px;border-radius:12px;background:var(--bg);border:1.5px solid var(--b1);transition:all .18s;}
-.cp-back-link:active{background:var(--b1);}
-.cp-timer-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:20px;background:var(--bg);border:1.5px solid var(--b1);font-size:12.5px;font-weight:800;color:var(--dark);}
-.cp-timer-pill i{font-size:12px;color:var(--bl);}
-.cp-resend-link{font-size:13px;color:var(--bl);cursor:pointer;font-weight:700;display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:12px;border:1.5px solid rgba(37,99,235,.2);background:rgba(37,99,235,.04);}
-.cp-resend-link:active{background:rgba(37,99,235,.1);}
-.cp-msg-ok{background:rgba(22,163,74,.08);border:1.5px solid rgba(22,163,74,.22);color:var(--gr);border-radius:14px;padding:11px 15px;font-size:13px;font-weight:700;text-align:center;}
-.cp-msg-err{background:rgba(220,38,38,.07);border:1.5px solid rgba(220,38,38,.18);color:var(--rd);border-radius:14px;padding:11px 15px;font-size:13px;font-weight:700;text-align:center;}
+@keyframes cpIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.cp-step{animation:cpIn .25s ease both;}
+.cp-otp-box{width:44px;height:52px;border-radius:12px;border:1.5px solid var(--b1);background:var(--bg);font-size:22px;font-weight:800;color:var(--dark);text-align:center;font-family:'Inter',sans-serif;outline:none;transition:border-color .18s,background .18s,box-shadow .18s;-webkit-appearance:none;caret-color:transparent;}
+.cp-otp-box:focus{border-color:var(--dark);background:var(--w);box-shadow:0 0 0 3px rgba(28,35,51,.07);}
+.cp-msg-ok{background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.2);color:var(--gr);border-radius:12px;padding:10px 14px;font-size:12.5px;font-weight:700;text-align:center;margin-bottom:12px;}
+.cp-msg-err{background:rgba(220,38,38,.06);border:1px solid rgba(220,38,38,.15);color:var(--rd);border-radius:12px;padding:10px 14px;font-size:12.5px;font-weight:700;text-align:center;margin-bottom:12px;}
 </style>
-<div id="cpFullScreen" style="display:none;position:fixed;inset:0;z-index:9500;background:#f8f9fc;overflow-y:auto;-webkit-overflow-scrolling:touch;">
+<div id="cpFullScreen" style="display:none;position:fixed;inset:0;z-index:9500;background:var(--w);overflow-y:auto;-webkit-overflow-scrolling:touch;">
 
-  <!-- ══ TOPBAR ══ -->
-  <div style="padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:rgba(248,249,252,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:10;border-bottom:1px solid rgba(232,234,240,.7);">
-    <button onclick="closeChangePasMo()" style="width:40px;height:40px;border-radius:50%;background:#fff;border:1.5px solid var(--b1);color:var(--dark);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;box-shadow:0 1px 6px rgba(0,0,0,.06);transition:all .18s;" onmouseenter="this.style.background='var(--dark)';this.style.color='#fff'" onmouseleave="this.style.background='#fff';this.style.color='var(--dark)'">
+  <!-- تۆپبار -->
+  <div style="padding:13px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--b1);position:sticky;top:0;background:var(--w);z-index:2;">
+    <button onclick="closeChangePasMo()" style="width:36px;height:36px;border-radius:50%;background:var(--bg);border:1.5px solid var(--b1);color:var(--dark);font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
       <i class="fas fa-xmark"></i>
     </button>
-    <!-- پرۆگرێسبار -->
-    <div style="display:flex;gap:6px;align-items:center;">
-      <div id="cpDot1" style="height:5px;border-radius:3px;background:var(--dark);transition:all .38s cubic-bezier(.34,1.56,.64,1);width:28px;"></div>
-      <div id="cpDot2" style="height:5px;border-radius:3px;background:var(--b2);transition:all .38s cubic-bezier(.34,1.56,.64,1);width:5px;"></div>
-      <div id="cpDot3" style="height:5px;border-radius:3px;background:var(--b2);transition:all .38s cubic-bezier(.34,1.56,.64,1);width:5px;"></div>
+    <div style="display:flex;gap:5px;align-items:center;">
+      <div id="cpDot1" style="height:4px;border-radius:2px;background:var(--dark);transition:all .3s ease;width:22px;"></div>
+      <div id="cpDot2" style="height:4px;border-radius:2px;background:var(--b2);transition:all .3s ease;width:6px;"></div>
+      <div id="cpDot3" style="height:4px;border-radius:2px;background:var(--b2);transition:all .3s ease;width:6px;"></div>
     </div>
-    <div style="width:40px;"></div>
+    <div style="width:36px;"></div>
   </div>
 
-  <div style="max-width:430px;margin:0 auto;padding:0 20px 60px;">
+  <div style="max-width:400px;margin:0 auto;padding:24px 20px 48px;">
 
-    <!-- ══════════════════════════════════
-         STEP 0 — دڵنیاکردنەوەی ناسنامە
-         ══════════════════════════════════ -->
-    <div id="cpStep0" class="cp-step-visible">
+    <!-- ─── ئەستێپ ٠: دڵنیاکردنەوە ─── -->
+    <div id="cpStep0" class="cp-step">
 
-      <!-- هیرۆ بانەر -->
-      <div style="margin:24px 0 28px;border-radius:28px;background:linear-gradient(145deg,#1c2333 0%,#1e3a5f 60%,#0f2744 100%);padding:36px 24px 32px;text-align:center;position:relative;overflow:hidden;box-shadow:0 12px 48px rgba(28,35,51,.25);">
-        <!-- دیکۆر بلۆبەکان -->
-        <div style="position:absolute;top:-30px;left:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.07);animation:cpBlobPulse 4s ease-in-out infinite;"></div>
-        <div style="position:absolute;bottom:-20px;right:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.05);animation:cpBlobPulse 4s ease-in-out infinite 1.5s;"></div>
-        <!-- ئایکۆن -->
-        <div style="position:relative;display:inline-block;margin-bottom:18px;">
-          <div style="width:86px;height:86px;border-radius:26px;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;margin:0 auto;animation:cpShieldFloat 3.5s ease-in-out infinite;backdrop-filter:blur(8px);">
-            <i class="fas fa-shield-halved" style="font-size:40px;color:#fff;filter:drop-shadow(0 4px 12px rgba(255,255,255,.25));"></i>
-          </div>
-          <div style="position:absolute;bottom:-5px;right:-5px;width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#16a34a);border:3px solid #1c2333;display:flex;align-items:center;justify-content:center;">
-            <i class="fas fa-lock" style="font-size:10px;color:#fff;"></i>
-          </div>
+      <!-- ئایکۆن و تایتڵ -->
+      <div style="text-align:center;margin-bottom:28px;">
+        <div style="width:68px;height:68px;border-radius:20px;background:var(--bg);border:1.5px solid var(--b1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+          <i class="fas fa-shield-halved" style="font-size:30px;color:var(--dark);"></i>
         </div>
-        <!-- تایتڵ -->
-        <div style="font-size:22px;font-weight:900;color:#fff;margin-bottom:8px;letter-spacing:-.3px;font-family:'R',sans-serif;">گۆڕینی وشەی نهێنی</div>
-        <div style="font-size:13px;color:rgba(255,255,255,.65);line-height:1.75;max-width:260px;margin:0 auto;font-family:'R',sans-serif;">دەبێت سەرەتا ناسنامەت دڵنیا بکەینەوە، کۆدی دڵنیاکردنەوە بۆ ئیمەیلەکەت دەنێرین</div>
+        <div style="font-size:19px;font-weight:900;color:var(--dark);margin-bottom:6px;letter-spacing:-.3px;">گۆڕینی وشەی نهێنی</div>
+        <div style="font-size:13px;color:var(--mt);line-height:1.65;">کۆدی دڵنیاکردنەوە بۆ ئیمەیلەکەت دەنێرین</div>
       </div>
 
-      <!-- ئیمەیل باکسی -->
-      <div style="background:#fff;border:1.5px solid var(--b1);border-radius:20px;padding:16px 18px;margin-bottom:16px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 12px rgba(0,0,0,.04);">
-        <div style="width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,rgba(37,99,235,.12),rgba(37,99,235,.06));border:1.5px solid rgba(37,99,235,.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <i class="fas fa-envelope" style="color:#2563eb;font-size:18px;"></i>
+      <!-- ئیمەیل ڕیز -->
+      <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--bg);border:1.5px solid var(--b1);border-radius:14px;margin-bottom:14px;">
+        <div style="width:36px;height:36px;border-radius:10px;background:rgba(37,99,235,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fas fa-envelope" style="color:var(--bl);font-size:15px;"></i>
         </div>
         <div style="flex:1;min-width:0;">
-          <div style="font-size:11px;color:var(--mt);font-weight:800;margin-bottom:4px;letter-spacing:.6px;text-transform:uppercase;">کۆد دەنێردرێت بۆ</div>
-          <div id="cpEmailDisplay" style="font-size:14px;font-weight:900;color:var(--dark);direction:ltr;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:'Inter',sans-serif;"></div>
+          <div style="font-size:10.5px;color:var(--mt);font-weight:700;margin-bottom:2px;">کۆد دەنێردرێت بۆ</div>
+          <div id="cpEmailDisplay" style="font-size:13.5px;font-weight:800;color:var(--dark);direction:ltr;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:'Inter',sans-serif;"></div>
         </div>
-        <div style="width:32px;height:32px;border-radius:50%;background:rgba(22,163,74,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <i class="fas fa-check" style="font-size:13px;color:#16a34a;"></i>
-        </div>
+        <i class="fas fa-circle-check" style="color:var(--gr);font-size:16px;flex-shrink:0;"></i>
       </div>
 
       <!-- زانیارییەکان -->
-      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
-        <div class="cp-info-pill" style="background:#fff;border:1.5px solid rgba(37,99,235,.14);color:var(--dark2);box-shadow:0 1px 8px rgba(37,99,235,.06);">
-          <div style="width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,rgba(37,99,235,.14),rgba(37,99,235,.06));display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <i class="fas fa-hourglass-half" style="color:#2563eb;font-size:14px;"></i>
-          </div>
-          <div>
-            <div style="font-size:12.5px;font-weight:800;color:var(--dark);margin-bottom:2px;">کۆدی کاتی</div>
-            <div style="font-size:11.5px;color:var(--mt);font-weight:600;">کۆدەکە بۆ ماوەی ١٠ خولەک بەکارهێنراو دەبێت</div>
-          </div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px;">
+        <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--bg);border-radius:12px;border:1px solid var(--b1);font-size:12.5px;color:var(--dark2);font-weight:600;">
+          <i class="fas fa-clock" style="color:var(--mt);font-size:13px;flex-shrink:0;"></i>
+          کۆدەکە بۆ ١٠ خولەک بەکارهێنراو دەبێت
         </div>
-        <div class="cp-info-pill" style="background:#fff;border:1.5px solid rgba(22,163,74,.14);color:var(--dark2);box-shadow:0 1px 8px rgba(22,163,74,.06);">
-          <div style="width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,rgba(22,163,74,.14),rgba(22,163,74,.06));display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <i class="fas fa-user-shield" style="color:#16a34a;font-size:14px;"></i>
-          </div>
-          <div>
-            <div style="font-size:12.5px;font-weight:800;color:var(--dark);margin-bottom:2px;">پاراستنی ئەکاونت</div>
-            <div style="font-size:11.5px;color:var(--mt);font-weight:600;">تەنها تۆ دەتوانیت گۆڕانکاری لە وشەی نهێنیدا بکەیت</div>
-          </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--bg);border-radius:12px;border:1px solid var(--b1);font-size:12.5px;color:var(--dark2);font-weight:600;">
+          <i class="fas fa-lock" style="color:var(--mt);font-size:13px;flex-shrink:0;"></i>
+          تەنها تۆ دەتوانیت وشەی نهێنی بگۆڕیت
         </div>
       </div>
 
-      <div id="cpStep0Msg" style="display:none;margin-bottom:14px;"></div>
+      <div id="cpStep0Msg" style="display:none;margin-bottom:12px;"></div>
 
-      <button class="cp-send-btn" onclick="cpSendOtp()" id="cpSendBtn">
-        <i class="fas fa-paper-plane" id="cpSendIco" style="font-size:16px;"></i>
+      <button class="abtn" onclick="cpSendOtp()" id="cpSendBtn">
+        <i class="fas fa-paper-plane" id="cpSendIco"></i>
         <span id="cpSendTxt">ناردنی کۆدی دڵنیاکردنەوە</span>
       </button>
     </div>
 
-    <!-- ══════════════════════════════════
-         STEP 1 — کۆد بنووسە
-         ══════════════════════════════════ -->
+    <!-- ─── ئەستێپ ١: کۆد بنووسە ─── -->
     <div id="cpStep1" style="display:none;">
 
-      <!-- هیرۆ -->
-      <div style="margin:24px 0 28px;border-radius:28px;background:linear-gradient(145deg,#1e40af 0%,#2563eb 60%,#3b82f6 100%);padding:32px 24px 28px;text-align:center;position:relative;overflow:hidden;box-shadow:0 12px 48px rgba(37,99,235,.28);">
-        <div style="position:absolute;top:-24px;right:-24px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.08);animation:cpBlobPulse 3.5s ease-in-out infinite;"></div>
-        <div style="position:absolute;bottom:-16px;left:-16px;width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,.06);animation:cpBlobPulse 3.5s ease-in-out infinite 1s;"></div>
-        <div style="width:80px;height:80px;border-radius:24px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;backdrop-filter:blur(8px);">
-          <i class="fas fa-envelope-open-text" style="font-size:36px;color:#fff;filter:drop-shadow(0 3px 8px rgba(255,255,255,.2));"></i>
+      <!-- ئایکۆن و تایتڵ -->
+      <div style="text-align:center;margin-bottom:24px;">
+        <div style="width:68px;height:68px;border-radius:20px;background:rgba(37,99,235,.07);border:1.5px solid rgba(37,99,235,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+          <i class="fas fa-envelope-open-text" style="font-size:28px;color:var(--bl);"></i>
         </div>
-        <div style="font-size:21px;font-weight:900;color:#fff;margin-bottom:7px;letter-spacing:-.3px;">چاوەڕوانی کۆد بکە</div>
-        <div style="font-size:13px;color:rgba(255,255,255,.7);line-height:1.7;" id="cpOtpLbl">کۆدی ٦ ژمارە بۆ ئیمەیلەکەت نێردرا</div>
+        <div style="font-size:18px;font-weight:900;color:var(--dark);margin-bottom:5px;">کۆدی دڵنیاکردنەوە</div>
+        <div style="font-size:12.5px;color:var(--mt);line-height:1.6;" id="cpOtpLbl">کۆدی ٦ ژمارە بۆ ئیمەیلەکەت نێردرا</div>
       </div>
 
       <!-- OTP خانەکان -->
-      <div style="background:#fff;border-radius:22px;padding:24px 20px;margin-bottom:16px;box-shadow:0 2px 16px rgba(0,0,0,.05);border:1.5px solid var(--b1);">
-        <div style="text-align:center;margin-bottom:18px;">
-          <div style="font-size:13px;font-weight:800;color:var(--dark);">کۆدی ٦ ژمارە بنووسە</div>
-          <div style="font-size:11.5px;color:var(--mt);margin-top:3px;">ژمارەکان پاش هەڵبژاردن خۆکار بڕۆن دواتر</div>
+      <div style="display:flex;gap:7px;justify-content:center;direction:ltr;margin-bottom:18px;">
+        <input class="cp-otp-box" type="text" inputmode="numeric" maxlength="1" id="cp1" oninput="cpOtpMove(this,null,'cp2')" onkeydown="cpOtpBack(event,this,null)">
+        <input class="cp-otp-box" type="text" inputmode="numeric" maxlength="1" id="cp2" oninput="cpOtpMove(this,'cp1','cp3')" onkeydown="cpOtpBack(event,this,'cp1')">
+        <input class="cp-otp-box" type="text" inputmode="numeric" maxlength="1" id="cp3" oninput="cpOtpMove(this,'cp2','cp4')" onkeydown="cpOtpBack(event,this,'cp2')">
+        <div style="display:flex;align-items:center;padding:0 2px;"><div style="width:8px;height:2px;border-radius:1px;background:var(--b2);"></div></div>
+        <input class="cp-otp-box" type="text" inputmode="numeric" maxlength="1" id="cp4" oninput="cpOtpMove(this,'cp3','cp5')" onkeydown="cpOtpBack(event,this,'cp3')">
+        <input class="cp-otp-box" type="text" inputmode="numeric" maxlength="1" id="cp5" oninput="cpOtpMove(this,'cp4','cp6')" onkeydown="cpOtpBack(event,this,'cp4')">
+        <input class="cp-otp-box" type="text" inputmode="numeric" maxlength="1" id="cp6" oninput="cpOtpMove(this,'cp5',null)" onkeydown="cpOtpBack(event,this,'cp5')">
+      </div>
+
+      <!-- تایمەر + ریسند -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;min-height:32px;">
+        <div id="cpTimerWrap" style="display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--mt);">
+          <i class="fas fa-clock" style="font-size:12px;"></i>
+          <span id="cpTimerVal">10:00</span>
         </div>
-        <div style="display:flex;gap:8px;justify-content:center;direction:ltr;margin-bottom:20px;">
-          <input class="cp-otp-box" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" id="cp1" oninput="cpOtpMove(this,null,'cp2')" onkeydown="cpOtpBack(event,this,null)">
-          <input class="cp-otp-box" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" id="cp2" oninput="cpOtpMove(this,'cp1','cp3')" onkeydown="cpOtpBack(event,this,'cp1')">
-          <input class="cp-otp-box" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" id="cp3" oninput="cpOtpMove(this,'cp2','cp4')" onkeydown="cpOtpBack(event,this,'cp2')">
-          <div style="width:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><div style="width:6px;height:2px;border-radius:1px;background:var(--b2);"></div></div>
-          <input class="cp-otp-box" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" id="cp4" oninput="cpOtpMove(this,'cp3','cp5')" onkeydown="cpOtpBack(event,this,'cp3')">
-          <input class="cp-otp-box" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" id="cp5" oninput="cpOtpMove(this,'cp4','cp6')" onkeydown="cpOtpBack(event,this,'cp4')">
-          <input class="cp-otp-box" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" id="cp6" oninput="cpOtpMove(this,'cp5',null)" onkeydown="cpOtpBack(event,this,'cp5')">
-        </div>
-        <!-- تایمەر و ریسند -->
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-          <div class="cp-timer-pill" id="cpTimerWrap">
-            <i class="fas fa-clock"></i>
-            <span id="cpTimerVal">10:00</span>
-          </div>
-          <div class="cp-resend-link" id="cpResendBtn" onclick="cpResendOtp()" style="display:none;">
-            <i class="fas fa-rotate-right"></i> کۆدی نوێ بنێرە
-          </div>
+        <div id="cpResendBtn" onclick="cpResendOtp()" style="display:none;font-size:12.5px;font-weight:800;color:var(--bl);cursor:pointer;display:none;align-items:center;gap:5px;">
+          <i class="fas fa-rotate-right" style="font-size:12px;"></i> کۆدی نوێ
         </div>
       </div>
 
-      <div id="cpOtpMsg" style="display:none;margin-bottom:14px;"></div>
+      <div id="cpOtpMsg" style="display:none;"></div>
 
-      <button class="cp-verify-btn" onclick="doVerifyCpOtp()" id="cpOtpBtn">
-        <i class="fas fa-arrow-left" style="font-size:15px;"></i>
-        دڵنیاکردنەوە و بەردەوامبوون
+      <button class="abtn" onclick="doVerifyCpOtp()" id="cpOtpBtn" style="margin-bottom:12px;">
+        <i class="fas fa-check"></i> دڵنیاکردنەوە
       </button>
 
-      <div style="text-align:center;margin-top:18px;">
-        <span class="cp-back-link" onclick="cpGoBack()">
-          <i class="fas fa-chevron-right" style="font-size:12px;"></i> گەڕانەوە
+      <div style="text-align:center;">
+        <span onclick="cpGoBack()" style="font-size:12.5px;color:var(--mt);cursor:pointer;font-weight:700;display:inline-flex;align-items:center;gap:5px;">
+          <i class="fas fa-arrow-right" style="font-size:11px;"></i> گەڕانەوە
         </span>
       </div>
     </div>
 
-    <!-- ══════════════════════════════════
-         STEP 2 — وشەی نهێنیی نوێ
-         ══════════════════════════════════ -->
+    <!-- ─── ئەستێپ ٢: وشەی نهێنیی نوێ ─── -->
     <div id="cpStep2" style="display:none;">
 
-      <!-- هیرۆ -->
-      <div style="margin:24px 0 28px;border-radius:28px;background:linear-gradient(145deg,#14532d 0%,#16a34a 60%,#22c55e 100%);padding:32px 24px 28px;text-align:center;position:relative;overflow:hidden;box-shadow:0 12px 48px rgba(22,163,74,.28);">
-        <div style="position:absolute;top:-20px;left:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.07);animation:cpBlobPulse 3.5s ease-in-out infinite;"></div>
-        <div style="position:absolute;bottom:-14px;right:-14px;width:65px;height:65px;border-radius:50%;background:rgba(255,255,255,.05);animation:cpBlobPulse 3.5s ease-in-out infinite 1.2s;"></div>
-        <!-- باجی سەرکەوتن -->
-        <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:11.5px;font-weight:800;color:#fff;margin-bottom:16px;letter-spacing:.3px;">
-          <i class="fas fa-circle-check" style="font-size:12px;"></i>
-          ناسنامەت دڵنیاکرایەوە
+      <!-- ئایکۆن و تایتڵ -->
+      <div style="text-align:center;margin-bottom:24px;">
+        <div style="width:68px;height:68px;border-radius:20px;background:rgba(22,163,74,.07);border:1.5px solid rgba(22,163,74,.18);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+          <i class="fas fa-lock-open" style="font-size:28px;color:var(--gr);"></i>
         </div>
-        <div style="width:80px;height:80px;border-radius:24px;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;backdrop-filter:blur(8px);">
-          <i class="fas fa-key" style="font-size:36px;color:#fff;filter:drop-shadow(0 3px 8px rgba(255,255,255,.2));"></i>
-        </div>
-        <div style="font-size:21px;font-weight:900;color:#fff;margin-bottom:7px;letter-spacing:-.3px;">وشەی نهێنیی نوێ</div>
-        <div style="font-size:13px;color:rgba(255,255,255,.75);line-height:1.7;">وشەی نهێنیی بەهێز و نوێت بنووسە</div>
+        <div style="font-size:18px;font-weight:900;color:var(--dark);margin-bottom:5px;">وشەی نهێنیی نوێ</div>
+        <div style="font-size:12.5px;color:var(--mt);">ناسنامەت دڵنیاکرایەوە — وشەی نوێت بنووسە</div>
       </div>
 
-      <!-- فۆرمی پاسۆرد -->
-      <div style="background:#fff;border-radius:22px;padding:22px 20px;margin-bottom:16px;box-shadow:0 2px 16px rgba(0,0,0,.05);border:1.5px solid var(--b1);">
-
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-          <i class="fas fa-lock" style="font-size:12px;color:var(--mt);"></i>
-          <span style="font-size:12px;color:var(--mt);font-weight:800;">وشەی نهێنیی نوێ</span>
-        </div>
-        <div class="pass-wrap" style="margin-bottom:0;">
-          <input class="finp" type="password" id="newPassInp" placeholder="کەمترین ٦ پیت" dir="ltr"
-            oninput="updateStrength('newPassInp','cpStrFill','cpStrTxt')" style="margin-bottom:0;">
-          <button type="button" class="pass-eye" onclick="togglePass('newPassInp',this)"><i class="fas fa-eye-slash"></i></button>
-        </div>
-        <div class="str-wrap" style="margin-bottom:16px;">
-          <div class="str-bar"><div class="str-fill" id="cpStrFill"></div></div>
-          <div class="str-txt" id="cpStrTxt"></div>
-        </div>
-
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-          <i class="fas fa-lock-open" style="font-size:12px;color:var(--mt);"></i>
-          <span style="font-size:12px;color:var(--mt);font-weight:800;">دووبارە وشەی نهێنیی نوێ</span>
-        </div>
-        <div class="pass-wrap" style="margin-bottom:0;">
-          <input class="finp" type="password" id="confirmPassInp" placeholder="دووبارە بنووسە" dir="ltr" style="margin-bottom:0;">
-          <button type="button" class="pass-eye" onclick="togglePass('confirmPassInp',this)"><i class="fas fa-eye-slash"></i></button>
-        </div>
-
-        <!-- تیپس -->
-        <div style="margin-top:16px;padding:12px 14px;background:rgba(37,99,235,.04);border-radius:12px;border:1px solid rgba(37,99,235,.1);">
-          <div style="font-size:11.5px;color:var(--mt);line-height:1.75;display:flex;flex-direction:column;gap:4px;">
-            <div style="display:flex;align-items:center;gap:7px;font-weight:700;color:var(--dark2);margin-bottom:3px;"><i class="fas fa-lightbulb" style="color:var(--bl);font-size:12px;"></i> نوکتەی بەهێز:</div>
-            <div style="display:flex;align-items:center;gap:6px;"><i class="fas fa-circle-dot" style="font-size:8px;color:var(--mt);"></i> کەمترین ٨ پیت بەکاربهێنە</div>
-            <div style="display:flex;align-items:center;gap:6px;"><i class="fas fa-circle-dot" style="font-size:8px;color:var(--mt);"></i> نیشانە و ژمارە زیاد بکە</div>
-            <div style="display:flex;align-items:center;gap:6px;"><i class="fas fa-circle-dot" style="font-size:8px;color:var(--mt);"></i> پیتی گەورە و بچووک تێکەڵ بکە</div>
-          </div>
-        </div>
+      <!-- فۆرم -->
+      <div class="mlbl" style="margin-top:0;display:flex;align-items:center;gap:6px;">
+        <i class="fas fa-lock" style="font-size:11px;color:var(--mt);"></i> وشەی نهێنیی نوێ
+      </div>
+      <div class="pass-wrap" style="margin-bottom:0;">
+        <input class="finp" type="password" id="newPassInp" placeholder="کەمترین ٦ پیت" dir="ltr"
+          oninput="updateStrength('newPassInp','cpStrFill','cpStrTxt')" style="margin-bottom:0;">
+        <button type="button" class="pass-eye" onclick="togglePass('newPassInp',this)"><i class="fas fa-eye-slash"></i></button>
+      </div>
+      <div class="str-wrap" style="margin-bottom:14px;">
+        <div class="str-bar"><div class="str-fill" id="cpStrFill"></div></div>
+        <div class="str-txt" id="cpStrTxt"></div>
       </div>
 
-      <div id="changePassMsg" style="display:none;margin-bottom:14px;"></div>
+      <div class="mlbl" style="display:flex;align-items:center;gap:6px;">
+        <i class="fas fa-lock" style="font-size:11px;color:var(--mt);"></i> دووبارە بنووسە
+      </div>
+      <div class="pass-wrap" style="margin-bottom:20px;">
+        <input class="finp" type="password" id="confirmPassInp" placeholder="دووبارە وشەی نهێنیی نوێ" dir="ltr">
+        <button type="button" class="pass-eye" onclick="togglePass('confirmPassInp',this)"><i class="fas fa-eye-slash"></i></button>
+      </div>
 
-      <button class="cp-save-btn" onclick="doChangePassFinal()" id="changePassBtn">
-        <i class="fas fa-shield-check" style="font-size:17px;"></i>
-        پاشەکەوتکردنی وشەی نهێنیی نوێ
+      <div id="changePassMsg" style="display:none;"></div>
+
+      <button class="abtn" onclick="doChangePassFinal()" id="changePassBtn">
+        <i class="fas fa-shield-check"></i> پاشەکەوتکردن
       </button>
     </div>
 
