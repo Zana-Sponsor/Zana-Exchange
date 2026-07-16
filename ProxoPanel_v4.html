@@ -3173,7 +3173,11 @@ function renderAdsTable(q=''){
       <td style="font-family:monospace;font-size:11px">#${a.ad_number||'—'}</td>
       <td style="font-size:13px;font-weight:700">${a.title||'—'}</td>
       <td style="font-size:12px;color:var(--mt)">${a.profiles?.full_name||'—'}<br><span style="font-size:10px">${a.profiles?.email||'—'}</span></td>
-      <td><span style="font-family:'Inter';font-weight:800;color:var(--rd)">${Math.round(parseFloat(a.budget||0)*1800).toLocaleString()} IQD</span></td>
+      <td>
+        <div style="font-family:'Inter';font-weight:800;color:var(--rd);font-size:12px">${Math.round(parseFloat(a.budget||0)*1800).toLocaleString()} IQD</div>
+        <div style="font-family:'Inter';font-size:12px;font-weight:800;color:#16a34a">$${parseFloat(a.budget||0).toFixed(2)}</div>
+        ${(()=>{const _d=calcAdDays(a.start_date,a.end_date);return _d?'<span style="font-size:10.5px;font-weight:700;color:#0891b2"><i class=\"fas fa-clock\" style=\"font-size:9px;margin-left:3px\"></i>'+_d+' ڕۆژ</span>':''})()}
+      </td>
       <td style="font-size:11px">${gs[a.goal]||a.goal||'—'}</td>
       <td><span class="badge ${a.status}">${statusKu(a.status)}</span></td>
       <td style="font-size:11px;color:var(--mt);white-space:nowrap">${new Date(a.created_at).toLocaleDateString('ku')}<br><span style="font-size:10px;color:var(--mt2);font-family:'Inter';direction:ltr">${new Date(a.created_at).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span></td>
@@ -3203,7 +3207,7 @@ function renderAdsTable(q=''){
         </div>
       </div>
       <div class="ad-card-meta">
-        <div class="user-card-stat rd"><i class="fas fa-coins" style="font-size:10px"></i> ${Math.round(parseFloat(a.budget||0)*1800).toLocaleString()} IQD</div>
+        <div class="user-card-stat rd"><i class="fas fa-coins" style="font-size:10px"></i> ${Math.round(parseFloat(a.budget||0)*1800).toLocaleString()} IQD &nbsp;<span style="color:#16a34a;font-weight:800">${parseFloat(a.budget||0).toFixed(2)}</span>${(()=>{const _d=calcAdDays(a.start_date,a.end_date);return _d?' &nbsp;<span style=\"color:#0891b2;font-weight:800\">'+_d+' ڕۆژ</span>':''})()}</div>
         <div class="user-card-stat" style="font-size:11px">${gs[a.goal]||a.goal||'—'}</div>
         <div class="user-card-date"><i class="fas fa-calendar-alt" style="font-size:9px;margin-left:3px"></i>${new Date(a.created_at).toLocaleDateString('ku')} &nbsp;<span style="font-family:'Inter';direction:ltr">${new Date(a.created_at).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span></div>
         ${a.status==='scheduled'&&(a.start_date||a.start_time)?`<div style="display:flex;align-items:center;gap:5px;background:rgba(8,145,178,.07);border:1px solid rgba(8,145,178,.2);border-radius:8px;padding:4px 9px;margin-top:4px"><i class="fas fa-clock" style="font-size:10px;color:#0891b2"></i><span style="font-size:11px;color:#0891b2;font-weight:700;font-family:Inter">کات بۆ دانراو: ${a.start_date||''} ${a.start_time||''}</span></div>`:''}
@@ -3347,7 +3351,11 @@ async function showAdDetail(id){
     <div class="detail-row"><span class="lbl"><i class="fas fa-calendar-plus" style="margin-left:4px;color:var(--bl)"></i>بەرواری دامەزراندن</span><span class="val" style="direction:ltr;font-family:'Inter';font-size:12px">${a.created_at?new Date(a.created_at).toLocaleDateString('en-GB')+' &nbsp;'+new Date(a.created_at).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'}):'—'}</span></div>
     ${a.updated_at&&a.updated_at!==a.created_at?`<div class="detail-row"><span class="lbl"><i class="fas fa-clock" style="margin-left:4px;color:var(--yw)"></i>کاتی نوێکردنەوە</span><span class="val" style="direction:ltr;font-family:'Inter';font-size:12px">${new Date(a.updated_at).toLocaleDateString('en-GB')+' &nbsp;'+new Date(a.updated_at).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}</span></div>`:''}
     ${a.tiktok_ad_id?`<div class="detail-row"><span class="lbl">TikTok Ad ID</span><span class="val" style="font-family:'Inter';direction:ltr;font-weight:800;color:#2563eb">${a.tiktok_ad_id}</span></div>`:''}
-    <div class="detail-row"><span class="lbl">بودجە</span><span class="val" style="color:var(--rd)">${fmtIQD(adPrice)}</span></div>
+    <div class="detail-row"><span class="lbl">بودجە</span><span class="val" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <span style="color:var(--rd)">${fmtIQD(adPrice)}</span>
+      <span style="font-family:'Inter';font-weight:800;color:#16a34a;font-size:13px">${adPrice.toFixed(2)}</span>
+      ${(()=>{const _d=calcAdDays(a.start_date,a.end_date);return _d?'<span style=\"font-size:11px;font-weight:700;color:#0891b2;background:rgba(8,145,178,.08);border:1px solid rgba(8,145,178,.2);border-radius:20px;padding:2px 8px\"><i class=\"fas fa-clock\" style=\"font-size:9px;margin-left:3px\"></i>'+_d+' ڕۆژ</span>':''})()}
+    </span></div>
     <div class="detail-row"><span class="lbl">ئامانج</span><span class="val">${gs[a.goal]||a.goal||'—'}</span></div>
     <div class="detail-row"><span class="lbl">باری</span><span class="val"><span class="badge ${a.status}">${statusKu(a.status)}</span></span></div>
     ${a.start_date||a.end_date?`<div class="detail-row"><span class="lbl">بەرواری داواکراوی ڕیکلام</span><span class="val" style="font-family:'Inter';direction:ltr">${a.start_date?(a.start_date.length>10?new Date(a.start_date).toLocaleDateString('en-GB')+' '+new Date(a.start_date).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):a.start_date):'—'} → ${a.end_date||'—'}</span></div>`:''}
@@ -3483,7 +3491,11 @@ function renderAdsDataTable(q=''){
           </div>
         </td>
         <td style="font-family:'Inter';font-size:11px;direction:ltr;color:var(--mt2)">${a.tiktok_ad_id||'—'}</td>
-        <td><span style="font-family:'Inter';font-weight:800;color:var(--rd);font-size:12px">${fmtIQD(budget)}</span></td>
+        <td>
+          <div style="font-family:'Inter';font-weight:800;color:var(--rd);font-size:12px">${fmtIQD(budget)}</div>
+          <div style="font-family:'Inter';font-size:12px;font-weight:800;color:#16a34a">$${budget.toFixed(2)}</div>
+          ${(()=>{const _d=calcAdDays(a.start_date,a.end_date);return _d?'<span style="font-size:10.5px;font-weight:700;color:#0891b2"><i class=\"fas fa-clock\" style=\"font-size:9px;margin-left:3px\"></i>'+_d+' ڕۆژ</span>':''})()}
+        </td>
         <td>
           ${spent>0?`<span style="font-family:'Inter';font-weight:800;color:var(--yw);font-size:12px">$${spent.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>${budget>0?`<div style="margin-top:4px;height:4px;background:var(--b1);border-radius:4px;overflow:hidden;width:70px"><div style="height:100%;width:${pct}%;background:${pct>=90?'var(--rd)':pct>=50?'var(--yw)':'var(--gr)'};border-radius:4px;transition:width .3s"></div></div><div style="font-size:9px;color:var(--mt);margin-top:2px">${pct}%</div>`:''}`:`<span style="color:var(--mt);font-size:12px">—</span>`}
         </td>
@@ -3563,6 +3575,8 @@ async function updateAdStatus(id,userId,newStatus,budget){
     try{ await recordAdRevenue(id, userId, parseFloat(budget||0)); }catch(e){}
     // ── خاڵی ئاست: کاتێک ڕیکلام وەردەگیرێت و چالاک دەبێت خاڵ زیاد بکە ──
     try{ await awardAdPoints(userId, parseFloat(budget||0)); }catch(e){}
+    // ── نوێکردنەوەی پڕۆگرێسی ئەرکەکانی بەکارهێنەر ──
+    try{ await updateChallengeProgress(userId, parseFloat(budget||0)); }catch(e){}
   }
   // ── ئاگادارکردنەوەی ئادمین بە تیلیگرام کاتێک ڕیکلام بە تەواوی تەواو دەبێت ──
   if(newStatus==='completed'){
@@ -3632,7 +3646,10 @@ async function loadApprovalWorkflow(){
       <td style="font-family:monospace;font-size:11px">#${a.ad_number||'—'}</td>
       <td style="font-size:13px;font-weight:700">${a.title||'—'}</td>
       <td style="font-size:12px;color:var(--mt)">${a.profiles?.full_name||'—'}<br><span style="font-size:10px">${a.profiles?.email||'—'}</span></td>
-      <td><span style="font-family:'Inter';font-weight:800;color:var(--rd)">${Math.round(parseFloat(a.budget||0)*1800).toLocaleString()} IQD</span></td>
+      <td>
+        <div style="font-family:'Inter';font-weight:800;color:var(--rd);font-size:12px">${Math.round(parseFloat(a.budget||0)*1800).toLocaleString()} IQD</div>
+        <div style="font-family:'Inter';font-size:12px;font-weight:800;color:#16a34a">$${parseFloat(a.budget||0).toFixed(2)}</div>
+      </td>
       <td style="font-size:11px">${gs[a.goal]||a.goal||'—'}</td>
       <td style="font-size:11px;color:var(--mt)">${new Date(a.created_at).toLocaleDateString('ku')}</td>
       <td><div class="act-grp">
@@ -3653,7 +3670,7 @@ async function loadApprovalWorkflow(){
         <span class="badge ${a.status==='review'?'review':'pending'}">${a.status==='review'?'لەژێر پێداچوونەوەدایە':'چاوەڕوان'}</span>
       </div>
       <div class="ad-card-meta">
-        <div class="user-card-stat rd"><i class="fas fa-coins" style="font-size:10px"></i> ${Math.round(parseFloat(a.budget||0)*1800).toLocaleString()} IQD</div>
+        <div class="user-card-stat rd"><i class="fas fa-coins" style="font-size:10px"></i> ${Math.round(parseFloat(a.budget||0)*1800).toLocaleString()} IQD &nbsp;<span style="color:#16a34a;font-weight:800">${parseFloat(a.budget||0).toFixed(2)}</span></div>
         <div class="user-card-stat" style="font-size:11px">${gs[a.goal]||a.goal||'—'}</div>
         <div class="user-card-date">${new Date(a.created_at).toLocaleDateString('ku')}</div>
       </div>
@@ -3708,6 +3725,7 @@ function openApproveModal(adId){
   document.getElementById('approveAdTitle').textContent = ad.title || (ad.ad_number ? 'ڕیکلامی #'+ad.ad_number : '—');
   document.getElementById('approveAdUser').textContent = (ad.profiles?.full_name||'—') + ' · ' + (ad.profiles?.email||'—');
   document.getElementById('approveAdBudget').textContent = Math.round(_approveAdBudget * 1800).toLocaleString() + ' IQD';
+  document.getElementById('approveAdUSD').textContent = '$' + _approveAdBudget.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
   document.getElementById('approveTikTokId').value = ad.tiktok_ad_id || '';
   document.getElementById('approveCampaignId').value = ad.tiktok_campaign_id || '';
   clearFieldErr('approveCampaignId');
@@ -3772,6 +3790,8 @@ async function submitApproval(){
     try{ await recordAdRevenue(_approveAdId, _approveUserId, _approveAdBudget); }catch(e){}
     // خاڵی ئاست: کاتێک ڕیکلام وەردەگیرێت و چالاک دەبێت خاڵ زیاد بکە
     try{ await awardAdPoints(_approveUserId, _approveAdBudget); }catch(e){}
+    // ── نوێکردنەوەی پڕۆگرێسی ئەرکەکانی بەکارهێنەر ──
+    try{ await updateChallengeProgress(_approveUserId, _approveAdBudget); }catch(e){}
     // User notification — bilingual ad_approved
     const _apLang = await _getUserLang(_approveUserId);
     const _apN = _adNotifTexts(_approveAdNumber, 'approved', _apLang);
@@ -6293,6 +6313,7 @@ async function awardAdPoints(userId, budgetUSD){
     const{data:pData}=await sb.from('pa_user_points').select('points').eq('user_id',userId).single();
     const curPts=parseFloat(pData?.points||0);
     await sb.from('pa_user_points').upsert({user_id:userId,points:curPts+pointsToAdd},{onConflict:'user_id'});
+
   }catch(e){ console.warn('awardAdPoints error:', e?.message); }
 }
 
@@ -6310,6 +6331,41 @@ async function notifyAdminAdCompleted(adId, adNumber){
       body:JSON.stringify({chat_id:FADM_TG_CHAT,text:tgText})
     });
   }catch(e){ console.warn('notifyAdminAdCompleted error:', e?.message); }
+}
+
+// ══ ژمارەکردنی ڕۆژەکانی ڕیکلام ══
+function calcAdDays(startDate,endDate){
+  if(!startDate||!endDate) return null;
+  const s=new Date((startDate+'').substring(0,10));
+  const e=new Date((endDate+'').substring(0,10));
+  if(isNaN(s.getTime())||isNaN(e.getTime())) return null;
+  const d=Math.round((e-s)/86400000);
+  return d>0?d:null;
+}
+
+// ══ نوێکردنەوەی پڕۆگرێسی ئەرکەکانی بەکارهێنەر کاتێک ڕیکلام چالاک دەبێت ══
+async function updateChallengeProgress(userId, budgetUSD){
+  if(!userId) return;
+  try{
+    const{data:challenges}=await sb.from('pa_challenges').select('id,goal_type,goal_value').eq('is_active',true);
+    if(!challenges||!challenges.length) return;
+    for(const ch of challenges){
+      let increment=0;
+      if(ch.goal_type==='ads_count') increment=1;
+      else if(ch.goal_type==='dollars') increment=parseFloat(budgetUSD||0);
+      if(!(increment>0)) continue;
+      const{data:pr}=await sb.from('pa_challenge_progress')
+        .select('id,progress,claimed').eq('user_id',userId).eq('challenge_id',ch.id).single();
+      if(pr?.claimed) continue;
+      const curProg=parseFloat(pr?.progress||0);
+      const newProg=Math.min(curProg+increment, parseFloat(ch.goal_value));
+      if(pr?.id){
+        await sb.from('pa_challenge_progress').update({progress:newProg}).eq('id',pr.id);
+      } else {
+        await sb.from('pa_challenge_progress').insert({user_id:userId,challenge_id:ch.id,progress:newProg,claimed:false});
+      }
+    }
+  }catch(e){ console.warn('updateChallengeProgress error:', e?.message); }
 }
 
 // تۆمارکردن لە Supabase + ئاگاداری Telegram
@@ -7343,7 +7399,6 @@ async function _notifyCardEditTelegram(cardId, cardName, userId) {
 }
 
 </script>
-
 <!-- ══ ADMIN LIVE CHAT — FULLSCREEN OVERLAY ══ -->
 <div id="lcaFsOverlay">
   <div class="lca-fs-top">
@@ -7380,6 +7435,17 @@ async function _notifyCardEditTelegram(cardId, cardName, userId) {
       <div style="font-size:13px;font-weight:800;color:var(--dark)" id="approveAdTitle">—</div>
       <div style="font-size:11px;color:var(--mt);margin-top:4px" id="approveAdUser">—</div>
       <div style="font-size:14px;font-weight:900;color:var(--rd);font-family:'Inter';margin-top:6px" id="approveAdBudget">—</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap">
+        <div style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(22,163,74,.07);border:1px solid rgba(22,163,74,.22);border-radius:20px">
+          <i class="fas fa-dollar-sign" style="font-size:11px;color:#16a34a"></i>
+          <span style="font-family:'Inter';font-size:13px;font-weight:800;color:#16a34a" id="approveAdUSD">—</span>
+        </div>
+        <div id="approveAdDaysWrap" style="display:none;align-items:center;gap:5px;padding:4px 12px;background:rgba(8,145,178,.07);border:1px solid rgba(8,145,178,.22);border-radius:20px">
+          <i class="fas fa-clock" style="font-size:11px;color:#0891b2"></i>
+          <span style="font-family:'Inter';font-size:13px;font-weight:800;color:#0891b2" id="approveAdDays">—</span>
+          <span style="font-size:11px;font-weight:700;color:#0891b2">ڕۆژ</span>
+        </div>
+      </div>
     </div>
     <!-- TikTok Ad ID -->
     <div class="field-wrap">
