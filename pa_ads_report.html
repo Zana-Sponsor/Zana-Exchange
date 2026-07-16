@@ -400,7 +400,7 @@ function setStatus(msg,type){
 }
 function updateStats(){
   const f=(s)=>ADS.filter(a=>a.status===s).length;
-  const spend=ADS.reduce((s,a)=>s+parseFloat(a.current_spend||a.spend||0),0);
+  const spend=ADS.reduce((s,a)=>s+(parseFloat(a.prev_spend||0)+parseFloat(a.current_spend||a.spend||0)),0);
   document.getElementById('s-total').textContent=ADS.length;
   document.getElementById('s-active').textContent=f('active');
   document.getElementById('s-pending').textContent=f('pending');
@@ -437,7 +437,7 @@ function buildCard(ad){
   const el=document.createElement('div');el.className='card';
   const title=ad.title||('ڕیکلام #'+(ad.ad_number||ad.id?.slice(0,8)||'?'));
   const budget=parseFloat(ad.budget||0);
-  const spend=parseFloat(ad.current_spend||ad.spend||0);
+  const spend=parseFloat(ad.prev_spend||0)+parseFloat(ad.current_spend||ad.spend||0);
   const pct=budget>0?Math.min(100,Math.round(spend/budget*100)):0;
   const pd=PILL[ad.status]||{c:'p-default',l:ad.status||'نەزانراو'};
 
@@ -452,10 +452,10 @@ function buildCard(ad){
   </div>
   <div class="cb">
     <div class="metrics">
-      <div class="metric"><div class="ml">Impressions</div><div class="mv">${(ad.impressions??0).toLocaleString()}</div></div>
+      <div class="metric"><div class="ml">Impressions</div><div class="mv">${(parseInt(ad.prev_impressions||0)+parseInt(ad.impressions||0)).toLocaleString()}</div></div>
       <div class="metric"><div class="ml">Clicks</div><div class="mv">${(ad.clicks??0).toLocaleString()}</div></div>
       <div class="metric"><div class="ml">Conversions</div><div class="mv">${(ad.conversions??0).toLocaleString()}</div></div>
-      <div class="metric"><div class="ml">Spend $</div><div class="mv">${m(ad.spend)}</div></div>
+      <div class="metric"><div class="ml">Spend $</div><div class="mv">${m(parseFloat(ad.prev_spend||0)+parseFloat(ad.spend||0))}</div></div>
       <div class="metric"><div class="ml">CPM $</div><div class="mv">${m(ad.cpm)}</div></div>
       <div class="metric"><div class="ml">Conv %</div><div class="mv">${m(ad.conversion_rate)}</div></div>
     </div>
