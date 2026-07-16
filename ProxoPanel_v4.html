@@ -3414,9 +3414,9 @@ function _renderAdsDataStats(){
   if(!el)return;
   const total=_allAdsData.length;
   const active=_allAdsData.filter(a=>a.status==='active').length;
-  const totalViews=_allAdsData.reduce((s,a)=>s+parseInt(a.impressions||0),0);
+  const totalViews=_allAdsData.reduce((s,a)=>s+parseInt(a.impressions||0)+parseInt(a.prev_impressions||0),0);
   const totalClicks=_allAdsData.reduce((s,a)=>s+parseInt(a.clicks||0),0);
-  const totalSpent=_allAdsData.reduce((s,a)=>s+parseFloat(a.spend||0),0);
+  const totalSpent=_allAdsData.reduce((s,a)=>s+parseFloat(a.spend||0)+parseFloat(a.prev_spend||0),0);
   const totalBudget=_allAdsData.reduce((s,a)=>s+parseFloat(a.budget||0),0);
   const statCard=(ico,color,val,lbl)=>`<div style="background:var(--w);border:1px solid var(--b1);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px">
     <div style="width:42px;height:42px;border-radius:12px;background:${color}18;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;color:${color}"><i class="fas ${ico}"></i></div>
@@ -3451,7 +3451,9 @@ function renderAdsDataTable(q=''){
   const gs={messages:'نامە',engagement:'کارلێک',views:'ڤیووو'};
   const fmtN=v=>parseInt(v||0).toLocaleString();
   const fmtIQD=v=>(Math.round(parseFloat(v||0)*1800)).toLocaleString()+' IQD';
-  const pctSpent=a=>{const b=parseFloat(a.budget||0);const s=parseFloat(a.spend||0);if(!b)return 0;return Math.min(100,Math.round(s/b*100));};
+  const totSpend=a=>parseFloat(a.spend||0)+parseFloat(a.prev_spend||0);
+  const totImpr=a=>parseInt(a.impressions||0)+parseInt(a.prev_impressions||0);
+  const pctSpent=a=>{const b=parseFloat(a.budget||0);const s=totSpend(a);if(!b)return 0;return Math.min(100,Math.round(s/b*100));};
 
   const tableHTML=`<table>
     <thead><tr>
@@ -3469,10 +3471,10 @@ function renderAdsDataTable(q=''){
       <th>دەستپێک / کۆتایی</th>
     </tr></thead>
     <tbody>${list.map(a=>{
-      const spent=parseFloat(a.spend||0);
+      const spent=totSpend(a);
       const budget=parseFloat(a.budget||0);
       const pct=pctSpent(a);
-      const views=parseInt(a.impressions||0);
+      const views=totImpr(a);
       const clicks=parseInt(a.clicks||0);
       const ctr=views>0?(clicks/views*100).toFixed(1):0;
       return`<tr style="cursor:pointer" onclick="showAdDetail('${a.id}')">
@@ -3513,10 +3515,10 @@ function renderAdsDataTable(q=''){
     }).join('')}</tbody></table>`;
 
   const cardsHTML=`<div class="ad-cards">${list.map(a=>{
-    const spent=parseFloat(a.spend||0);
+    const spent=totSpend(a);
     const budget=parseFloat(a.budget||0);
     const pct=pctSpent(a);
-    const views=parseInt(a.impressions||0);
+    const views=totImpr(a);
     const clicks=parseInt(a.clicks||0);
     return`<div class="ad-card" onclick="showAdDetail('${a.id}')">
       <div class="ad-card-top">
@@ -3762,14 +3764,22 @@ async function submitApproval(){
     const targetBudget = parseFloat(document.getElementById('approveTargetBudget').value||'0') || 0;
     const _todayStr = new Date().toISOString().split('T')[0];
     const _finalStatus = (startDate && startDate > _todayStr) ? 'scheduled' : 'active';
-    const {error} = await sb.from('pa_ads').update({
+    // ── ئەگەر tiktok_ad_id گۆڕدرابوو، spend/impressions ـی کۆنەکە کۆبکەرەوە پێش سڕینەوەیان ──
+    const _updatePayload = {
       status: _finalStatus,
       tiktok_ad_id: tiktokId,
       tiktok_campaign_id: campaignId,
       start_date: startDateTime,
       end_date: endDate,
       target_budget: targetBudget
-    }).eq('id', _approveAdId);
+    };
+    if(ad.tiktok_ad_id && ad.tiktok_ad_id !== tiktokId){
+      _updatePayload.prev_spend = parseFloat(ad.prev_spend||0) + parseFloat(ad.spend||0);
+      _updatePayload.prev_impressions = parseInt(ad.prev_impressions||0) + parseInt(ad.impressions||0);
+      _updatePayload.spend = 0;
+      _updatePayload.impressions = 0;
+    }
+    const {error} = await sb.from('pa_ads').update(_updatePayload).eq('id', _approveAdId);
     if(error && !isNetHttpErr(error)){ showToast('هەڵە: '+error.message,'rd'); btn.disabled=false; btn.innerHTML='<i class="fas fa-check-circle"></i> پەسەندکردن (Approve)'; return; }
     // Giveaway entry if budget >= $20
     if(_approveAdBudget >= 20 && _approveUserId){
