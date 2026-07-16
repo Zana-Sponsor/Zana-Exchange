@@ -3381,6 +3381,7 @@ async function showAdDetail(id){
       ${a.status==='active'?`<div class="act-btn yw" style="flex:1" onclick="updateAdStatus('${a.id}','${a.user_id}','paused',0);closeMo('moAdDetail')"><i class="fas fa-pause"></i> وەستان</div>`:''}
       ${a.status==='paused'?`<div class="act-btn gr" style="flex:1" onclick="updateAdStatus('${a.id}','${a.user_id}','active',0);closeMo('moAdDetail')"><i class="fas fa-play"></i> دووبارە چالاک</div>`:''}
       ${['active','paused'].includes(a.status)?`<div class="act-btn bl" style="flex:1" onclick="updateAdStatus('${a.id}','${a.user_id}','completed',0);closeMo('moAdDetail')"><i class="fas fa-flag-checkered"></i> تەواوبوو</div>`:''}
+      ${a.tiktok_ad_id&&['active','paused','scheduled','completed'].includes(a.status)?`<div class="act-btn" style="flex:1;background:rgba(37,99,235,.08);color:#2563eb;border-color:rgba(37,99,235,.25)" onclick="openEditTikTokModal('${a.id}')"><i class="fab fa-tiktok"></i> دەستکاری TikTok ID</div>`:''}
     </div>`;
   openMo('moAdDetail');
 }
@@ -3713,6 +3714,54 @@ async function startReview(adId){
     loadAdBadge();
   }catch(e){
     if(!isNetHttpErr(e)) showToast('هەڵەیەک ڕوویدا: '+e.message,'rd');
+  }
+}
+
+let _editTtAdId=null;
+function openEditTikTokModal(adId){
+  const ad = allAds.find(a=>a.id===adId) || _allAdsData.find(a=>a.id===adId);
+  if(!ad){ showToast('ڕیکلام نەدۆزرایەوە','rd'); return; }
+  _editTtAdId = ad.id;
+  document.getElementById('editTtAdTitle').textContent = ad.title || (ad.ad_number ? 'ڕیکلامی #'+ad.ad_number : '—');
+  document.getElementById('editTtCurrentId').textContent = 'ئێستا: ' + (ad.tiktok_ad_id||'—') + '  ·  Campaign: ' + (ad.tiktok_campaign_id||'—');
+  document.getElementById('editTtAdId').value = ad.tiktok_ad_id || '';
+  document.getElementById('editTtCampaignId').value = ad.tiktok_campaign_id || '';
+  clearFieldErr('editTtAdId');
+  clearFieldErr('editTtCampaignId');
+  openMo('moEditTikTok');
+}
+
+async function saveTikTokEdit(){
+  const ad = allAds.find(a=>a.id===_editTtAdId) || _allAdsData.find(a=>a.id===_editTtAdId);
+  if(!ad){ showToast('ڕیکلام نەدۆزرایەوە','rd'); closeMo('moEditTikTok'); return; }
+  const newTtId = (document.getElementById('editTtAdId').value||'').trim();
+  const newCampaignId = (document.getElementById('editTtCampaignId').value||'').trim();
+  let valid = true;
+  if(!newTtId){ showFieldErr('editTtAdId'); valid = false; }
+  if(!newCampaignId){ showFieldErr('editTtCampaignId'); valid = false; }
+  if(!valid) return;
+  const btn = document.getElementById('editTtSubmitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> چاوەڕوانبە...';
+  try{
+    const payload = { tiktok_ad_id: newTtId, tiktok_campaign_id: newCampaignId };
+    // ── ئەگەر Ad ID ڕاستەوخۆ گۆڕدرا، spend/impressions ـی ئێستا پاشەکەوتی کۆی مێژوویی بکە ──
+    if(ad.tiktok_ad_id && ad.tiktok_ad_id !== newTtId){
+      payload.prev_spend = parseFloat(ad.prev_spend||0) + parseFloat(ad.spend||0);
+      payload.prev_impressions = parseInt(ad.prev_impressions||0) + parseInt(ad.impressions||0);
+      payload.spend = 0;
+      payload.impressions = 0;
+    }
+    const {error} = await sb.from('pa_ads').update(payload).eq('id', ad.id);
+    if(error && !isNetHttpErr(error)){ showToast('هەڵە: '+error.message,'rd'); btn.disabled=false; btn.innerHTML='<i class="fas fa-save"></i> پاشەکەوتکردن'; return; }
+    showToast('✅ TikTok ID نوێکرایەوە','gr');
+    closeMo('moEditTikTok');
+    closeMo('moAdDetail');
+    if(typeof loadAdsData==='function') loadAdsData();
+    if(typeof loadAds==='function') loadAds();
+  }catch(e){
+    if(!isNetHttpErr(e)) showToast('هەڵەیەک ڕوویدا: '+e.message,'rd');
+    btn.disabled=false; btn.innerHTML='<i class="fas fa-save"></i> پاشەکەوتکردن';
   }
 }
 
@@ -7500,6 +7549,40 @@ async function _notifyCardEditTelegram(cardId, cardName, userId) {
       <i class="fas fa-check-circle"></i> پەسەندکردن (Approve)
     </button>
     <button class="modal-btn dark" onclick="closeMo('moApproveAd')" style="background:transparent;color:var(--mt);border:1.5px solid var(--b1);margin-top:8px">
+      پاشگەزبوونەوە
+    </button>
+  </div>
+</div>
+
+<!-- ══ EDIT TIKTOK ID/CAMPAIGN (بۆ ڕیکلامی چالاک/وەستاو/دانراو) ══ -->
+<div class="overlay" id="moEditTikTok">
+  <div class="modal" style="max-width:460px">
+    <div class="modal-hdr">
+      <h3><i class="fab fa-tiktok" style="margin-left:8px;color:#111"></i>دەستکاریکردنی TikTok ID</h3>
+      <div class="modal-close" onclick="closeMo('moEditTikTok')"><i class="fas fa-xmark"></i></div>
+    </div>
+    <div style="background:rgba(37,99,235,.06);border:1.5px solid rgba(37,99,235,.2);border-radius:13px;padding:14px 16px;margin-bottom:16px">
+      <div style="font-size:13px;font-weight:800;color:var(--dark)" id="editTtAdTitle">—</div>
+      <div style="font-size:11px;color:var(--mt);margin-top:4px" id="editTtCurrentId">—</div>
+    </div>
+    <div class="field-wrap">
+      <label class="modal-lbl" style="margin-top:0">TikTok Ad ID نوێ <span style="color:var(--rd)">*</span></label>
+      <input class="minp" type="text" id="editTtAdId" placeholder="بۆ نموونە: 7234567890123456789" dir="ltr" style="font-family:'Inter';letter-spacing:.5px" oninput="clearFieldErr('editTtAdId')">
+      <div class="field-err" id="editTtAdId-err">TikTok Ad ID پڕ بکەرەوە</div>
+    </div>
+    <div class="field-wrap">
+      <label class="modal-lbl" style="margin-top:0">TikTok Campaign ID نوێ <span style="color:var(--rd)">*</span></label>
+      <input class="minp" type="text" id="editTtCampaignId" placeholder="بۆ نموونە: 7234567890123456789" dir="ltr" style="font-family:'Inter';letter-spacing:.5px" oninput="clearFieldErr('editTtCampaignId')">
+      <div class="field-err" id="editTtCampaignId-err">TikTok Campaign ID پڕ بکەرەوە</div>
+    </div>
+    <div class="info-box" style="margin-top:4px;margin-bottom:4px" id="editTtWarnBox">
+      <i class="fas fa-shield-halved" style="margin-left:6px;color:#f59e0b"></i>
+      ئەگەر Ad ID بگۆڕیت، Spend و Impressions ـی ئێستا بە شێوەی خۆکار پاشەکەوت دەکرێن و لەگەڵ داتای ئایدی نوێدا کۆدەکرێنەوە — هیچ داتایەک لەناوناچێت.
+    </div>
+    <button class="modal-btn bl" id="editTtSubmitBtn" onclick="saveTikTokEdit()">
+      <i class="fas fa-save"></i> پاشەکەوتکردن
+    </button>
+    <button class="modal-btn dark" onclick="closeMo('moEditTikTok')" style="background:transparent;color:var(--mt);border:1.5px solid var(--b1);margin-top:8px">
       پاشگەزبوونەوە
     </button>
   </div>
