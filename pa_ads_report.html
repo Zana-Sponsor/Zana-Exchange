@@ -85,6 +85,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 .chip .cl{font-size:.62rem;color:var(--muted);margin-top:3px}
 .c-all{color:var(--accent)}.c-act{color:var(--green)}.c-done{color:var(--cyan)}
 .c-sched{color:var(--purple)}.c-rej{color:var(--red)}.c-pause{color:var(--amber)}
+.c-pend{color:#4338ca}.c-rev{color:#1d4ed8}
 .c-spend{color:#0f766e}
 
 /* ═══ FILTER BAR ═══ */
@@ -146,6 +147,8 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 .p-scheduled{background:#ede9fe;color:#6d28d9;border:1px solid #c4b5fd}
 .p-rejected {background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5}
 .p-paused   {background:#fef3c7;color:#b45309;border:1px solid #fde68a}
+.p-pending  {background:#e0e7ff;color:#4338ca;border:1px solid #c7d2fe}
+.p-review   {background:#dbeafe;color:#1d4ed8;border:1px solid #93c5fd}
 .p-default  {background:#f1f5f9;color:#64748b;border:1px solid #cbd5e1}
 
 /* card body */
@@ -291,6 +294,8 @@ a.vlink:hover{text-decoration:underline}
   <div class="stats">
     <div class="chip"><span class="cv c-all"  id="s-total">—</span><span class="cl">کۆی گشتی</span></div>
     <div class="chip"><span class="cv c-act"  id="s-active">—</span><span class="cl">چالاک</span></div>
+    <div class="chip"><span class="cv c-pend" id="s-pending">—</span><span class="cl">چاوەڕوان</span></div>
+    <div class="chip"><span class="cv c-rev"  id="s-review">—</span><span class="cl">پێداچوونەوە</span></div>
     <div class="chip"><span class="cv c-done" id="s-done">—</span><span class="cl">تەواو</span></div>
     <div class="chip"><span class="cv c-sched" id="s-sched">—</span><span class="cl">پلانگیراو</span></div>
     <div class="chip"><span class="cv c-rej"  id="s-rej">—</span><span class="cl">ڕەتکراو</span></div>
@@ -303,6 +308,8 @@ a.vlink:hover{text-decoration:underline}
   <label>فلتەر:</label>
   <select id="f-status" onchange="render()">
     <option value="">هەموو حالەتەکان</option>
+    <option value="pending">چاوەڕوان</option>
+    <option value="review">پێداچوونەوە</option>
     <option value="active">چالاک</option>
     <option value="completed">تەواوبوو</option>
     <option value="scheduled">پلانگیراو</option>
@@ -396,6 +403,8 @@ function updateStats(){
   const spend=ADS.reduce((s,a)=>s+parseFloat(a.current_spend||a.spend||0),0);
   document.getElementById('s-total').textContent=ADS.length;
   document.getElementById('s-active').textContent=f('active');
+  document.getElementById('s-pending').textContent=f('pending');
+  document.getElementById('s-review').textContent=f('review');
   document.getElementById('s-done').textContent=f('completed');
   document.getElementById('s-sched').textContent=f('scheduled');
   document.getElementById('s-rej').textContent=f('rejected');
@@ -419,7 +428,7 @@ function render(){
   list.forEach(ad=>g.appendChild(buildCard(ad)));
 }
 
-const PILL={active:{c:'p-active',l:'چالاک'},completed:{c:'p-completed',l:'تەواوبوو'},scheduled:{c:'p-scheduled',l:'پلانگیراو'},rejected:{c:'p-rejected',l:'ڕەتکراوە'},paused:{c:'p-paused',l:'وەستاو'}};
+const PILL={active:{c:'p-active',l:'چالاک'},completed:{c:'p-completed',l:'تەواوبوو'},scheduled:{c:'p-scheduled',l:'پلانگیراو'},rejected:{c:'p-rejected',l:'ڕەتکراوە'},paused:{c:'p-paused',l:'وەستاو'},pending:{c:'p-pending',l:'چاوەڕوان'},review:{c:'p-review',l:'پێداچوونەوە'}};
 const m=(v,d=2)=>v==null?'—':parseFloat(v).toFixed(d);
 const dt=(v)=>!v?'—':String(v).replace('T',' ').replace(/\.\d+.*/,'').replace('+00:00','');
 const ag=(ad)=>{try{const r=ad.age_groups;if(!r)return ad.target_ages||'—';const p=typeof r==='string'?JSON.parse(r):r;return Array.isArray(p)?p.join(', '):String(p);}catch{return ad.target_ages||'—';}};
@@ -509,6 +518,7 @@ function openEdit(id){
     ${inp('ad_number', ad.ad_number)}
     <div class="frow">
       ${sel('status', ad.status,[
+        {v:'pending',l:'چاوەڕوان'},{v:'review',l:'پێداچوونەوە'},
         {v:'active',l:'چالاک'},{v:'completed',l:'تەواوبوو'},
         {v:'scheduled',l:'پلانگیراو'},{v:'rejected',l:'ڕەتکراوە'},{v:'paused',l:'وەستاو'}
       ])}
