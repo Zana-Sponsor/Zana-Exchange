@@ -9176,8 +9176,7 @@ function pickCard(el,id){
       }
       // Award 50 Proxo Coins for submitting an ad
       await addCoins(COINS_PER_AD, 'ناردنی ڕیکلام — کۆینی پاداشت');
-      // ── خاڵ بۆ ئاست و پێشکەوتنی ئەرکەکان (ڕێژەکە لە لایەن ئادمینەوە دیاریدەکرێت) ──
-      try{ await sb.rpc('register_ad_activity',{p_user_id:cu.id,p_usd:finalTotal/1800}); }catch(e){}
+      // خاڵ و ئەرکەکان: تەنها کاتێک ئادمین ڕیکلام چالاک دەکات (لە ProxoPanel)
 
       // ── دۆخی دروست دیاری بکە: هەمیشە pending — ئادمین خۆی scheduled یان active دەکات ──
       // (ئەمە پاراستنێکە بۆ ئەوەی RPC status='active' یان 'scheduled' نەکات بەخۆی)
