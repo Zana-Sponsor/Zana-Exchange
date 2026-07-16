@@ -9368,9 +9368,9 @@ function renderAds(){
     }
 
     const _hasRealData=isActive||isTerminal;
-    const spend=_hasRealData?parseFloat(ad.spend||0):0;
+    const spend=_hasRealData?(parseFloat(ad.prev_spend||0)+parseFloat(ad.spend||0)):0;
     const clicks=_hasRealData?parseInt(ad.clicks||0):0;
-    const impr=_hasRealData?parseInt(ad.impressions||0):0;
+    const impr=_hasRealData?(parseInt(ad.prev_impressions||0)+parseInt(ad.impressions||0)):0;
     const spendFmt='$'+(spend>0?spend.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'0.00');
 
     const orderId=_fmtOrderId(ad.ad_number);
@@ -9633,9 +9633,9 @@ async function initPublicAdView(adId){
       const statusMap={pending:'چاوەڕوان',review:'لەژێر پێداچوونەوەدایە',active:'چالاک',rejected:'ڕەتکراوە',completed:'تەواوبوو',paused:'وەستا'};
       const adLabel=ad.title||'ڕیکلامی Proxo';
       document.getElementById('pubAdTitle').textContent=adLabel;
-      const impr=_fmtNum(parseInt(ad.impressions||0));
+      const impr=_fmtNum(parseInt(ad.prev_impressions||0)+parseInt(ad.impressions||0));
       const clicks=_fmtNum(parseInt(ad.clicks||0));
-      const spend='$'+parseFloat(ad.spend||0).toFixed(2);
+      const spend='$'+(parseFloat(ad.prev_spend||0)+parseFloat(ad.spend||0)).toFixed(2);
       let h='';
       h+='<div class="pub-stats-grid">';
       var _pubIsAr=typeof ProxoLang!=='undefined'&&ProxoLang.getLang()==='ar';
@@ -9784,9 +9784,9 @@ async function showAdDetail(ad){
   if(ad.location&&ad.location!=='all') h+='<div class="ad-sheet-row"><span class="ad-sheet-lbl">شوێن</span><span class="ad-sheet-val" style="direction:rtl;text-align:right">'+(locMap[ad.location]||ad.location)+'</span></div>';
   if(ad.reject_reason) h+='<div style="background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.12);border-radius:10px;padding:9px 12px;margin-top:10px;font-size:11.5px;color:rgba(185,28,28,.8);line-height:1.7"><i class="fas fa-circle-exclamation" style="margin-left:6px;opacity:.65;font-size:11px"></i>'+ad.reject_reason+'</div>';
   // ── ئامارەکان بە ئایکۆنی جوان ──
-  var adSpend=parseFloat(ad.spend||0);
+  var adSpend=parseFloat(ad.prev_spend||0)+parseFloat(ad.spend||0);
   var adClicks=parseInt(ad.clicks||0);
-  var adImpr=parseInt(ad.impressions||0);
+  var adImpr=parseInt(ad.prev_impressions||0)+parseInt(ad.impressions||0);
   var isActive2=!!ad.tiktok_ad_id&&ad.status!=='rejected'&&ad.status!=='completed';
   if(isActive2||adImpr>0||adClicks>0||adSpend>0){
     h+='<div class="ad-sheet-sec" style="margin-top:16px"><i class="fas fa-chart-bar" style="margin-left:5px"></i>ئەنجامەکان</div>';
