@@ -629,6 +629,14 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .submit-btn:disabled{opacity:.4;pointer-events:none;}
 .dup-ad-btn{width:100%;margin-top:12px;padding:13px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border:none;border-radius:14px;font-family:'R',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 4px 14px rgba(79,70,229,.22);transition:opacity .18s;}
 .dup-ad-btn:active{opacity:.88;}
+.cancel-ad-btn{width:100%;margin-top:10px;padding:12px 14px;background:rgba(239,68,68,.07);color:#dc2626;border:1.5px solid rgba(239,68,68,.2);border-radius:14px;font-family:'R',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:opacity .18s;}
+.cancel-ad-btn:active{opacity:.78;}
+.cro-opt{display:flex;align-items:center;gap:10px;padding:11px 13px;border:1.5px solid var(--b1);border-radius:12px;cursor:pointer;font-size:13px;font-weight:600;color:var(--dark);transition:border-color .15s,background .15s;margin-bottom:6px;user-select:none;}
+.cro-opt.sel{border-color:#dc2626;background:rgba(239,68,68,.05);}
+.cro-radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--b1);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:border-color .15s,background .15s;}
+.cro-opt.sel .cro-radio{border-color:#dc2626;background:#dc2626;}
+.cro-dot{display:none;width:7px;height:7px;border-radius:50%;background:#fff;}
+.cro-opt.sel .cro-dot{display:block;}
 
   /* ══ PROMO CODE ══ */
   .promo-wrap{display:flex;gap:8px;align-items:stretch;}
@@ -9321,6 +9329,143 @@ function _fmtOrderId(n){
   return s.padStart(6,'0');
 }
 
+// ══════════════════════════════════════════
+// ══ CANCEL AD ══
+// ══════════════════════════════════════════
+const _CANCEL_REASONS=[
+  'وردەکارییەکانم هەڵە پڕکردۆتەوە',
+  'کۆد یان لینکی ڕیکلامەکە هەڵەیە',
+  'دەمەوێت بودجەی ڕیکلامەکە بگۆڕم',
+  'دەمەوێت ڕیکلامێکی نوێ بکەم',
+  'هۆکارێکی تر'
+];
+var _cancelAdId=null;
+var _cancelSelReason=null;
+
+function openCancelAdDialog(adId){
+  _cancelAdId=adId;
+  _cancelSelReason=null;
+  const otherTxt=document.getElementById('cancelOtherTxt');
+  const confirmBtn=document.getElementById('cancelAdConfirmBtn');
+  const msg=document.getElementById('cancelAdMsg');
+  if(otherTxt){otherTxt.style.display='none';otherTxt.value='';}
+  if(confirmBtn){confirmBtn.disabled=true;confirmBtn.innerHTML='دڵنیام، ڕەتی بکەوە';}
+  if(msg)msg.style.display='none';
+  const list=document.getElementById('cancelReasonList');
+  if(list){
+    list.innerHTML=_CANCEL_REASONS.map((r,i)=>
+      `<div class="cro-opt" id="cro_${i}" onclick="_cancelPickReason(${i})"><div class="cro-radio"><div class="cro-dot"></div></div><span>${r}</span></div>`
+    ).join('');
+  }
+  document.getElementById('moCancelAd').classList.add('on');
+}
+
+function _cancelPickReason(idx){
+  _cancelSelReason=idx;
+  document.querySelectorAll('.cro-opt').forEach((el,i)=>el.classList.toggle('sel',i===idx));
+  const isOther=idx===4;
+  const otherTxt=document.getElementById('cancelOtherTxt');
+  if(otherTxt)otherTxt.style.display=isOther?'block':'none';
+  _cancelValidate();
+}
+
+function _cancelValidate(){
+  const btn=document.getElementById('cancelAdConfirmBtn');
+  if(!btn)return;
+  if(_cancelSelReason===null){btn.disabled=true;return;}
+  if(_cancelSelReason===4){
+    const v=(document.getElementById('cancelOtherTxt')?.value||'').trim();
+    btn.disabled=v.length<3;
+  }else{
+    btn.disabled=false;
+  }
+}
+
+async function submitCancelAd(){
+  if(!cu||!sb||_cancelAdId===null||_cancelSelReason===null)return;
+  const ad=allAds.find(a=>a.id===_cancelAdId);
+  if(!ad)return;
+  if(!((ad.status==='pending'||ad.status==='review')&&!ad.tiktok_ad_id)){
+    showToast('ئەم ڕیکلامە ناتوانرێت ڕەت بکرێتەوە','err');return;
+  }
+  const isOther=_cancelSelReason===4;
+  const otherText=(document.getElementById('cancelOtherTxt')?.value||'').trim();
+  if(isOther&&otherText.length<3)return;
+  const finalReason=isOther?otherText:_CANCEL_REASONS[_cancelSelReason];
+  const fullReason='🔴 بەکارهێنەر خۆی ڕەتیکردەوە — هۆکار: '+finalReason;
+
+  const btn=document.getElementById('cancelAdConfirmBtn');
+  const msg=document.getElementById('cancelAdMsg');
+  if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> چاوەڕوانبە...';}
+  if(msg)msg.style.display='none';
+
+  try{
+    // 1. نوێکردنەوەی pa_ads
+    const{error:adErr}=await sb.from('pa_ads').update({status:'rejected',reject_reason:fullReason}).eq('id',ad.id).eq('user_id',cu.id);
+    if(adErr)throw new Error(adErr.message);
+
+    // 2. گەڕانەوەی بودجە بۆ باڵانس
+    const{data:wDat}=await sb.from('pa_wallets').select('balance').eq('user_id',cu.id).single();
+    const curBal=parseFloat(wDat?.balance||0);
+    const budgetUSD=parseFloat(ad.budget||0);
+    const newBal=curBal+budgetUSD;
+    await sb.from('pa_wallets').update({balance:newBal}).eq('user_id',cu.id);
+    const newBalIQD=Math.round(newBal*ARC_IQD_RATE);
+    const budgetIQD=Math.round(budgetUSD*ARC_IQD_RATE);
+
+    // 3. تۆمارکردنی مامەڵە
+    await sb.from('pa_transactions').insert({
+      user_id:cu.id,
+      amount:budgetUSD,
+      type:'refund',
+      kind:'refund',
+      status:'approved',
+      ad_number:ad.ad_number,
+      note:'گەڕانەوەی پارەی ڕیکلام #'+ad.ad_number+' — '+budgetIQD.toLocaleString()+' IQD (ڕەتکردنەوە لەلایەن بەکارهێنەر)',
+      balance_after:newBalIQD
+    });
+
+    // 4. تۆمارکردنی ئاگادارکردنەوە
+    await sb.from('pa_notifications').insert({
+      user_id:cu.id,
+      type:'refund',
+      title:'پارەکەت گەڕایەوە',
+      body:'ڕیکلامی #'+ad.ad_number+' ڕەتکرایەوە و '+budgetIQD.toLocaleString()+' IQD گەڕایەوە بۆ باڵانسەکەت.',
+      is_read:false,
+      created_at:new Date().toISOString()
+    });
+
+    // 5. گەڕانەوەی پڕۆمۆ کۆد (ئەگەر هەبوو)
+    try{
+      const{data:usageRow}=await sb.from('promo_code_usages')
+        .select('id,promo_code_id').eq('ad_id',String(ad.id)).eq('user_id',cu.id).eq('status','active').limit(1).maybeSingle();
+      if(usageRow){
+        await sb.from('promo_code_usages').delete().eq('id',usageRow.id);
+        const{data:pcFresh}=await sb.from('promo_codes').select('used_count').eq('id',usageRow.promo_code_id).single();
+        await sb.from('promo_codes').update({used_count:Math.max(0,(pcFresh?.used_count||1)-1)}).eq('id',usageRow.promo_code_id);
+      }
+    }catch(_){}
+
+    // 6. نوێکردنەوەی UI
+    const _idx=allAds.findIndex(a=>a.id===ad.id);
+    if(_idx>=0)allAds[_idx]={...allAds[_idx],status:'rejected',reject_reason:fullReason};
+    renderAds();
+    await loadBal();
+
+    // داخستنی شیتی وردەکاری ئەگەر کراوەبوو
+    const _shOv=document.getElementById('adSheetOv');
+    const _sh=document.getElementById('adDetailSheet');
+    if(_shOv&&_shOv.classList.contains('on')){_shOv.classList.remove('on');if(_sh)_sh.classList.remove('on');}
+
+    closeMo('moCancelAd');
+    showToast('✅ ڕیکلامەکە ڕەتکرایەوە و پارەکەت گەڕایەوە بۆ باڵانسەکەت.','ok');
+
+  }catch(e){
+    if(msg){msg.style.display='block';msg.style.background='rgba(239,68,68,.08)';msg.style.color='#dc2626';msg.textContent='هەڵە: '+e.message;}
+    if(btn){btn.disabled=false;btn.innerHTML='دڵنیام، ڕەتی بکەوە';}
+  }
+}
+
 function renderAds(){
   const filtered=filterStatus==='all'?allAds:allAds.filter(a=>a.status===filterStatus);
   const wrap=document.getElementById('myAdsWrap');
@@ -9342,6 +9487,7 @@ function renderAds(){
     const st=ad.status||'';
     const isTerminal=(st==='rejected'||st==='completed'||st==='paused'||st==='done');
     const isActive=!isTerminal&&!!ad.tiktok_ad_id;
+    const isCancellable=(st==='pending'||st==='review')&&!ad.tiktok_ad_id;
 
     let statusCls,statusLbl;
     if(st==='rejected'){
@@ -9490,6 +9636,7 @@ function renderAds(){
 
       ${refundNote}
       ${rejectNote}
+      ${isCancellable?('<div style="height:1px;background:var(--b1);margin:12px 0 10px"></div><button class="cancel-ad-btn" onclick="event.stopPropagation();openCancelAdDialog(\''+ad.id+'\')"><i class="fas fa-ban"></i>ڕەتکردنەوەی ڕیکلام</button>'):''}
       ${(st==='completed'||st==='done')?('<div style="height:1px;background:var(--b1);margin:12px 0 11px"></div><button class="dup-ad-btn" onclick="event.stopPropagation();duplicateAd(allAds.find(x=>x.id===\''+ad.id+'\'))"><i class="fas fa-copy"></i>دووبارەکردنەوەی ئەم ڕیکلامە</button>'):''}
     </div>`;
   }).join('');
@@ -9815,6 +9962,11 @@ async function showAdDetail(ad){
   h+='<div class="ad-price-row ad-price-total"><span>نرخی کۆتایی</span><span style="'+(isRej2?'color:var(--rd);text-decoration:line-through':'')+'">'+finalTotal.toLocaleString()+' IQD</span></div>';
   if(isRej2) h+='<div class="ad-price-row" style="margin-top:4px"><span style="color:var(--gr)"><i class="fas fa-rotate-left" style="margin-left:5px"></i>گەڕاوەتەوە</span><span style="color:var(--gr);font-weight:800">0 IQD</span></div>';
   h+='</div>';
+  var _isCancellable2=(ad.status==='pending'||ad.status==='review')&&!ad.tiktok_ad_id;
+  if(_isCancellable2){
+    h+='<div style="height:1px;background:var(--b1);margin:14px 0 12px"></div>';
+    h+='<button class="cancel-ad-btn" onclick="openCancelAdDialog(\''+ad.id+'\')"><i class="fas fa-ban"></i>ڕەتکردنەوەی ڕیکلام</button>';
+  }
   body.innerHTML=h;
 }
 
@@ -15078,5 +15230,24 @@ if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostn
   }
 })();
 </script>
+
+<!-- CANCEL AD MODAL -->
+<div class="mover" id="moCancelAd">
+  <div class="mbox">
+    <div class="mbar"></div>
+    <div class="mhdr">
+      <h3><i class="fas fa-ban" style="color:#dc2626;margin-left:7px"></i>ڕەتکردنەوەی ڕیکلام</h3>
+      <button class="mclose" onclick="closeMo('moCancelAd')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div style="font-size:13.5px;font-weight:700;color:var(--dark);margin-bottom:14px;line-height:1.6">بۆچی دەتەوێت ئەم ڕیکلامە ڕەت بکەیتەوە؟</div>
+    <div id="cancelReasonList"></div>
+    <textarea id="cancelOtherTxt" class="finp" placeholder="تکایە هۆکارەکەت بنووسە..." oninput="_cancelValidate()" style="display:none;resize:none;min-height:72px;margin-top:2px;margin-bottom:4px"></textarea>
+    <div id="cancelAdMsg" style="display:none;padding:10px 13px;border-radius:11px;font-size:12.5px;font-weight:600;margin-top:8px"></div>
+    <div style="display:flex;gap:9px;margin-top:14px">
+      <button class="abtn" onclick="closeMo('moCancelAd')" style="flex:1;background:var(--bg);color:var(--dark);border:1.5px solid var(--b1)">پاشگەزبوونەوە</button>
+      <button class="abtn" id="cancelAdConfirmBtn" onclick="submitCancelAd()" style="flex:1;background:#dc2626" disabled>دڵنیام، ڕەتی بکەوە</button>
+    </div>
+  </div>
+</div>
 
 </html>

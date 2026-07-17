@@ -3233,6 +3233,25 @@ function renderAdsTable(q=''){
   wrap.innerHTML=tableHTML+cardsHTML;
 }
 
+function _isUserCancelAd(reason){
+  return (reason||'').startsWith('🔴 بەکارهێنەر خۆی ڕەتیکردەوە');
+}
+function _fmtAdRejectReason(reason){
+  if(!reason)return '';
+  if(_isUserCancelAd(reason)){
+    const rPart=(reason.split('\u0647\u06c6\u06a9\u0627\u0631: ')[1]||reason).trim();
+    return `<div style="background:rgba(245,158,11,.07);border:1.5px solid rgba(245,158,11,.22);border-radius:12px;padding:12px 14px;margin:10px 0">
+      <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
+        <div style="width:30px;height:30px;border-radius:9px;background:rgba(245,158,11,.14);color:#d97706;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0"><i class="fas fa-user-xmark"></i></div>
+        <div style="font-size:12.5px;font-weight:900;color:#d97706">\u0628\u06d5\u06a9\u0627\u0631\u0647\u06ce\u0646\u06d5\u0631 \u062e\u06c6\u06cc \u0695\u06d5\u062a\u06cc\u06a9\u0631\u062f\u06d5\u0648\u06d5</div>
+      </div>
+      <div style="font-size:12px;color:var(--dark);font-weight:600;line-height:1.7">\u0647\u06c6\u06a9\u0627\u0631: <span style="color:var(--mt)">${rPart}</span></div>
+      <div style="font-size:10.5px;color:#16a34a;margin-top:7px;display:flex;align-items:center;gap:5px"><i class="fas fa-rotate-left"></i>\u067e\u0627\u0695\u06d5\u06a9\u06d5\u06cc \u0628\u06d5\u062e\u06c6\u06a9\u0627\u0631\u06cc \u06af\u06d5\u0695\u0627\u0648\u06d5\u062a\u06d5\u0648\u06d5 \u0628\u06c6 \u0628\u0627\u06b5\u0627\u0646\u0633\u06cc \u0628\u06d5\u06a9\u0627\u0631\u0647\u06ce\u0646\u06d5\u0631</div>
+    </div>`;
+  }
+  return `<div class="reject-reason-box"><i class="fas fa-info-circle" style="margin-left:6px"></i>${reason}</div>`;
+}
+
 async function showAdDetail(id){
   let a=allAds.find(x=>x.id===id)||_allAdsData.find(x=>x.id===id);
   if(!a){
@@ -3366,7 +3385,7 @@ async function showAdDetail(id){
     ${a.video_code?`<div class="detail-row" style="align-items:flex-start"><span class="lbl" style="padding-top:4px;flex-shrink:0">کۆدی ڤیدیۆ</span><div style="display:flex;align-items:flex-start;gap:6px;min-width:0;flex:1;justify-content:flex-end"><span class="val" style="direction:ltr;font-family:'Inter';font-weight:700;word-break:break-all;overflow-wrap:anywhere;font-size:11px;text-align:left;max-width:200px">${a.video_code}</span><button onclick="navigator.clipboard.writeText('${a.video_code.replace(/'/g,"\\'")}');showToast('کۆدی ڤیدیۆ کۆپی کرا','gr')" style="background:rgba(99,102,241,.1);border:none;border-radius:6px;color:#6366f1;cursor:pointer;padding:3px 7px;font-size:11px;flex-shrink:0" title="کۆپی"><i class="fas fa-copy"></i></button></div></div>`:''}
     ${a.video_link?`<div class="detail-row"><span class="lbl">لینکی ڤیدیۆ</span><span class="val" style="direction:ltr;font-size:11px"><a href="${a.video_link}" target="_blank" style="color:var(--bl)">${a.video_link}</a></span></div>`:''}
     ${assetHTML}
-    ${a.reject_reason?`<div class="reject-reason-box"><i class="fas fa-info-circle" style="margin-left:6px"></i>${a.reject_reason}</div>`:''}
+    ${_fmtAdRejectReason(a.reject_reason)}
     ${priceBreakdownHTML}
     ${a.status==='scheduled'?`<div class="detail-row" style="background:rgba(8,145,178,.05);border:1.5px solid rgba(8,145,178,.18);border-radius:10px;padding:10px 12px;margin-bottom:6px">
       <span class="lbl" style="color:#0891b2"><i class="fas fa-clock" style="margin-left:5px"></i>کاتی دەستپێکی دانراو</span>
@@ -3509,7 +3528,7 @@ function renderAdsDataTable(q=''){
           ${a.clicks!=null?`<div><span style="font-family:'Inter';font-weight:800;color:#f59e0b;font-size:13px">${fmtN(clicks)}</span></div>${views>0?`<div style="font-size:9px;color:var(--mt)">CTR: ${ctr}%</div>`:''}`:`<span style="color:var(--mt);font-size:12px">—</span>`}
         </td>
         <td style="font-size:11px">${gs[a.goal]||a.goal||'—'}</td>
-        <td><span class="badge ${a.status}">${statusKu(a.status)}</span></td>
+        <td><span class="badge ${a.status}">${statusKu(a.status)}</span>${_isUserCancelAd(a.reject_reason)?'<span style="display:block;font-size:9px;background:rgba(245,158,11,.1);color:#d97706;border-radius:5px;padding:2px 6px;margin-top:3px;white-space:nowrap"><i class="fas fa-user-xmark" style="font-size:8px;margin-left:3px"></i>خۆی ڕەتی کردەوە</span>':''}</td>
         <td style="font-size:10px;color:var(--mt);white-space:nowrap">${new Date(a.created_at).toLocaleDateString('ku')}</td>
         <td style="font-size:10px;color:var(--mt);white-space:nowrap;direction:ltr">${a.start_date?(()=>{const d=new Date(a.start_date);const hasTime=a.start_date.length>10;return d.toLocaleDateString('en-GB')+(hasTime?'<br><span style="color:#0891b2;font-weight:700">'+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+'</span>':'')})():'—'}<br><span style="opacity:.7">${a.end_date||'—'}</span></td>
       </tr>`;
@@ -3530,6 +3549,7 @@ function renderAdsDataTable(q=''){
           <div class="ad-card-sub" style="font-size:10px;direction:ltr">${a.profiles?.email||'—'}</div>
         </div>
         <span class="badge ${a.status}" style="flex-shrink:0">${statusKu(a.status)}</span>
+        ${_isUserCancelAd(a.reject_reason)?'<span style="font-size:9px;background:rgba(245,158,11,.1);color:#d97706;border:1px solid rgba(245,158,11,.2);border-radius:6px;padding:2px 8px;white-space:nowrap;display:block;margin-top:3px;text-align:center"><i class="fas fa-user-xmark" style="font-size:8px;margin-left:3px"></i>خۆی ڕەتی کردەوە</span>':''}
       </div>
       <!-- Stats grid: views/clicks if available, else budget/spent -->
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0">
