@@ -9385,7 +9385,7 @@ async function submitCancelAd(){
   if(!cu||!sb||_cancelAdId===null||_cancelSelReason===null)return;
   const ad=allAds.find(a=>a.id===_cancelAdId);
   if(!ad)return;
-  if(!((ad.status==='pending'||ad.status==='review')&&!ad.tiktok_ad_id)){
+  if(!(ad.status==='pending'&&!ad.tiktok_ad_id)){
     showToast('ئەم ڕیکلامە ناتوانرێت ڕەت بکرێتەوە','err');return;
   }
   const isOther=_cancelSelReason===4;
@@ -9487,7 +9487,7 @@ function renderAds(){
     const st=ad.status||'';
     const isTerminal=(st==='rejected'||st==='completed'||st==='paused'||st==='done');
     const isActive=!isTerminal&&!!ad.tiktok_ad_id;
-    const isCancellable=(st==='pending'||st==='review')&&!ad.tiktok_ad_id;
+    const isCancellable=st==='pending'&&!ad.tiktok_ad_id;
 
     let statusCls,statusLbl;
     if(st==='rejected'){
@@ -9962,7 +9962,7 @@ async function showAdDetail(ad){
   h+='<div class="ad-price-row ad-price-total"><span>نرخی کۆتایی</span><span style="'+(isRej2?'color:var(--rd);text-decoration:line-through':'')+'">'+finalTotal.toLocaleString()+' IQD</span></div>';
   if(isRej2) h+='<div class="ad-price-row" style="margin-top:4px"><span style="color:var(--gr)"><i class="fas fa-rotate-left" style="margin-left:5px"></i>گەڕاوەتەوە</span><span style="color:var(--gr);font-weight:800">0 IQD</span></div>';
   h+='</div>';
-  var _isCancellable2=(ad.status==='pending'||ad.status==='review')&&!ad.tiktok_ad_id;
+  var _isCancellable2=ad.status==='pending'&&!ad.tiktok_ad_id;
   if(_isCancellable2){
     h+='<div style="height:1px;background:var(--b1);margin:14px 0 12px"></div>';
     h+='<button class="cancel-ad-btn" onclick="openCancelAdDialog(\''+ad.id+'\')"><i class="fas fa-ban"></i>ڕەتکردنەوەی ڕیکلام</button>';
