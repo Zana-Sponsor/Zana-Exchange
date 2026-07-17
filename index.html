@@ -9535,8 +9535,8 @@ function renderAds(){
     // تێبینی چاوەڕوانی تەنها بۆ ئەوانەی نە تەرمینالن و نە چالاکن
     const pendingNote=(!isTerminal&&!isActive&&st!=='scheduled')
       ? (st==='review'
-          ? `<div class="spons-pending-overlay" style="background:rgba(37,99,235,.06);border-color:rgba(37,99,235,.25);color:#1d4ed8"><i class="fas fa-magnifying-glass" style="flex-shrink:0"></i><span>ئێستا تیمی Proxo ڕیکلامەکەت پێداچوونەوە دەکات — بەرزەبوونەوەیەک بچاوەڕێ.</span></div>`
-          : `<div class="spons-pending-overlay"><i class="fas fa-hourglass-half" style="flex-shrink:0"></i><span>بۆ چالاکبوون چاوەڕوانی ئادمین بە، ئینجا ئەنجامەکان بەخۆکاری دەکەوێتە ئاستی ڕاستەوخۆ.</span></div>`)
+          ? `<div class="spons-pending-overlay" style="background:rgba(37,99,235,.06);border-color:rgba(37,99,235,.25);color:#1d4ed8"><i class="fas fa-magnifying-glass" style="flex-shrink:0"></i><span>ڕیکلامەکەت پێداچوونەوەی بۆ دەکرێت لەلایەن تیمەکەمانەوە تکایە چاوەڕوان بن ...</span></div>`
+          : `<div class="spons-pending-overlay"><i class="fas fa-hourglass-half" style="flex-shrink:0"></i><span>ڕیکلامەکەت لەئێستادا لەچاوەڕوانی دایە نەگەیشتۆتە قۆناغی پێداچوونەوە -  چاوەڕوان بن تاوەکوو دەگاتە لای کارمەندێک !</span></div>`)
       : '';
 
     // کات بۆ دانراو note
