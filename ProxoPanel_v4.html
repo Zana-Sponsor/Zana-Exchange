@@ -5351,15 +5351,12 @@ async function openEditUserLevel(uid,name){
   document.getElementById('editLevelCurPts').textContent='—';
   openMo('moEditUserLevel');
   // بارکردنی خاڵی ئێستا
-  const{data:ltData}=await sb.from('pa_settings').select('value').eq('key','level_thresholds').single();
-  const lt=ltData?.value?(typeof ltData.value==='string'?JSON.parse(ltData.value):ltData.value):{};
-  _editLevelLevels=[
-    {name:'بڕۆنز',min:lt.bronze??0,icon:'🥉'},
-    {name:'زیو',min:lt.silver??50,icon:'🥈'},
-    {name:'پلاتینیۆم',min:lt.platinum??200,icon:'💎'},
-    {name:'ئەڵماس',min:lt.diamond??500,icon:'✨'},
-  ];
-  const{data:pData}=await sb.from('pa_user_points').select('points').eq('user_id',uid).single();
+  // بارکردنی ئاستەکان لە pa_levels تەیبڵ (هەمان سەرچاوەی ئەپ)
+  const{data:lvlRows}=await sb.from('pa_levels').select('id,level_number,name_ku,min_points,icon').order('level_number',{ascending:true});
+  const _iconEmoji=s=>{const m={medal:'🥇',award:'🏅',crown:'👑',gem:'💎',diamond:'💎',star:'⭐'};return m[s?.toLowerCase()]||'⭐';};
+  _editLevelLevels=(lvlRows||[]).map(lv=>({id:lv.id,name:lv.name_ku||'—',min:parseFloat(lv.min_points||0),icon:_iconEmoji(lv.icon)}));
+  if(!_editLevelLevels.length) _editLevelLevels=[{name:'ئاست ١',min:0,icon:'⭐'}];
+  const{data:pData}=await sb.from('pa_user_points').select('points').eq('user_id',uid).maybeSingle();
   const pts=parseFloat(pData?.points||0);
   document.getElementById('editLevelNewPts').value=pts;
   let cur=_editLevelLevels[0];
@@ -5384,16 +5381,18 @@ async function saveUserLevel(){
   if(isNaN(pts)||pts<0){showToast('خاڵ بنووسە (کەمترین: 0)','rd');return;}
   const btn=document.querySelector('[onclick="saveUserLevel()"]');
   if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> پاشەکەوتدەکرێت...';}
-  // upsert بۆ pa_user_points
+  // ── 1. نوێکردنەوەی خاڵ لە pa_user_points ──────────────────
   const{error}=await sb.from('pa_user_points').upsert({user_id:uid,points:pts},{onConflict:'user_id'});
   if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-floppy-disk"></i> پاشەکەوتکردن';}
   if(error){showToast('هەڵە: '+error.message,'rd');return;}
-  showToast('✅ خاڵی بەکارهێنەر نوێکرایەوە','gr');
+  // ── 2. دیاریکردنی ئاستی نوێ لە pa_levels (هەمان منتیقی ئەپ) ─
+  let cur=_editLevelLevels.length?_editLevelLevels[0]:null;
+  for(const lv of _editLevelLevels){if(pts>=lv.min)cur=lv;}
+  const newLevelName=cur?(cur.icon+' '+cur.name):'—';
+  showToast('✅ '+newLevelName+' — '+pts.toLocaleString()+' خاڵ پاشەکەوتکرا','gr');
   closeMo('moEditUserLevel');
-  // نوێکردنەوەی نیشانەی ئاست لە modal
-  if(document.getElementById('udetLevelIco_'+uid)){
-    let cur=_editLevelLevels[0];
-    for(const lv of _editLevelLevels){if(pts>=lv.min)cur=lv;}
+  // ── 3. نوێکردنەوەی نیشانەی ئاست لە لیستی بەکارهێنەران ────────
+  if(cur && document.getElementById('udetLevelIco_'+uid)){
     document.getElementById('udetLevelIco_'+uid).textContent=cur.icon;
     document.getElementById('udetLevelName_'+uid).textContent=cur.name;
     document.getElementById('udetLevelPts_'+uid).textContent=pts.toLocaleString();
@@ -6389,10 +6388,19 @@ async function awardAdPoints(userId, budgetUSD){
     const rate=parseFloat(rateVal.rate??1);
     const pointsToAdd=Math.round(parseFloat(budgetUSD)*rate);
     if(!(pointsToAdd>0)) return;
-    const{data:pData}=await sb.from('pa_user_points').select('points').eq('user_id',userId).single();
+    const{data:pData}=await sb.from('pa_user_points').select('points').eq('user_id',userId).maybeSingle();
     const curPts=parseFloat(pData?.points||0);
-    await sb.from('pa_user_points').upsert({user_id:userId,points:curPts+pointsToAdd},{onConflict:'user_id'});
-
+    const newPts=curPts+pointsToAdd;
+    await sb.from('pa_user_points').upsert({user_id:userId,points:newPts},{onConflict:'user_id'});
+    // ── چیک کردنی گۆڕانی ئاست بە pa_levels ────────────────────
+    try{
+      const{data:lvls}=await sb.from('pa_levels').select('id,level_number,name_ku,min_points').order('level_number',{ascending:true});
+      if(lvls?.length){
+        const getLevel=pts=>{let l=lvls[0];for(const x of lvls){if(pts>=parseFloat(x.min_points||0))l=x;}return l;};
+        const before=getLevel(curPts); const after=getLevel(newPts);
+        if(before.id!==after.id) console.info('[ProxoPanel] ئاستی بەکارهێنەر گۆڕدرا:',before.name_ku,'→',after.name_ku,'('+newPts+' خاڵ)');
+      }
+    }catch(_){}
   }catch(e){ console.warn('awardAdPoints error:', e?.message); }
 }
 
