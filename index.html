@@ -1647,14 +1647,14 @@ html{scroll-behavior:smooth;}
 .phone-req-err{font-size:12px;color:var(--rd);text-align:center;margin-top:10px;min-height:18px;}
 
 /* ══ GOOGLE PLAY BANNER ══ */
-#gplayBanner{display:flex;align-items:center;gap:10px;background:#1a1a2e;color:#fff;padding:10px 14px;margin:0;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.1);}
+#gplayBanner{display:flex;align-items:center;gap:10px;background:#1a1a2e;color:#fff;padding:10px 14px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.1);}
 #gplayBanner.gp-hidden{display:none!important;}
 .gplay-icon-wrap{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#01875f,#00a86b);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .gplay-icon-wrap i{font-size:17px;color:#fff;}
 .gplay-texts{flex:1;min-width:0;}
 .gplay-sub{font-size:10px;color:rgba(255,255,255,.55);font-weight:600;font-family:'R',sans-serif;}
 .gplay-title{font-size:13px;font-weight:800;color:#fff;font-family:'R',sans-serif;}
-.gplay-cta{background:linear-gradient(135deg,#01875f,#00a86b);color:#fff;border:none;border-radius:16px;padding:6px 12px;font-size:11px;font-weight:700;font-family:'R',sans-serif;white-space:nowrap;flex-shrink:0;cursor:pointer;}
+.gplay-cta{background:linear-gradient(135deg,#01875f,#00a86b);color:#fff;border:none;border-radius:16px;padding:6px 12px;font-size:11px;font-weight:700;font-family:'R',sans-serif;white-space:nowrap;flex-shrink:0;cursor:pointer;pointer-events:none;}
 .gplay-dismiss{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.12);border:none;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.7);font-size:11px;cursor:pointer;flex-shrink:0;margin-right:4px;}
 </style>
 <script>
@@ -3123,12 +3123,10 @@ function _toWebP(dataUrl,quality){
   <div class="pg" id="pgHome">
     <!-- ══ GOOGLE PLAY DOWNLOAD BANNER ══ -->
     <div id="gplayBanner" onclick="gplayBannerGo()">
-      <div class="gplay-icon-wrap">
-        <i class="fab fa-google-play"></i>
-      </div>
+      <div class="gplay-icon-wrap"><i class="fas fa-play"></i></div>
       <div class="gplay-texts">
         <div class="gplay-sub">ئەپەکەمان بەردەستە</div>
-        <div class="gplay-title">Proxo App — دایبەزێنە</div>
+        <div class="gplay-title">Proxo App — دایبەزێنە لە گۆگڵ پلەی</div>
       </div>
       <button class="gplay-cta">گۆگڵ پلەی</button>
       <button class="gplay-dismiss" onclick="gplayDismiss(event)"><i class="fas fa-times"></i></button>
@@ -11124,28 +11122,7 @@ function buildPageDark(name,bio,tt,ttUrl,avatar,activeBtns,handlers,theme){
   p.push("  setTimeout(hideEffects, 10000);");
   p.push("  // فووتەر خۆکار");p.push("  (function(){var b=document.querySelectorAll('.btn');var n=b.length;var m=n<=2?100:n<=3?120:n<=4?140:n<=5?160:180;var f=document.querySelector('.footer');if(f)f.style.marginTop=m+'px';})();");p.push("});");
   p.push('<'+'/script>');
-  p.push('
-<script>
-/* ══ GOOGLE PLAY BANNER ══ */
-(function(){
-  try{
-    if(localStorage.getItem('gp_dismissed')==='1'){
-      var b=document.getElementById('gplayBanner');
-      if(b) b.classList.add('gp-hidden');
-    }
-  }catch(e){}
-})();
-function gplayDismiss(ev){
-  ev.stopPropagation();
-  try{localStorage.setItem('gp_dismissed','1');}catch(e){}
-  var b=document.getElementById('gplayBanner');
-  if(b) b.classList.add('gp-hidden');
-}
-function gplayBannerGo(){
-  window.open('https://play.google.com/store/apps/details?id=com.proxo.proxoapp','_blank','noopener,noreferrer');
-}
-</script>
-</body>');
+  p.push('</body>');
   p.push('</html>');
 
   return p.join('\n');
@@ -15491,4 +15468,25 @@ if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostn
   </div>
 </div>
 
+
+<script>
+/* ══ GOOGLE PLAY BANNER ══ */
+(function(){
+  try{
+    if(localStorage.getItem("gp_dismissed")==="1"){
+      var b=document.getElementById("gplayBanner");
+      if(b) b.classList.add("gp-hidden");
+    }
+  }catch(e){}
+})();
+function gplayDismiss(ev){
+  ev.stopPropagation();
+  try{localStorage.setItem("gp_dismissed","1");}catch(e){}
+  var b=document.getElementById("gplayBanner");
+  if(b) b.classList.add("gp-hidden");
+}
+function gplayBannerGo(){
+  window.open("https://play.google.com/store/apps/details?id=com.proxo.proxoapp","_blank","noopener,noreferrer");
+}
+</script>
 </html>
