@@ -267,20 +267,6 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 /* ══ OFFLINE BANNER ══ */
 #offlineBanner{display:none;position:fixed;top:0;left:0;right:0;z-index:99999;background:var(--rd);color:#fff;font-size:13px;font-family:'R',sans-serif;text-align:center;padding:10px 16px;font-weight:700;}
 #offlineBanner.show{display:block;}
-
-/* ══ GOOGLE PLAY BANNER ══ */
-#gplayBanner{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);color:#fff;padding:10px 14px;position:relative;cursor:pointer;border-radius:0;border-bottom:1px solid rgba(255,255,255,.08);transition:opacity .2s;}
-#gplayBanner:hover{opacity:.92;}
-#gplayBanner.hidden{display:none;}
-.gplay-icon{width:36px;height:36px;flex-shrink:0;}
-.gplay-texts{flex:1;min-width:0;}
-.gplay-sub{font-size:10px;color:rgba(255,255,255,.6);font-weight:600;letter-spacing:.3px;font-family:'R',sans-serif;}
-.gplay-title{font-size:13px;font-weight:800;color:#fff;font-family:'R',sans-serif;line-height:1.3;}
-.gplay-badge{display:flex;align-items:center;gap:5px;background:linear-gradient(135deg,#01875f,#00a86b);border-radius:20px;padding:6px 12px;font-size:11px;font-weight:700;color:#fff;white-space:nowrap;font-family:'R',sans-serif;flex-shrink:0;box-shadow:0 2px 8px rgba(1,135,95,.4);}
-.gplay-badge svg{width:14px;height:14px;flex-shrink:0;}
-.gplay-dismiss{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.1);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,.7);font-size:12px;flex-shrink:0;transition:background .15s;}
-.gplay-dismiss:active{background:rgba(255,255,255,.2);}
-
 /* ══ MAINTENANCE OVERLAY ══ */
 @keyframes maintFadeIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
 @keyframes maintFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
@@ -1659,6 +1645,17 @@ html{scroll-behavior:smooth;}
 .phone-req-btn{width:100%;padding:17px;background:var(--dark);color:#fff;border:none;border-radius:16px;font-family:"R",sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;}
 .phone-req-btn:disabled{opacity:.5;pointer-events:none;}
 .phone-req-err{font-size:12px;color:var(--rd);text-align:center;margin-top:10px;min-height:18px;}
+
+/* ══ GOOGLE PLAY BANNER ══ */
+#gplayBanner{display:flex;align-items:center;gap:10px;background:#1a1a2e;color:#fff;padding:10px 14px;margin:0;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.1);}
+#gplayBanner.gp-hidden{display:none!important;}
+.gplay-icon-wrap{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#01875f,#00a86b);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.gplay-icon-wrap i{font-size:17px;color:#fff;}
+.gplay-texts{flex:1;min-width:0;}
+.gplay-sub{font-size:10px;color:rgba(255,255,255,.55);font-weight:600;font-family:'R',sans-serif;}
+.gplay-title{font-size:13px;font-weight:800;color:#fff;font-family:'R',sans-serif;}
+.gplay-cta{background:linear-gradient(135deg,#01875f,#00a86b);color:#fff;border:none;border-radius:16px;padding:6px 12px;font-size:11px;font-weight:700;font-family:'R',sans-serif;white-space:nowrap;flex-shrink:0;cursor:pointer;}
+.gplay-dismiss{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.12);border:none;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.7);font-size:11px;cursor:pointer;flex-shrink:0;margin-right:4px;}
 </style>
 <script>
 // ══ RESOURCE CACHE — فۆنت و وێنەکان ناو localStorage پاشەکەوت دەبن ══
@@ -3123,50 +3120,19 @@ function _toWebP(dataUrl,quality){
   </div>
 
   <!-- HOME -->
-
-  <!-- ══ GOOGLE PLAY DOWNLOAD BANNER ══ -->
-  <div id="gplayBanner" onclick="gplayBannerClick(event)">
-    <svg class="gplay-icon" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="gp1" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style="stop-color:#00c6fb"/>
-          <stop offset="100%" style="stop-color:#005bea"/>
-        </linearGradient>
-        <linearGradient id="gp2" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style="stop-color:#f7971e"/>
-          <stop offset="100%" style="stop-color:#ffd200"/>
-        </linearGradient>
-        <linearGradient id="gp3" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style="stop-color:#f953c6"/>
-          <stop offset="100%" style="stop-color:#b91d73"/>
-        </linearGradient>
-        <linearGradient id="gp4" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style="stop-color:#43e97b"/>
-          <stop offset="100%" style="stop-color:#38f9d7"/>
-        </linearGradient>
-      </defs>
-      <rect width="512" height="512" rx="100" fill="#1a1a2e"/>
-      <path d="M110 80 L370 256 L110 432 Z" fill="url(#gp1)" opacity="0.9"/>
-      <path d="M110 80 L290 176 L200 256 Z" fill="url(#gp2)"/>
-      <path d="M110 432 L290 336 L200 256 Z" fill="url(#gp3)"/>
-      <path d="M290 176 L370 256 L290 336 L200 256 Z" fill="url(#gp4)"/>
-    </svg>
-    <div class="gplay-texts">
-      <div class="gplay-sub">ئەپەکەمان بەردەستە</div>
-      <div class="gplay-title">دایبەزێنە — Proxo App</div>
-    </div>
-    <div class="gplay-badge">
-      <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-        <path d="M3.18 23.76c.37.21.8.24 1.19.09l12.6-7.27-2.79-2.79-11 10zM.5 1.33C.19 1.7 0 2.25 0 2.97v18.06c0 .72.19 1.27.5 1.64l.09.08 10.12-10.12v-.24L.59 1.25.5 1.33zM20.7 10.34l-2.79-1.6L14.97 12l2.94 2.94 2.79-1.61c.8-.46.8-1.53 0-1.99zM4.37.15L16.97 7.42l-2.79 2.79L3.18.36C3.55.15 3.98.12 4.37.35V.15z"/>
-      </svg>
-      گۆگڵ پلەی
-    </div>
-    <button class="gplay-dismiss" onclick="gplayDismiss(event)" aria-label="داخستن">
-      <i class="fas fa-times"></i>
-    </button>
-  </div>
-
   <div class="pg" id="pgHome">
+    <!-- ══ GOOGLE PLAY DOWNLOAD BANNER ══ -->
+    <div id="gplayBanner" onclick="gplayBannerGo()">
+      <div class="gplay-icon-wrap">
+        <i class="fab fa-google-play"></i>
+      </div>
+      <div class="gplay-texts">
+        <div class="gplay-sub">ئەپەکەمان بەردەستە</div>
+        <div class="gplay-title">Proxo App — دایبەزێنە</div>
+      </div>
+      <button class="gplay-cta">گۆگڵ پلەی</button>
+      <button class="gplay-dismiss" onclick="gplayDismiss(event)"><i class="fas fa-times"></i></button>
+    </div>
     <!-- ══ SUPABASE TEXT BANNER (homeHero) ══ -->
     <div id="homeHero" class="home-hero" style="display:none;cursor:pointer" onclick="homeBannerClick()">
       <h2 id="heroBannerTitle">ڕیکلامی تیک تۆک بەردەستە</h2>
@@ -11160,26 +11126,25 @@ function buildPageDark(name,bio,tt,ttUrl,avatar,activeBtns,handlers,theme){
   p.push('<'+'/script>');
   p.push('
 <script>
-// ══ GOOGLE PLAY BANNER ══
+/* ══ GOOGLE PLAY BANNER ══ */
 (function(){
-  var KEY='gplay_banner_dismissed';
-  if(localStorage.getItem(KEY)==='1'){
-    var b=document.getElementById('gplayBanner');
-    if(b)b.classList.add('hidden');
-  }
+  try{
+    if(localStorage.getItem('gp_dismissed')==='1'){
+      var b=document.getElementById('gplayBanner');
+      if(b) b.classList.add('gp-hidden');
+    }
+  }catch(e){}
 })();
-function gplayDismiss(e){
-  e.stopPropagation();
-  localStorage.setItem('gplay_banner_dismissed','1');
+function gplayDismiss(ev){
+  ev.stopPropagation();
+  try{localStorage.setItem('gp_dismissed','1');}catch(e){}
   var b=document.getElementById('gplayBanner');
-  if(b){b.style.opacity='0';b.style.transform='translateY(-100%)';b.style.transition='opacity .25s,transform .25s';setTimeout(function(){b.classList.add('hidden');b.style.opacity='';b.style.transform='';},260);}
+  if(b) b.classList.add('gp-hidden');
 }
-function gplayBannerClick(e){
-  if(e.target.closest('.gplay-dismiss'))return;
-  window.open('https://play.google.com/store/apps/details?id=com.proxo.proxoapp','_blank','noopener');
+function gplayBannerGo(){
+  window.open('https://play.google.com/store/apps/details?id=com.proxo.proxoapp','_blank','noopener,noreferrer');
 }
 </script>
-
 </body>');
   p.push('</html>');
 
@@ -11411,29 +11376,7 @@ function buildPageLight(name,bio,tt,ttUrl,avatar,activeBtns,handlers,theme){
   p.push("  setTimeout(hideEffects, 10000);");
   p.push("  (function(){var b=document.querySelectorAll('.btn');var n=b.length;var m=n<=2?100:n<=3?120:n<=4?140:n<=5?160:180;var f=document.querySelector('.footer');if(f)f.style.marginTop=m+'px';})();");p.push("});");
   p.push('<'+'/script>');
-  p.push('
-<script>
-// ══ GOOGLE PLAY BANNER ══
-(function(){
-  var KEY='gplay_banner_dismissed';
-  if(localStorage.getItem(KEY)==='1'){
-    var b=document.getElementById('gplayBanner');
-    if(b)b.classList.add('hidden');
-  }
-})();
-function gplayDismiss(e){
-  e.stopPropagation();
-  localStorage.setItem('gplay_banner_dismissed','1');
-  var b=document.getElementById('gplayBanner');
-  if(b){b.style.opacity='0';b.style.transform='translateY(-100%)';b.style.transition='opacity .25s,transform .25s';setTimeout(function(){b.classList.add('hidden');b.style.opacity='';b.style.transform='';},260);}
-}
-function gplayBannerClick(e){
-  if(e.target.closest('.gplay-dismiss'))return;
-  window.open('https://play.google.com/store/apps/details?id=com.proxo.proxoapp','_blank','noopener');
-}
-</script>
-
-</body>');
+  p.push('</body>');
   p.push('</html>');
 
   return p.join('\n');
@@ -11634,29 +11577,7 @@ function buildPageClassic(name,bio,tt,ttUrl,avatar,activeBtns,handlers,theme){
   parts.push("  setTimeout(function(){ var s=document.querySelector('.shine-active'); if(s) s.classList.add('no-shine'); }, 10000);");
   parts.push("  (function(){var b=document.querySelectorAll('.btn-classic');var n=b.length;var m=n<=2?80:n<=3?100:n<=4?120:n<=5?140:160;var f=document.querySelector('.footer');if(f)f.style.marginTop=m+'px';})();");parts.push("});");
   parts.push('<'+'/script>');
-  parts.push('
-<script>
-// ══ GOOGLE PLAY BANNER ══
-(function(){
-  var KEY='gplay_banner_dismissed';
-  if(localStorage.getItem(KEY)==='1'){
-    var b=document.getElementById('gplayBanner');
-    if(b)b.classList.add('hidden');
-  }
-})();
-function gplayDismiss(e){
-  e.stopPropagation();
-  localStorage.setItem('gplay_banner_dismissed','1');
-  var b=document.getElementById('gplayBanner');
-  if(b){b.style.opacity='0';b.style.transform='translateY(-100%)';b.style.transition='opacity .25s,transform .25s';setTimeout(function(){b.classList.add('hidden');b.style.opacity='';b.style.transform='';},260);}
-}
-function gplayBannerClick(e){
-  if(e.target.closest('.gplay-dismiss'))return;
-  window.open('https://play.google.com/store/apps/details?id=com.proxo.proxoapp','_blank','noopener');
-}
-</script>
-
-</body>');
+  parts.push('</body>');
   parts.push('</html>');
 
   return parts.join('\n');
@@ -11731,29 +11652,7 @@ function buildPagePill(name,bio,tt,ttUrl,avatar,activeBtns,handlers,theme){
   p.push("  window.onclick=function(e){if(e.target.id==='mod')closeMod();};");
   p.push("  setTimeout(function(){var s=document.querySelector('.shine-active');if(s)s.classList.add('no-sh');},10000);");
   p.push("});");
-  p.push('<'+'/script>
-<script>
-// ══ GOOGLE PLAY BANNER ══
-(function(){
-  var KEY='gplay_banner_dismissed';
-  if(localStorage.getItem(KEY)==='1'){
-    var b=document.getElementById('gplayBanner');
-    if(b)b.classList.add('hidden');
-  }
-})();
-function gplayDismiss(e){
-  e.stopPropagation();
-  localStorage.setItem('gplay_banner_dismissed','1');
-  var b=document.getElementById('gplayBanner');
-  if(b){b.style.opacity='0';b.style.transform='translateY(-100%)';b.style.transition='opacity .25s,transform .25s';setTimeout(function(){b.classList.add('hidden');b.style.opacity='';b.style.transform='';},260);}
-}
-function gplayBannerClick(e){
-  if(e.target.closest('.gplay-dismiss'))return;
-  window.open('https://play.google.com/store/apps/details?id=com.proxo.proxoapp','_blank','noopener');
-}
-</script>
-
-</body></html>');
+  p.push('<'+'/script></body></html>');
   return p.join('\n');
 }
 
@@ -11825,29 +11724,7 @@ function buildPageCard(name,bio,tt,ttUrl,avatar,activeBtns,handlers,theme){
   p.push("  window.onclick=function(e){if(e.target.id==='mod')closeMod();};");
   p.push("  setTimeout(function(){var s=document.querySelector('.shine-active');if(s)s.classList.add('no-sh');},10000);");
   p.push("});");
-  p.push('<'+'/script>
-<script>
-// ══ GOOGLE PLAY BANNER ══
-(function(){
-  var KEY='gplay_banner_dismissed';
-  if(localStorage.getItem(KEY)==='1'){
-    var b=document.getElementById('gplayBanner');
-    if(b)b.classList.add('hidden');
-  }
-})();
-function gplayDismiss(e){
-  e.stopPropagation();
-  localStorage.setItem('gplay_banner_dismissed','1');
-  var b=document.getElementById('gplayBanner');
-  if(b){b.style.opacity='0';b.style.transform='translateY(-100%)';b.style.transition='opacity .25s,transform .25s';setTimeout(function(){b.classList.add('hidden');b.style.opacity='';b.style.transform='';},260);}
-}
-function gplayBannerClick(e){
-  if(e.target.closest('.gplay-dismiss'))return;
-  window.open('https://play.google.com/store/apps/details?id=com.proxo.proxoapp','_blank','noopener');
-}
-</script>
-
-</body></html>');
+  p.push('<'+'/script></body></html>');
   return p.join('\n');
 }
 
@@ -11919,29 +11796,7 @@ function buildPageNeon(name,bio,tt,ttUrl,avatar,activeBtns,handlers,theme){
   p.push("  window.onclick=function(e){if(e.target.id==='mod')closeMod();};");
   p.push("  setTimeout(function(){var s=document.querySelector('.shine-active');if(s)s.classList.add('no-sh');},10000);");
   p.push("});");
-  p.push('<'+'/script>
-<script>
-// ══ GOOGLE PLAY BANNER ══
-(function(){
-  var KEY='gplay_banner_dismissed';
-  if(localStorage.getItem(KEY)==='1'){
-    var b=document.getElementById('gplayBanner');
-    if(b)b.classList.add('hidden');
-  }
-})();
-function gplayDismiss(e){
-  e.stopPropagation();
-  localStorage.setItem('gplay_banner_dismissed','1');
-  var b=document.getElementById('gplayBanner');
-  if(b){b.style.opacity='0';b.style.transform='translateY(-100%)';b.style.transition='opacity .25s,transform .25s';setTimeout(function(){b.classList.add('hidden');b.style.opacity='';b.style.transform='';},260);}
-}
-function gplayBannerClick(e){
-  if(e.target.closest('.gplay-dismiss'))return;
-  window.open('https://play.google.com/store/apps/details?id=com.proxo.proxoapp','_blank','noopener');
-}
-</script>
-
-</body></html>');
+  p.push('<'+'/script></body></html>');
   return p.join('\n');
 }
 
@@ -12013,29 +11868,7 @@ function buildPageZoom(name,bio,tt,ttUrl,avatar,activeBtns,handlers,theme){
   p.push("  window.onclick=function(e){if(e.target.id==='mod')closeMod();};");
   p.push("  setTimeout(function(){var s=document.querySelector('.shine-active');if(s)s.classList.add('no-sh');},10000);");
   p.push("});");
-  p.push('<'+'/script>
-<script>
-// ══ GOOGLE PLAY BANNER ══
-(function(){
-  var KEY='gplay_banner_dismissed';
-  if(localStorage.getItem(KEY)==='1'){
-    var b=document.getElementById('gplayBanner');
-    if(b)b.classList.add('hidden');
-  }
-})();
-function gplayDismiss(e){
-  e.stopPropagation();
-  localStorage.setItem('gplay_banner_dismissed','1');
-  var b=document.getElementById('gplayBanner');
-  if(b){b.style.opacity='0';b.style.transform='translateY(-100%)';b.style.transition='opacity .25s,transform .25s';setTimeout(function(){b.classList.add('hidden');b.style.opacity='';b.style.transform='';},260);}
-}
-function gplayBannerClick(e){
-  if(e.target.closest('.gplay-dismiss'))return;
-  window.open('https://play.google.com/store/apps/details?id=com.proxo.proxoapp','_blank','noopener');
-}
-</script>
-
-</body></html>');
+  p.push('<'+'/script></body></html>');
   return p.join('\n');
 }
 
@@ -12100,29 +11933,7 @@ function buildPageBanner(name,bio,tt,ttUrl,avatar,activeBtns,handlers,theme){
   p.push("  window.onclick=function(e){if(e.target.id==='mod')closeMod();};");
   p.push("  setTimeout(function(){var s=document.querySelector('.shine-active');if(s)s.classList.add('no-sh');},10000);");
   p.push("});");
-  p.push('<'+'/script>
-<script>
-// ══ GOOGLE PLAY BANNER ══
-(function(){
-  var KEY='gplay_banner_dismissed';
-  if(localStorage.getItem(KEY)==='1'){
-    var b=document.getElementById('gplayBanner');
-    if(b)b.classList.add('hidden');
-  }
-})();
-function gplayDismiss(e){
-  e.stopPropagation();
-  localStorage.setItem('gplay_banner_dismissed','1');
-  var b=document.getElementById('gplayBanner');
-  if(b){b.style.opacity='0';b.style.transform='translateY(-100%)';b.style.transition='opacity .25s,transform .25s';setTimeout(function(){b.classList.add('hidden');b.style.opacity='';b.style.transform='';},260);}
-}
-function gplayBannerClick(e){
-  if(e.target.closest('.gplay-dismiss'))return;
-  window.open('https://play.google.com/store/apps/details?id=com.proxo.proxoapp','_blank','noopener');
-}
-</script>
-
-</body></html>');
+  p.push('<'+'/script></body></html>');
   return p.join('\n');
 }
 
