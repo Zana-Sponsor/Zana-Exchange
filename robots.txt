@@ -1,0 +1,18 @@
+# robots.txt — Proxo App (https://www.proxopages.com/)
+# Generated 2025-07-20
+
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /signup
+
+# Block internal app state paths that should not be indexed
+Disallow: /api/
+Disallow: /*.json$
+Disallow: /sw.js
+
+# Crawler-friendly crawl delay (optional, Googlebot ignores this)
+Crawl-delay: 5
+
+# Sitemap
+Sitemap: https://www.proxopages.com/sitemap.xml
