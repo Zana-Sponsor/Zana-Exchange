@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proxo — Manage Your TikTok Ads Like a Pro</title>
+<meta name="description" content="Proxo is the all-in-one mobile app for launching, tracking and optimizing your TikTok advertising campaigns — built for modern businesses in Kurdistan and beyond.">
+<meta name="keywords" content="Proxo, TikTok ads, ad management app, campaign tracking, mobile marketing">
+<meta name="author" content="Proxo Team">
+<meta property="og:title" content="Proxo — Manage Your TikTok Ads Like a Pro">
+<meta property="og:description" content="Launch, track and optimize TikTok ad campaigns from one beautifully simple app.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://proxopages.com">
+<meta name="theme-color" content="#4F46E5">
+<link rel="icon" type="image/jpeg" href="https://img.sanishtech.com/u/5e292763729498a6c768205d242acd3a.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   0. RESET & TOKENS
+   ============================================================ */
+:root{
+  --primary:#4F46E5;
+  --accent:#7C3AED;
+  --secondary:#06B6D4;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --ink:#0F172A;
+  --muted:#5B6478;
+  --line:#E7EAF3;
+  --radius-xl:32px;
+  --radius-lg:24px;
+  --radius-md:16px;
+  --radius-sm:10px;
+  --shadow-sm:0 4px 14px -4px rgba(15,23,42,.08);
+  --shadow-md:0 20px 45px -18px rgba(79,70,229,.28);
+  --shadow-lg:0 30px 70px -20px rgba(15,23,42,.22);
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+ul{list-style:none;}
+button{font-family:inherit;border:none;background:none;cursor:pointer;}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
+::selection{background:var(--primary);color:#fff;}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important;}
+}
+
+/* focus visibility */
+a:focus-visible,button:focus-visible{outline:2px solid var(--primary);outline-offset:3px;border-radius:6px;}
+
+/* ============================================================
+   1. SCROLL PROGRESS BAR
+   ============================================================ */
+#scroll-progress{
+  position:fixed;top:0;left:0;height:3px;width:0%;z-index:9999;
+  background:linear-gradient(90deg,var(--primary),var(--accent),var(--secondary));
+  transition:width .1s linear;
+}
+
+/* ============================================================
+   2. AURORA / BLOB BACKGROUND (Hero)
+   ============================================================ */
+.aurora{
+  position:absolute;inset:0;overflow:hidden;z-index:0;pointer-events:none;
+}
+.aurora .blob{
+  position:absolute;border-radius:50%;filter:blur(110px);opacity:.22;
+  animation:drift 18s ease-in-out infinite;
+}
+.aurora .blob1{width:440px;height:440px;background:var(--primary);top:-160px;left:-120px;animation-delay:0s;}
+.aurora .blob2{width:380px;height:380px;background:var(--accent);top:60px;right:-140px;animation-delay:-6s;}
+.aurora .blob3{width:340px;height:340px;background:var(--secondary);bottom:-180px;left:30%;animation-delay:-12s;}
+@keyframes drift{
+  0%,100%{transform:translate(0,0) scale(1);}
+  33%{transform:translate(40px,-30px) scale(1.08);}
+  66%{transform:translate(-30px,25px) scale(.95);}
+}
+
+/* mouse glow that follows cursor in hero */
+.mouse-glow{
+  position:absolute;width:520px;height:520px;border-radius:50%;
+  background:radial-gradient(circle,rgba(79,70,229,.16),transparent 70%);
+  pointer-events:none;z-index:0;transform:translate(-50%,-50%);
+  transition:opacity .3s ease;opacity:0;
+}
+
+/* ============================================================
+   3. NAVBAR — glassmorphism sticky
+   ============================================================ */
+header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(248,250,252,.72);
+  backdrop-filter:blur(16px) saturate(160%);
+  -webkit-backdrop-filter:blur(16px) saturate(160%);
+  border-bottom:1px solid rgba(231,234,243,.8);
+  transition:box-shadow .3s ease;
+}
+header.scrolled{box-shadow:0 8px 30px -20px rgba(15,23,42,.25);}
+.nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 24px;
+}
+.logo{
+  display:flex;align-items:center;gap:10px;
+  font-weight:800;font-size:20px;letter-spacing:-.02em;color:var(--ink);
+}
+.logo .mark{
+  width:34px;height:34px;border-radius:10px;
+  overflow:hidden;flex-shrink:0;
+  box-shadow:0 6px 16px -4px rgba(79,70,229,.45);
+}
+.logo .mark img{width:100%;height:100%;object-fit:cover;display:block;}
+
+/* ---------- Official-style store badges ---------- */
+.store-badge{
+  display:inline-flex;align-items:center;gap:10px;
+  background:#000;color:#fff;padding:10px 18px 10px 14px;border-radius:12px;
+  transition:transform .18s var(--ease),box-shadow .18s var(--ease);
+  box-shadow:0 10px 26px -12px rgba(0,0,0,.5);
+  border:1px solid rgba(255,255,255,.08);
+}
+.store-badge:hover{transform:translateY(-3px);box-shadow:0 18px 34px -14px rgba(0,0,0,.55);}
+.store-badge svg{width:26px;height:26px;flex-shrink:0;}
+.store-badge .badge-lines{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15;}
+.store-badge .badge-lines .small-txt{font-size:10.5px;font-weight:400;letter-spacing:.03em;text-transform:uppercase;opacity:.85;}
+.store-badge .badge-lines .big-txt{font-size:17px;font-weight:600;font-family:'Inter',sans-serif;margin-top:1px;letter-spacing:-.01em;}
+.store-badge.soon{opacity:.55;filter:grayscale(.15);cursor:default;}
+.store-badge.soon:hover{transform:none;box-shadow:0 10px 26px -12px rgba(0,0,0,.5);}
+.store-badge.light{background:#fff;color:var(--ink);border-color:var(--line);box-shadow:0 16px 34px -14px rgba(0,0,0,.3);}
+.store-badge.light .badge-lines .small-txt{opacity:.55;}
+.final-cta .store-badge.soon{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.4);}
+.final-cta .store-badge.soon svg{fill:#fff;}
+.nav-links{display:flex;align-items:center;gap:36px;}
+.nav-links a{
+  font-size:14.5px;font-weight:500;color:var(--muted);position:relative;
+  transition:color .2s ease;
+}
+.nav-links a::after{
+  content:"";position:absolute;left:0;bottom:-6px;width:0;height:2px;
+  background:linear-gradient(90deg,var(--primary),var(--accent));
+  transition:width .25s var(--ease);
+}
+.nav-links a:hover{color:var(--ink);}
+.nav-links a:hover::after{width:100%;}
+.nav-cta{
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  color:#fff;padding:10px 22px;border-radius:100px;
+  font-size:14px;font-weight:600;box-shadow:var(--shadow-md);
+  transition:transform .2s var(--ease),box-shadow .2s var(--ease);
+  white-space:nowrap;
+}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 24px 50px -16px rgba(79,70,229,.45);}
+.burger{display:none;width:38px;height:38px;border-radius:10px;align-items:center;justify-content:center;}
+.burger span,.burger span::before,.burger span::after{
+  content:"";display:block;width:20px;height:2px;background:var(--ink);border-radius:2px;position:relative;transition:all .25s ease;
+}
+.burger span::before{position:absolute;top:-6px;}
+.burger span::after{position:absolute;top:6px;}
+
+@media (max-width:860px){
+  .nav-links{display:none;}
+  .burger{display:flex;}
+  .nav-cta{display:none;}
+}
+.mobile-menu{
+  display:none;flex-direction:column;gap:2px;padding:8px 24px 20px;
+  background:rgba(248,250,252,.98);border-bottom:1px solid var(--line);
+}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{padding:12px 4px;font-size:15px;font-weight:500;color:var(--ink);border-bottom:1px solid var(--line);}
+.mobile-menu .nav-cta{display:block;text-align:center;margin-top:10px;}
+
+/* ============================================================
+   4. HERO
+   ============================================================ */
+.hero{
+  position:relative;padding:120px 0 90px;overflow:hidden;
+}
+.hero-grid{
+  position:relative;z-index:2;
+  display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center;
+}
+@media (max-width:940px){
+  .hero-grid{grid-template-columns:1fr;text-align:center;}
+  .hero{padding:70px 0 60px;}
+}
+
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:#fff;border:1px solid var(--line);
+  padding:7px 16px;border-radius:100px;
+  font-size:13px;font-weight:600;color:var(--primary);
+  box-shadow:var(--shadow-sm);margin-bottom:26px;
+}
+.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--secondary);box-shadow:0 0 0 4px rgba(6,182,212,.18);animation:pulse 1.8s infinite;}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(6,182,212,.5);}
+  70%{box-shadow:0 0 0 9px rgba(6,182,212,0);}
+  100%{box-shadow:0 0 0 0 rgba(6,182,212,0);}
+}
+
+.hero h1{
+  font-size:clamp(36px,5.4vw,62px);
+  font-weight:900;letter-spacing:-.03em;line-height:1.08;
+  color:var(--ink);
+}
+.hero h1 .grad{
+  background:linear-gradient(135deg,var(--primary),var(--accent) 55%,var(--secondary));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero p.lead{
+  margin-top:24px;font-size:18px;color:var(--muted);max-width:520px;
+}
+@media (max-width:940px){.hero p.lead{margin-inline:auto;}}
+
+.cta-row{display:flex;align-items:center;gap:16px;margin-top:38px;flex-wrap:wrap;}
+@media (max-width:940px){.cta-row{justify-content:center;}}
+
+.btn-store{
+  position:relative;display:inline-flex;align-items:center;gap:12px;
+  background:var(--ink);color:#fff;padding:14px 24px;border-radius:16px;
+  font-weight:600;font-size:15px;overflow:hidden;
+  transition:transform .18s var(--ease);
+}
+.btn-store svg{width:26px;height:26px;flex-shrink:0;}
+.btn-store .lines{display:flex;flex-direction:column;align-items:flex-start;}
+.btn-store .lines small{font-size:11px;opacity:.7;font-weight:400;}
+.btn-store .lines b{font-size:16px;}
+.btn-store.primary{background:linear-gradient(135deg,var(--primary),var(--accent));box-shadow:var(--shadow-md);}
+.btn-store.primary:hover{transform:translateY(-3px);}
+.btn-store.disabled{background:#fff;color:var(--muted);border:1px solid var(--line);cursor:default;}
+.btn-store.disabled:hover{transform:none;}
+
+.trust-row{
+  margin-top:32px;display:flex;align-items:center;gap:18px;font-size:13.5px;color:var(--muted);flex-wrap:wrap;
+}
+@media (max-width:940px){.trust-row{justify-content:center;}}
+.trust-row b{color:var(--ink);}
+.stars{color:#F59E0B;letter-spacing:2px;}
+
+/* Phone stage */
+.phone-stage{
+  position:relative;display:flex;justify-content:center;align-items:center;min-height:560px;
+}
+.phone{
+  position:relative;width:270px;border-radius:44px;border:8px solid var(--ink);
+  background:var(--ink);box-shadow:0 40px 80px -24px rgba(15,23,42,.4);
+  overflow:hidden;animation:float 6s ease-in-out infinite;z-index:2;
+}
+.phone::before{
+  content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:110px;height:22px;background:var(--ink);border-radius:0 0 16px 16px;z-index:3;
+}
+.phone-screen{
+  aspect-ratio:9/19.5;background:linear-gradient(160deg,#EEF2FF,#F8FAFC 40%,#ECFEFF);
+  padding:34px 16px 16px;display:flex;flex-direction:column;gap:12px;
+}
+.ps-header{display:flex;align-items:center;justify-content:space-between;}
+.ps-title{font-size:13px;font-weight:800;color:var(--ink);}
+.ps-avatar{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));}
+.ps-card{background:#fff;border-radius:14px;padding:12px;box-shadow:var(--shadow-sm);}
+.ps-card .t{font-size:10px;color:var(--muted);font-weight:600;margin-bottom:6px;}
+.ps-card .v{font-size:18px;font-weight:800;}
+.ps-bar{height:6px;border-radius:6px;background:#EEF1F8;overflow:hidden;margin-top:8px;}
+.ps-bar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--primary),var(--secondary));}
+.ps-row{display:flex;gap:8px;}
+.ps-row .ps-card{flex:1;}
+.ps-chart{display:flex;align-items:flex-end;gap:5px;height:54px;}
+.ps-chart i{flex:1;background:linear-gradient(180deg,var(--secondary),var(--primary));border-radius:4px 4px 0 0;opacity:.85;}
+
+@keyframes float{
+  0%,100%{transform:translateY(0) rotate(-2deg);}
+  50%{transform:translateY(-16px) rotate(-1deg);}
+}
+
+.float-card{
+  position:absolute;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius-md);padding:14px 16px;box-shadow:var(--shadow-lg);
+  z-index:3;width:190px;
+}
+.float-card.c1{left:-30px;top:70px;animation:float2 7s ease-in-out infinite;}
+.float-card.c2{right:-36px;bottom:110px;animation:float2 8s ease-in-out infinite 1s;}
+@media (max-width:940px){
+  .float-card.c1{left:0;}
+  .float-card.c2{right:0;}
+}
+@media (max-width:560px){
+  .float-card{width:160px;padding:12px 14px;}
+  .float-card.c1{left:-6px;top:40px;}
+  .float-card.c2{right:-6px;bottom:70px;}
+}
+@keyframes float2{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(14px);}
+}
+.float-card .row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.float-card .label{font-size:11.5px;color:var(--muted);font-weight:600;}
+.float-card .value{font-size:19px;font-weight:800;color:var(--ink);}
+.float-card .up{color:var(--secondary);font-size:12px;font-weight:700;}
+
+/* ============================================================
+   5. SECTION HEAD (shared)
+   ============================================================ */
+.section{padding:100px 0;}
+@media (max-width:760px){.section{padding:70px 0;}}
+.section-head{max-width:640px;margin:0 auto 56px;text-align:center;}
+.section-head .kicker{
+  display:inline-block;color:var(--primary);font-weight:700;font-size:13px;
+  letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;
+}
+.section-head h2{
+  font-size:clamp(28px,3.6vw,42px);font-weight:900;letter-spacing:-.02em;line-height:1.2;
+}
+.section-head p{margin-top:16px;font-size:16.5px;color:var(--muted);}
+
+/* reveal-on-scroll base */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s var(--ease),transform .7s var(--ease);}
+.reveal.in{opacity:1;transform:translateY(0);}
+
+/* ============================================================
+   6. FEATURES
+   ============================================================ */
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+@media (max-width:940px){.feature-grid{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:600px){.feature-grid{grid-template-columns:1fr;}}
+
+.feature-card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius-lg);
+  padding:30px 26px;position:relative;overflow:hidden;
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease),border-color .3s ease;
+}
+.feature-card:hover{
+  transform:translateY(-8px);
+  box-shadow:0 30px 60px -24px rgba(79,70,229,.28);
+  border-color:transparent;
+}
+.feature-card::before{
+  content:"";position:absolute;inset:0;opacity:0;
+  background:linear-gradient(135deg,rgba(79,70,229,.06),rgba(124,58,237,.06));
+  transition:opacity .3s ease;
+}
+.feature-card:hover::before{opacity:1;}
+.feature-icon{
+  width:50px;height:50px;border-radius:14px;
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  display:flex;align-items:center;justify-content:center;margin-bottom:20px;
+  box-shadow:0 10px 22px -8px rgba(79,70,229,.5);
+  position:relative;z-index:1;
+  transition:transform .35s var(--ease);
+}
+.feature-card:hover .feature-icon{transform:scale(1.08) rotate(-4deg);}
+.feature-icon svg{width:24px;height:24px;stroke:#fff;}
+.feature-card h3{font-size:18px;font-weight:800;margin-bottom:10px;position:relative;z-index:1;}
+.feature-card p{font-size:14.5px;color:var(--muted);position:relative;z-index:1;}
+
+/* ============================================================
+   7. SCREENSHOTS SLIDER
+   ============================================================ */
+.shots-wrap{position:relative;}
+.shots{
+  display:flex;gap:24px;overflow-x:auto;padding:10px 4px 30px;
+  scroll-snap-type:x mandatory;scroll-behavior:smooth;
+}
+.shots::-webkit-scrollbar{height:6px;}
+.shots::-webkit-scrollbar-thumb{background:var(--line);border-radius:10px;}
+.shot{
+  flex:0 0 230px;scroll-snap-align:start;border-radius:28px;overflow:hidden;
+  border:8px solid var(--ink);box-shadow:var(--shadow-lg);
+  transition:transform .3s var(--ease);background:var(--ink);
+}
+.shot:hover{transform:translateY(-8px) scale(1.02);}
+.shot .ss-inner{aspect-ratio:9/19.5;background:linear-gradient(160deg,#EEF2FF,#F8FAFC 45%,#ECFEFF);padding:28px 14px 14px;display:flex;flex-direction:column;gap:10px;}
+.slider-controls{display:flex;justify-content:center;gap:12px;margin-top:8px;}
+.slider-btn{
+  width:44px;height:44px;border-radius:50%;background:#fff;border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);
+  transition:transform .2s ease,background .2s ease;
+}
+.slider-btn:hover{background:var(--primary);color:#fff;transform:scale(1.06);}
+.slider-btn svg{width:18px;height:18px;}
+
+/* ============================================================
+   8. STATISTICS
+   ============================================================ */
+.stats-section{
+  background:linear-gradient(135deg,var(--ink) 0%,#1E1B4B 100%);
+  border-radius:var(--radius-xl);position:relative;overflow:hidden;
+  padding:64px 40px;color:#fff;
+}
+.stats-section::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 20% 20%,rgba(124,58,237,.35),transparent 55%),
+             radial-gradient(circle at 85% 80%,rgba(6,182,212,.28),transparent 55%);
+}
+.stats-grid{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center;}
+@media (max-width:760px){.stats-grid{grid-template-columns:repeat(2,1fr);gap:36px;}}
+.stat-num{font-size:clamp(32px,4vw,48px);font-weight:900;letter-spacing:-.02em;
+  background:linear-gradient(135deg,#fff,#C7D2FE);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.stat-label{margin-top:8px;font-size:14px;color:#C7D2FE;font-weight:500;}
+
+/* ============================================================
+   9. TESTIMONIALS
+   ============================================================ */
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+@media (max-width:940px){.testi-grid{grid-template-columns:1fr;max-width:520px;margin:0 auto;}}
+.testi-card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius-lg);
+  padding:28px;transition:transform .3s var(--ease),box-shadow .3s var(--ease);
+}
+.testi-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+.testi-stars{color:#F59E0B;font-size:14px;letter-spacing:2px;margin-bottom:14px;}
+.testi-quote{font-size:15px;color:var(--ink);line-height:1.7;margin-bottom:22px;}
+.testi-person{display:flex;align-items:center;gap:12px;}
+.testi-avatar{
+  width:42px;height:42px;border-radius:50%;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;
+}
+.testi-name{font-size:14px;font-weight:700;}
+.testi-role{font-size:12.5px;color:var(--muted);}
+
+/* ============================================================
+   10. FAQ ACCORDION
+   ============================================================ */
+.faq-list{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:14px;}
+.faq-item{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius-md);
+  overflow:hidden;transition:border-color .25s ease,box-shadow .25s ease;
+}
+.faq-item.open{border-color:var(--primary);box-shadow:0 14px 30px -18px rgba(79,70,229,.35);}
+.faq-q{
+  width:100%;display:flex;align-items:center;justify-content:space-between;
+  padding:20px 24px;font-size:15.5px;font-weight:700;text-align:left;
+}
+.faq-q .plus{
+  width:26px;height:26px;border-radius:50%;background:var(--bg);flex-shrink:0;margin-left:16px;
+  display:flex;align-items:center;justify-content:center;position:relative;transition:transform .3s var(--ease),background .3s ease;
+}
+.faq-item.open .plus{background:var(--primary);transform:rotate(135deg);}
+.faq-q .plus::before,.faq-q .plus::after{content:"";position:absolute;background:var(--ink);transition:background .3s ease;}
+.faq-item.open .plus::before,.faq-item.open .plus::after{background:#fff;}
+.faq-q .plus::before{width:11px;height:2px;}
+.faq-q .plus::after{width:2px;height:11px;}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s var(--ease);}
+.faq-a p{padding:0 24px 22px;font-size:14.5px;color:var(--muted);line-height:1.7;}
+
+/* ============================================================
+   11. DOWNLOAD CTA
+   ============================================================ */
+.final-cta{
+  position:relative;overflow:hidden;text-align:center;
+  background:linear-gradient(135deg,var(--primary),var(--accent) 60%,var(--secondary));
+  border-radius:var(--radius-xl);padding:80px 40px;color:#fff;
+}
+.final-cta::before{
+  content:"";position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='2' cy='2' r='1.4' fill='white' fill-opacity='0.18'/%3E%3C/svg%3E");
+  opacity:.5;
+}
+.final-cta h2{position:relative;font-size:clamp(28px,4.4vw,44px);font-weight:900;letter-spacing:-.02em;margin-bottom:16px;}
+.final-cta p{position:relative;max-width:520px;margin:0 auto 34px;color:rgba(255,255,255,.88);font-size:16.5px;}
+.final-cta .cta-row{position:relative;justify-content:center;}
+.final-cta .btn-store.primary{background:#fff;color:var(--ink);box-shadow:0 20px 45px -14px rgba(0,0,0,.35);}
+.final-cta .btn-store.disabled{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.35);}
+
+/* ============================================================
+   12. FOOTER
+   ============================================================ */
+footer{padding:56px 0 40px;border-top:1px solid var(--line);margin-top:20px;}
+.footer-grid{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;}
+.footer-logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;}
+.footer-links{display:flex;gap:26px;font-size:14px;color:var(--muted);flex-wrap:wrap;}
+.footer-links a:hover{color:var(--primary);}
+.footer-copy{margin-top:28px;text-align:center;font-size:13px;color:var(--muted);}
+.footer-copy a{color:var(--primary);font-weight:600;}
+
+/* ============================================================
+   13. BACK TO TOP
+   ============================================================ */
+#back-to-top{
+  position:fixed;bottom:26px;right:26px;width:48px;height:48px;border-radius:50%;
+  background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;
+  display:flex;align-items:center;justify-content:center;z-index:90;
+  box-shadow:var(--shadow-md);opacity:0;pointer-events:none;transform:translateY(12px);
+  transition:opacity .3s ease,transform .3s ease;
+}
+#back-to-top.visible{opacity:1;pointer-events:auto;transform:translateY(0);}
+#back-to-top:hover{transform:translateY(-4px);}
+#back-to-top svg{width:20px;height:20px;}
+
+/* ============================================================
+   14. PAGE LOADER
+   ============================================================ */
+#loader{
+  position:fixed;inset:0;z-index:9998;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .5s ease,visibility .5s ease;
+}
+#loader.hidden{opacity:0;visibility:hidden;}
+.loader-mark{
+  width:56px;height:56px;border-radius:16px;
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:24px;
+  animation:pulseLoader 1.1s ease-in-out infinite;
+}
+@keyframes pulseLoader{
+  0%,100%{transform:scale(1);opacity:1;}
+  50%{transform:scale(.85);opacity:.7;}
+}
+
+/* magnetic wrapper cursor cue */
+.magnetic{will-change:transform;}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     PAGE LOADER
+     ============================================================ -->
+<div id="loader" aria-hidden="true"><div class="loader-mark">P</div></div>
+
+<!-- Scroll progress bar -->
+<div id="scroll-progress"></div>
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<header id="site-header">
+  <nav class="nav wrap">
+    <a href="#home" class="logo"><span class="mark"><img src="https://img.sanishtech.com/u/5e292763729498a6c768205d242acd3a.jpg" alt="Proxo app icon" loading="lazy"></span>Proxo</a>
+    <div class="nav-links">
+      <a href="#home">Home</a>
+      <a href="#features">Features</a>
+      <a href="#screenshots">Screenshots</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <a class="nav-cta magnetic" href="#download">Download</a>
+    <button class="burger" id="burger" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
+  </nav>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="#home">Home</a>
+    <a href="#features">Features</a>
+    <a href="#screenshots">Screenshots</a>
+    <a href="#faq">FAQ</a>
+    <a class="nav-cta" href="#download">Download</a>
+  </div>
+</header>
+
+<main>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero" id="home">
+  <div class="aurora" aria-hidden="true">
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+    <div class="blob blob3"></div>
+  </div>
+  <div class="mouse-glow" id="mouse-glow" aria-hidden="true"></div>
+
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow"><span class="dot"></span>Now live on Google Play</span>
+      <h1>Run TikTok ads that <span class="grad">actually perform.</span></h1>
+      <p class="lead">Proxo is the all-in-one mobile app for launching, tracking, and optimizing TikTok ad campaigns — built for modern businesses who want results without the complexity.</p>
+
+      <div class="cta-row">
+        <a class="store-badge magnetic" href="https://play.google.com/store/apps/details?id=com.proxo.proxoapp" target="_blank" rel="noopener" aria-label="Get Proxo on Google Play">
+          <svg viewBox="0 0 512 512" aria-hidden="true">
+            <defs>
+              <linearGradient id="gpBlue" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00C6FF"/><stop offset="100%" stop-color="#0072FF"/></linearGradient>
+              <linearGradient id="gpGreen" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3BFFAB"/><stop offset="100%" stop-color="#00C853"/></linearGradient>
+              <linearGradient id="gpYellow" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFE259"/><stop offset="100%" stop-color="#FFA751"/></linearGradient>
+              <linearGradient id="gpRed" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FF5F6D"/><stop offset="100%" stop-color="#E5304F"/></linearGradient>
+            </defs>
+            <path d="M74 20C66 25 61 34 61 46V466C61 478 66 487 74 492L286 280L74 20Z" fill="url(#gpBlue)"/>
+            <path d="M286 280L74 492C78 494 84 494 90 491L358 340L286 280Z" fill="url(#gpRed)"/>
+            <path d="M286 280L358 172L90 21C84 18 78 18 74 20L286 280Z" fill="url(#gpYellow)"/>
+            <path d="M358 172L286 280L358 340L437 295C459 283 459 229 437 217L358 172Z" fill="url(#gpGreen)"/>
+          </svg>
+          <span class="badge-lines"><span class="small-txt">Get it on</span><span class="big-txt">Google Play</span></span>
+        </a>
+        <a class="store-badge soon" href="#" aria-disabled="true" onclick="return false;" aria-label="Coming soon on the App Store">
+          <svg viewBox="0 0 384 512" fill="#fff" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C60.7 141.2 4 184.8 4 273.5c0 26.2 4.8 53.3 14.4 81.2 12.8 37 59 127.8 107.2 126.4 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-83.4 102.6-120.5-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+          <span class="badge-lines"><span class="small-txt">Coming soon on</span><span class="big-txt">App Store</span></span>
+        </a>
+      </div>
+
+      <div class="trust-row">
+        <span class="stars">★★★★★</span>
+        <span><b>4.8</b> rating · Business category · <b>10K+</b> installs</span>
+      </div>
+    </div>
+
+    <div class="phone-stage">
+      <div class="float-card c1">
+        <div class="row"><span class="label">Campaign reach</span><span class="up">+78%</span></div>
+        <div class="value">248,900</div>
+        <div class="ps-bar"><i style="width:78%"></i></div>
+      </div>
+
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="ps-header">
+            <span class="ps-title">Ad Dashboard</span>
+            <span class="ps-avatar"></span>
+          </div>
+          <div class="ps-card">
+            <div class="t">Total spend today</div>
+            <div class="v">$1,284</div>
+            <div class="ps-bar"><i style="width:64%"></i></div>
+          </div>
+          <div class="ps-row">
+            <div class="ps-card"><div class="t">Clicks</div><div class="v">3.1K</div></div>
+            <div class="ps-card"><div class="t">CTR</div><div class="v">6.4%</div></div>
+          </div>
+          <div class="ps-card" style="flex:1;">
+            <div class="t">Performance</div>
+            <div class="ps-chart">
+              <i style="height:35%"></i><i style="height:55%"></i><i style="height:40%"></i>
+              <i style="height:72%"></i><i style="height:60%"></i><i style="height:90%"></i><i style="height:78%"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="float-card c2">
+        <div class="row"><span class="label">Active campaigns</span><span class="up">●</span></div>
+        <div class="value">12 running</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FEATURES
+     ============================================================ -->
+<section class="section" id="features">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Why Proxo</span>
+      <h2>Everything your ad workflow needs, in one app</h2>
+      <p>From campaign creation to real-time performance — Proxo turns TikTok advertising into a few simple taps.</p>
+    </div>
+    <div class="feature-grid">
+
+      <div class="feature-card reveal">
+        <div class="feature-icon" style="background:linear-gradient(135deg,var(--primary),var(--accent));"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></div>
+        <h3>Launch in minutes</h3>
+        <p>Create and publish TikTok ad campaigns with a guided flow — no technical setup, no waiting.</p>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-icon" style="background:linear-gradient(135deg,var(--secondary),var(--primary));"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></div>
+        <h3>Real-time analytics</h3>
+        <p>Track spend, reach, and conversions live, and instantly spot which campaigns are winning.</p>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-icon" style="background:linear-gradient(135deg,var(--accent),var(--secondary));"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+        <h3>Smart scheduling</h3>
+        <p>Queue campaigns ahead of time and let Proxo publish them automatically when the moment's right.</p>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-icon" style="background:linear-gradient(135deg,var(--primary),var(--secondary));"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.8 6.6L21 9.3l-5 4.5L17.4 21 12 17.3 6.6 21 8 13.8l-5-4.5 6.2-.7z"/></svg></div>
+        <h3>Levels & rewards</h3>
+        <p>Level up as you stay active and unlock perks built exclusively for consistent advertisers.</p>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-icon" style="background:linear-gradient(135deg,var(--accent),var(--primary));"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg></div>
+        <h3>Full control</h3>
+        <p>Re-publish, pause, or cancel campaigns awaiting review — everything stays in your hands.</p>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-icon" style="background:linear-gradient(135deg,var(--secondary),var(--accent));"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+        <h3>Secure by design</h3>
+        <p>Bank-grade encryption and verified logins keep your account and budget protected at all times.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCREENSHOTS
+     ============================================================ -->
+<section class="section" id="screenshots">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Inside the app</span>
+      <h2>A clean interface, built for speed</h2>
+      <p>Swipe through Proxo's core screens — dashboard, campaign builder, and live insights.</p>
+    </div>
+
+    <div class="shots-wrap reveal">
+      <div class="shots" id="shots-track">
+        <div class="shot">
+          <div class="ss-inner">
+            <div class="ps-header"><span class="ps-title">Dashboard</span><span class="ps-avatar"></span></div>
+            <div class="ps-card"><div class="t">Balance</div><div class="v">$4,220</div><div class="ps-bar"><i style="width:82%"></i></div></div>
+            <div class="ps-row"><div class="ps-card"><div class="t">Reach</div><div class="v">88K</div></div><div class="ps-card"><div class="t">CTR</div><div class="v">5.9%</div></div></div>
+          </div>
+        </div>
+        <div class="shot">
+          <div class="ss-inner">
+            <div class="ps-header"><span class="ps-title">New Campaign</span><span class="ps-avatar"></span></div>
+            <div class="ps-card"><div class="t">Budget</div><div class="v">$150/day</div></div>
+            <div class="ps-card"><div class="t">Audience</div><div class="v">Iraq · 18–34</div></div>
+            <div class="ps-card" style="flex:1"><div class="t">Preview</div><div class="ps-chart"><i style="height:50%"></i><i style="height:70%"></i><i style="height:45%"></i><i style="height:85%"></i></div></div>
+          </div>
+        </div>
+        <div class="shot">
+          <div class="ss-inner">
+            <div class="ps-header"><span class="ps-title">Insights</span><span class="ps-avatar"></span></div>
+            <div class="ps-card" style="flex:1"><div class="t">Weekly performance</div><div class="ps-chart"><i style="height:40%"></i><i style="height:65%"></i><i style="height:55%"></i><i style="height:90%"></i><i style="height:75%"></i><i style="height:95%"></i></div></div>
+            <div class="ps-card"><div class="t">Top campaign</div><div class="v">+142% ROI</div></div>
+          </div>
+        </div>
+        <div class="shot">
+          <div class="ss-inner">
+            <div class="ps-header"><span class="ps-title">Rewards</span><span class="ps-avatar"></span></div>
+            <div class="ps-card"><div class="t">Level</div><div class="v">Gold · 7</div><div class="ps-bar"><i style="width:60%"></i></div></div>
+            <div class="ps-card"><div class="t">Next reward</div><div class="v">3 campaigns away</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slider-controls">
+        <button class="slider-btn" id="shot-prev" aria-label="Previous screenshot">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="slider-btn" id="shot-next" aria-label="Next screenshot">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     STATISTICS
+     ============================================================ -->
+<section class="section">
+  <div class="wrap">
+    <div class="stats-section reveal">
+      <div class="stats-grid">
+        <div>
+          <div class="stat-num" data-count="10000" data-suffix="+">0</div>
+          <div class="stat-label">Active installs</div>
+        </div>
+        <div>
+          <div class="stat-num" data-count="52000" data-suffix="+">0</div>
+          <div class="stat-label">Campaigns launched</div>
+        </div>
+        <div>
+          <div class="stat-num" data-count="4.8" data-decimals="1">0</div>
+          <div class="stat-label">Average rating</div>
+        </div>
+        <div>
+          <div class="stat-num" data-count="99" data-suffix="%">0</div>
+          <div class="stat-label">Uptime reliability</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     TESTIMONIALS
+     ============================================================ -->
+<section class="section" id="testimonials">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Loved by advertisers</span>
+      <h2>What our users are saying</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"Proxo cut our campaign setup time in half. The dashboard makes it obvious which ads to scale and which to pause."</p>
+        <div class="testi-person">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,var(--primary),var(--accent));">R</div>
+          <div><div class="testi-name">Rezan A.</div><div class="testi-role">E-commerce owner</div></div>
+        </div>
+      </div>
+      <div class="testi-card reveal">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"Finally an ad tool that doesn't feel like it was built for enterprise teams. Simple, fast, and it just works."</p>
+        <div class="testi-person">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,var(--secondary),var(--primary));">S</div>
+          <div><div class="testi-name">Sarok M.</div><div class="testi-role">Marketing lead</div></div>
+        </div>
+      </div>
+      <div class="testi-card reveal">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"The real-time tracking alone paid for itself in the first week. Our CTR is up nearly 40% since switching to Proxo."</p>
+        <div class="testi-person">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,var(--accent),var(--secondary));">H</div>
+          <div><div class="testi-name">Hana K.</div><div class="testi-role">Small business owner</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FAQ
+     ============================================================ -->
+<section class="section" id="faq">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Questions</span>
+      <h2>Frequently asked questions</h2>
+    </div>
+    <div class="faq-list reveal">
+
+      <div class="faq-item">
+        <button class="faq-q">Is Proxo free to download?
+          <span class="plus"></span>
+        </button>
+        <div class="faq-a"><p>Yes, downloading and creating an account on Proxo is completely free. You only pay for the ad budget you choose to spend on your campaigns.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q">Which devices does Proxo support?
+          <span class="plus"></span>
+        </button>
+        <div class="faq-a"><p>Proxo is available now for Android on Google Play. An iOS version for the App Store is currently in development and coming soon.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q">How fast can I launch my first campaign?
+          <span class="plus"></span>
+        </button>
+        <div class="faq-a"><p>Most users publish their first campaign in under five minutes using Proxo's guided setup — just add your creative, audience, and budget.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q">Can I pause or edit a running campaign?
+          <span class="plus"></span>
+        </button>
+        <div class="faq-a"><p>Absolutely. You can pause, resume, edit, or cancel any campaign directly from the dashboard, with changes reflected instantly.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q">Is my payment information secure?
+          <span class="plus"></span>
+        </button>
+        <div class="faq-a"><p>Yes. Proxo uses bank-grade encryption for all transactions and never stores raw card details on your device.</p></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     DOWNLOAD CTA
+     ============================================================ -->
+<section class="section" id="download" style="padding-top:0;">
+  <div class="wrap">
+    <div class="final-cta reveal">
+      <h2>Start advertising smarter today</h2>
+      <p>Join thousands of businesses across Kurdistan and Iraq who trust Proxo to run their TikTok ad campaigns.</p>
+      <div class="cta-row">
+        <a class="store-badge light magnetic" href="https://play.google.com/store/apps/details?id=com.proxo.proxoapp" target="_blank" rel="noopener" aria-label="Get Proxo on Google Play">
+          <svg viewBox="0 0 512 512" aria-hidden="true">
+            <defs>
+              <linearGradient id="gpBlue2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00C6FF"/><stop offset="100%" stop-color="#0072FF"/></linearGradient>
+              <linearGradient id="gpGreen2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3BFFAB"/><stop offset="100%" stop-color="#00C853"/></linearGradient>
+              <linearGradient id="gpYellow2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFE259"/><stop offset="100%" stop-color="#FFA751"/></linearGradient>
+              <linearGradient id="gpRed2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FF5F6D"/><stop offset="100%" stop-color="#E5304F"/></linearGradient>
+            </defs>
+            <path d="M74 20C66 25 61 34 61 46V466C61 478 66 487 74 492L286 280L74 20Z" fill="url(#gpBlue2)"/>
+            <path d="M286 280L74 492C78 494 84 494 90 491L358 340L286 280Z" fill="url(#gpRed2)"/>
+            <path d="M286 280L358 172L90 21C84 18 78 18 74 20L286 280Z" fill="url(#gpYellow2)"/>
+            <path d="M358 172L286 280L358 340L437 295C459 283 459 229 437 217L358 172Z" fill="url(#gpGreen2)"/>
+          </svg>
+          <span class="badge-lines"><span class="small-txt">Get it on</span><span class="big-txt">Google Play</span></span>
+        </a>
+        <a class="store-badge soon" href="#" aria-disabled="true" onclick="return false;" aria-label="Coming soon on the App Store">
+          <svg viewBox="0 0 384 512" fill="#fff" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C60.7 141.2 4 184.8 4 273.5c0 26.2 4.8 53.3 14.4 81.2 12.8 37 59 127.8 107.2 126.4 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-83.4 102.6-120.5-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+          <span class="badge-lines"><span class="small-txt">Coming soon on</span><span class="big-txt">App Store</span></span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <a href="#home" class="footer-logo"><span class="mark" style="width:30px;height:30px;border-radius:8px;"><img src="https://img.sanishtech.com/u/5e292763729498a6c768205d242acd3a.jpg" alt="Proxo app icon" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></span>Proxo</a>
+      <div class="footer-links">
+        <a href="#features">Features</a>
+        <a href="#screenshots">Screenshots</a>
+        <a href="#faq">FAQ</a>
+        <a href="mailto:info@proxopages.com">Contact</a>
+      </div>
+    </div>
+    <div class="footer-copy">
+      &copy; <span id="year"></span> Proxo Team · <a href="https://www.proxopages.com" target="_blank" rel="noopener">proxopages.com</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Back to top -->
+<button id="back-to-top" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
+</button>
+
+<script>
+/* ============================================================
+   PAGE LOADER
+   ============================================================ */
+window.addEventListener('load', () => {
+  const loader = document.getElementById('loader');
+  setTimeout(() => loader.classList.add('hidden'), 350);
+});
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* ============================================================
+   SCROLL PROGRESS BAR
+   ============================================================ */
+const progressBar = document.getElementById('scroll-progress');
+function updateProgress(){
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  progressBar.style.width = scrolled + '%';
+}
+document.addEventListener('scroll', updateProgress, { passive:true });
+
+/* ============================================================
+   HEADER SHADOW ON SCROLL + BACK TO TOP VISIBILITY
+   ============================================================ */
+const header = document.getElementById('site-header');
+const backToTop = document.getElementById('back-to-top');
+function onScroll(){
+  if(window.scrollY > 40){ header.classList.add('scrolled'); } else { header.classList.remove('scrolled'); }
+  if(window.scrollY > 500){ backToTop.classList.add('visible'); } else { backToTop.classList.remove('visible'); }
+}
+document.addEventListener('scroll', onScroll, { passive:true });
+backToTop.addEventListener('click', () => window.scrollTo({ top:0, behavior:'smooth' }));
+
+/* ============================================================
+   MOBILE MENU
+   ============================================================ */
+const burger = document.getElementById('burger');
+const mobileMenu = document.getElementById('mobile-menu');
+burger.addEventListener('click', () => {
+  const open = mobileMenu.classList.toggle('open');
+  burger.setAttribute('aria-expanded', open);
+});
+mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  mobileMenu.classList.remove('open');
+  burger.setAttribute('aria-expanded', 'false');
+}));
+
+/* ============================================================
+   SCROLL REVEAL (IntersectionObserver)
+   ============================================================ */
+const revealEls = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.classList.add('in');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold:0.15 });
+revealEls.forEach(el => revealObserver.observe(el));
+
+/* ============================================================
+   ANIMATED COUNTERS
+   ============================================================ */
+const counters = document.querySelectorAll('.stat-num');
+function animateCounter(el){
+  const target = parseFloat(el.dataset.count);
+  const suffix = el.dataset.suffix || '';
+  const decimals = parseInt(el.dataset.decimals || '0', 10);
+  const duration = 1800;
+  const start = performance.now();
+  function tick(now){
+    const progress = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const value = target * eased;
+    el.textContent = (decimals ? value.toFixed(decimals) : Math.floor(value).toLocaleString()) + suffix;
+    if(progress < 1){ requestAnimationFrame(tick); }
+  }
+  requestAnimationFrame(tick);
+}
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      animateCounter(entry.target);
+      counterObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold:0.5 });
+counters.forEach(c => counterObserver.observe(c));
+
+/* ============================================================
+   FAQ ACCORDION
+   ============================================================ */
+document.querySelectorAll('.faq-item').forEach(item => {
+  const q = item.querySelector('.faq-q');
+  const a = item.querySelector('.faq-a');
+  q.addEventListener('click', () => {
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(openItem => {
+      openItem.classList.remove('open');
+      openItem.querySelector('.faq-a').style.maxHeight = null;
+    });
+    if(!isOpen){
+      item.classList.add('open');
+      a.style.maxHeight = a.scrollHeight + 'px';
+    }
+  });
+});
+
+/* ============================================================
+   SCREENSHOT SLIDER CONTROLS
+   ============================================================ */
+const shotsTrack = document.getElementById('shots-track');
+const shotWidth = 254; /* card width + gap */
+document.getElementById('shot-prev').addEventListener('click', () => {
+  shotsTrack.scrollBy({ left: -shotWidth, behavior:'smooth' });
+});
+document.getElementById('shot-next').addEventListener('click', () => {
+  shotsTrack.scrollBy({ left: shotWidth, behavior:'smooth' });
+});
+
+/* ============================================================
+   MOUSE GLOW (hero only)
+   ============================================================ */
+const heroSection = document.querySelector('.hero');
+const mouseGlow = document.getElementById('mouse-glow');
+if(window.matchMedia('(pointer: fine)').matches){
+  heroSection.addEventListener('mousemove', (e) => {
+    const rect = heroSection.getBoundingClientRect();
+    mouseGlow.style.left = (e.clientX - rect.left) + 'px';
+    mouseGlow.style.top = (e.clientY - rect.top) + 'px';
+    mouseGlow.style.opacity = '1';
+  });
+  heroSection.addEventListener('mouseleave', () => { mouseGlow.style.opacity = '0'; });
+}
+
+/* ============================================================
+   MAGNETIC BUTTONS
+   ============================================================ */
+document.querySelectorAll('.magnetic').forEach(btn => {
+  btn.addEventListener('mousemove', (e) => {
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width/2;
+    const y = e.clientY - rect.top - rect.height/2;
+    btn.style.transform = `translate(${x*0.18}px, ${y*0.35}px)`;
+  });
+  btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+});
+
+/* ============================================================
+   SMOOTH SCROLL FOR ANCHOR LINKS
+   ============================================================ */
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', function(e){
+    const id = this.getAttribute('href');
+    if(id.length > 1){
+      const target = document.querySelector(id);
+      if(target){
+        e.preventDefault();
+        target.scrollIntoView({ behavior:'smooth', block:'start' });
+      }
+    }
+  });
+});
+</script>
+
+</body>
+</html>
