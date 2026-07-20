@@ -39,7 +39,7 @@ html[data-theme="dark"]{
   --shadow-sm:0 4px 14px rgba(0,0,0,.4);
 }
 *{box-sizing:border-box;}
-html{scroll-behavior:smooth;color-scheme:light;background:var(--bg);transition:background .25s ease;}
+html{scroll-behavior:auto;color-scheme:light;background:var(--bg);transition:background .25s ease;}
 body{
   margin:0;background-color:var(--bg) !important;color:var(--text) !important;
   background-image:
@@ -1740,7 +1740,7 @@ function showSitePage(pageId, updateHash=true){
   document.getElementById("main-site").classList.toggle("home-active", pageId === "home");
   document.getElementById("mainNav").classList.remove("mobile-open");
   if(updateHash) history.replaceState(null, "", "#" + pageId);
-  window.scrollTo({top:0, behavior:"smooth"});
+  window.scrollTo({top:0, behavior:"instant"});
 }
 
 document.querySelectorAll('a[href^="#"]').forEach(link=>{
@@ -1750,7 +1750,7 @@ document.querySelectorAll('a[href^="#"]').forEach(link=>{
       event.preventDefault();
       showSitePage("pricing");
       history.replaceState(null, "", "#calculator");
-      setTimeout(()=>document.getElementById("calculator")?.scrollIntoView({behavior:"smooth",block:"start"}),180);
+      setTimeout(()=>document.getElementById("calculator")?.scrollIntoView({behavior:"instant",block:"start"}),180);
       return;
     }
     if(sitePageIds.has(pageId)){
@@ -1763,7 +1763,7 @@ window.addEventListener("hashchange", ()=>{
   const hash = location.hash.slice(1) || "home";
   if(hash === "calculator"){
     showSitePage("pricing", false);
-    setTimeout(()=>document.getElementById("calculator")?.scrollIntoView({behavior:"smooth",block:"start"}),120);
+    setTimeout(()=>document.getElementById("calculator")?.scrollIntoView({behavior:"instant",block:"start"}),120);
   }else{
     showSitePage(hash, false);
   }
