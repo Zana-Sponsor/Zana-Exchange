@@ -4666,21 +4666,36 @@ function genPassword() {
 async function setNewPassword(uid, email) {
   const pass = document.getElementById('newPassInp')?.value?.trim();
   if (!pass || pass.length < 6) { showToast('پاسۆرد کەمی ٦ پیت دەوێت', 'rd'); return; }
-  // Use Supabase Admin API via edge function or direct update
-  const { error } = await sb.auth.admin?.updateUserById?.(uid, { password: pass }) || {};
-  if (error) {
-    // Fallback: insert a password reset request record for manual processing
+  // NOTE: sb.auth.admin.updateUserById() NAKARÊT lە client-side کار بکات، چونکە
+  // panel تەنها anon key بەکاردێنێت. گۆڕینی ڕاستەقینەی پاسۆرد دەبێت لەڕێگەی
+  // n8n workflow (کە service_role key هەڵدەگرێت) ئەنجام بدرێت.
+  try {
+    const res = await fetch('https://n8n.proxopages.com/webhook/send_otp1', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'admin_change_password',
+        uid,
+        email,
+        newPassword: pass
+      })
+    });
+    const result = await res.json().catch(() => ({}));
+    if (!res.ok || result.success === false) {
+      showToast('❌ گۆڕینی پاسۆرد سەرکەوتوو نەبوو: ' + (result.error || res.status), 'rd');
+      return;
+    }
     await sb.from('pa_notifications').insert({
       user_id: uid,
       type: 'admin_msg',
       title: 'پاسۆردەکەت گۆڕدرا 🔑',
-      body: `ئادمین پاسۆردەکەت گۆڕی. پاسۆردی نوێت: ${pass}`,
+      body: 'ئادمین پاسۆردی ئەکاونتەکەت گۆڕی.',
       is_read: false
     });
     _fbPushNotif(uid,'پاسۆردەکەت گۆڕدرا 🔑','ئادمین پاسۆردی ئەکاونتەکەت گۆڕی.','admin_msg');
-    showToast('⚠️ پاسۆرد بە ئاگاداری ناردرا بۆ بەکارهێنەر', 'yw');
-  } else {
     showToast('✅ پاسۆرد گۆڕدرا', 'gr');
+  } catch (err) {
+    showToast('❌ هەڵەیەک ڕوویدا لە پەیوەندیکردن بە n8n', 'rd');
   }
   closeMo('moUserPassword');
 }
