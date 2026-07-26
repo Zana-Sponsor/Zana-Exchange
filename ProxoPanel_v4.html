@@ -4065,6 +4065,8 @@ async function submitApproval(){
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> چاوەڕوانبە...';
   try{
+    // ── ڕیکلامەکە دۆزینەوە (چارەسەری هەڵەی "ad is not defined") ──
+    const ad = allAds.find(a=>a.id===_approveAdId) || _approvalPendingAds.find(a=>a.id===_approveAdId) || {};
     // Update ad row: status = scheduled (بەروار پێشووتر) یان active (ئەمڕۆ یان پێشتر)
     const targetBudget = parseFloat(document.getElementById('approveTargetBudget').value||'0') || 0;
     const _todayStr = new Date().toISOString().split('T')[0];
@@ -6979,6 +6981,7 @@ async function submitManualRevenue(){
 
   const {error} = await sb.from('ad_revenue_transactions').insert({
     ad_id       : adId,
+    user_id     : adId,
     ad_type     : buildAdTypeField(type, original, discountNote),
     sale_price  : finalSale,
     cost_price  : cost,
