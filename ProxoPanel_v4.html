@@ -4667,22 +4667,20 @@ async function setNewPassword(uid, email) {
   const pass = document.getElementById('newPassInp')?.value?.trim();
   if (!pass || pass.length < 6) { showToast('پاسۆرد کەمی ٦ پیت دەوێت', 'rd'); return; }
   // NOTE: sb.auth.admin.updateUserById() NAKARÊT lە client-side کار بکات، چونکە
-  // panel تەنها anon key بەکاردێنێت. گۆڕینی ڕاستەقینەی پاسۆرد دەبێت لەڕێگەی
-  // n8n workflow (کە service_role key هەڵدەگرێت) ئەنجام بدرێت.
+  // panel تەنها anon key بەکاردێنێت. لەبری n8n، هەمان RPC-ی Supabase بەکاردێنین
+  // کە app-ی mobile لە forgot-password-دا بەکاری دەهێنێت (reset_user_password) —
+  // ئەمە SECURITY DEFINER function-ە و ڕاستەوخۆ بە anon key کاردەکات.
   try {
-    const res = await fetch('https://n8n.proxopages.com/webhook/send_otp1', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'admin_change_password',
-        uid,
-        email,
-        newPassword: pass
-      })
+    const { data, error } = await sb.rpc('reset_user_password', {
+      user_email: email,
+      new_pass: pass
     });
-    const result = await res.json().catch(() => ({}));
-    if (!res.ok || result.success === false) {
-      showToast('❌ گۆڕینی پاسۆرد سەرکەوتوو نەبوو: ' + (result.error || res.status), 'rd');
+    if (error) {
+      showToast('❌ گۆڕینی پاسۆرد سەرنەکەوت: ' + error.message, 'rd');
+      return;
+    }
+    if (data && data.success === false) {
+      showToast('❌ ' + (data.message || 'گۆڕینی پاسۆرد سەرنەکەوت'), 'rd');
       return;
     }
     await sb.from('pa_notifications').insert({
@@ -4695,7 +4693,7 @@ async function setNewPassword(uid, email) {
     _fbPushNotif(uid,'پاسۆردەکەت گۆڕدرا 🔑','ئادمین پاسۆردی ئەکاونتەکەت گۆڕی.','admin_msg');
     showToast('✅ پاسۆرد گۆڕدرا', 'gr');
   } catch (err) {
-    showToast('❌ هەڵەیەک ڕوویدا لە پەیوەندیکردن بە n8n', 'rd');
+    showToast('❌ هەڵەیەک ڕوویدا: ' + err.message, 'rd');
   }
   closeMo('moUserPassword');
 }
