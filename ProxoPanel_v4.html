@@ -371,7 +371,8 @@ tr:hover td{background:rgba(28,35,51,.015);}
 .price-row.total .pval{font-weight:900;color:var(--dark);font-size:16px;}
 
 /* ══ REVENUE PAGE ══ */
-.rev-stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+.rev-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+@media(max-width:900px){.rev-stats-row{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:600px){.rev-stats-row{grid-template-columns:1fr;}}
 .rev-stat-card{background:var(--w);border:1px solid var(--b1);border-radius:16px;padding:18px;text-align:center;}
 .rev-stat-ico{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 12px;}
@@ -645,6 +646,7 @@ tr:hover td{background:rgba(28,35,51,.015);}
     <div class="sb-section">دارایی</div>
     <div class="sb-item" onclick="goPage('revenue')"><i class="fas fa-chart-line" style="color:#16a34a"></i> داهاتی ڕیکلامەکان</div>
     <div class="sb-section">سیستەم</div>
+    <div class="sb-item" onclick="goPage('otp')"><i class="fas fa-key" style="color:#eab308"></i> کۆدەکانی OTP <span class="sb-badge" id="sbOtpCount">0</span></div>
     <div class="sb-item" onclick="goPage('maintenance')"><i class="fas fa-triangle-exclamation" style="color:#ef4444"></i> ڕاگرتنی پەڕەکە</div>
     <div class="sb-item" onclick="goPage('appAnnouncement')"><i class="fas fa-bullhorn" style="color:#f59e0b"></i> ئاگاداری گشتی</div>
     <div class="sb-section">خەڵات</div>
@@ -1490,6 +1492,45 @@ tr:hover td{background:rgba(28,35,51,.015);}
       </div>
     </div>
 
+    <!-- ══ OTP CODES ══ -->
+    <div class="pg" id="pgOtp">
+      <div class="sec-hdr" style="flex-wrap:wrap;gap:10px">
+        <h3><i class="fas fa-key" style="margin-left:8px;color:#eab308"></i>کۆدەکانی OTP</h3>
+        <div class="act-btn dark" onclick="loadOtpCodes()" style="padding:8px 14px"><i class="fas fa-rotate-right"></i> نوێکردنەوە</div>
+      </div>
+      <!-- ستاتیستیک -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px">
+        <div class="stat-card">
+          <div class="stat-ico dark"><i class="fas fa-key"></i></div>
+          <div><div class="stat-val" id="otpStatTotal">—</div><div class="stat-lbl">کۆی گشتی</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico gr"><i class="fas fa-circle-check"></i></div>
+          <div><div class="stat-val" id="otpStatUsed">—</div><div class="stat-lbl">بەکارهاتوو</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico yw"><i class="fas fa-clock"></i></div>
+          <div><div class="stat-val" id="otpStatValid">—</div><div class="stat-lbl">کاراو (چاوەڕوان)</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico rd"><i class="fas fa-triangle-exclamation"></i></div>
+          <div><div class="stat-val" id="otpStatExpired">—</div><div class="stat-lbl">بەسەرچوو</div></div>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-filter" style="flex-wrap:wrap">
+          <input class="tbl-search" id="otpSearch" placeholder="گەڕان بەپێی ئیمەیل، کۆد، مەبەست، یان User ID..." oninput="filterOtpCodes()" style="min-width:220px">
+          <div class="chip on" data-of="all" onclick="filterOtpCodes(this)">هەموو</div>
+          <div class="chip gr" data-of="used" onclick="filterOtpCodes(this)">بەکارهاتوو</div>
+          <div class="chip yw" data-of="valid" onclick="filterOtpCodes(this)">کاراو</div>
+          <div class="chip rd" data-of="expired" onclick="filterOtpCodes(this)">بەسەرچوو</div>
+        </div>
+        <div class="ad-table-wrap tbl-scroll" id="otpTableWrap">
+          <div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>
+        </div>
+      </div>
+    </div>
+
     <!-- ══ GIVEAWAY ══ -->
 
 
@@ -1611,6 +1652,7 @@ tr:hover td{background:rgba(28,35,51,.015);}
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <select class="minp" id="revMonthFilter" onchange="loadRevenue()" style="padding:7px 12px;font-size:13px;width:auto;min-width:160px">
           </select>
+          <button class="act-btn pu" onclick="openAddRevenueModal()"><i class="fas fa-plus"></i> زیادکردنی دەستی</button>
           <button class="act-btn gr" onclick="exportRevenuePDF()"><i class="fas fa-file-pdf"></i> داگرتنی PDF</button>
         </div>
       </div>
@@ -1620,7 +1662,12 @@ tr:hover td{background:rgba(28,35,51,.015);}
         <div class="rev-stat-card">
           <div class="rev-stat-ico" style="background:rgba(22,163,74,.1);color:var(--gr)"><i class="fas fa-dollar-sign"></i></div>
           <div class="rev-stat-val" id="revTotalRevenue" style="color:var(--gr)">—</div>
-          <div class="rev-stat-lbl">کۆی داهات (فرۆشتن)</div>
+          <div class="rev-stat-lbl">کۆی داهات (وەرگیراو)</div>
+        </div>
+        <div class="rev-stat-card">
+          <div class="rev-stat-ico" style="background:rgba(217,119,6,.09);color:var(--yw)"><i class="fas fa-tag"></i></div>
+          <div class="rev-stat-val" id="revTotalDiscount" style="color:var(--yw)">—</div>
+          <div class="rev-stat-lbl">کۆی داشکاندنەکان</div>
         </div>
         <div class="rev-stat-card">
           <div class="rev-stat-ico" style="background:rgba(220,38,38,.08);color:var(--rd)"><i class="fas fa-receipt"></i></div>
@@ -1635,7 +1682,7 @@ tr:hover td{background:rgba(28,35,51,.015);}
       </div>
 
       <!-- خشتەی مامەڵەکان -->
-      <div class="tbl-wrap" id="revTableWrap">
+      <div class="tbl-wrap tbl-scroll" id="revTableWrap">
         <div class="loading"><i class="fas fa-circle-notch fa-spin"></i> بارکردن...</div>
       </div>
     </div>
@@ -2084,6 +2131,59 @@ tr:hover td{background:rgba(28,35,51,.015);}
   </div>
 </div>
 
+<!-- ══ ADD MANUAL REVENUE MODAL ══ -->
+<div class="overlay" id="moAddRevenue">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3><i class="fas fa-circle-plus" style="margin-left:8px;color:#7c3aed"></i>زیادکردنی تۆماری داهات بە دەستی</h3>
+      <div class="modal-close" onclick="closeMo('moAddRevenue')"><i class="fas fa-xmark"></i></div>
+    </div>
+    <div class="field-wrap">
+      <label class="modal-lbl">ئایدی ڕیکلام <span style="font-size:10px;color:var(--mt)">(ئۆپشنی)</span></label>
+      <input class="minp" type="text" id="mrAdId" placeholder="ئایدی ڕاستەقینەی ڕیکلام (ئەگەر هەبوو)" dir="ltr" style="font-family:monospace">
+    </div>
+    <div class="field-wrap">
+      <label class="modal-lbl">جۆری ڕیکلام</label>
+      <select class="minp" id="mrType" onchange="_mrApplyTypeDefaults()">
+        <option value="$10 Ad">$10 Ad — 18,000 IQD</option>
+        <option value="$20 Ad">$20 Ad — 36,000 IQD</option>
+        <option value="Custom">تایبەت (Custom)</option>
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="field-wrap">
+        <label class="modal-lbl">نرخی سەرەکی (IQD) <span style="color:var(--rd)">*</span></label>
+        <input class="minp" type="number" id="mrOriginal" placeholder="18000" min="0" step="1" dir="ltr" style="font-family:'Inter'" oninput="clearFieldErr('mrOriginal')">
+        <div class="field-err" id="mrOriginal-err">نرخی سەرەکی پڕ بکەرەوە</div>
+      </div>
+      <div class="field-wrap">
+        <label class="modal-lbl">تێچووی کاڵا (IQD) <span style="color:var(--rd)">*</span></label>
+        <input class="minp" type="number" id="mrCost" placeholder="13887" min="0" step="1" dir="ltr" style="font-family:'Inter'" oninput="clearFieldErr('mrCost')">
+        <div class="field-err" id="mrCost-err">تێچووی کاڵا پڕ بکەرەوە</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="field-wrap">
+        <label class="modal-lbl">داشکاندن (IQD) <span style="font-size:10px;color:var(--mt)">(ئۆپشنی)</span></label>
+        <input class="minp" type="number" id="mrDiscount" placeholder="0" min="0" step="1" dir="ltr" style="font-family:'Inter'" value="0">
+      </div>
+      <div class="field-wrap">
+        <label class="modal-lbl">بەروار</label>
+        <input class="minp" type="date" id="mrDate" dir="ltr" style="font-family:'Inter'">
+      </div>
+    </div>
+    <div class="field-wrap">
+      <label class="modal-lbl">هۆکاری داشکاندن <span style="font-size:10px;color:var(--mt)">(ئۆپشنی — بۆ نموونە: ئاست Silver -5%، کۆدی PROXO10)</span></label>
+      <input class="minp" type="text" id="mrDiscountNote" placeholder="بۆ نموونە: کۆدی PROXO10">
+    </div>
+    <div style="background:rgba(124,58,237,.05);border:1.5px dashed rgba(124,58,237,.25);border-radius:12px;padding:10px 12px;font-size:11.5px;color:var(--mt);line-height:1.7;margin-bottom:6px">
+      <i class="fas fa-circle-info" style="color:#7c3aed;margin-left:5px"></i>
+      نرخی فرۆشتنی کۆتایی و قازانج بە شێوەیەکی خۆکار لە (نرخی سەرەکی − داشکاندن) و (نرخی کۆتایی − تێچوو) دەژمێردرێت.
+    </div>
+    <button class="modal-btn dark" id="mrSubmitBtn" onclick="submitManualRevenue()"><i class="fas fa-check"></i> پاشەکەوتکردن</button>
+  </div>
+</div>
+
 <script>
 // ══ CONFIG ══
 const SB_URL='https://cojchkwssmasiejcgvbk.supabase.co';
@@ -2204,6 +2304,7 @@ const pageConfig={
   adsData:{title:'داتای وردەکاری ڕیکلامەکان',sub:'ئایدی ڕیکلام، زانیاری ئەڤدەرتایزەر، بینین، کلیک، بودجەی خەرجکراو',load:loadAdsData},
   approval:{title:'Approval Workflow',sub:'پەسەندکردنی داواکاریەکانی چاوەڕوان — TikTok Ad ID و بەروار',load:loadApprovalWorkflow},
   txlog:{title:'مێژووی مامەڵەکان',sub:'هەموو مامەڵەکانی دارایی سیستەم',load:loadTxLog},
+  otp:{title:'کۆدەکانی OTP',sub:'هەموو کۆدەکانی دووپاتکردنەوە (otp_codes) — گەڕان و پاڵاوتن',load:loadOtpCodes},
   promo:{title:'کۆدەکانی داشکاندن',sub:'دروستکردن و بەڕێوەبردنی کۆدەکان',load:loadPromos},
   voucher:{title:'کۆدەکانی ڤاوچەر',sub:'دروستکردن و بەڕێوەبردنی کۆدەکانی ڤاوچەر (بارکردنی باڵانس)',load:async()=>{await Promise.all([loadVouchers(),loadSignupGiftConfig()])}},
   notifications:{title:'ناردنی ئاگاداری',sub:'ناردن بۆ بەکارهێنەران',load:loadNotifHistory},
@@ -2334,6 +2435,9 @@ function setupRealtime(){
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'ad_revenue_transactions'},()=>{
       if(_curPage==='revenue')loadRevenue();
     })
+    .on('postgres_changes',{event:'*',schema:'public',table:'otp_codes'},()=>{
+      if(_curPage==='otp')loadOtpCodes();
+    })
     .subscribe((status)=>{
       const dot=document.querySelector('.rt-dot');
       if(dot)dot.style.background=status==='SUBSCRIBED'?'#16a34a':'#d97706';
@@ -2361,7 +2465,13 @@ async function loadDashboardStats(){
   document.getElementById('stBanned').textContent=banned||0;
   document.getElementById('stCoins').textContent=(totalCoins||0).toLocaleString();
   document.getElementById('sbUsersCount').textContent=users||0;
-  loadDepBadge();loadAdBadge();
+  loadDepBadge();loadAdBadge();loadOtpBadge();
+}
+
+async function loadOtpBadge(){
+  const{count}=await sb.from('otp_codes').select('*',{count:'exact',head:true});
+  const el=document.getElementById('sbOtpCount');
+  if(el)el.textContent=count||0;
 }
 
 async function loadDepBadge(){
@@ -3408,6 +3518,8 @@ async function showAdDetail(id){
 // ══ ADS DATA (وردەکاری) ══
 let _allAdsData=[];
 let _adsDataFilter='all';
+let _allOtpCodes=[];
+let _otpFilter='all';
 
 async function loadAdsData(){
   const wrap=document.getElementById('adsDataWrap');
@@ -3571,6 +3683,130 @@ function renderAdsDataTable(q=''){
       ${a.tiktok_ad_id?`<div style="font-size:10px;color:var(--mt);font-family:'Inter';direction:ltr;background:var(--bg);padding:5px 8px;border-radius:8px;border:1px solid var(--b1)">TikTok: ${a.tiktok_ad_id}</div>`:''}
     </div>`;
   }).join('')}</div>`;
+
+  wrap.innerHTML=tableHTML+cardsHTML;
+}
+
+// ══ OTP CODES (otp_codes) ══
+async function loadOtpCodes(){
+  const wrap=document.getElementById('otpTableWrap');
+  if(wrap)wrap.innerHTML='<div class="loading"><i class="fas fa-circle-notch fa-spin"></i> بارکردن...</div>';
+  const{data:otpRaw,error}=await sb.from('otp_codes')
+    .select('*')
+    .order('created_at',{ascending:false})
+    .limit(500);
+  if(error){
+    if(wrap)wrap.innerHTML='<div class="empty"><i class="fas fa-exclamation-triangle" style="color:var(--rd)"></i><p>هەڵە لە بارکردنی کۆدەکانی OTP: '+error.message+'</p><p style="font-size:11px;color:var(--mt);margin-top:6px">دڵنیابە جەدوەلی otp_codes لە Supabase دروستکراوە</p></div>';
+    return;
+  }
+  const uids=[...new Set((otpRaw||[]).map(o=>o.user_id).filter(Boolean))];
+  const{data:profs}=await(uids.length?sb.from('profiles').select('id,full_name,email').in('id',uids):Promise.resolve({data:[]}));
+  const profMap={};(profs||[]).forEach(p=>{profMap[p.id]=p;});
+  _allOtpCodes=(otpRaw||[]).map(o=>({...o,profiles:profMap[o.user_id]||null}));
+  const sbOtpBadge=document.getElementById('sbOtpCount');
+  if(sbOtpBadge)sbOtpBadge.textContent=_allOtpCodes.length;
+  _renderOtpStats();
+  renderOtpTable((document.getElementById('otpSearch')?.value||'').toLowerCase());
+}
+
+function _otpStatus(o){
+  if(o.is_used)return 'used';
+  if(o.expires_at && new Date(o.expires_at)<new Date())return 'expired';
+  return 'valid';
+}
+
+function _renderOtpStats(){
+  const total=_allOtpCodes.length;
+  const used=_allOtpCodes.filter(o=>_otpStatus(o)==='used').length;
+  const valid=_allOtpCodes.filter(o=>_otpStatus(o)==='valid').length;
+  const expired=_allOtpCodes.filter(o=>_otpStatus(o)==='expired').length;
+  if(document.getElementById('otpStatTotal'))document.getElementById('otpStatTotal').textContent=total;
+  if(document.getElementById('otpStatUsed'))document.getElementById('otpStatUsed').textContent=used;
+  if(document.getElementById('otpStatValid'))document.getElementById('otpStatValid').textContent=valid;
+  if(document.getElementById('otpStatExpired'))document.getElementById('otpStatExpired').textContent=expired;
+}
+
+function filterOtpCodes(el){
+  if(el){document.querySelectorAll('[data-of]').forEach(x=>x.classList.remove('on'));el.classList.add('on');_otpFilter=el.dataset.of;}
+  renderOtpTable((document.getElementById('otpSearch')?.value||'').toLowerCase());
+}
+
+function renderOtpTable(q=''){
+  const wrap=document.getElementById('otpTableWrap');
+  if(!wrap)return;
+  let list=_allOtpCodes;
+  if(_otpFilter!=='all')list=list.filter(o=>_otpStatus(o)===_otpFilter);
+  if(q)list=list.filter(o=>
+    (o.email||'').toLowerCase().includes(q)||
+    (o.code||'').toLowerCase().includes(q)||
+    (o.purpose||'').toLowerCase().includes(q)||
+    (o.profiles?.full_name||'').toLowerCase().includes(q)||
+    (o.profiles?.email||'').toLowerCase().includes(q)||
+    (o.user_id||'').toLowerCase().includes(q)
+  );
+  if(!list.length){wrap.innerHTML='<div class="empty"><i class="fas fa-key"></i><p>هیچ کۆدێکی OTP نەدۆزرایەوە</p></div>';return;}
+
+  const stBadge=o=>{
+    const s=_otpStatus(o);
+    if(s==='used')return'<span class="badge completed"><i class="fas fa-circle-check"></i> بەکارهاتوو</span>';
+    if(s==='expired')return'<span class="badge rejected"><i class="fas fa-triangle-exclamation"></i> بەسەرچوو</span>';
+    return'<span class="badge active"><i class="fas fa-clock"></i> کاراو</span>';
+  };
+  const fmtDt=v=>v?new Date(v).toLocaleString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+  const copyBtn=(val,label)=>val?`<button onclick="navigator.clipboard.writeText('${String(val).replace(/'/g,"\\'")}');showToast('${label} کۆپی کرا','gr')" style="background:rgba(6,182,212,.1);border:none;border-radius:6px;color:#06b6d4;cursor:pointer;padding:3px 7px;font-size:10px" title="کۆپی"><i class="fas fa-copy"></i></button>`:'';
+
+  const tableHTML=`<table>
+    <thead><tr>
+      <th>ئیمەیل</th>
+      <th>بەکارهێنەری تۆمارکراو</th>
+      <th>کۆد</th>
+      <th>مەبەست</th>
+      <th>بارودۆخ</th>
+      <th>بەرواری دروستکردن</th>
+      <th>بەرواری بەسەرچوون</th>
+      <th>User ID</th>
+    </tr></thead>
+    <tbody>${list.map(o=>`<tr>
+      <td style="font-family:'Inter';font-size:11.5px;direction:ltr;text-align:left">${o.email||'—'}</td>
+      <td>${o.profiles?`<div style="font-size:12px;font-weight:700">${o.profiles.full_name||'—'}</div><div style="font-size:10px;color:var(--mt);direction:ltr">${o.profiles.email||''}</div>`:'<span style="color:var(--mt);font-size:11px">—</span>'}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-family:'Inter';font-weight:800;letter-spacing:1px;font-size:13px;color:var(--dark)">${o.code||'—'}</span>
+          ${copyBtn(o.code,'کۆد')}
+        </div>
+      </td>
+      <td style="font-size:11.5px">${o.purpose||'—'}</td>
+      <td>${stBadge(o)}</td>
+      <td style="font-size:10.5px;color:var(--mt);white-space:nowrap">${fmtDt(o.created_at)}</td>
+      <td style="font-size:10.5px;color:var(--mt);white-space:nowrap">${fmtDt(o.expires_at)}</td>
+      <td style="font-family:'Inter';font-size:10px;color:var(--mt);direction:ltr">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${o.user_id||'—'}</span>
+          ${copyBtn(o.user_id,'User ID')}
+        </div>
+      </td>
+    </tr>`).join('')}</tbody></table>`;
+
+  const cardsHTML=`<div class="ad-cards">${list.map(o=>`<div class="ad-card">
+    <div class="ad-card-top">
+      <div class="mini-av" style="background:linear-gradient(135deg,#eab308,#d97706)"><i class="fas fa-key"></i></div>
+      <div class="ad-card-info">
+        <div class="ad-card-name" style="direction:ltr;text-align:right">${o.email||'—'}</div>
+        <div class="ad-card-sub">${o.profiles?.full_name||'—'}</div>
+      </div>
+      ${stBadge(o)}
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg);border:1px solid var(--b1);border-radius:10px;padding:8px 12px">
+      <span style="font-family:'Inter';font-weight:900;letter-spacing:2px;font-size:16px;color:var(--dark)">${o.code||'—'}</span>
+      ${copyBtn(o.code,'کۆد')}
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:10.5px;color:var(--mt)">
+      <div>مەبەست<div style="font-size:12px;font-weight:700;color:var(--dark);margin-top:2px">${o.purpose||'—'}</div></div>
+      <div>دروستکردن<div style="font-size:11px;font-weight:700;color:var(--dark);margin-top:2px">${fmtDt(o.created_at)}</div></div>
+    </div>
+    <div style="font-size:10.5px;color:var(--mt)">بەسەرچوون: <span style="font-weight:700;color:var(--dark)">${fmtDt(o.expires_at)}</span></div>
+    <div style="font-size:10px;color:var(--mt);direction:ltr;background:var(--bg);border:1px solid var(--b1);border-radius:8px;padding:5px 8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">UID: ${o.user_id||'—'}</div>
+  </div>`).join('')}</div>`;
 
   wrap.innerHTML=tableHTML+cardsHTML;
 }
@@ -6323,12 +6559,34 @@ async function notifyNewAdTelegram(adData){
   );
 }
 
-// نرخنامەی بەپێی بودجەی USD
+// ══ ڕێژەی تێچوونی ڕاستەقینەی دۆلار بۆ دینار — ١$ = ١٣٨٨.٧ IQD (ئەمە تێچووی ڕاستەقینەی کۆمپانیایە بۆ هەر دۆلارێک) ══
+const AD_COST_RATE_IQD = 1388.7;
+
+// نرخنامەی بەپێی بودجەی USD (نرخی فرۆشتن بە ڕێژەی ١$=١٨٠٠ IQD، تێچوو بە ڕێژەی ڕاستەقینەی سەرەوە)
 function getAdPricing(budgetUSD){
-  if(budgetUSD >= 20){
-    return {type:'$20 Ad', sale:36000, cost:28000, profit:8000};
-  }
-  return {type:'$10 Ad', sale:18000, cost:14000, profit:4000};
+  const usd = parseFloat(budgetUSD)||0;
+  const tierUSD = usd >= 20 ? 20 : 10;
+  const sale = tierUSD * 1800;
+  const cost = Math.round(tierUSD * AD_COST_RATE_IQD);
+  return {type:'$'+tierUSD+' Ad', sale, cost, profit: sale-cost};
+}
+
+// ══ لکاندنی نرخی سەرەکی (پێش داشکاندن) و هۆکاری داشکاندن بەناو ستوونی ad_type ـدا ══
+// (بۆ ئەوەی پێویست بە ستوونی نوێ لە بنکەدراوە نەبێت — هەموو زانیارییەکان لەناو هەمان ستوونی ئێستادا پاشەکەوت دەکرێن)
+function buildAdTypeField(tierLabel, originalIQD, discountNote){
+  let s = tierLabel + ' [O:' + Math.round(originalIQD||0) + ']';
+  if(discountNote) s += ' — ' + discountNote;
+  return s;
+}
+function _revParseType(adType){
+  const raw = adType || '';
+  const oMatch = raw.match(/\[O:(\d+)\]/);
+  const originalIQD = oMatch ? parseInt(oMatch[1],10) : null;
+  const label = raw.replace(/\s*\[O:\d+\]/, '');
+  const parts = label.split(' — ');
+  const tierLabel = (parts[0]||'').trim();
+  const note = parts.length>1 ? parts.slice(1).join(' — ').trim() : '';
+  return {tierLabel, note, originalIQD};
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -6468,7 +6726,7 @@ async function updateChallengeProgress(userId, budgetUSD){
   }catch(e){ console.warn('updateChallengeProgress error:', e?.message); }
 }
 
-// تۆمارکردن لە Supabase + ئاگاداری Telegram
+// تۆمارکردن لە Supabase + ئاگاداری Telegram — بە ئەژمارکردنی داشکاندنی ئاست و کۆدی پرۆمۆ بە شێوەیەکی تەواو شەفاف
 async function recordAdRevenue(adId, userId, budgetUSD){
   const pricing = getAdPricing(budgetUSD);
 
@@ -6476,15 +6734,46 @@ async function recordAdRevenue(adId, userId, budgetUSD){
   const now = new Date();
   const monthLabel = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
 
-  // بارکردنی ژمارەی ڕیکلام
+  // بارکردنی ژمارەی ڕیکلام + داشکاندنی ئاست (بڕۆنز/زیو/ئەڵماس) کە لەگەڵ خودی ڕیکلامەکە تۆمارکراوە
   let adNum = '—';
+  let levelDiscIQD = 0, levelDiscPercent = 0, levelDiscName = '';
   try{
-    const {data:adRow} = await sb.from('pa_ads').select('ad_number').eq('id',adId).single();
-    if(adRow?.ad_number) adNum = '#'+adRow.ad_number;
+    const {data:adRow} = await sb.from('pa_ads')
+      .select('ad_number,level_discount_percent,level_discount_iqd,level_name_at_purchase')
+      .eq('id',adId).single();
+    if(adRow){
+      if(adRow.ad_number) adNum = '#'+adRow.ad_number;
+      levelDiscIQD     = parseFloat(adRow.level_discount_iqd||0);
+      levelDiscPercent = parseFloat(adRow.level_discount_percent||0);
+      levelDiscName    = adRow.level_name_at_purchase||'';
+    }
   }catch(_){}
 
+  // بارکردنی داشکاندنی کۆدی پرۆمۆ (ئەگەر بەکارهاتبێت)
+  let promoDiscIQD = 0, promoCode = '';
+  try{
+    const {data:pUsage} = await sb.from('promo_code_usages')
+      .select('discount_applied,promo_codes(code)')
+      .eq('ad_id', String(adId)).eq('status','active').limit(1).single();
+    if(pUsage){
+      promoDiscIQD = parseFloat(pUsage.discount_applied||0);
+      promoCode    = pUsage.promo_codes?.code || '';
+    }
+  }catch(_){}
+
+  // کۆی داشکاندن و نرخی ڕاستەقینەی وەرگیراو دوای هەموو داشکاندنەکان
+  const totalDiscountIQD = Math.round(levelDiscIQD + promoDiscIQD);
+  const originalSale = pricing.sale;
+  const finalSale     = Math.max(0, originalSale - totalDiscountIQD);
+  const finalProfit   = finalSale - pricing.cost; // تێچوو بەپێی داشکاندن ناگۆڕدرێت، چونکە تێچووی ڕاستەقینەی کۆمپانیایە
+
+  const discountParts=[];
+  if(levelDiscIQD>0) discountParts.push((levelDiscName||'ئاست')+' -%'+levelDiscPercent);
+  if(promoDiscIQD>0) discountParts.push('کۆدی '+(promoCode||'داشکاندن'));
+  const discountNote = discountParts.join(' + ');
+
   // کوئەری کۆی مانگانە پێش تۆمارکردن (بۆ ئەوەی timing کێشەیەک نەبێت)
-  let prevSale=0, prevCost=0, prevProfit=0;
+  let prevSale=0, prevCost=0, prevProfit=0, prevCount=0;
   try{
     const mStart = monthLabel+'-01';
     const mEnd   = new Date(now.getFullYear(), now.getMonth()+1, 1).toISOString().slice(0,10);
@@ -6495,38 +6784,44 @@ async function recordAdRevenue(adId, userId, budgetUSD){
     prevSale   = (prevRows||[]).reduce((s,r)=>s+Number(r.sale_price),0);
     prevCost   = (prevRows||[]).reduce((s,r)=>s+Number(r.cost_price),0);
     prevProfit = (prevRows||[]).reduce((s,r)=>s+Number(r.net_profit),0);
+    prevCount  = (prevRows||[]).length;
   }catch(_){}
 
-  // تۆمارکردن لە خشتەی ad_revenue_transactions
+  // تۆمارکردن لە خشتەی ad_revenue_transactions (تەنها ستوونە ئاسایی و بوونیەکان — نرخی سەرەکی و هۆکاری داشکاندن لەناو ad_type دەلکێن)
   const {error} = await sb.from('ad_revenue_transactions').insert({
     ad_id       : String(adId),
     user_id     : String(userId),
-    ad_type     : pricing.type,
-    sale_price  : pricing.sale,
+    ad_type     : buildAdTypeField(pricing.type, originalSale, discountNote),
+    sale_price  : finalSale,
     cost_price  : pricing.cost,
-    net_profit  : pricing.profit,
+    net_profit  : finalProfit,
     month_label : monthLabel,
   });
   if(error) console.warn('Revenue insert error:', error.message);
 
   // کۆی نوێ = کۆی پێشوو + بەهای ئێستا
-  const totSale   = prevSale   + pricing.sale;
+  const totSale   = prevSale   + finalSale;
   const totCost   = prevCost   + pricing.cost;
-  const totProfit = prevProfit + pricing.profit;
-  const adCount   = Math.round(totSale / pricing.sale);
+  const totProfit = prevProfit + finalProfit;
+  const adCount   = prevCount + 1;
 
-  // ناردنی ئاگادارکردنەوەی Telegram
+  // ناردنی ئاگادارکردنەوەی Telegram — بە وردەکاری تەواوی نرخ و داشکاندن و قازانج
   try{
     const adIdFull = String(adId);
+    const discLine = totalDiscountIQD>0
+      ? `🏷 داشکاندن: -${totalDiscountIQD.toLocaleString()} IQD${discountNote?' ('+discountNote+')':''}\n`
+      : '';
     const msg =
       `✅ *ڕیکلامێک پەسەندکرا — داهات تۆمارکرا*\n`+
       `━━━━━━━━━━━━━━━━━━\n`+
       `🔢 ژمارەی ڕیکلام: *${adNum}*\n`+
       `🆔 ئایدی ڕیکلام:\n\`${adIdFull}\`\n`+
       `📌 جۆری ڕیکلام: ${pricing.type}\n`+
-      `💰 نرخی فرۆشتن: ${pricing.sale.toLocaleString()} IQD\n`+
+      `💵 نرخی سەرەکی: ${originalSale.toLocaleString()} IQD\n`+
+      discLine+
+      `💰 نرخی کۆتایی (وەرگیراو): *${finalSale.toLocaleString()} IQD*\n`+
       `🧾 تێچووی کاڵا: ${pricing.cost.toLocaleString()} IQD\n`+
-      `📈 قازانجی ئەم ڕیکلامە: *${pricing.profit.toLocaleString()} IQD*\n`+
+      `📈 قازانجی ئەم ڕیکلامە: *${finalProfit.toLocaleString()} IQD*\n`+
       `━━━━━━━━━━━━━━━━━━\n`+
       `📅 مانگ: ${monthLabel}\n`+
       `📊 ژمارەی ڕیکلامی پەسەندکراو: ${adCount}\n`+
@@ -6586,11 +6881,17 @@ async function loadRevenue(){
   const totSale   = list.reduce((s,r)=>s+Number(r.sale_price),0);
   const totCost   = list.reduce((s,r)=>s+Number(r.cost_price),0);
   const totProfit = list.reduce((s,r)=>s+Number(r.net_profit),0);
+  const totDiscount = list.reduce((s,r)=>{
+    const p = _revParseType(r.ad_type);
+    const orig = p.originalIQD!=null ? p.originalIQD : Number(r.sale_price);
+    return s + Math.max(0, orig - Number(r.sale_price));
+  },0);
   const fmt = n => n.toLocaleString()+' IQD';
   const el = id => document.getElementById(id);
-  if(el('revTotalRevenue')) el('revTotalRevenue').textContent = fmt(totSale);
-  if(el('revTotalCost'))    el('revTotalCost').textContent    = fmt(totCost);
-  if(el('revTotalProfit'))  el('revTotalProfit').textContent  = fmt(totProfit);
+  if(el('revTotalRevenue'))  el('revTotalRevenue').textContent  = fmt(totSale);
+  if(el('revTotalDiscount')) el('revTotalDiscount').textContent = fmt(totDiscount);
+  if(el('revTotalCost'))     el('revTotalCost').textContent     = fmt(totCost);
+  if(el('revTotalProfit'))   el('revTotalProfit').textContent   = fmt(totProfit);
 
   // خشتەی مامەڵەکان
   if(!wrap) return;
@@ -6600,21 +6901,99 @@ async function loadRevenue(){
   }
   const tableHTML=`<table id="revTable">
     <thead><tr>
-      <th>#</th><th>Ad ID</th><th>جۆر</th>
-      <th>فرۆشتن (IQD)</th><th>تێچوو (IQD)</th><th>قازانج (IQD)</th>
-      <th>بەروار</th>
+      <th>#</th><th>ئایدی ڕیکلام</th><th>جۆر</th>
+      <th>نرخی سەرەکی</th><th>داشکاندن</th><th>فرۆشتن (وەرگیراو)</th>
+      <th>تێچوو</th><th>قازانج</th><th>بەروار</th><th></th>
     </tr></thead>
-    <tbody>${list.map((r,i)=>`<tr>
+    <tbody>${list.map((r,i)=>{
+      const p = _revParseType(r.ad_type);
+      const orig = p.originalIQD!=null ? p.originalIQD : Number(r.sale_price);
+      const disc = Math.max(0, orig - Number(r.sale_price));
+      return `<tr>
       <td style="color:var(--mt);font-size:11px">${i+1}</td>
-      <td style="font-family:monospace;font-size:10px;color:var(--mt)">${(r.ad_id||'—').slice(-8)}</td>
-      <td><span class="badge approved">${r.ad_type||'—'}</span></td>
+      <td style="font-family:monospace;font-size:10.5px;color:var(--mt);word-break:break-all;max-width:150px">${r.ad_id||'—'}</td>
+      <td><span class="badge approved">${p.tierLabel||'—'}</span>${p.note?`<div style="font-size:9.5px;color:var(--mt);margin-top:3px;max-width:140px;line-height:1.4">${p.note}</div>`:''}</td>
+      <td style="font-size:11.5px;color:var(--mt);font-family:'Inter'">${orig.toLocaleString()}</td>
+      <td style="font-size:11.5px;color:${disc>0?'var(--rd)':'var(--mt)'};font-family:'Inter'">${disc>0?'-'+disc.toLocaleString():'—'}</td>
       <td style="font-weight:800;color:var(--gr);font-family:'Inter'">${Number(r.sale_price).toLocaleString()}</td>
       <td style="font-weight:700;color:var(--rd);font-family:'Inter'">${Number(r.cost_price).toLocaleString()}</td>
       <td style="font-weight:900;color:var(--bl);font-family:'Inter'">${Number(r.net_profit).toLocaleString()}</td>
       <td style="font-size:11px;color:var(--mt)">${new Date(r.created_at).toLocaleDateString('ku')}</td>
-    </tr>`).join('')}</tbody>
+      <td><button class="act-btn rd" style="padding:5px 9px;font-size:11px" onclick="deleteRevenueRow('${r.id}')" title="سڕینەوە"><i class="fas fa-trash"></i></button></td>
+    </tr>`;
+    }).join('')}</tbody>
   </table>`;
   wrap.innerHTML=tableHTML;
+}
+
+// ══ سڕینەوەی تۆمارێکی داهات ══
+async function deleteRevenueRow(id){
+  confirm2('سڕینەوەی تۆمار','ئایا دڵنیایت لە سڕینەوەی ئەم تۆمارە داهاتە؟ ناتوانرێت بگەڕێندرێتەوە.','fas fa-trash','var(--rd)',async()=>{
+    const {error} = await sb.from('ad_revenue_transactions').delete().eq('id',id);
+    if(error){ showToast('هەڵە: '+error.message,'rd'); return; }
+    showToast('✅ تۆمار سڕایەوە','gr');
+    loadRevenue();
+  });
+}
+
+// ══ زیادکردنی تۆماری داهات بە دەستی ══
+function _mrApplyTypeDefaults(){
+  const t = document.getElementById('mrType').value;
+  const orig = document.getElementById('mrOriginal');
+  const cost = document.getElementById('mrCost');
+  if(t==='$10 Ad'){ orig.value=18000; cost.value=Math.round(10*AD_COST_RATE_IQD); }
+  else if(t==='$20 Ad'){ orig.value=36000; cost.value=Math.round(20*AD_COST_RATE_IQD); }
+}
+function openAddRevenueModal(){
+  document.getElementById('mrAdId').value='';
+  document.getElementById('mrType').value='$10 Ad';
+  _mrApplyTypeDefaults();
+  document.getElementById('mrDiscount').value=0;
+  document.getElementById('mrDiscountNote').value='';
+  document.getElementById('mrDate').value=new Date().toISOString().slice(0,10);
+  clearFieldErr('mrOriginal'); clearFieldErr('mrCost');
+  openMo('moAddRevenue');
+}
+async function submitManualRevenue(){
+  const adId = (document.getElementById('mrAdId').value||'').trim() || ('manual-'+Date.now());
+  const type = document.getElementById('mrType').value;
+  const original = parseFloat(document.getElementById('mrOriginal').value);
+  const cost = parseFloat(document.getElementById('mrCost').value);
+  const discount = Math.max(0, parseFloat(document.getElementById('mrDiscount').value)||0);
+  const discountNote = (document.getElementById('mrDiscountNote').value||'').trim();
+  const dateVal = document.getElementById('mrDate').value || new Date().toISOString().slice(0,10);
+
+  let valid = true;
+  if(!(original>0)){ showFieldErr('mrOriginal'); valid=false; }
+  if(isNaN(cost)||cost<0){ showFieldErr('mrCost'); valid=false; }
+  if(!valid) return;
+
+  const finalSale = Math.max(0, original - discount);
+  const profit = finalSale - cost;
+  const d = new Date(dateVal+'T12:00:00');
+  const monthLabel = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+
+  const btn = document.getElementById('mrSubmitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> چاوەڕوانبە...';
+
+  const {error} = await sb.from('ad_revenue_transactions').insert({
+    ad_id       : adId,
+    ad_type     : buildAdTypeField(type, original, discountNote),
+    sale_price  : finalSale,
+    cost_price  : cost,
+    net_profit  : profit,
+    month_label : monthLabel,
+    created_at  : d.toISOString(),
+  });
+
+  btn.disabled = false;
+  btn.innerHTML = '<i class="fas fa-check"></i> پاشەکەوتکردن';
+
+  if(error){ showToast('هەڵە: '+error.message,'rd'); return; }
+  showToast('✅ تۆماری داهات زیادکرا','gr');
+  closeMo('moAddRevenue');
+  loadRevenue();
 }
 
 // ══ ئەکسپۆرتی PDF ══
@@ -6636,6 +7015,11 @@ async function exportRevenuePDF(){
   const totSale   = list.reduce((s,r)=>s+Number(r.sale_price),0);
   const totCost   = list.reduce((s,r)=>s+Number(r.cost_price),0);
   const totProfit = list.reduce((s,r)=>s+Number(r.net_profit),0);
+  const totDiscount = list.reduce((s,r)=>{
+    const p = _revParseType(r.ad_type);
+    const orig = p.originalIQD!=null ? p.originalIQD : Number(r.sale_price);
+    return s + Math.max(0, orig - Number(r.sale_price));
+  },0);
 
   const {jsPDF} = window.jspdf;
   const doc = new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
@@ -6649,25 +7033,33 @@ async function exportRevenuePDF(){
   doc.text('Generated: '+new Date().toLocaleString(), 14, 26);
 
   // خشتە
-  const head = [['#','Ad ID','Type','Sale (IQD)','Cost (IQD)','Profit (IQD)','Date']];
-  const body = list.map((r,i)=>[
-    i+1,
-    (r.ad_id||'—').slice(-8),
-    r.ad_type||'—',
-    Number(r.sale_price).toLocaleString(),
-    Number(r.cost_price).toLocaleString(),
-    Number(r.net_profit).toLocaleString(),
-    new Date(r.created_at).toLocaleDateString('en'),
-  ]);
+  const head = [['#','Ad ID','Type','Original (IQD)','Discount (IQD)','Sale (IQD)','Cost (IQD)','Profit (IQD)','Date']];
+  const body = list.map((r,i)=>{
+    const p = _revParseType(r.ad_type);
+    const orig = p.originalIQD!=null ? p.originalIQD : Number(r.sale_price);
+    const disc = Math.max(0, orig - Number(r.sale_price));
+    return [
+      i+1,
+      r.ad_id||'—',
+      p.tierLabel||'—',
+      orig.toLocaleString(),
+      disc>0 ? disc.toLocaleString() : '-',
+      Number(r.sale_price).toLocaleString(),
+      Number(r.cost_price).toLocaleString(),
+      Number(r.net_profit).toLocaleString(),
+      new Date(r.created_at).toLocaleDateString('en'),
+    ];
+  });
 
   doc.autoTable({
     head, body,
     startY: 32,
-    styles:{fontSize:9, cellPadding:3},
+    styles:{fontSize:8.5, cellPadding:3},
     headStyles:{fillColor:[22,163,74], textColor:255, fontStyle:'bold'},
     alternateRowStyles:{fillColor:[245,249,246]},
     footStyles:{fillColor:[37,99,235], textColor:255, fontStyle:'bold'},
-    foot:[['','','Total',
+    foot:[['','','Total','',
+      totDiscount.toLocaleString(),
       totSale.toLocaleString(),
       totCost.toLocaleString(),
       totProfit.toLocaleString(),
