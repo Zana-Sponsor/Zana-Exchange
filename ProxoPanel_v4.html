@@ -3814,8 +3814,19 @@ function renderOtpTable(q=''){
 async function updateAdStatus(id,userId,newStatus,budget){
   const{error}=await sb.from('pa_ads').update({status:newStatus}).eq('id',id);
   if(error && !isNetHttpErr(error)){showToast('هەڵە: '+error.message,'rd');return;}
+
+  // ── وەرگرتنی بودجەی ڕاستەقینەی ڕیکلام لە pa_ads کاتێک دەبێتە active ──
+  // زۆربەی دوگمەکانی (چالاکی ئێستا/دووبارە چالاک) بە هەڵە budget=0 دەنێرن، بۆیە پشت بە داتای ڕاستەقینە دەبەستین
+  let realBudget = parseFloat(budget||0);
+  if(newStatus==='active'){
+    try{
+      const{data:adRow}=await sb.from('pa_ads').select('budget').eq('id',id).single();
+      if(adRow && parseFloat(adRow.budget||0)>0) realBudget = parseFloat(adRow.budget);
+    }catch(_){}
+  }
+
   // ئەگەر پەسەندکرا و بودجە $20 یان زیاتر بوو — بەشدار بکە لە قورعەی هەفتانە
-  if(newStatus==='active' && parseFloat(budget||0)>=20 && userId){
+  if(newStatus==='active' && realBudget>=20 && userId){
     try{
       const{data:prof}=await sb.from('profiles').select('full_name,email').eq('id',userId).single();
       const weekStart=_gwGetFridayWeekStart();
@@ -3829,13 +3840,13 @@ async function updateAdStatus(id,userId,newStatus,budget){
       _fbPushNotif(userId, _gwN1.title, _gwN1.body, 'general');
     }catch(e){}
   }
-  // ── داهاتی ڕیکلام: تەنها کاتێک ستاتۆس بووه‌ته‌ active ──
+  // ── داهاتی ڕیکلام: تەنها کاتێک ستاتۆس بووه‌ته‌ active — recordAdRevenue خۆی دژی دووبارە تۆمارکردن پارێزراوە ──
   if(newStatus==='active'){
-    try{ await recordAdRevenue(id, userId, parseFloat(budget||0)); }catch(e){}
+    try{ await recordAdRevenue(id, userId, realBudget); }catch(e){}
     // ── خاڵی ئاست: کاتێک ڕیکلام وەردەگیرێت و چالاک دەبێت خاڵ زیاد بکە ──
-    try{ await awardAdPoints(userId, parseFloat(budget||0)); }catch(e){}
+    try{ await awardAdPoints(userId, realBudget); }catch(e){}
     // ── نوێکردنەوەی پڕۆگرێسی ئەرکەکانی بەکارهێنەر ──
-    try{ await updateChallengeProgress(userId, parseFloat(budget||0)); }catch(e){}
+    try{ await updateChallengeProgress(userId, realBudget); }catch(e){}
   }
   // ── ئاگادارکردنەوەی ئادمین بە تیلیگرام کاتێک ڕیکلام بە تەواوی تەواو دەبێت ──
   if(newStatus==='completed'){
@@ -4103,8 +4114,10 @@ async function submitApproval(){
         _fbPushNotif(_approveUserId, _gwN2.title, _gwN2.body, 'general');
       }catch(e){}
     }
-    // Revenue record
-    try{ await recordAdRevenue(_approveAdId, _approveUserId, _approveAdBudget); }catch(e){}
+    // Revenue record — تەنها کاتێک ڕاستەوخۆ چالاک دەبێت، نەک بۆ scheduled (چونکە هێشتا کارگێڕ نەبووە)
+    if(_finalStatus === 'active'){
+      try{ await recordAdRevenue(_approveAdId, _approveUserId, _approveAdBudget); }catch(e){}
+    }
     // خاڵی ئاست: کاتێک ڕیکلام وەردەگیرێت و چالاک دەبێت خاڵ زیاد بکە
     try{ await awardAdPoints(_approveUserId, _approveAdBudget); }catch(e){}
     // ── نوێکردنەوەی پڕۆگرێسی ئەرکەکانی بەکارهێنەر ──
@@ -6730,19 +6743,37 @@ async function updateChallengeProgress(userId, budgetUSD){
 
 // تۆمارکردن لە Supabase + ئاگاداری Telegram — بە ئەژمارکردنی داشکاندنی ئاست و کۆدی پرۆمۆ بە شێوەیەکی تەواو شەفاف
 async function recordAdRevenue(adId, userId, budgetUSD){
-  const pricing = getAdPricing(budgetUSD);
+  if(!adId){ console.warn('[recordAdRevenue] ئایدی ڕیکلام نییە — تۆمار نەکرا'); return; }
+  const adIdStr = String(adId);
+
+  // ٠) پشکنینی دووبارەنەبوونەوە — هەر ڕیکلامێک تەنها یەکجار داهاتی بۆ تۆمار دەکرێت
+  // (دژی دووبارە تۆمارکردن کە لەوانەیە ڕوو بدات کاتێک ڕیکلامێک دووبارە چالاک دەکرێتەوە یان دووجار Approve دەکرێت)
+  try{
+    const {data:existingRev} = await sb.from('ad_revenue_transactions')
+      .select('id').eq('ad_id', adIdStr).limit(1).maybeSingle();
+    if(existingRev && existingRev.id){
+      console.info('[recordAdRevenue] داهاتی ئەم ڕیکلامە پێشتر تۆمارکراوە — لەسەرنووە تۆمار ناکرێتەوە:', adIdStr);
+      return;
+    }
+  }catch(e){
+    console.warn('[recordAdRevenue] پشکنینی دووبارەبوونەوە شکستی هێنا — بۆ وردبینی هیچ تۆمار ناکرێت:', e?.message);
+    return;
+  }
 
   // واژووی مانگی ئێستا YYYY-MM
   const now = new Date();
   const monthLabel = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
 
-  // بارکردنی ژمارەی ڕیکلام + داشکاندنی ئاست (بڕۆنز/زیو/ئەڵماس) کە لەگەڵ خودی ڕیکلامەکە تۆمارکراوە
+  // ١) بارکردنی ژمارەی ڕیکلام + بودجەی ڕاستەقینە + داشکاندنی ئاست (بڕۆنز/زیو/ئەڵماس) ڕاستەوخۆ لە pa_ads
+  // — بڕوا بە پارامیتەری budgetUSD ناکەین چونکە هەندێک شوێنی بانگکردن بە هەڵە 0 دەینێرن
   let adNum = '—';
   let levelDiscIQD = 0, levelDiscPercent = 0, levelDiscName = '';
+  let adRow = null;
   try{
-    const {data:adRow} = await sb.from('pa_ads')
-      .select('ad_number,level_discount_percent,level_discount_iqd,level_name_at_purchase')
-      .eq('id',adId).single();
+    const {data} = await sb.from('pa_ads')
+      .select('ad_number,budget,level_discount_percent,level_discount_iqd,level_name_at_purchase')
+      .eq('id', adIdStr).single();
+    adRow = data;
     if(adRow){
       if(adRow.ad_number) adNum = '#'+adRow.ad_number;
       levelDiscIQD     = parseFloat(adRow.level_discount_iqd||0);
@@ -6750,6 +6781,19 @@ async function recordAdRevenue(adId, userId, budgetUSD){
       levelDiscName    = adRow.level_name_at_purchase||'';
     }
   }catch(_){}
+
+  if(!adRow){
+    console.warn('[recordAdRevenue] ڕیکلامەکە لە pa_ads نەدۆزرایەوە — بۆ وردبینی تۆمار ناکرێت:', adIdStr);
+    return;
+  }
+
+  // بودجەی ڕاستەقینە: پشت بە pa_ads.budget دەبەستین، نەک بەو پارامیتەرەی لەوانەیە بە هەڵە 0 نێردرابێت
+  const realBudgetUSD = parseFloat(adRow.budget||0) > 0 ? parseFloat(adRow.budget) : parseFloat(budgetUSD||0);
+  if(!(realBudgetUSD>0)){
+    console.warn('[recordAdRevenue] بودجەی ڕیکلام نادیار یان 0ـە — بۆ پاراستن لە هەڵە تۆمار ناکرێت:', adIdStr);
+    return;
+  }
+  const pricing = getAdPricing(realBudgetUSD);
 
   // بارکردنی داشکاندنی کۆدی پرۆمۆ (ئەگەر بەکارهاتبێت)
   let promoDiscIQD = 0, promoCode = '';
@@ -6774,42 +6818,41 @@ async function recordAdRevenue(adId, userId, budgetUSD){
   if(promoDiscIQD>0) discountParts.push('کۆدی '+(promoCode||'داشکاندن'));
   const discountNote = discountParts.join(' + ');
 
-  // کوئەری کۆی مانگانە پێش تۆمارکردن (بۆ ئەوەی timing کێشەیەک نەبێت)
-  let prevSale=0, prevCost=0, prevProfit=0, prevCount=0;
-  try{
-    const mStart = monthLabel+'-01';
-    const mEnd   = new Date(now.getFullYear(), now.getMonth()+1, 1).toISOString().slice(0,10);
-    const {data:prevRows} = await sb.from('ad_revenue_transactions')
-      .select('sale_price,cost_price,net_profit')
-      .gte('created_at', mStart)
-      .lt('created_at', mEnd);
-    prevSale   = (prevRows||[]).reduce((s,r)=>s+Number(r.sale_price),0);
-    prevCost   = (prevRows||[]).reduce((s,r)=>s+Number(r.cost_price),0);
-    prevProfit = (prevRows||[]).reduce((s,r)=>s+Number(r.net_profit),0);
-    prevCount  = (prevRows||[]).length;
-  }catch(_){}
-
-  // تۆمارکردن لە خشتەی ad_revenue_transactions (تەنها ستوونە ئاسایی و بوونیەکان — نرخی سەرەکی و هۆکاری داشکاندن لەناو ad_type دەلکێن)
+  // ٢) تۆمارکردنی ڕەسمی لە خشتەی ad_revenue_transactions (نرخی سەرەکی و هۆکاری داشکاندن لەناو ad_type دەلکێن)
   const {error} = await sb.from('ad_revenue_transactions').insert({
-    ad_id       : String(adId),
-    user_id     : String(userId),
+    ad_id       : adIdStr,
+    user_id     : String(userId||''),
     ad_type     : buildAdTypeField(pricing.type, originalSale, discountNote),
     sale_price  : finalSale,
     cost_price  : pricing.cost,
     net_profit  : finalProfit,
     month_label : monthLabel,
   });
-  if(error) console.warn('Revenue insert error:', error.message);
 
-  // کۆی نوێ = کۆی پێشوو + بەهای ئێستا
-  const totSale   = prevSale   + finalSale;
-  const totCost   = prevCost   + pricing.cost;
-  const totProfit = prevProfit + finalProfit;
-  const adCount   = prevCount + 1;
+  if(error){
+    console.warn('[recordAdRevenue] هەڵەی تۆمارکردن — هیچ داهاتێک تۆمار نەکرا و پەیامی تیلیگرام نانێردرێت:', error.message, adIdStr);
+    return; // وردبینی: ئەگەر تۆمارکردن سەرنەکەوت، هەرگیز پەیامی "داهات تۆمارکرا" مەنێرە
+  }
 
-  // ناردنی ئاگادارکردنەوەی Telegram — بە وردەکاری تەواوی نرخ و داشکاندن و قازانج
+  // ٣) کۆی مانگانە دوای تۆمارکردنی سەرکەوتوو دەخوێنینەوە (ڕاستتر و پارێزراوترە لە زیادکردنی دەستی بۆ کۆی پێشوو)
+  let totSale=finalSale, totCost=pricing.cost, totProfit=finalProfit, adCount=1;
   try{
-    const adIdFull = String(adId);
+    const mStart = monthLabel+'-01';
+    const mEnd   = new Date(now.getFullYear(), now.getMonth()+1, 1).toISOString().slice(0,10);
+    const {data:mRows} = await sb.from('ad_revenue_transactions')
+      .select('sale_price,cost_price,net_profit')
+      .gte('created_at', mStart)
+      .lt('created_at', mEnd);
+    if(mRows){
+      totSale   = mRows.reduce((s,r)=>s+Number(r.sale_price),0);
+      totCost   = mRows.reduce((s,r)=>s+Number(r.cost_price),0);
+      totProfit = mRows.reduce((s,r)=>s+Number(r.net_profit),0);
+      adCount   = mRows.length;
+    }
+  }catch(_){}
+
+  // ناردنی ئاگادارکردنەوەی Telegram — بە وردەکاری تەواوی نرخ و داشکاندن و قازانج، بە ئایدی تەواوی ڕیکلامەکە
+  try{
     const discLine = totalDiscountIQD>0
       ? `🏷 داشکاندن: -${totalDiscountIQD.toLocaleString()} IQD${discountNote?' ('+discountNote+')':''}\n`
       : '';
@@ -6817,7 +6860,7 @@ async function recordAdRevenue(adId, userId, budgetUSD){
       `✅ *ڕیکلامێک پەسەندکرا — داهات تۆمارکرا*\n`+
       `━━━━━━━━━━━━━━━━━━\n`+
       `🔢 ژمارەی ڕیکلام: *${adNum}*\n`+
-      `🆔 ئایدی ڕیکلام:\n\`${adIdFull}\`\n`+
+      `🆔 ئایدی ڕیکلام:\n\`${adIdStr}\`\n`+
       `📌 جۆری ڕیکلام: ${pricing.type}\n`+
       `💵 نرخی سەرەکی: ${originalSale.toLocaleString()} IQD\n`+
       discLine+
@@ -6836,6 +6879,8 @@ async function recordAdRevenue(adId, userId, budgetUSD){
        body:JSON.stringify({chat_id:ARV_TG_CHAT, text:msg, parse_mode:'Markdown'})}
     );
   }catch(_){}
+
+  console.info('[recordAdRevenue] ✅ داهات بەسەرکەوتوویی تۆمارکرا:', adIdStr, '—', finalSale, 'IQD');
 }
 
 // ══ پڕکردنەوەی دراپدانی مانگەکان ══
