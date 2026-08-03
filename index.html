@@ -12192,13 +12192,13 @@ async function markAllRead(){
 
 function getTimeAgo(dateStr){
   const diff=Date.now()-new Date(dateStr).getTime();
-  const min=Math.floor(diff/60000);
-  if(min<1)return'هەمووئێستا';
-  if(min<60)return`${min} خولەک پێش`;
-  const hr=Math.floor(min/60);
-  if(hr<24)return`${hr} کاژێر پێش`;
-  const day=Math.floor(hr/24);
-  return`${day} ڕۆژ پێش`;
+const min = Math.floor(diff / 60000);
+if (min < 1) return 'هەرئێستا';
+if (min < 60) return `${min} خولەک پێش ئێستا`;
+const hr = Math.floor(min / 60);
+if (hr < 24) return `${hr} کاژێر پێش ئێستا`;
+const day = Math.floor(hr / 24);
+return `${day} ڕۆژ پێش ئێستا`;
 }
 
 // ═══ SUPPORT ═══
