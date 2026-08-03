@@ -3857,7 +3857,8 @@ async function updateAdStatus(id,userId,newStatus,budget){
     try{
       if(newStatus==='paused'){
         const _psLang = await _getUserLang(userId).catch(()=>'ku');
-        const _psN = _adNotifTexts(null, 'paused', _psLang);
+        const _psAdNum = (allAds.find(a => a.id === id) || {}).ad_number || id;
+        const _psN = _adNotifTexts(_psAdNum, 'paused', _psLang);
         await sb.from('pa_notifications').insert({user_id:userId,type:'ad_paused',title:_psN.title,body:_psN.body,is_read:false});
         _fbPushNotif(userId, _psN.title, _psN.body, 'ad_paused');
       } else if(newStatus==='completed'){
@@ -3868,7 +3869,8 @@ async function updateAdStatus(id,userId,newStatus,budget){
         _fbPushNotif(userId, _cpN.title, _cpN.body, 'ad_completed');
       } else if(newStatus==='active' && parseFloat(budget||0)<20){
         const _acLang = await _getUserLang(userId).catch(()=>'ku');
-        const _acN = _adNotifTexts(null, 'active', _acLang);
+        const _acAdNum = (allAds.find(a => a.id === id) || {}).ad_number || id;
+        const _acN = _adNotifTexts(_acAdNum, 'active', _acLang);
         await sb.from('pa_notifications').insert({user_id:userId,type:'ad_active',title:_acN.title,body:_acN.body,is_read:false});
         _fbPushNotif(userId, _acN.title, _acN.body, 'ad_active');
       }
