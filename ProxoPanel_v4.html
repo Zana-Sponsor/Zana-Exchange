@@ -5496,8 +5496,8 @@ async function createVoucherCode(){
   // ئەگەر فاوچەرەکە بۆ بەکارهێنەرێکی تایبەت بووە، ئاگاداری بۆ بنێرە کە دیاریەکە بۆی ناردراوە
   if(targetEnabled&&targetUserId){
     const expTxt=expiry?('تا '+new Date(expiry).toLocaleDateString('ku')):'بێ کۆتایی';
-    const notifTitle='🎁 فاوچەرێکی تایبەت بۆت نێردرا';
-    const notifBody='ئادمین فاوچەرێکی '+Math.round(amountIqd).toLocaleString()+' IQD بۆت ناردووە. سەردانی بەشی «فاوچەرەکان» بکە بۆ چالاککردنی. ('+expTxt+')';
+    const notifTitle = '🎉 پیرۆزە! فاوچەرێکت وەرگرت';
+    const notifBody = 'فاوچەرێک بە نرخی ' + Math.round(amountIqd).toLocaleString() + ' IQD بۆ هەژمارەکەت زیادکراوە. سەردانی بەشی «فاوچەرەکان» بکە و هەرکات دەتەوێت بەکاریبهێنە. (' + expTxt + ')';
     await sb.from('pa_notifications').insert({user_id:targetUserId,type:'general',title:notifTitle,body:notifBody,is_read:false,created_at:new Date().toISOString()});
     _fbPushNotif(targetUserId,notifTitle,notifBody,'general');
     showToast('✅ ڤاوچەری '+code+' نێردرا بۆ '+(targetName||'بەکارهێنەر')+' — '+Math.round(amountIqd).toLocaleString()+' IQD','gr');
