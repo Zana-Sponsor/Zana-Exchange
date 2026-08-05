@@ -1280,6 +1280,62 @@ tr:hover td{background:rgba(28,35,51,.015);}
           <div class="stat-info"><div class="stat-val" id="promoStatUsed" style="color:var(--bl)">—</div><div class="stat-lbl">کۆی بەکارهێنان</div></div>
         </div>
       </div>
+      <!-- ══ داشکاندنی گشتی بۆ هەموو ڕیکلامەکان (خۆکار، realtime) ══ -->
+      <div class="tbl-wrap" style="padding:16px;margin-bottom:18px">
+        <div style="font-size:13.5px;font-weight:800;color:var(--dark);margin-bottom:12px;display:flex;align-items:center;gap:8px">
+          <i class="fas fa-bolt" style="color:#db2777"></i> داشکاندنی گشتی بۆ هەموو ڕیکلامەکان
+        </div>
+        <div class="info-box" style="margin-bottom:12px">
+          <i class="fas fa-circle-info" style="margin-left:6px;color:#db2777"></i>
+          ئەم داشکاندنە بە شێوەی خۆکار و <strong>realtime</strong> بۆ هەموو بەکارهێنەران دەچێتە سەر نرخی ڕیکلام — پێویست بە کۆد نییە، هەر کاتێک لێرە بیگۆڕیت ڕاستەوخۆ لە فۆرمی دروستکردنی ڕیکلام دەردەکەوێت.
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div class="field-wrap" style="margin-bottom:0">
+            <label class="modal-lbl">بڕی داشکاندن (بە هەزار دینار) <span style="color:var(--rd)">*</span></label>
+            <input class="minp" type="number" id="gadAmountThousand" value="0" min="0" step="1" dir="ltr" style="font-family:'Inter'" placeholder="بۆ نموونە: 5" oninput="_previewGlobalDiscount()">
+            <div style="font-size:11px;color:var(--mt);margin-top:5px" id="gadAmountPreview">= 0 IQD داشکاندن بۆ هەر ڕیکلامێک</div>
+          </div>
+          <div class="field-wrap" style="margin-bottom:0">
+            <label class="modal-lbl" style="margin-bottom:8px">چالاکی</label>
+            <div style="display:flex;align-items:center;gap:10px;background:var(--bg);border:1.5px solid var(--b1);border-radius:12px;padding:10px 14px">
+              <label class="tog-lbl" style="margin:0">
+                <input type="checkbox" id="gadEnabled">
+                <span class="tog-sl"></span>
+              </label>
+              <div style="font-size:12px;font-weight:700;color:var(--dark)">چالاک</div>
+            </div>
+          </div>
+        </div>
+        <div class="act-btn dark" onclick="saveGlobalAdDiscountConfig()" style="padding:8px 16px;background:#db2777;border-color:#db2777;display:inline-flex"><i class="fas fa-floppy-disk"></i> پاشەکەوتکردن</div>
+      </div>
+
+      <!-- ══ داشکاندنی ڕاستەوخۆ (Direct Discount) — بۆ نرخێکی دیاریکراوی ڕیکلام، بێ کۆد ══ -->
+      <div class="sec-hdr" style="flex-wrap:wrap;gap:10px;margin-top:6px">
+        <h3><i class="fas fa-fire" style="margin-left:8px;color:#16a34a"></i>داشکاندنی ڕاستەوخۆ (بێ کۆد)</h3>
+        <div class="act-btn dark" onclick="openMo('moCreateDirectDiscount')" style="padding:8px 16px;background:#16a34a;border-color:#16a34a"><i class="fas fa-plus"></i> داشکاندنی نوێ</div>
+      </div>
+      <div class="info-box" style="margin-bottom:14px">
+        <i class="fas fa-circle-info" style="margin-left:6px;color:#16a34a"></i>
+        ئەم داشکاندنە خۆکارە و بۆ ڕیکلامێکی <strong>نرخی دیاریکراو</strong> جێبەجێ دەبێت (بۆ نموونە: تەنها ڕیکلامی 18,500 IQD) — پێویست بە کۆد نییە. دەتوانیت بیکەیت بۆ هەموو بەکارهێنەران یان تەنها یەکێک، کاتی دەستپێک/کۆتایی و سنووری بەکارهێنانی هەر بەکارهێنەرێک دیاری بکەیت.
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px">
+        <div class="stat-card" style="background:rgba(22,163,74,.06);border-color:rgba(22,163,74,.2)">
+          <div class="stat-ico gr"><i class="fas fa-fire"></i></div>
+          <div class="stat-info"><div class="stat-val" id="ddStatTotal" style="color:var(--gr)">—</div><div class="stat-lbl">کۆی داشکاندنەکان</div></div>
+        </div>
+        <div class="stat-card" style="background:rgba(37,99,235,.06);border-color:rgba(37,99,235,.2)">
+          <div class="stat-ico bl"><i class="fas fa-toggle-on"></i></div>
+          <div class="stat-info"><div class="stat-val" id="ddStatActive" style="color:var(--bl)">—</div><div class="stat-lbl">چالاک</div></div>
+        </div>
+        <div class="stat-card" style="background:rgba(244,114,182,.06);border-color:rgba(244,114,182,.2)">
+          <div class="stat-ico" style="background:rgba(244,114,182,.15);color:#db2777"><i class="fas fa-chart-bar"></i></div>
+          <div class="stat-info"><div class="stat-val" id="ddStatUsed" style="color:#db2777">—</div><div class="stat-lbl">کۆی بەکارهێنان</div></div>
+        </div>
+      </div>
+      <div class="tbl-wrap tbl-scroll" id="ddWrap" style="margin-bottom:24px">
+        <div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>
+      </div>
+
       <!-- ══ ناردنی پڕۆمۆ کۆد بۆ بەکارهێنەران ══ -->
       <div style="background:var(--w);border:1.5px solid rgba(244,114,182,.25);border-radius:18px;padding:20px;margin-bottom:18px">
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
@@ -1936,6 +1992,86 @@ tr:hover td{background:rgba(28,35,51,.015);}
   </div>
 </div>
 
+<!-- ══ CREATE DIRECT DISCOUNT MODAL ══ -->
+<div class="overlay" id="moCreateDirectDiscount">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3><i class="fas fa-fire" style="margin-left:8px;color:#16a34a"></i>داشکاندنی ڕاستەوخۆی نوێ</h3>
+      <div class="modal-close" onclick="closeMo('moCreateDirectDiscount')"><i class="fas fa-xmark"></i></div>
+    </div>
+    <div class="field-wrap">
+      <label class="modal-lbl" style="margin-top:0">نرخی ئامانجی ڕیکلام (IQD) <span style="color:var(--rd)">*</span></label>
+      <input class="minp" type="number" id="ddTargetPrice" placeholder="بۆ نموونە: 18500" min="1" step="1" dir="ltr" style="font-family:'Inter'" oninput="clearFieldErr('ddTargetPrice')">
+      <div class="field-err" id="ddTargetPrice-err">نرخی ئامانج پڕ بکەرەوە</div>
+      <div style="font-size:11px;color:var(--mt);margin-top:5px">داشکاندنەکە تەنها بۆ ڕیکلامێک جێبەجێ دەبێت کە نرخی سەرەکی (پێش هەموو داشکاندنێک) بەرامبەر ئەم بڕە بێت</div>
+    </div>
+    <div class="field-wrap">
+      <label class="modal-lbl">جۆری داشکان <span style="color:var(--rd)">*</span></label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px" id="ddTypeGroup">
+        <div onclick="selectDdType('fixed',this)" style="padding:10px;border:2px solid var(--dark);border-radius:11px;text-align:center;cursor:pointer;background:var(--dark);color:#fff;transition:all .18s">
+          <i class="fas fa-coins" style="display:block;font-size:16px;margin-bottom:4px"></i>
+          <div style="font-size:12px;font-weight:700">بڕی دیاریکراو (IQD)</div>
+        </div>
+        <div onclick="selectDdType('percentage',this)" style="padding:10px;border:2px solid var(--b2);border-radius:11px;text-align:center;cursor:pointer;transition:all .18s">
+          <i class="fas fa-percent" style="display:block;font-size:16px;margin-bottom:4px;color:var(--yw)"></i>
+          <div style="font-size:12px;font-weight:700">پارچەیی (%)</div>
+        </div>
+      </div>
+      <input type="hidden" id="ddDiscountType" value="fixed">
+    </div>
+    <div class="field-wrap">
+      <label class="modal-lbl" id="ddValLbl">بڕی داشکان (IQD) <span style="color:var(--rd)">*</span></label>
+      <input class="minp" type="number" id="ddDiscountValue" placeholder="0" min="1" step="1" dir="ltr" oninput="clearFieldErr('ddDiscountValue')">
+      <div class="field-err" id="ddDiscountValue-err">بڕی داشکان دیاری بکە</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="field-wrap">
+        <label class="modal-lbl">کاتی دەستپێک <span style="font-size:10px;color:var(--mt)">(ئۆپشنی)</span></label>
+        <input class="minp" type="datetime-local" id="ddStartsAt" dir="ltr" style="font-family:'Inter'">
+      </div>
+      <div class="field-wrap">
+        <label class="modal-lbl">کاتی کۆتایی <span style="font-size:10px;color:var(--mt)">(ئۆپشنی)</span></label>
+        <input class="minp" type="datetime-local" id="ddExpiresAt" dir="ltr" style="font-family:'Inter'">
+      </div>
+    </div>
+    <div class="field-wrap">
+      <label class="modal-lbl">سنووری بەکارهێنان بۆ هەر بەکارهێنەرێک <span style="font-size:10px;color:var(--mt)">(0 = بێ سنور)</span></label>
+      <input class="minp" type="number" id="ddMaxUsesPerUser" placeholder="0" min="0" step="1" dir="ltr" value="1">
+    </div>
+    <!-- بۆ کێ -->
+    <div style="background:rgba(22,163,74,.05);border:1.5px dashed rgba(22,163,74,.25);border-radius:13px;padding:12px 14px;margin-top:4px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--dark)"><i class="fas fa-user-lock" style="color:#16a34a;margin-left:6px"></i>بۆ بەکارهێنەرێکی تایبەت</div>
+          <div style="font-size:11px;color:var(--mt);margin-top:2px">ئەگەر چالاک نەبێت، بۆ هەموو بەکارهێنەران دەبێت (Public)</div>
+        </div>
+        <label style="position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0">
+          <input type="checkbox" id="ddRestrictToggle" onchange="toggleDdRestrict(this)" style="opacity:0;width:0;height:0">
+          <span style="position:absolute;cursor:pointer;inset:0;background:#ccc;border-radius:22px;transition:.3s" id="ddRestrictTrack"></span>
+        </label>
+      </div>
+      <div id="ddRestrictWrap" style="display:none">
+        <div style="position:relative">
+          <input class="minp" type="text" id="ddUserSearch" placeholder="ناو یان ئیمەیلی بەکارهێنەر بنووسە..." oninput="searchDdUser(this.value)" autocomplete="off" style="margin-bottom:0">
+          <div id="ddUserResults" style="position:absolute;top:100%;right:0;left:0;background:#fff;border:1.5px solid var(--b1);border-radius:11px;box-shadow:0 8px 24px rgba(0,0,0,.1);z-index:999;max-height:200px;overflow-y:auto;display:none"></div>
+        </div>
+        <div id="ddRestrictedUserBox" style="display:none;margin-top:8px;background:#fff;border:1px solid rgba(22,163,74,.2);border-radius:10px;padding:8px 12px;align-items:center;gap:8px">
+          <div id="ddRestrictedAvatar" class="mini-av" style="width:28px;height:28px;font-size:11px;background:#16a34a;flex-shrink:0">?</div>
+          <div style="flex:1;min-width:0">
+            <div id="ddRestrictedName" style="font-size:12px;font-weight:700;color:var(--dark)">—</div>
+            <div id="ddRestrictedEmail" style="font-size:10px;color:var(--mt)">—</div>
+          </div>
+          <div class="act-btn rd" style="padding:4px 8px;font-size:11px" onclick="clearDdRestrict()"><i class="fas fa-times"></i></div>
+        </div>
+        <input type="hidden" id="ddRestrictedUserId" value="">
+      </div>
+    </div>
+    <label class="modal-lbl">تێبینی <span style="font-size:10px;color:var(--mt)">(ئۆپشنی)</span></label>
+    <input class="minp" type="text" id="ddDescription" placeholder="بۆ نموونە: داشکاندنی تایبەت بۆ ڕیکلامی سەرەتا">
+    <button class="modal-btn dark" onclick="createDirectDiscount()" style="background:#16a34a;border-color:#16a34a;margin-top:8px"><i class="fas fa-plus"></i> دروستکردنی داشکاندن</button>
+  </div>
+</div>
+
 <!-- ══ CREATE VOUCHER MODAL ══ -->
 <div class="overlay" id="moCreateChallenge">
   <div class="modal">
@@ -2305,7 +2441,7 @@ const pageConfig={
   approval:{title:'Approval Workflow',sub:'پەسەندکردنی داواکاریەکانی چاوەڕوان — TikTok Ad ID و بەروار',load:loadApprovalWorkflow},
   txlog:{title:'مێژووی مامەڵەکان',sub:'هەموو مامەڵەکانی دارایی سیستەم',load:loadTxLog},
   otp:{title:'کۆدەکانی OTP',sub:'هەموو کۆدەکانی دووپاتکردنەوە (otp_codes) — گەڕان و پاڵاوتن',load:loadOtpCodes},
-  promo:{title:'کۆدەکانی داشکاندن',sub:'دروستکردن و بەڕێوەبردنی کۆدەکان',load:loadPromos},
+  promo:{title:'کۆدەکانی داشکاندن',sub:'دروستکردن و بەڕێوەبردنی کۆدەکان',load:async()=>{await Promise.all([loadPromos(),loadGlobalAdDiscountConfig(),loadDirectDiscountsAdmin()])}},
   voucher:{title:'کۆدەکانی ڤاوچەر',sub:'دروستکردن و بەڕێوەبردنی کۆدەکانی ڤاوچەر (بارکردنی باڵانس)',load:async()=>{await Promise.all([loadVouchers(),loadSignupGiftConfig()])}},
   notifications:{title:'ناردنی ئاگاداری',sub:'ناردن بۆ بەکارهێنەران',load:loadNotifHistory},
   banners:{title:'بانەری وێنەیی',sub:'بانەری وێنەیی Firebase'},
@@ -3430,12 +3566,18 @@ async function showAdDetail(id){
   const levelDiscPercent=parseFloat(a.level_discount_percent||0);
   const levelDiscIQD=parseFloat(a.level_discount_iqd||0);
   const levelDiscName=a.level_name_at_purchase||'';
+  // داشکاندنی گشتی (ئادمین) — تۆمارکراوە لەگەڵ ڕیکلامەکە خۆی (ستوونی global_discount_iqd، ئەگەر بوونی هەبێت)
+  const globalDiscIQD=parseFloat(a.global_discount_iqd||0);
+  // داشکاندنی ڕاستەوخۆ (Direct Discount) — تۆمارکراوە لەگەڵ ڕیکلامەکە خۆی (ستوونی direct_discount_iqd)
+  const directDiscIQD=parseFloat(a.direct_discount_iqd||0);
 
   const priceBreakdownHTML=`
     <div class="price-breakdown">
       <div class="price-breakdown-title"><i class="fas fa-receipt" style="margin-left:6px;color:var(--mt)"></i>وردەکاری نرخ</div>
       <div class="price-row"><span class="plbl">نرخی ڕیکلام</span><span class="pval" style="color:var(--bl)">${originalIQD.toLocaleString()+' IQD'}</span></div>
       ${levelDiscIQD>0?`<div class="price-row"><span class="plbl"><i class="fas fa-medal" style="margin-left:4px;color:#a855f7"></i>داشکاندنی ئاست${levelDiscName?' ('+levelDiscName+' - %'+levelDiscPercent+')':''}</span><span class="pval" style="color:var(--rd)">- ${Math.round(levelDiscIQD).toLocaleString()+' IQD'}</span></div>`:''}
+      ${globalDiscIQD>0?`<div class="price-row"><span class="plbl"><i class="fas fa-bolt" style="margin-left:4px;color:#db2777"></i>داشکاندنی گشتی</span><span class="pval" style="color:var(--rd)">- ${Math.round(globalDiscIQD).toLocaleString()+' IQD'}</span></div>`:''}
+      ${directDiscIQD>0?`<div class="price-row"><span class="plbl"><i class="fas fa-fire" style="margin-left:4px;color:#16a34a"></i>داشکاندنی ڕاستەوخۆ</span><span class="pval" style="color:var(--rd)">- ${Math.round(directDiscIQD).toLocaleString()+' IQD'}</span></div>`:''}
       ${discountIQD>0?`<div class="price-row"><span class="plbl">داشکاندنی کۆد${promoCodeUsed?' ('+promoCodeUsed+')':''}</span><span class="pval" style="color:var(--rd)">- ${Math.round(discountIQD).toLocaleString()+' IQD'}</span></div>`:''}
       <div class="price-row total"><span class="plbl">کۆی گشتی</span><span class="pval" style="color:var(--gr)">${finalIQD.toLocaleString()+' IQD'}</span></div>
     </div>`;
@@ -5282,6 +5424,230 @@ async function deletePromo(id,code){
   });
 }
 
+// ══ DIRECT DISCOUNT (بێ کۆد — بۆ نرخێکی دیاریکراوی ڕیکلام) ══
+function selectDdType(type,el){
+  document.getElementById('ddDiscountType').value=type;
+  document.querySelectorAll('#ddTypeGroup>div').forEach(d=>{
+    d.style.background='';d.style.color='var(--tx)';d.style.borderColor='var(--b2)';
+  });
+  el.style.background='var(--dark)';el.style.color='#fff';el.style.borderColor='var(--dark)';
+  document.getElementById('ddValLbl').textContent=type==='percentage'?'بڕی داشکان (%) *':'بڕی داشکان (IQD) *';
+}
+function toggleDdRestrict(cb){
+  const wrap=document.getElementById('ddRestrictWrap');
+  const track=document.getElementById('ddRestrictTrack');
+  if(cb.checked){ wrap.style.display='block'; track.style.background='#16a34a'; }
+  else{ wrap.style.display='none'; track.style.background='#ccc'; clearDdRestrict(); }
+}
+function clearDdRestrict(){
+  document.getElementById('ddRestrictedUserId').value='';
+  document.getElementById('ddUserSearch').value='';
+  document.getElementById('ddRestrictedUserBox').style.display='none';
+  document.getElementById('ddUserResults').style.display='none';
+}
+function selectDdUser(id,name,email){
+  document.getElementById('ddRestrictedUserId').value=id;
+  document.getElementById('ddUserSearch').value='';
+  document.getElementById('ddUserResults').style.display='none';
+  const box=document.getElementById('ddRestrictedUserBox');
+  box.style.display='flex';
+  document.getElementById('ddRestrictedAvatar').textContent=(name||email||'?')[0].toUpperCase();
+  document.getElementById('ddRestrictedName').textContent=name||'—';
+  document.getElementById('ddRestrictedEmail').textContent=email||'—';
+}
+let _ddUserSearchTimer=null;
+async function searchDdUser(q){
+  const res=document.getElementById('ddUserResults');
+  if(!q||q.length<2){res.style.display='none';return;}
+  clearTimeout(_ddUserSearchTimer);
+  _ddUserSearchTimer=setTimeout(async()=>{
+    res.innerHTML='<div style="padding:10px;text-align:center;color:var(--mt);font-size:12px"><i class="fas fa-circle-notch fa-spin"></i></div>';
+    res.style.display='block';
+    const{data:profs}=await sb.from('profiles').select('id,full_name,email')
+      .or(`full_name.ilike.%${q}%,email.ilike.%${q}%`).limit(8);
+    if(!profs?.length){res.innerHTML='<div style="padding:10px;text-align:center;color:var(--mt);font-size:12px">هیچ بەکارهێنەرێک نەدۆزرایەوە</div>';return;}
+    res.innerHTML=profs.map(p=>`<div onclick="selectDdUser('${p.id}','${p.full_name||''}','${p.email||''}')" style="display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;border-bottom:1px solid var(--b1);transition:background .15s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='#fff'">
+      <div class="mini-av" style="width:26px;height:26px;font-size:11px;background:#16a34a;flex-shrink:0">${(p.full_name||p.email||'?')[0].toUpperCase()}</div>
+      <div><div style="font-size:12px;font-weight:700">${p.full_name||'—'}</div><div style="font-size:10px;color:var(--mt)">${p.email||'—'}</div></div>
+    </div>`).join('');
+    res.style.display='block';
+  },300);
+}
+
+function _ddStatus(d){
+  const now=new Date();
+  if(!d.is_active) return {label:'ناچالاک',cls:'rejected'};
+  if(d.expires_at && new Date(d.expires_at)<now) return {label:'بەسەرچوو',cls:'rejected'};
+  if(d.starts_at && new Date(d.starts_at)>now) return {label:'چاوەڕوان',cls:'pending'};
+  return {label:'چالاک',cls:'approved'};
+}
+function _fmtDdDisc(d){
+  return d.discount_type==='percentage'?d.discount_value+'%':Math.round(d.discount_value).toLocaleString()+' IQD';
+}
+
+let _allDirectDiscounts=[], _ddUsageMap={};
+async function loadDirectDiscountsAdmin(){
+  const wrap=document.getElementById('ddWrap');
+  if(!wrap)return;
+  wrap.innerHTML='<div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
+  const{data,error}=await sb.from('direct_discounts').select('*').order('created_at',{ascending:false});
+  if(error){wrap.innerHTML='<div class="empty"><i class="fas fa-exclamation-triangle"></i><p>هەڵە: '+error.message+'</p></div>';return;}
+  _allDirectDiscounts=data||[];
+  // پرۆفایلی بەکارهێنەرانی تایبەت
+  const restrictIds=[...new Set(_allDirectDiscounts.filter(d=>d.restricted_to_user_id).map(d=>d.restricted_to_user_id))];
+  let restrictMap={};
+  if(restrictIds.length){
+    const{data:rProfs}=await sb.from('profiles').select('id,full_name,email').in('id',restrictIds);
+    (rProfs||[]).forEach(p=>{restrictMap[p.id]=p;});
+  }
+  _allDirectDiscounts=_allDirectDiscounts.map(d=>({...d,_restrictedProfile:restrictMap[d.restricted_to_user_id]||null}));
+  // وردەکاری بەکارهێنان
+  _ddUsageMap={};
+  let totalUsed=0;
+  try{
+    const{data:usages}=await sb.from('direct_discount_usages').select('*').order('used_at',{ascending:false});
+    totalUsed=usages?.length||0;
+    if(usages?.length){
+      const uids=[...new Set(usages.map(u=>u.user_id).filter(Boolean))];
+      const{data:profs}=await sb.from('profiles').select('id,full_name,email').in('id',uids);
+      const profMap={};(profs||[]).forEach(p=>{profMap[p.id]=p;});
+      usages.forEach(u=>{
+        if(!_ddUsageMap[u.direct_discount_id])_ddUsageMap[u.direct_discount_id]=[];
+        _ddUsageMap[u.direct_discount_id].push({...u,_profile:profMap[u.user_id]||null});
+      });
+    }
+  }catch(_){}
+  const s1=document.getElementById('ddStatTotal'); if(s1)s1.textContent=_allDirectDiscounts.length;
+  const s2=document.getElementById('ddStatActive'); if(s2)s2.textContent=_allDirectDiscounts.filter(d=>_ddStatus(d).label==='چالاک').length;
+  const s3=document.getElementById('ddStatUsed'); if(s3)s3.textContent=totalUsed;
+  renderDirectDiscountsAdmin();
+}
+
+function renderDirectDiscountsAdmin(){
+  const wrap=document.getElementById('ddWrap');
+  if(!wrap)return;
+  if(!_allDirectDiscounts.length){
+    wrap.innerHTML='<div class="empty"><i class="fas fa-fire"></i><p>هیچ داشکاندنێکی ڕاستەوخۆ نییە — داشکاندنێکی نوێ دروست بکە</p></div>';
+    return;
+  }
+  const tableHTML=`<table>
+    <thead><tr><th>نرخی ئامانج</th><th>داشکان</th><th>سنووری هەر بەکارهێنەرێک</th><th>بەکارهێنراو</th><th>بۆ کێ</th><th>دەستپێک</th><th>کۆتایی</th><th>باری</th><th>کردار</th></tr></thead>
+    <tbody>${_allDirectDiscounts.map(d=>{
+      const st=_ddStatus(d);
+      const usages=_ddUsageMap[d.id]||[];
+      const rProf=d._restrictedProfile;
+      return`<tr>
+        <td><span style="font-family:'Inter';font-weight:800;font-size:13px;color:var(--dark)">${Math.round(d.target_price_iqd).toLocaleString()} IQD</span></td>
+        <td><span style="font-weight:700;color:#16a34a">${_fmtDdDisc(d)}</span></td>
+        <td><span style="font-family:'Inter';color:var(--mt)">${d.max_uses_per_user>0?d.max_uses_per_user:'بێ سنور'}</span></td>
+        <td><span style="font-family:'Inter';font-weight:700;color:var(--bl)">${usages.length}</span></td>
+        <td>${d.restricted_to_user_id?`<div style="display:flex;align-items:center;gap:6px"><div class="mini-av" style="width:22px;height:22px;font-size:9px;background:#16a34a;flex-shrink:0">${(rProf?.full_name||rProf?.email||'?')[0].toUpperCase()}</div><div style="font-size:11px"><div style="font-weight:700">${rProf?.full_name||'—'}</div><div style="color:var(--mt)">${rProf?.email||'—'}</div></div></div>`:'<span style="color:var(--mt);font-size:11px">هەموو (Public)</span>'}</td>
+        <td style="font-size:11px;color:var(--mt)">${d.starts_at?new Date(d.starts_at).toLocaleDateString('ku'):'—'}</td>
+        <td style="font-size:11px;color:var(--mt)">${d.expires_at?new Date(d.expires_at).toLocaleDateString('ku'):'—'}</td>
+        <td><span class="badge ${st.cls}">${st.label}</span></td>
+        <td><div class="act-grp">
+          <div class="act-btn ${d.is_active?'yw':'gr'}" onclick="toggleDirectDiscountAdmin('${d.id}',${d.is_active})"><i class="fas fa-toggle-${d.is_active?'on':'off'}"></i></div>
+          <div class="act-btn rd" onclick="deleteDirectDiscountAdmin('${d.id}','${Math.round(d.target_price_iqd).toLocaleString()} IQD')"><i class="fas fa-trash"></i></div>
+        </div></td>
+      </tr>`;
+    }).join('')}</tbody></table>`;
+  const cardsHTML=`<div class="user-cards">${_allDirectDiscounts.map(d=>{
+    const st=_ddStatus(d);
+    const usages=_ddUsageMap[d.id]||[];
+    const rProf=d._restrictedProfile;
+    return`<div class="user-card">
+      <div class="user-card-top">
+        <div class="mini-av" style="background:#16a34a"><i class="fas fa-fire" style="font-size:12px"></i></div>
+        <div class="user-card-info">
+          <div class="user-card-name" style="font-family:'Inter'">${Math.round(d.target_price_iqd).toLocaleString()} IQD</div>
+          <div class="user-card-email">${_fmtDdDisc(d)} داشکان</div>
+        </div>
+        <span class="badge ${st.cls}">${st.label}</span>
+      </div>
+      ${d.restricted_to_user_id?`<div style="display:flex;align-items:center;gap:8px;background:rgba(22,163,74,.07);border:1px solid rgba(22,163,74,.18);border-radius:10px;padding:7px 10px;margin-bottom:8px">
+        <i class="fas fa-user-lock" style="color:#16a34a;font-size:12px;flex-shrink:0"></i>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:11px;font-weight:700;color:var(--dark)">${rProf?.full_name||'بەکارهێنەری تایبەت'}</div>
+          <div style="font-size:10px;color:var(--mt)">${rProf?.email||'—'}</div>
+        </div>
+      </div>`:''}
+      <div class="user-card-meta">
+        <div class="user-card-stat bl"><i class="fas fa-chart-bar" style="font-size:10px"></i> ${usages.length} جار</div>
+        <div class="user-card-stat" style="font-size:11px">${d.max_uses_per_user>0?'سنور: '+d.max_uses_per_user:'بێ سنور'}</div>
+        <div class="user-card-date"><i class="fas fa-calendar-plus" style="font-size:9px;opacity:.5;margin-left:3px"></i>${d.created_at?new Date(d.created_at).toLocaleDateString('ku'):'—'}</div>
+      </div>
+      <div class="user-card-actions">
+        <div class="act-btn ${d.is_active?'yw':'gr'}" style="flex:1" onclick="toggleDirectDiscountAdmin('${d.id}',${d.is_active})"><i class="fas fa-toggle-${d.is_active?'on':'off'}"></i> ${d.is_active?'ناچالاک':'چالاک'}</div>
+        <div class="act-btn rd" style="flex:1" onclick="deleteDirectDiscountAdmin('${d.id}','${Math.round(d.target_price_iqd).toLocaleString()} IQD')"><i class="fas fa-trash"></i> سڕینەوە</div>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+  wrap.innerHTML=tableHTML+cardsHTML;
+}
+
+async function createDirectDiscount(){
+  const targetPrice=parseFloat(document.getElementById('ddTargetPrice').value);
+  const discType=document.getElementById('ddDiscountType').value;
+  const discVal=parseFloat(document.getElementById('ddDiscountValue').value);
+  const maxUsesPerUser=parseInt(document.getElementById('ddMaxUsesPerUser').value||'0');
+  const startsAt=document.getElementById('ddStartsAt').value;
+  const expiresAt=document.getElementById('ddExpiresAt').value;
+  const restrictEnabled=document.getElementById('ddRestrictToggle').checked;
+  const restrictedUserId=(document.getElementById('ddRestrictedUserId').value||'').trim();
+  const description=(document.getElementById('ddDescription').value||'').trim();
+  let valid=true;
+  if(isNaN(targetPrice)||targetPrice<=0){showFieldErr('ddTargetPrice');valid=false;}
+  if(isNaN(discVal)||discVal<=0){showFieldErr('ddDiscountValue');valid=false;}
+  if(restrictEnabled&&!restrictedUserId){showToast('تکایە بەکارهێنەرێک هەڵبژێرە','rd');return;}
+  if(!valid)return;
+  if(discType==='percentage'&&(discVal<1||discVal>100)){showToast('پارچەی داشکان دەبێت لەنێوان 1 و 100 بێت','rd');return;}
+  const row={
+    target_price_iqd:targetPrice,
+    discount_type:discType,
+    discount_value:discVal,
+    max_uses_per_user:isNaN(maxUsesPerUser)?0:maxUsesPerUser,
+    is_public:!restrictEnabled,
+    is_active:true,
+    description:description||null,
+    created_by:(await sb.auth.getUser()).data.user?.id
+  };
+  if(startsAt)row.starts_at=new Date(startsAt).toISOString();
+  if(expiresAt)row.expires_at=new Date(expiresAt).toISOString();
+  if(restrictEnabled&&restrictedUserId)row.restricted_to_user_id=restrictedUserId;
+  const{error}=await sb.from('direct_discounts').insert(row);
+  if(error){showToast('هەڵە: '+error.message,'rd');return;}
+  showToast('✅ داشکاندنی ڕاستەوخۆ دروستکرا','gr');
+  closeMo('moCreateDirectDiscount');
+  document.getElementById('ddTargetPrice').value='';
+  document.getElementById('ddDiscountValue').value='';
+  document.getElementById('ddMaxUsesPerUser').value='1';
+  document.getElementById('ddStartsAt').value='';
+  document.getElementById('ddExpiresAt').value='';
+  document.getElementById('ddDescription').value='';
+  document.getElementById('ddRestrictToggle').checked=false;
+  document.getElementById('ddRestrictWrap').style.display='none';
+  document.getElementById('ddRestrictTrack').style.background='#ccc';
+  clearDdRestrict();
+  selectDdType('fixed',document.querySelector('#ddTypeGroup>div'));
+  loadDirectDiscountsAdmin();
+}
+
+async function toggleDirectDiscountAdmin(id,isActive){
+  const{error}=await sb.from('direct_discounts').update({is_active:!isActive}).eq('id',id);
+  if(error){showToast('هەڵە: '+error.message,'rd');return;}
+  showToast(isActive?'✅ داشکاندن ناچالاک کرا':'✅ داشکاندن چالاک کرا','gr');
+  loadDirectDiscountsAdmin();
+}
+
+async function deleteDirectDiscountAdmin(id,label){
+  confirm2('سڕینەوەی داشکاندن',`ئایا دەتەوێت داشکاندنی "${label}" بسڕیتەوە؟`,'fas fa-trash','var(--rd)',async()=>{
+    const{error}=await sb.from('direct_discounts').delete().eq('id',id);
+    if(error){showToast('هەڵە: '+error.message,'rd');return;}
+    showToast('✅ داشکاندن سڕایەوە','gr');
+    loadDirectDiscountsAdmin();
+  });
+}
+
 // ══ VOUCHER CODES ══
 let _allVouchers=[];
 
@@ -5558,6 +5924,31 @@ async function saveSignupGiftConfig(){
   const{error}=await sb.from('pa_settings').upsert({key:'signup_gift_config',value:cfg},{onConflict:'key'});
   if(error){showToast('هەڵە: '+error.message,'rd');return;}
   showToast('✅ ئەیلامی دیاری پاشەکەوتکرا','gr');
+}
+
+// ══ داشکاندنی گشتی بۆ هەموو ڕیکلامەکان (خۆکار، realtime) ══
+function _previewGlobalDiscount(){
+  const t=parseFloat(document.getElementById('gadAmountThousand')?.value)||0;
+  const el=document.getElementById('gadAmountPreview');
+  if(el)el.textContent='= '+Math.max(0,Math.round(t*1000)).toLocaleString()+' IQD داشکاندن بۆ هەر ڕیکلامێک';
+}
+async function loadGlobalAdDiscountConfig(){
+  const{data}=await sb.from('pa_settings').select('value').eq('key','global_ad_discount').single();
+  const v=data?.value?(typeof data.value==='string'?JSON.parse(data.value):data.value):{};
+  const amtEl=document.getElementById('gadAmountThousand');
+  const enEl=document.getElementById('gadEnabled');
+  if(amtEl)amtEl.value=v.amount_thousand??0;
+  if(enEl)enEl.checked=!!v.enabled;
+  _previewGlobalDiscount();
+}
+async function saveGlobalAdDiscountConfig(){
+  const amountThousand=parseFloat(document.getElementById('gadAmountThousand')?.value)||0;
+  const enabled=document.getElementById('gadEnabled')?.checked||false;
+  if(amountThousand<0){showToast('بڕی داشکاندن دەبێت لە 0 بچووکتر نەبێت','rd');return;}
+  const cfg={amount_thousand:amountThousand,enabled};
+  const{error}=await sb.from('pa_settings').upsert({key:'global_ad_discount',value:cfg},{onConflict:'key'});
+  if(error){showToast('هەڵە: '+error.message,'rd');return;}
+  showToast('✅ داشکاندنی گشتی پاشەکەوتکرا — '+(enabled?'چالاکە':'ناچالاکە'),'gr');
 }
 
 // ══ LEVEL THRESHOLDS ══
