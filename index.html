@@ -3556,13 +3556,24 @@ function _toWebP(dataUrl,quality){
           <span style="color:var(--gr);display:flex;align-items:center;gap:5px"><i class="fas fa-medal" style="font-size:11px"></i><span id="bdLevelDiscountLbl">داشکاندنی ئاست</span></span>
           <span id="bdLevelDiscount" style="color:var(--gr);font-weight:700;font-family:'Inter',sans-serif">-0 IQD</span>
         </div>
+        <div id="bdGlobalDiscountRow" class="create-price-row" style="display:none">
+          <span style="color:#db2777;display:flex;align-items:center;gap:5px"><i class="fas fa-bolt" style="font-size:11px"></i>داشکاندنی گشتی</span>
+          <span id="bdGlobalDiscount" style="color:#db2777;font-weight:700;font-family:'Inter',sans-serif">-0 IQD</span>
+        </div>
+        <div id="bdDirectDiscountRow" class="create-price-row" style="display:none">
+          <span style="color:#16a34a;display:flex;align-items:center;gap:5px"><i class="fas fa-fire" style="font-size:11px"></i>داشکاندنی ڕاستەوخۆ</span>
+          <span id="bdDirectDiscount" style="color:#16a34a;font-weight:700;font-family:'Inter',sans-serif">-0 IQD</span>
+        </div>
         <div id="bdDiscountRow" class="create-price-row" style="display:none">
           <span style="color:var(--rd)">بڕی داشکان</span>
           <span id="bdDiscount" style="color:var(--rd);font-weight:700;font-family:'Inter',sans-serif">-0 IQD</span>
         </div>
         <div class="create-price-total">
           <span id="bdTotalLbl" style="font-size:13px;font-weight:800;color:var(--dark)">کۆی گشتی (1 ڕۆژ)</span>
-          <span id="bdTotal" style="font-size:15px;font-weight:900;color:var(--dark);font-family:'Inter',sans-serif">18,500 IQD</span>
+          <span style="display:flex;align-items:center;gap:8px">
+            <span id="bdOriginalStrike" style="display:none;font-size:11.5px;color:var(--mt);text-decoration:line-through;font-family:'Inter',sans-serif"></span>
+            <span id="bdTotal" style="font-size:15px;font-weight:900;color:var(--dark);font-family:'Inter',sans-serif">18,500 IQD</span>
+          </span>
         </div>
       </div>
       <button class="create-submit" id="submitBtn" onclick="submitAd()" style="margin-top:16px">
@@ -5131,6 +5142,7 @@ let _deviceFp='', _deviceLocalId='';
 let _txMap={};
 let budget=18500, days=1, dailyCost=18500, dailyUSD=10, budgetTier=0, tierIndex=0, depAmt=50;
 let _levelDiscountPercent=0, _levelDiscountName='';
+let _globalDiscountEnabled=false, _globalDiscountAmountIQD=0;
 
 // ── داشکاندنی ئاست بۆ ڕیکلام/سپۆنسەری: بەپێی ئاستی خاڵی بەکارهێنەر ──
 async function _loadAdLevelDiscount(){
@@ -5147,6 +5159,63 @@ async function _loadAdLevelDiscount(){
   }
   updateBudgetDisplay();
 }
+
+// ── داشکاندنی گشتی (ئادمین دیاریی دەکات، بە هەزار دینار) — بۆ هەموو ڕیکلامەکان، realtime ──
+async function _loadGlobalAdDiscount(){
+  try{
+    const{data}=await sb.from('pa_settings').select('value').eq('key','global_ad_discount').single();
+    const v=data?.value?(typeof data.value==='string'?JSON.parse(data.value):data.value):{};
+    _globalDiscountEnabled=!!v.enabled;
+    _globalDiscountAmountIQD=Math.max(0,Math.round((parseFloat(v.amount_thousand)||0)*1000));
+  }catch(e){
+    _globalDiscountEnabled=false; _globalDiscountAmountIQD=0;
+  }
+  updateBudgetDisplay();
+}
+// گەڕانەوەی بڕی داشکاندنی گشتی بۆ بودجەیەکی دیاریکراو (هەرگیز لە خۆی بودجەکە زیاتر نابێت)
+function _globalDiscountFor(amount){
+  if(!_globalDiscountEnabled||_globalDiscountAmountIQD<=0) return 0;
+  return Math.min(_globalDiscountAmountIQD, Math.max(0, amount));
+}
+
+// ══ داشکاندنی ڕاستەوخۆ (Direct Discount) — ئادمین بۆ نرخێکی دیاریکراوی ڕیکلام دایدەنێت، بێ کۆد، realtime ══
+let _directDiscounts=[]; // لیستی داشکاندنە چالاکەکان کە ئەم بەکارهێنەرە مافی بەکارهێنانی هەیە
+
+async function _loadDirectDiscounts(){
+  try{
+    const{data}=await sb.from('direct_discounts').select('*').eq('is_active',true);
+    const now=new Date();
+    let list=(data||[]).filter(d=>{
+      if(d.starts_at && new Date(d.starts_at)>now) return false;
+      if(d.expires_at && new Date(d.expires_at)<now) return false;
+      if(!d.is_public && (!cu || d.restricted_to_user_id!==cu.id)) return false;
+      return true;
+    });
+    // پشکنینی سنووری بەکارهێنان بۆ هەر بەکارهێنەرێک (١ جار / ٢ جار / بێ سنوور)
+    if(cu && list.length){
+      const ids=list.map(d=>d.id);
+      const{data:usageRows}=await sb.from('direct_discount_usages').select('direct_discount_id').eq('user_id',cu.id).eq('status','active').in('direct_discount_id',ids);
+      const counts={};
+      (usageRows||[]).forEach(r=>{counts[r.direct_discount_id]=(counts[r.direct_discount_id]||0)+1;});
+      list=list.filter(d=>!d.max_uses_per_user || d.max_uses_per_user<=0 || (counts[d.id]||0)<d.max_uses_per_user);
+    }
+    _directDiscounts=list;
+  }catch(e){
+    _directDiscounts=[];
+  }
+  updateBudgetDisplay();
+}
+// دۆزینەوەی داشکاندنی ڕاستەوخۆی گونجاو لەگەڵ نرخی سەرەکی (بنەڕەتی) ی ڕیکلام
+function _matchDirectDiscount(rawBudget){
+  if(!_directDiscounts.length) return null;
+  return _directDiscounts.find(d=>Math.round(parseFloat(d.target_price_iqd))===Math.round(rawBudget))||null;
+}
+function _directDiscountAmount(d, baseAmount){
+  if(!d) return 0;
+  const val = d.discount_type==='percentage' ? (baseAmount*parseFloat(d.discount_value))/100 : parseFloat(d.discount_value);
+  return Math.min(Math.max(0,val), Math.max(0,baseAmount));
+}
+
 // ── نرخەکانی تایەر ──
 const TIERS=[
   {usd:10,  iqd:18000,  days:1, higher:false},
@@ -7099,6 +7168,12 @@ async function boot(){
   checkMaintenanceMode();
   // Real-time maintenance listener
   sb.channel('maint_listen').on('postgres_changes',{event:'*',schema:'public',table:'pa_settings',filter:"key=eq.maintenance_mode"},()=>{checkMaintenanceMode();}).subscribe();
+  // ═══ داشکاندنی گشتی (ئادمین) — بارکردن + گوێگری realtime ═══
+  _loadGlobalAdDiscount();
+  sb.channel('global_ad_discount_rt').on('postgres_changes',{event:'*',schema:'public',table:'pa_settings',filter:"key=eq.global_ad_discount"},()=>{_loadGlobalAdDiscount();}).subscribe();
+  // ═══ داشکاندنی ڕاستەوخۆ (Direct Discount) — بارکردن + گوێگری realtime ═══
+  _loadDirectDiscounts();
+  sb.channel('direct_discounts_rt').on('postgres_changes',{event:'*',schema:'public',table:'direct_discounts'},()=>{_loadDirectDiscounts();}).subscribe();
   // ═══ APP ANNOUNCEMENT & PHONE GATE ═══
   loadAppAnnouncement();
   checkPhoneRequired();
@@ -8184,7 +8259,7 @@ function goPage(p){
   if(p==='support')loadChat();
   if(p==='profile'){loadBal();loadReferralSection();loadProfile();}
   if(p==='home'){loadCoins();}
-  if(p==='create'){selectedAssetId=null;cardId=null;goal='messages';days=1;dailyUSD=10;dailyCost=18500;budget=18500;budgetTier=0;tierIndex=0;gender='all';adLocation='all';document.querySelectorAll('.loc-chips-wrap .fchip').forEach(function(x){x.classList.toggle('on',x.dataset.loc==='all');});document.querySelectorAll('.gender-pill').forEach(function(x){x.classList.toggle('on',x.dataset.gen==='all');});document.querySelectorAll('.bud-daily-btn').forEach((b,i)=>{b.classList.toggle('sel',i===0);});clearAssetSel&&clearAssetSel();document.querySelectorAll('.card-pick').forEach(x=>x.classList.remove('sel'));document.querySelectorAll('.goal-tab,.goal-tab-v2,.gseg-opt').forEach(x=>x.classList.toggle('on',x.dataset.g==='messages'));setTimeout(function(){if(typeof _animGoalPill==='function')_animGoalPill();if(typeof _animGenDark==='function')_animGenDark();if(typeof _animLocDark==='function')_animLocDark();},60);var _ani=document.getElementById('adNameTitle');var _nd2=new Date();if(_ani)_ani.value='New Ad '+_nd2.toLocaleDateString('en-GB').replace(/\//g,'/');var _tl2=document.getElementById('todayLbl');if(_tl2)_tl2.textContent=_nd2.toLocaleDateString('en-GB').replace(/\//g,'/');const _al=document.getElementById('adLink');if(_al)_al.value='';const _ac=document.getElementById('adCode');if(_ac)_ac.value='';const _pi=document.getElementById('promoCodeInp');if(_pi)_pi.value='';if(typeof clearPromoResult==='function')clearPromoResult();_levelDiscountPercent=0;_levelDiscountName='';updateBudgetDisplay();loadAssetsForDropdown();if(typeof _loadAdLevelDiscount==='function')_loadAdLevelDiscount();}
+  if(p==='create'){selectedAssetId=null;cardId=null;goal='messages';days=1;dailyUSD=10;dailyCost=18500;budget=18500;budgetTier=0;tierIndex=0;gender='all';adLocation='all';document.querySelectorAll('.loc-chips-wrap .fchip').forEach(function(x){x.classList.toggle('on',x.dataset.loc==='all');});document.querySelectorAll('.gender-pill').forEach(function(x){x.classList.toggle('on',x.dataset.gen==='all');});document.querySelectorAll('.bud-daily-btn').forEach((b,i)=>{b.classList.toggle('sel',i===0);});clearAssetSel&&clearAssetSel();document.querySelectorAll('.card-pick').forEach(x=>x.classList.remove('sel'));document.querySelectorAll('.goal-tab,.goal-tab-v2,.gseg-opt').forEach(x=>x.classList.toggle('on',x.dataset.g==='messages'));setTimeout(function(){if(typeof _animGoalPill==='function')_animGoalPill();if(typeof _animGenDark==='function')_animGenDark();if(typeof _animLocDark==='function')_animLocDark();},60);var _ani=document.getElementById('adNameTitle');var _nd2=new Date();if(_ani)_ani.value='New Ad '+_nd2.toLocaleDateString('en-GB').replace(/\//g,'/');var _tl2=document.getElementById('todayLbl');if(_tl2)_tl2.textContent=_nd2.toLocaleDateString('en-GB').replace(/\//g,'/');const _al=document.getElementById('adLink');if(_al)_al.value='';const _ac=document.getElementById('adCode');if(_ac)_ac.value='';const _pi=document.getElementById('promoCodeInp');if(_pi)_pi.value='';if(typeof clearPromoResult==='function')clearPromoResult();_levelDiscountPercent=0;_levelDiscountName='';updateBudgetDisplay();loadAssetsForDropdown();if(typeof _loadAdLevelDiscount==='function')_loadAdLevelDiscount();if(typeof _loadDirectDiscounts==='function')_loadDirectDiscounts();}
   if(p==='txhistory')loadTxHistory();
   if(p==='tutorials')loadTutorials();
   if(p==='promocodes')loadPromocodesPage();
@@ -8763,7 +8838,33 @@ function updateBudgetDisplay(){
     if(ldRow)ldRow.style.display='flex';
   } else if(ldRow){ ldRow.style.display='none'; }
 
-  const bt=document.getElementById('bdTotal'); if(bt)bt.textContent=Math.max(0,budget-levelDiscIQD).toLocaleString()+' IQD';
+  // داشکاندنی گشتی (ئادمین، realtime) — لەسەر بودجە دوای داشکاندنی ئاست
+  const afterLevel = Math.max(0, budget - levelDiscIQD);
+  const gdRow=document.getElementById('bdGlobalDiscountRow');
+  const globalDiscIQD = _globalDiscountFor(afterLevel);
+  if(globalDiscIQD>0){
+    const gd=document.getElementById('bdGlobalDiscount'); if(gd)gd.textContent='-'+globalDiscIQD.toLocaleString()+' IQD';
+    if(gdRow)gdRow.style.display='flex';
+  } else if(gdRow){ gdRow.style.display='none'; }
+
+  // داشکاندنی ڕاستەوخۆ (Direct Discount) — ئادمین بۆ نرخێکی دیاریکراوی وەک ئەم ڕیکلامە دایدەنێت، بێ کۆد
+  const afterGlobal = Math.max(0, afterLevel - globalDiscIQD);
+  const ddRow=document.getElementById('bdDirectDiscountRow');
+  const _matchedDirect = _matchDirectDiscount(budget);
+  const directDiscIQD = _directDiscountAmount(_matchedDirect, afterGlobal);
+  if(directDiscIQD>0){
+    const dd=document.getElementById('bdDirectDiscount'); if(dd)dd.textContent='-'+Math.round(directDiscIQD).toLocaleString()+' IQD';
+    if(ddRow)ddRow.style.display='flex';
+  } else if(ddRow){ ddRow.style.display='none'; }
+
+  const finalBeforePromo = Math.max(0, afterGlobal - directDiscIQD);
+  const bt=document.getElementById('bdTotal'); if(bt)bt.textContent=Math.round(finalBeforePromo).toLocaleString()+' IQD';
+  // نرخی سەرەکی و نرخی دوای داشکاندن — هەردووکیان پیشان بدە کاتێک داشکاندنێک چالاکە
+  const strikeEl=document.getElementById('bdOriginalStrike');
+  if(strikeEl){
+    if(finalBeforePromo<budget){ strikeEl.style.display='inline'; strikeEl.textContent=Math.round(budget).toLocaleString()+' IQD'; }
+    else{ strikeEl.style.display='none'; }
+  }
 }
 
 function chgBud(d){ /* no-op */ }
@@ -9168,7 +9269,11 @@ function pickCard(el,id){
     if (exist?.length) { showPromoMsg('err', 'پێشتر ئەم کۆدەت بەکارهێناوە'); reset(); return; }
 
     const levelDiscIQD = Math.round(budget * (_levelDiscountPercent||0));
-    const total = Math.max(0, budget - levelDiscIQD); // دوای داشکاندنی ئاست
+    const afterLevel = Math.max(0, budget - levelDiscIQD);
+    const globalDiscIQD = _globalDiscountFor(afterLevel);
+    const afterGlobal = Math.max(0, afterLevel - globalDiscIQD);
+    const directDiscIQD = _directDiscountAmount(_matchDirectDiscount(budget), afterGlobal);
+    const total = Math.max(0, afterGlobal - directDiscIQD); // دوای داشکاندنی ئاست + گشتی + ڕاستەوخۆ
     const disc = promo.discount_type === 'percentage'
       ? (total * parseFloat(promo.discount_value)) / 100
       : Math.min(parseFloat(promo.discount_value), total);
@@ -9182,6 +9287,8 @@ function pickCard(el,id){
     discRow.style.display = 'flex';
     // Fix: update grand total display to reflect discounted price
     document.getElementById('bdTotal').textContent = Math.round(finalBudget).toLocaleString() + ' IQD';
+    const strikeEl2=document.getElementById('bdOriginalStrike');
+    if(strikeEl2){ strikeEl2.style.display='inline'; strikeEl2.textContent=Math.round(budget).toLocaleString()+' IQD'; }
     showPromoMsg('ok', '<i class="fas fa-check"></i> کۆدی داشکاندن دروستە — داشکاندنی ' + Math.round(disc).toLocaleString() + ' IQD');
     reset();
   }
@@ -9235,9 +9342,14 @@ function pickCard(el,id){
 
   if(link&&!link.startsWith('https://')){showToast('لینکەکە دەبێت بە https:// دەستپێبکات','err');return;}
 
-  // بودجەی کۆتایی (IQD) — دوای داشکاندنی ئاست و پڕۆمۆکۆد
+  // بودجەی کۆتایی (IQD) — دوای داشکاندنی ئاست، گشتی، ڕاستەوخۆ و پڕۆمۆکۆد
   const levelDiscIQD = Math.round(budget * (_levelDiscountPercent||0));
-  const rawTotal   = Math.max(0, budget - levelDiscIQD);
+  const _afterLevelForSubmit = Math.max(0, budget - levelDiscIQD);
+  const globalDiscIQD = _globalDiscountFor(_afterLevelForSubmit);
+  const _afterGlobalForSubmit = Math.max(0, _afterLevelForSubmit - globalDiscIQD);
+  const _matchedDirectForSubmit = _matchDirectDiscount(budget);
+  const directDiscIQD = _directDiscountAmount(_matchedDirectForSubmit, _afterGlobalForSubmit);
+  const rawTotal   = Math.max(0, _afterGlobalForSubmit - directDiscIQD);
   const finalTotal = _promoValidated ? _promoValidated.finalBudget : rawTotal;
   const _totalUSD  = dailyUSD * days;
 
@@ -9420,6 +9532,31 @@ function pickCard(el,id){
             level_discount_iqd     : levelDiscIQD,
             level_name_at_purchase : _levelDiscountName||null
           }).eq('ad_number', String(_adNumFinal));
+        }catch(e){}
+      }
+      // ── تۆمارکردنی داشکاندنی گشتی (ئادمین) بۆ ئەم ڕیکلامە — هەوڵدان تەنها، ئەگەر ستوونەکە بوونی نەبێت هیچ ناشکێت ──
+      if(globalDiscIQD>0 && _adNumFinal){
+        try{
+          await sb.from('pa_ads').update({
+            global_discount_iqd : globalDiscIQD
+          }).eq('ad_number', String(_adNumFinal));
+        }catch(e){}
+      }
+      // ── تۆمارکردنی داشکاندنی ڕاستەوخۆ (Direct Discount) — لەسەر ڕیکلامەکە و وەک بەکارهێنانێک ──
+      if(_matchedDirectForSubmit && directDiscIQD>0 && _adNumFinal){
+        try{
+          await sb.from('pa_ads').update({
+            direct_discount_id  : _matchedDirectForSubmit.id,
+            direct_discount_iqd : directDiscIQD
+          }).eq('ad_number', String(_adNumFinal));
+          await sb.from('direct_discount_usages').insert({
+            direct_discount_id : _matchedDirectForSubmit.id,
+            user_id             : cu.id,
+            ad_id                : _adNumFinal ? String(_adNumFinal) : null,
+            discount_applied    : parseFloat(directDiscIQD.toFixed(2)),
+            status               : 'active'
+          });
+          _loadDirectDiscounts(); // نوێکردنەوەی سنووری بەکارهێنان بۆ داواکاری داهاتوو
         }catch(e){}
       }
       showToast('داواکاری ڕیکلامەکەت نێردرا! +50 کۆینت وەرگرت','ok');
