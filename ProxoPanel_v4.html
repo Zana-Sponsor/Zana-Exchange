@@ -2000,6 +2000,20 @@ tr:hover td{background:rgba(28,35,51,.015);}
       <div class="modal-close" onclick="closeMo('moCreateDirectDiscount')"><i class="fas fa-xmark"></i></div>
     </div>
     <div class="field-wrap">
+      <label class="modal-lbl" style="margin-top:0">ناونیشانی داشکاندن (Discount Title) <span style="color:var(--rd)">*</span></label>
+      <input class="minp" type="text" id="ddTitle" placeholder="بۆ نموونە: Ramadan Mega Sale" oninput="clearFieldErr('ddTitle')">
+      <div class="field-err" id="ddTitle-err">ناونیشان پڕ بکەرەوە</div>
+    </div>
+    <div class="field-wrap">
+      <label class="modal-lbl">ناوی ڕیکلام/خزمەت (Ad / Service Name) <span style="color:var(--rd)">*</span></label>
+      <input class="minp" type="text" id="ddItemName" placeholder="بۆ نموونە: TikTok Ad #10432" oninput="clearFieldErr('ddItemName')">
+      <div class="field-err" id="ddItemName-err">ناو پڕ بکەرەوە</div>
+    </div>
+    <div class="field-wrap">
+      <label class="modal-lbl">لینکی View Offer <span style="font-size:10px;color:var(--mt)">(ئۆپشنی)</span></label>
+      <input class="minp" type="text" id="ddOfferUrl" placeholder="https://www.proxopages.com/ad/...">
+    </div>
+    <div class="field-wrap">
       <label class="modal-lbl" style="margin-top:0">نرخی ئامانجی ڕیکلام (IQD) <span style="color:var(--rd)">*</span></label>
       <input class="minp" type="number" id="ddTargetPrice" placeholder="بۆ نموونە: 18500" min="1" step="1" dir="ltr" style="font-family:'Inter'" oninput="clearFieldErr('ddTargetPrice')">
       <div class="field-err" id="ddTargetPrice-err">نرخی ئامانج پڕ بکەرەوە</div>
@@ -5595,9 +5609,14 @@ async function createDirectDiscount(){
   const restrictEnabled=document.getElementById('ddRestrictToggle').checked;
   const restrictedUserId=(document.getElementById('ddRestrictedUserId').value||'').trim();
   const description=(document.getElementById('ddDescription').value||'').trim();
+  const title=(document.getElementById('ddTitle').value||'').trim();
+  const itemName=(document.getElementById('ddItemName').value||'').trim();
+  const offerUrl=(document.getElementById('ddOfferUrl').value||'').trim();
   let valid=true;
   if(isNaN(targetPrice)||targetPrice<=0){showFieldErr('ddTargetPrice');valid=false;}
   if(isNaN(discVal)||discVal<=0){showFieldErr('ddDiscountValue');valid=false;}
+  if(!title){showFieldErr('ddTitle');valid=false;}
+  if(!itemName){showFieldErr('ddItemName');valid=false;}
   if(restrictEnabled&&!restrictedUserId){showToast('تکایە بەکارهێنەرێک هەڵبژێرە','rd');return;}
   if(!valid)return;
   if(discType==='percentage'&&(discVal<1||discVal>100)){showToast('پارچەی داشکان دەبێت لەنێوان 1 و 100 بێت','rd');return;}
@@ -5609,6 +5628,9 @@ async function createDirectDiscount(){
     is_public:!restrictEnabled,
     is_active:true,
     description:description||null,
+    title,
+    item_name:itemName,
+    offer_url:offerUrl||null,
     created_by:(await sb.auth.getUser()).data.user?.id
   };
   if(startsAt)row.starts_at=new Date(startsAt).toISOString();
@@ -5617,6 +5639,7 @@ async function createDirectDiscount(){
   const{error}=await sb.from('direct_discounts').insert(row);
   if(error){showToast('هەڵە: '+error.message,'rd');return;}
   showToast('✅ داشکاندنی ڕاستەوخۆ دروستکرا','gr');
+  announceDiscount(row);
   closeMo('moCreateDirectDiscount');
   document.getElementById('ddTargetPrice').value='';
   document.getElementById('ddDiscountValue').value='';
@@ -5624,12 +5647,63 @@ async function createDirectDiscount(){
   document.getElementById('ddStartsAt').value='';
   document.getElementById('ddExpiresAt').value='';
   document.getElementById('ddDescription').value='';
+  document.getElementById('ddTitle').value='';
+  document.getElementById('ddItemName').value='';
+  document.getElementById('ddOfferUrl').value='';
   document.getElementById('ddRestrictToggle').checked=false;
   document.getElementById('ddRestrictWrap').style.display='none';
   document.getElementById('ddRestrictTrack').style.background='#ccc';
   clearDdRestrict();
   selectDdType('fixed',document.querySelector('#ddTypeGroup>div'));
   loadDirectDiscountsAdmin();
+}
+
+// ══ داشکاندنی ڕاستەوخۆ — ناردنی ئیمەیلی ئاگادارکردنەوە بۆ بەکارهێنەرانی گونجاو ══
+async function announceDiscount(d){
+  try{
+    // 1) بەکارهێنەرانی گونجاو: تایبەت بۆ یەک بەکارهێنەر، یاخود گشتی بۆ هەموو
+    let recipients=[];
+    if(d.restricted_to_user_id){
+      const{data:prof}=await sb.from('profiles').select('email,full_name').eq('id',d.restricted_to_user_id).single();
+      if(prof?.email) recipients=[{email:prof.email,name:prof.full_name||''}];
+    }else{
+      const{data:profs}=await sb.from('profiles').select('email,full_name').not('email','is',null);
+      recipients=(profs||[]).filter(p=>p.email).map(p=>({email:p.email,name:p.full_name||''}));
+    }
+    if(!recipients.length)return;
+
+    // 2) نرخی سەرەکی/داشکاندن/کۆتایی بۆ ئیمەیلەکە
+    const originalPrice=d.target_price_iqd;
+    const discountAmount=d.discount_type==='percentage'
+      ?Math.round(originalPrice*d.discount_value/100)
+      :Math.round(d.discount_value);
+    const finalPrice=Math.max(0,originalPrice-discountAmount);
+    const fmtDate=v=>v?new Date(v).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'';
+
+    // 3) ناردنی webhook بۆ n8n (هەمان endpoint کە ئیمەیلەکانی تر بەکاریدەهێنن)
+    await fetch('https://n8n.proxopages.com/webhook/send_otp1',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        type:'discount_announcement',
+        discount:{
+          title:d.title||'New Discount',
+          itemName:d.item_name||'—',
+          originalPrice,
+          discountType:d.discount_type,
+          discountValue:d.discount_value,
+          finalPrice,
+          startDate:fmtDate(d.starts_at),
+          expiresDate:fmtDate(d.expires_at),
+          maxUsesPerUser:d.max_uses_per_user||0,
+          isPublic:d.is_public,
+          offerUrl:d.offer_url||'https://www.proxopages.com'
+        },
+        recipients,
+        app:'ProxoPanel'
+      })
+    });
+  }catch(_annErr){/* silent — هەمان شێوازی webhookـەکانی تر */}
 }
 
 async function toggleDirectDiscountAdmin(id,isActive){
