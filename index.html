@@ -15254,6 +15254,12 @@ let _annDismissed = false;
 // ═══ USER STORY (وەک ستۆری — یەک جار پیشان دەدرێت) ═══════════════
 // ════════════════════════════════════════════════════════════════
 let _storyTimer = null, _storyData = null;
+const _STORY_NAV_LABELS = {
+  home:'سەرەکی',create:'سپۆنسەری نوێ',proxolink:'ئامرازەکان',tutorials:'فێرکارییەکان',
+  txhistory:'مێژووی مامەڵەکان',profile:'پرۆفایل',myads:'ڕیکلامەکانم',gifts:'خەڵاتەکان',
+  promocodes:'کۆدی داشکاندن',wallet:'جزدان',notifications:'ئاگادارییەکان',support:'پشتگیری',
+  challenges:'ئەرکەکان',levels:'ئاستەکان',adcalc:'ژمێرکاری ڕیکلام'
+};
 
 async function loadUserStory() {
   try {
@@ -15290,9 +15296,18 @@ function _showUserStory(story) {
   clearTimeout(_storyTimer);
   _storyTimer = setTimeout(() => closeUserStory(), dur * 1000);
   if (linkBtn) {
-    if (story.link && story.link.trim()) {
+    // پشتگیری فۆرماتی نوێ (linkType/linkTarget) و فۆرماتی کۆن (link — تەنها لینکی دەرەکی)
+    const navType = story.linkType || (story.link ? 'url' : 'none');
+    const navTarget = story.linkTarget || story.link || '';
+    if (navType === 'section' && navTarget) {
+      const _sec = _STORY_NAV_LABELS[navTarget] || 'بینینی زیاتر';
+      linkBtn.querySelector('span').textContent = _sec;
       linkBtn.style.display = 'flex';
-      linkBtn.onclick = (e) => { e.stopPropagation(); window.open(story.link.trim(), '_blank', 'noopener,noreferrer'); closeUserStory(); };
+      linkBtn.onclick = (e) => { e.stopPropagation(); closeUserStory(); if (typeof goPage === 'function') goPage(navTarget); };
+    } else if (navType === 'url' && navTarget) {
+      linkBtn.querySelector('span').textContent = 'بینینی زیاتر';
+      linkBtn.style.display = 'flex';
+      linkBtn.onclick = (e) => { e.stopPropagation(); window.open(navTarget, '_blank', 'noopener,noreferrer'); closeUserStory(); };
     } else {
       linkBtn.style.display = 'none';
       linkBtn.onclick = null;

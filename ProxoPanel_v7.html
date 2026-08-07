@@ -1163,16 +1163,42 @@ tr:hover td{background:rgba(28,35,51,.015);}
         <label class="modal-lbl">ماوەی پیشاندان (چرکە)</label>
         <input class="minp" type="number" id="storyDuration" value="5" min="3" max="15" step="1">
 
-        <label class="modal-lbl">لینک کاتێک کلیکی لێدەکرێت <span style="font-size:10px;color:var(--mt)">(ئارەزووکاری)</span></label>
-        <input class="minp" type="text" id="storyLink" placeholder="بۆ نموونە: https://..." dir="ltr" style="text-align:left">
+        <label class="modal-lbl">کلیک بکە بیباتە کوێ؟ <span style="font-size:10px;color:var(--mt)">(ئارەزووکاری)</span></label>
+        <select class="minp" id="storyNavType" style="background:var(--bg);margin-bottom:8px" onchange="storyNavTypeChange()">
+          <option value="none">🚫 بێ لینک — تەنها وێنە</option>
+          <option value="section">📱 بەشی ناوخۆیی ئەپ</option>
+          <option value="url">🔗 لینکی دەرەکی</option>
+        </select>
+        <div id="storyNavSectionWrap" style="display:none;margin-bottom:12px">
+          <select class="minp" id="storyNavSection" style="background:var(--bg)">
+            <option value="home">🏠 سەرەکی</option>
+            <option value="create">📢 سپۆنسەری نوێ (ڕیکلام دروست بکە)</option>
+            <option value="proxolink">🔗 ئامرازەکان</option>
+            <option value="tutorials">🎓 فێرکاریەکان</option>
+            <option value="txhistory">📋 مێژووی مامەڵەکان</option>
+            <option value="profile">👤 پرۆفایل</option>
+            <option value="myads">📊 ڕیکلامەکانم</option>
+            <option value="gifts">🎁 خەڵاتەکان</option>
+            <option value="promocodes">🏷️ کۆدی داشکاندن</option>
+            <option value="wallet">👛 جزدان</option>
+            <option value="notifications">🔔 ئاگادارییەکان</option>
+            <option value="support">🛟 پشتگیری</option>
+            <option value="challenges">✅ ئەرکەکان</option>
+            <option value="levels">🏆 ئاستەکان</option>
+            <option value="adcalc">🧮 ژمێرکاری ڕیکلام</option>
+          </select>
+        </div>
+        <div id="storyNavUrlWrap" style="display:none;margin-bottom:12px">
+          <input class="minp" type="text" id="storyLink" placeholder="بۆ نموونە: https://..." dir="ltr" style="text-align:left">
+        </div>
 
-        <button class="modal-btn dark" onclick="saveUserStory()" style="margin-top:12px;width:100%">
+        <button class="modal-btn dark" onclick="saveUserStory()" style="margin-top:4px;width:100%">
           <i class="fas fa-save"></i> پاشەکەوتکردن و بڵاوکردنەوە
         </button>
         <div id="storyMsg" style="display:none;margin-top:10px;padding:9px 12px;border-radius:10px;font-size:12.5px;font-weight:600"></div>
         <div class="info-box" style="margin-top:14px;border-right-color:#db2777">
           <i class="fas fa-info-circle" style="margin-left:6px;color:#db2777"></i>
-          هەر جارێک وێنەیەکی نوێ باربکەیت و پاشەکەوتی بکەیت، بۆ هەموو بەکارهێنەران جارێکی تر دەردەکەوێت — تەنانەت ئەوانەی پێشووتریان بینیبوو.
+          هەر جارێک وێنەیەکی نوێ باربکەیت و پاشەکەوتی بکەیت، بۆ هەموو بەکارهێنەران جارێکی تر دەردەکەوێت — تەنانەت ئەوانەی پێشووتریان بینیبوو. یەکسەر بێ ڕیفرێش دەردەکەوێت (realtime).
         </div>
       </div>
     </div>
@@ -8223,6 +8249,12 @@ function storyClearImg() {
   document.getElementById('storyImgInp').value = '';
 }
 
+function storyNavTypeChange() {
+  const type = document.getElementById('storyNavType').value;
+  document.getElementById('storyNavSectionWrap').style.display = type === 'section' ? 'block' : 'none';
+  document.getElementById('storyNavUrlWrap').style.display = type === 'url' ? 'block' : 'none';
+}
+
 async function loadUserStoryAdmin() {
   try {
     const {data: storyRow} = await sb.from('pa_settings').select('value').eq('key','app_story').single();
@@ -8232,7 +8264,12 @@ async function loadUserStoryAdmin() {
         document.getElementById('storyActiveChk').checked = !!story.active;
         document.getElementById('storyStatusLbl').textContent = story.active ? 'ستۆری ئێستا چالاکە ✅' : 'ستۆری ئێستا ناچالاکە';
         document.getElementById('storyDuration').value = story.duration || 5;
-        document.getElementById('storyLink').value = story.link || '';
+        // پشتگیری فۆرماتی کۆن (تەنها story.link — لینکی دەرەکی)
+        const navType = story.linkType || (story.link ? 'url' : 'none');
+        document.getElementById('storyNavType').value = navType;
+        if (navType === 'section') document.getElementById('storyNavSection').value = story.linkTarget || 'create';
+        else if (navType === 'url') document.getElementById('storyLink').value = story.linkTarget || story.link || '';
+        storyNavTypeChange();
         _storyLastTimestamp = story.timestamp || null;
         if (story.image) {
           _storyImgB64 = story.image;
@@ -8255,11 +8292,15 @@ async function toggleStoryActive(chk) {
 async function saveUserStory() {
   const active = document.getElementById('storyActiveChk').checked;
   const duration = parseInt(document.getElementById('storyDuration').value) || 5;
-  const link = document.getElementById('storyLink').value.trim();
+  const navType = document.getElementById('storyNavType').value;
+  const linkTarget = navType === 'section' ? document.getElementById('storyNavSection').value
+                    : navType === 'url' ? document.getElementById('storyLink').value.trim()
+                    : '';
   const msgEl = document.getElementById('storyMsg');
   if (active && !_storyImgB64) { showToast('پێویستە سەرەتا وێنەیەک هەڵبژێریت','rd'); return; }
+  if (navType === 'url' && !linkTarget) { showToast('تکایە لینکەکە بنووسە یان جۆرەکە بگۆڕە','rd'); return; }
   // هەر جارێک پاشەکەوتی بکرێت، timestamp نوێ دەبێت — بۆ ئەوەی بۆ هەموو بەکارهێنەران (تەنانەت ئەوانەی پێشتر بینیویانە) جارێکی تر دەربکەوێت
-  const payload = { active, duration, link, timestamp: Date.now() };
+  const payload = { active, duration, linkType: navType, linkTarget, timestamp: Date.now() };
   if (_storyImgB64) payload.image = _storyImgB64;
   const val = JSON.stringify(payload);
   const btn = document.querySelector('[onclick="saveUserStory()"]');
