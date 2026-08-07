@@ -1646,6 +1646,19 @@ html{scroll-behavior:smooth;}
 .phone-req-btn:disabled{opacity:.5;pointer-events:none;}
 .phone-req-err{font-size:12px;color:var(--rd);text-align:center;margin-top:10px;min-height:18px;}
 
+/* ══ USER STORY (وەک ستۆری، یەک جار بۆ هەر بەکارهێنەرێک) ══ */
+#userStoryOverlay{position:fixed;inset:0;z-index:99970;background:rgba(8,10,20,0);display:none;align-items:center;justify-content:center;padding:0;opacity:0;transition:opacity .35s ease,background-color .35s ease;}
+#userStoryOverlay.show{display:flex;opacity:1;background:rgba(8,10,20,.86);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);}
+.story-card{position:relative;width:100%;height:100%;max-width:460px;max-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;transform:scale(.9);transition:transform .38s cubic-bezier(.34,1.56,.64,1);}
+#userStoryOverlay.show .story-card{transform:scale(1);}
+.story-img-wrap{position:relative;width:100%;height:100%;}
+.story-img-wrap img{width:100%;height:100%;object-fit:contain;display:block;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
+.story-progress-wrap{position:absolute;top:calc(12px + env(safe-area-inset-top));left:12px;right:12px;height:3px;background:rgba(255,255,255,.3);border-radius:3px;overflow:hidden;z-index:3;}
+.story-progress-bar{height:100%;width:0%;background:#fff;border-radius:3px;}
+.story-progress-bar.anim{transition:width linear;}
+.story-close-btn{position:absolute;top:calc(24px + env(safe-area-inset-top));left:12px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.35);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;z-index:3;cursor:pointer;}
+.story-link-btn{position:absolute;bottom:calc(28px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);display:none;align-items:center;gap:8px;padding:13px 26px;background:#fff;color:var(--dark);border-radius:30px;font-family:'R',sans-serif;font-size:14px;font-weight:800;box-shadow:0 8px 24px rgba(0,0,0,.35);cursor:pointer;z-index:3;white-space:nowrap;}
+
 /* ══ GOOGLE PLAY BANNER ══ */
 #gplayBanner{display:flex;align-items:center;gap:10px;background:#1a1a2e;color:#fff;padding:10px 14px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.1);}
 #gplayBanner.gp-hidden{display:none!important;}
@@ -7091,6 +7104,7 @@ async function boot(){
   // دەستپێک لە هاشی URL — ئەگەر بەشێکی دیاریکراو هەبوو ئەویش بکەرەوە
   (function(){const _h=window.location.hash.slice(1);const _hashable=pages.filter(x=>x!=='tutplayer');goPage(_hashable.includes(_h)?_h:'home');})();
   loadHomeBanner();
+  loadUserStory(); // ── ستۆری بەکارهێنەران (یەک جار) ──
   startNotifListener(); // ── Firebase realtime notifications ──
   startWalletListener(); // ── Firebase balance realtime ──
   startReqListener();    // ── Firebase wallet requests realtime ──
@@ -7164,6 +7178,13 @@ async function boot(){
   sb.channel('banner_rt')
     .on('postgres_changes',{event:'*',schema:'public',table:'pa_banners'},()=>{
       loadHomeBanner();
+    })
+    .subscribe();
+
+  // Realtime: New story published → show instantly (if not already seen)
+  sb.channel('story_rt')
+    .on('postgres_changes',{event:'*',schema:'public',table:'pa_settings',filter:'key=eq.app_story'},()=>{
+      loadUserStory();
     })
     .subscribe();
 
@@ -15229,6 +15250,66 @@ async function claimChallenge(challengeId) {
 // ════════════════════════════════════════════════════════════════
 let _annDismissed = false;
 
+// ════════════════════════════════════════════════════════════════
+// ═══ USER STORY (وەک ستۆری — یەک جار پیشان دەدرێت) ═══════════════
+// ════════════════════════════════════════════════════════════════
+let _storyTimer = null, _storyData = null;
+
+async function loadUserStory() {
+  try {
+    const {data, error} = await sb.from('pa_settings').select('value').eq('key','app_story').single();
+    if (error || !data?.value) return;
+    const story = JSON.parse(data.value);
+    if (!story.active || !story.image) return;
+    const seenTs = localStorage.getItem('proxo_seen_story_ts');
+    if (seenTs && String(story.timestamp) === seenTs) return; // ئەم ستۆریە پێشتر بینراوە
+    _storyData = story;
+    _showUserStory(story);
+  } catch(e) {}
+}
+
+function _showUserStory(story) {
+  const ov = document.getElementById('userStoryOverlay');
+  const img = document.getElementById('storyImg');
+  const bar = document.getElementById('storyProgressBar');
+  const linkBtn = document.getElementById('storyLinkBtn');
+  if (!ov || !img || !bar) return;
+  img.src = story.image;
+  const dur = (story.duration && story.duration > 0) ? story.duration : 5;
+  bar.classList.remove('anim');
+  bar.style.transitionDuration = '0s';
+  bar.style.width = '0%';
+  ov.classList.add('show');
+  // force reflow پێش دەستپێکردنی ئەنیمەیشن — بۆ ئەوەی گۆڕانکاری width بگاتە چاو
+  void bar.offsetWidth;
+  requestAnimationFrame(() => {
+    bar.classList.add('anim');
+    bar.style.transitionDuration = dur + 's';
+    bar.style.width = '100%';
+  });
+  clearTimeout(_storyTimer);
+  _storyTimer = setTimeout(() => closeUserStory(), dur * 1000);
+  if (linkBtn) {
+    if (story.link && story.link.trim()) {
+      linkBtn.style.display = 'flex';
+      linkBtn.onclick = (e) => { e.stopPropagation(); window.open(story.link.trim(), '_blank', 'noopener,noreferrer'); closeUserStory(); };
+    } else {
+      linkBtn.style.display = 'none';
+      linkBtn.onclick = null;
+    }
+  }
+}
+
+function closeUserStory() {
+  const ov = document.getElementById('userStoryOverlay');
+  if (!ov || !ov.classList.contains('show')) return;
+  clearTimeout(_storyTimer);
+  ov.classList.remove('show');
+  if (_storyData && _storyData.timestamp) {
+    try { localStorage.setItem('proxo_seen_story_ts', String(_storyData.timestamp)); } catch(e) {}
+  }
+}
+
 async function loadAppAnnouncement() {
   try {
     const {data, error} = await sb.from('pa_settings').select('value').eq('key','app_announcement').single();
@@ -15596,6 +15677,15 @@ if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostn
   </div>
 </div>
 
+<!-- USER STORY OVERLAY -->
+<div id="userStoryOverlay" onclick="closeUserStory()">
+  <div class="story-card">
+    <div class="story-progress-wrap"><div class="story-progress-bar" id="storyProgressBar"></div></div>
+    <div class="story-close-btn" onclick="closeUserStory()"><i class="fas fa-xmark"></i></div>
+    <div class="story-img-wrap"><img id="storyImg" src="" alt="ستۆری"></div>
+    <div class="story-link-btn" id="storyLinkBtn"><i class="fas fa-arrow-up-left"></i><span>بینینی زیاتر</span></div>
+  </div>
+</div>
 
 <script>
 /* ══ GOOGLE PLAY BANNER ══ */
