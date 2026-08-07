@@ -743,7 +743,7 @@ tr:hover td{background:rgba(28,35,51,.015);}
       <div class="sec-hdr"><h3>داواکاریەکانی پارەدان</h3></div>
       <div class="tbl-wrap">
         <div class="tbl-filter">
-          <input class="tbl-search" id="depSearch" placeholder="گەڕان..." oninput="filterDeps()">
+          <input class="tbl-search" id="depSearch" placeholder="گەڕان بەپێی ناو یان ئایدی داواکاری..." oninput="filterDeps()">
           <div class="chip on" data-df="all" onclick="filterDeps(this)">هەموو</div>
           <div class="chip yw" data-df="pending" onclick="filterDeps(this)">چاوەڕوان</div>
           <div class="chip gr" data-df="approved" onclick="filterDeps(this)">پەسەندکراو</div>
@@ -760,7 +760,7 @@ tr:hover td{background:rgba(28,35,51,.015);}
       <div class="sec-hdr"><h3>هەموو ڕیکلامەکان</h3></div>
       <div class="tbl-wrap">
         <div class="tbl-filter">
-          <input class="tbl-search" id="adsSearch" placeholder="گەڕان..." oninput="filterAds()">
+          <input class="tbl-search" id="adsSearch" placeholder="گەڕان بەپێی ناو یان ئایدی ڕیکلام..." oninput="filterAds()">
           <div class="chip on" data-af="all" onclick="filterAds(this)">هەموو</div>
           <div class="chip yw" data-af="pending" onclick="filterAds(this)">چاوەڕوان</div>
           <div class="chip gr" data-af="active" onclick="filterAds(this)">چالاک</div>
@@ -3294,7 +3294,7 @@ function renderDeposits(q=''){
   _depMap={}; allDeposits.forEach(d=>{_depMap[d.id]=d;});
   let list=allDeposits;
   if(depFilter!=='all')list=list.filter(d=>d.status===depFilter);
-  if(q)list=list.filter(d=>(d.profiles?.full_name||'').toLowerCase().includes(q)||(d.profiles?.email||'').toLowerCase().includes(q));
+  if(q)list=list.filter(d=>(d.profiles?.full_name||'').toLowerCase().includes(q)||(d.profiles?.email||'').toLowerCase().includes(q)||String(d.deposit_number||'').toLowerCase().includes(q)||String(d.id||'').toLowerCase().includes(q));
   document.getElementById('depositsTableWrap').innerHTML=renderDepTable(list,false);
 }
 
@@ -3423,7 +3423,7 @@ function renderAdsTable(q=''){
   _adMap={}; allAds.forEach(a=>{_adMap[a.id]=a;});
   let list=allAds;
   if(adFilter!=='all')list=list.filter(a=>a.status===adFilter);
-  if(q)list=list.filter(a=>(a.profiles?.full_name||'').toLowerCase().includes(q)||(a.title||'').toLowerCase().includes(q));
+  if(q)list=list.filter(a=>(a.profiles?.full_name||'').toLowerCase().includes(q)||(a.title||'').toLowerCase().includes(q)||String(a.ad_number||'').toLowerCase().includes(q)||String(a.id||'').toLowerCase().includes(q));
   const wrap=document.getElementById('adsTableWrap');
   if(!list.length){wrap.innerHTML='<div class="empty"><i class="fas fa-rectangle-ad"></i><p>هیچ ڕیکلامێک نەدۆزرایەوە</p></div>';return;}
   const gs={messages:'نامە',engagement:'کارلێک',views:'ڤیووو'};
