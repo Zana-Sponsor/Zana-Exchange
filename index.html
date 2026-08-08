@@ -3604,7 +3604,7 @@ function _toWebP(dataUrl,quality){
           <span id="bdLevelDiscount" style="color:var(--gr);font-weight:700;font-family:'Inter',sans-serif">-0 IQD</span>
         </div>
         <div id="bdDirectDiscountRow" class="create-price-row" style="display:none;background:linear-gradient(90deg,rgba(219,39,119,.07),transparent);margin:0 -14px;padding:8px 14px;border-radius:10px">
-          <span style="color:#db2777;display:flex;align-items:center;gap:5px;font-weight:700"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><polygon points="4,4 12,4 21,13 12.5,21.5 3,12.5"/><circle cx="8" cy="8" r="1.3" fill="currentColor" stroke="none"/></svg><span id="bdDirectDiscountLbl">داشکاندنی تایبەت 🔥</span></span>
+          <span style="color:#db2777;display:flex;align-items:center;gap:5px;font-weight:700"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><polygon points="4,4 12,4 21,13 12.5,21.5 3,12.5"/><circle cx="8" cy="8" r="1.3" fill="currentColor" stroke="none"/></svg><span id="bdDirectDiscountLbl">داشکاندن</span></span>
           <span id="bdDirectDiscount" style="color:#db2777;font-weight:800;font-family:'Inter',sans-serif">-0 IQD</span>
         </div>
         <div id="bdDiscountRow" class="create-price-row" style="display:none">
@@ -9339,7 +9339,7 @@ function pickCard(el,id){
           :Math.min(Math.round(parseFloat(picked.discount_value)),targetPriceIQD);
         _directDiscountApplied={...picked,discountAmount:discAmt};
         if(row){
-          const lbl=document.getElementById('bdDirectDiscountLbl'); if(lbl)lbl.textContent=(picked.title||'داشکاندنی تایبەت')+' 🔥';
+          const lbl=document.getElementById('bdDirectDiscountLbl'); if(lbl)lbl.textContent='داشکاندن';
           const val=document.getElementById('bdDirectDiscount'); if(val)val.textContent='-'+discAmt.toLocaleString()+' IQD';
           row.style.display='flex';
         }

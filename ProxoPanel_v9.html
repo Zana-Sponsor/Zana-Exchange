@@ -5934,15 +5934,19 @@ async function announceDiscount(d){
     //    پێشتر تەنها ئیمەیل دەنێردرا و هیچ ئاگاداریەکی ناو ئەپی نەبوو، بۆیە زۆربەی بەکارهێنەران نەیانبینی
     //    نامەکە بە کورتی — وردەکاری نرخ لە کارتێکی تایبەتدا لە ئەپەکەدا پیشان دەدرێت (meta)
     const notifTitle='🔥 '+(d.title||'داشکاندنی نوێ');
-    const notifBody=d.item_name?('داشکاندنێکی تایبەت بۆ '+d.item_name+' ئامادەیە'):'داشکاندنێکی تایبەت بۆت ئامادەیە';
+    // نامەکە ناو ئەپدا — تەنها ناونیشانی ئادمین دەردەکەوێت، بەبێ دەقی گشتی زیادە
+    // وردەکاری نرخ (نرخی سەرەکی/کۆتایی/کاتی کۆتایی) لە کارتێکی تایبەت لەژێر ناونیشانەکەدا پیشان دەدرێت (meta)
+    const notifBody='';
+    // دەقی push (دەرەوەی ئەپ) — لێرە کارتی وردەکاری نرخ نییە، بۆیە خەتێکی کورتی زانیاری پێویستە
+    const pushBody=d.item_name?(d.item_name+' — '+finalPrice.toLocaleString()+' IQD'):(finalPrice.toLocaleString()+' IQD');
     const withId=recipients.filter(r=>r.id);
     if(withId.length){
-      const rows=withId.map(r=>({user_id:r.id,type:'direct_discount',title:notifTitle,body:notifBody,is_read:false,meta:{item_name:d.item_name||null,original_price_iqd:originalPrice,final_price_iqd:finalPrice,expires_at:d.expires_at||null}}));
+      const rows=withId.map(r=>({user_id:r.id,type:'direct_discount',title:notifTitle,body:notifBody||null,is_read:false,meta:{item_name:d.item_name||null,original_price_iqd:originalPrice,final_price_iqd:finalPrice,expires_at:d.expires_at||null}}));
       for(let i=0;i<rows.length;i+=500){
         const{error:_ne}=await sb.from('pa_notifications').insert(rows.slice(i,i+500));
         if(_ne)console.warn('[announceDiscount] pa_notifications insert:',_ne.message);
       }
-      withId.forEach(r=>{ _fbPushNotif(r.id, notifTitle, notifBody, 'direct_discount'); });
+      withId.forEach(r=>{ _fbPushNotif(r.id, notifTitle, pushBody, 'direct_discount'); });
     }
 
     // 4) ناردنی ئیمەیل — وەک کەناڵێکی زیادە، لەگەڵ ئاگاداری ناو ئەپ
