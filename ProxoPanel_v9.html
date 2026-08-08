@@ -5932,11 +5932,12 @@ async function announceDiscount(d){
 
     // 3) ئاگاداری ناو ئەپ — ئەمە ئەو ڕێگایەیە کە بەکارهێنەران ڕاستەوخۆ دەیبینن (زەنگی ئاگاداری + Firebase push)
     //    پێشتر تەنها ئیمەیل دەنێردرا و هیچ ئاگاداریەکی ناو ئەپی نەبوو، بۆیە زۆربەی بەکارهێنەران نەیانبینی
+    //    نامەکە بە کورتی — وردەکاری نرخ لە کارتێکی تایبەتدا لە ئەپەکەدا پیشان دەدرێت (meta)
     const notifTitle='🔥 '+(d.title||'داشکاندنی نوێ');
-    const notifBody=`${d.item_name?d.item_name+' — ':''}لە ${Math.round(originalPrice).toLocaleString()} بۆ ${finalPrice.toLocaleString()} IQD${d.expires_at?' (بۆ '+fmtDate(d.expires_at)+')':''}`;
+    const notifBody=d.item_name?('داشکاندنێکی تایبەت بۆ '+d.item_name+' ئامادەیە'):'داشکاندنێکی تایبەت بۆت ئامادەیە';
     const withId=recipients.filter(r=>r.id);
     if(withId.length){
-      const rows=withId.map(r=>({user_id:r.id,type:'direct_discount',title:notifTitle,body:notifBody,is_read:false,meta:{target_price_iqd:originalPrice,final_price_iqd:finalPrice}}));
+      const rows=withId.map(r=>({user_id:r.id,type:'direct_discount',title:notifTitle,body:notifBody,is_read:false,meta:{item_name:d.item_name||null,original_price_iqd:originalPrice,final_price_iqd:finalPrice,expires_at:d.expires_at||null}}));
       for(let i=0;i<rows.length;i+=500){
         const{error:_ne}=await sb.from('pa_notifications').insert(rows.slice(i,i+500));
         if(_ne)console.warn('[announceDiscount] pa_notifications insert:',_ne.message);

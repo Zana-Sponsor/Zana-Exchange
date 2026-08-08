@@ -2226,6 +2226,8 @@ function _clipboardFallback(text, onSuccess, onFail) {
   border-top:1px solid var(--b1);padding-top:11px;margin-top:4px;
   display:flex;justify-content:space-between;align-items:center;
 }
+#bdDirectDiscountRow{animation:bdDirectIn .35s cubic-bezier(.34,1.56,.64,1) both;}
+@keyframes bdDirectIn{from{opacity:0;transform:translateY(-4px) scale(.96);}to{opacity:1;transform:translateY(0) scale(1);}}
 
 /* Submit */
 .create-submit{
@@ -2395,22 +2397,50 @@ function _clipboardFallback(text, onSuccess, onFail) {
 }
 .tt-paste-btn:active { background:var(--dark);color:#fff; }
 
-/* ══ EXPECTED RESULTS — REDESIGNED ══ */
-.est5-grid{display:flex;flex-direction:column;gap:9px;}
-.est5-card{border-radius:16px;padding:13px 14px;display:flex;flex-direction:row;align-items:center;gap:13px;position:relative;overflow:hidden;}
-.est5-views{background:rgba(99,102,241,.07);border:1.5px solid rgba(99,102,241,.14);}
-.est5-clicks{background:rgba(22,163,74,.07);border:1.5px solid rgba(22,163,74,.14);}
-.est5-ico-wrap{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
-.est5-views .est5-ico-wrap{background:rgba(99,102,241,.15);color:#6366f1;}
-.est5-clicks .est5-ico-wrap{background:rgba(22,163,74,.15);color:#16a34a;}
+/* ══ EXPECTED RESULTS — REDESIGNED + ANIMATED ══ */
+.est5-grid{display:flex;flex-direction:column;gap:10px;}
+.est5-card{border-radius:18px;padding:14px 15px;display:flex;flex-direction:row;align-items:center;gap:13px;position:relative;overflow:hidden;transition:transform .16s ease,box-shadow .16s ease;animation:est5In .5s cubic-bezier(.25,.46,.45,.94) both;}
+.est5-card:active{transform:scale(.97);}
+.est5-views{background:linear-gradient(135deg,rgba(99,102,241,.11),rgba(99,102,241,.02));border:1.5px solid rgba(99,102,241,.16);box-shadow:0 4px 16px rgba(99,102,241,.08);animation-delay:.05s;}
+.est5-clicks{background:linear-gradient(135deg,rgba(22,163,74,.11),rgba(22,163,74,.02));border:1.5px solid rgba(22,163,74,.16);box-shadow:0 4px 16px rgba(22,163,74,.08);animation-delay:.15s;}
+@keyframes est5In{from{opacity:0;transform:translateY(10px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+.est5-ico-wrap{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;position:relative;}
+.est5-views .est5-ico-wrap{background:rgba(99,102,241,.16);color:#6366f1;}
+.est5-clicks .est5-ico-wrap{background:rgba(22,163,74,.16);color:#16a34a;}
+.est5-ico-wrap::after{content:'';position:absolute;inset:-4px;border-radius:16px;border:2px solid currentColor;opacity:0;animation:est5Pulse 2.4s ease-out infinite;}
+.est5-views .est5-ico-wrap::after{animation-delay:.3s;}
+.est5-clicks .est5-ico-wrap::after{animation-delay:1.2s;}
+@keyframes est5Pulse{0%{opacity:.5;transform:scale(.85);}70%{opacity:0;transform:scale(1.25);}100%{opacity:0;transform:scale(1.25);}}
 .est5-card-info{flex:1;}
-.est5-range{font-size:15px;font-weight:900;line-height:1.2;font-family:'Inter',sans-serif;}
+.est5-range{font-size:16px;font-weight:900;line-height:1.2;font-family:'Inter',sans-serif;letter-spacing:-.2px;}
 .est5-views .est5-range{color:#4f46e5;}
 .est5-clicks .est5-range{color:#15803d;}
-.est5-lbl{font-size:10.5px;font-weight:600;color:#8b95a8;margin-top:2px;}
+.est5-lbl{font-size:11px;font-weight:600;color:#8b95a8;margin-top:2px;}
 .est5-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;flex-shrink:0;}
 .est5-views .est5-badge{background:rgba(99,102,241,.12);color:#6366f1;}
 .est5-clicks .est5-badge{background:rgba(22,163,74,.12);color:#15803d;}
+
+/* ══ CREATE AD — smoother scroll + refreshed type scale (scoped to this page only) ══ */
+#pgCreate{scroll-behavior:smooth;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;}
+#pgCreate .create-sec-lbl{font-size:15px;letter-spacing:-.2px;}
+#pgCreate .csub{font-size:11.5px;letter-spacing:.2px;}
+#pgCreate .ring-val-sm{font-size:22px;font-weight:800;}
+#pgCreate .ring-lbl-sm{font-size:10px;}
+#pgCreate .bud-total-soft-usd{font-size:22px;font-weight:800;}
+#pgCreate .bud-total-soft-lbl{font-size:12px;}
+#pgCreate .create-price-lbl{font-size:12.5px;}
+#pgCreate .create-price-val{font-size:13.5px;}
+#pgCreate .create-price-total #bdTotalLbl{font-size:14px;}
+#pgCreate .create-price-total #bdTotal{font-size:16px;}
+#pgCreate .create-submit{font-size:16px;letter-spacing:.2px;}
+#pgCreate .gseg-title{font-size:14.5px;}
+#pgCreate .age-grp{font-size:13px;}
+#pgCreate .gender-pill{font-size:13px;}
+#pgCreate .fchip{font-size:13px;}
+#pgCreate .create-warning-txt{font-size:12.5px;}
+#pgCreate .tt-inp{font-size:15.5px;}
+#pgCreate .tt-inp-ico{font-size:14px;}
+#pgCreate .tt-paste-btn{font-size:15px;}
 </style>
 <style>
 /* SOFT HERO */
@@ -3572,6 +3602,10 @@ function _toWebP(dataUrl,quality){
         <div id="bdLevelDiscountRow" class="create-price-row" style="display:none">
           <span style="color:var(--gr);display:flex;align-items:center;gap:5px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="15" r="6"/><path d="M9 10L6 3M15 10l3-7M9.5 15.5l1.7 1.7 3.3-3.4"/></svg><span id="bdLevelDiscountLbl">داشکاندنی ئاست</span></span>
           <span id="bdLevelDiscount" style="color:var(--gr);font-weight:700;font-family:'Inter',sans-serif">-0 IQD</span>
+        </div>
+        <div id="bdDirectDiscountRow" class="create-price-row" style="display:none;background:linear-gradient(90deg,rgba(219,39,119,.07),transparent);margin:0 -14px;padding:8px 14px;border-radius:10px">
+          <span style="color:#db2777;display:flex;align-items:center;gap:5px;font-weight:700"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><polygon points="4,4 12,4 21,13 12.5,21.5 3,12.5"/><circle cx="8" cy="8" r="1.3" fill="currentColor" stroke="none"/></svg><span id="bdDirectDiscountLbl">داشکاندنی تایبەت 🔥</span></span>
+          <span id="bdDirectDiscount" style="color:#db2777;font-weight:800;font-family:'Inter',sans-serif">-0 IQD</span>
         </div>
         <div id="bdDiscountRow" class="create-price-row" style="display:none">
           <span style="color:var(--rd)">بڕی داشکان</span>
@@ -8209,7 +8243,7 @@ function goPage(p){
   if(p==='support')loadChat();
   if(p==='profile'){loadBal();loadReferralSection();loadProfile();}
   if(p==='home'){loadCoins();}
-  if(p==='create'){selectedAssetId=null;cardId=null;goal='messages';days=1;dailyUSD=10;dailyCost=18500;budget=18500;budgetTier=0;tierIndex=0;gender='all';adLocation='all';document.querySelectorAll('.loc-chips-wrap .fchip').forEach(function(x){x.classList.toggle('on',x.dataset.loc==='all');});document.querySelectorAll('.gender-pill').forEach(function(x){x.classList.toggle('on',x.dataset.gen==='all');});document.querySelectorAll('.bud-daily-btn').forEach((b,i)=>{b.classList.toggle('sel',i===0);});clearAssetSel&&clearAssetSel();document.querySelectorAll('.card-pick').forEach(x=>x.classList.remove('sel'));document.querySelectorAll('.goal-tab,.goal-tab-v2,.gseg-opt').forEach(x=>x.classList.toggle('on',x.dataset.g==='messages'));setTimeout(function(){if(typeof _animGoalPill==='function')_animGoalPill();if(typeof _animGenDark==='function')_animGenDark();if(typeof _animLocDark==='function')_animLocDark();},60);var _ani=document.getElementById('adNameTitle');var _nd2=new Date();if(_ani)_ani.value='New Ad '+_nd2.toLocaleDateString('en-GB').replace(/\//g,'/');var _tl2=document.getElementById('todayLbl');if(_tl2)_tl2.textContent=_nd2.toLocaleDateString('en-GB').replace(/\//g,'/');const _al=document.getElementById('adLink');if(_al)_al.value='';const _ac=document.getElementById('adCode');if(_ac)_ac.value='';const _pi=document.getElementById('promoCodeInp');if(_pi)_pi.value='';if(typeof clearPromoResult==='function')clearPromoResult();_levelDiscountPercent=0;_levelDiscountName='';updateBudgetDisplay();loadAssetsForDropdown();if(typeof _loadAdLevelDiscount==='function')_loadAdLevelDiscount();}
+  if(p==='create'){selectedAssetId=null;cardId=null;goal='messages';days=1;dailyUSD=10;dailyCost=18500;budget=18500;budgetTier=0;tierIndex=0;gender='all';adLocation='all';document.querySelectorAll('.loc-chips-wrap .fchip').forEach(function(x){x.classList.toggle('on',x.dataset.loc==='all');});document.querySelectorAll('.gender-pill').forEach(function(x){x.classList.toggle('on',x.dataset.gen==='all');});document.querySelectorAll('.bud-daily-btn').forEach((b,i)=>{b.classList.toggle('sel',i===0);});clearAssetSel&&clearAssetSel();document.querySelectorAll('.card-pick').forEach(x=>x.classList.remove('sel'));document.querySelectorAll('.goal-tab,.goal-tab-v2,.gseg-opt').forEach(x=>x.classList.toggle('on',x.dataset.g==='messages'));setTimeout(function(){if(typeof _animGoalPill==='function')_animGoalPill();if(typeof _animGenDark==='function')_animGenDark();if(typeof _animLocDark==='function')_animLocDark();},60);var _ani=document.getElementById('adNameTitle');var _nd2=new Date();if(_ani)_ani.value='New Ad '+_nd2.toLocaleDateString('en-GB').replace(/\//g,'/');var _tl2=document.getElementById('todayLbl');if(_tl2)_tl2.textContent=_nd2.toLocaleDateString('en-GB').replace(/\//g,'/');const _al=document.getElementById('adLink');if(_al)_al.value='';const _ac=document.getElementById('adCode');if(_ac)_ac.value='';const _pi=document.getElementById('promoCodeInp');if(_pi)_pi.value='';if(typeof clearPromoResult==='function')clearPromoResult();_levelDiscountPercent=0;_levelDiscountName='';if(typeof _directDiscountApplied!=='undefined'){_directDiscountApplied=null;}const _ddr=document.getElementById('bdDirectDiscountRow');if(_ddr)_ddr.style.display='none';updateBudgetDisplay();loadAssetsForDropdown();if(typeof _loadAdLevelDiscount==='function')_loadAdLevelDiscount();}
   if(p==='txhistory')loadTxHistory();
   if(p==='tutorials')loadTutorials();
   if(p==='promocodes')loadPromocodesPage();
@@ -8798,6 +8832,12 @@ function updateBudgetDisplay(){
   } else if(ldRow){ ldRow.style.display='none'; }
 
   const bt=document.getElementById('bdTotal'); if(bt)bt.textContent=Math.max(0,budget-levelDiscIQD).toLocaleString()+' IQD';
+
+  // داشکاندنی تایبەت (بێ کۆد) — پشکنین بکە بەپێی نرخی نوێ (debounced)
+  if(typeof _ddDebounce!=='undefined'){
+    clearTimeout(_ddDebounce);
+    _ddDebounce=setTimeout(()=>{ if(typeof _checkDirectDiscount==='function')_checkDirectDiscount(); },250);
+  }
 }
 
 function chgBud(d){ /* no-op */ }
@@ -9178,6 +9218,10 @@ function pickCard(el,id){
 // ═══ SUBMIT AD — fully atomic via RPC (no JS-side balance logic) ═══
 // ══ PROMO CODE STATE ══
   let _promoValidated = null;
+  // ══ DIRECT DISCOUNT STATE (بێ کۆد — خۆکار بەپێی نرخی ورد) ══
+  let _directDiscountApplied = null;
+  let _ddReqToken = 0;
+  let _ddDebounce = null;
 
   async function applyPromoCode() {
     const code = (document.getElementById('promoCodeInp').value || '').trim().toUpperCase();
@@ -9206,7 +9250,8 @@ function pickCard(el,id){
     if (exist?.length) { showPromoMsg('err', 'پێشتر ئەم کۆدەت بەکارهێناوە'); reset(); return; }
 
     const levelDiscIQD = Math.round(budget * (_levelDiscountPercent||0));
-    const total = Math.max(0, budget - levelDiscIQD); // دوای داشکاندنی ئاست
+    const directDiscIQD = _directDiscountApplied ? _directDiscountApplied.discountAmount : 0;
+    const total = Math.max(0, budget - levelDiscIQD - directDiscIQD); // دوای داشکاندنی ئاست و داشکاندنی تایبەت
     const disc = promo.discount_type === 'percentage'
       ? (total * parseFloat(promo.discount_value)) / 100
       : Math.min(parseFloat(promo.discount_value), total);
@@ -9235,6 +9280,75 @@ function pickCard(el,id){
     const el = document.getElementById('promoResult');
     el.className = 'promo-result'; el.innerHTML = '';
     document.getElementById('bdDiscountRow').style.display = 'none';
+  }
+
+  // ══ DIRECT DISCOUNT (بێ کۆد) — خۆکار دەگونجێت بەپێی نرخی وردی ڕیکلامەکە ══
+  // پشکنینی خشتەی direct_discounts بۆ داشکاندنێکی گونجاو بەبێ پێویستی بە کۆد
+  function _recalcTotalDisplay(){
+    const levelDiscIQD = Math.round(budget * (_levelDiscountPercent||0));
+    const directDiscIQD = _directDiscountApplied ? _directDiscountApplied.discountAmount : 0;
+    let running = Math.max(0, budget - levelDiscIQD - directDiscIQD);
+    if(_promoValidated){
+      const promoBase = running;
+      const disc = _promoValidated.discount_type==='percentage'
+        ? (promoBase*parseFloat(_promoValidated.discount_value))/100
+        : Math.min(parseFloat(_promoValidated.discount_value), promoBase);
+      running = Math.max(0, promoBase-disc);
+      _promoValidated.finalBudget = running;
+      _promoValidated.discount = disc;
+      _promoValidated.originalTotal = promoBase;
+      const dEl=document.getElementById('bdDiscount'); if(dEl)dEl.textContent='-'+Math.round(disc).toLocaleString()+' IQD';
+    }
+    const bt=document.getElementById('bdTotal'); if(bt)bt.textContent=Math.round(running).toLocaleString()+' IQD';
+  }
+
+  async function _checkDirectDiscount(){
+    if(typeof cu==='undefined'||!cu?.id)return;
+    const myToken=++_ddReqToken;
+    const targetPriceIQD=Math.round(budget); // نرخی بنەڕەتی، پێش هەموو داشکاندنێک
+    const row=document.getElementById('bdDirectDiscountRow');
+    try{
+      const{data:matches}=await sb.from('direct_discounts')
+        .select('*').eq('target_price_iqd',targetPriceIQD).eq('is_active',true);
+      if(myToken!==_ddReqToken)return;
+      const now=new Date();
+      let candidates=(matches||[]).filter(d=>{
+        if(d.restricted_to_user_id){ if(d.restricted_to_user_id!==cu.id)return false; }
+        else if(!d.is_public){ return false; }
+        if(d.starts_at && new Date(d.starts_at)>now)return false;
+        if(d.expires_at && new Date(d.expires_at)<now)return false;
+        return true;
+      });
+      candidates.sort((a,b)=>(b.restricted_to_user_id===cu.id?1:0)-(a.restricted_to_user_id===cu.id?1:0));
+      let picked=null;
+      for(const d of candidates){
+        if(d.max_uses_per_user>0){
+          try{
+            const{count}=await sb.from('direct_discount_usages')
+              .select('id',{count:'exact',head:true})
+              .eq('direct_discount_id',d.id).eq('user_id',cu.id).eq('status','active');
+            if((count||0)>=d.max_uses_per_user)continue;
+          }catch(_e){ continue; }
+        }
+        picked=d;break;
+      }
+      if(myToken!==_ddReqToken)return;
+      if(picked){
+        const discAmt=picked.discount_type==='percentage'
+          ?Math.round(targetPriceIQD*parseFloat(picked.discount_value)/100)
+          :Math.min(Math.round(parseFloat(picked.discount_value)),targetPriceIQD);
+        _directDiscountApplied={...picked,discountAmount:discAmt};
+        if(row){
+          const lbl=document.getElementById('bdDirectDiscountLbl'); if(lbl)lbl.textContent=(picked.title||'داشکاندنی تایبەت')+' 🔥';
+          const val=document.getElementById('bdDirectDiscount'); if(val)val.textContent='-'+discAmt.toLocaleString()+' IQD';
+          row.style.display='flex';
+        }
+      }else{
+        _directDiscountApplied=null;
+        if(row)row.style.display='none';
+      }
+      _recalcTotalDisplay();
+    }catch(e){ /* silent — تایبەتمەندی زیادەیە، نابێتە هۆی وەستانی دروستکردنی ڕیکلام */ }
   }
 
   async function submitAd(){
@@ -9273,9 +9387,10 @@ function pickCard(el,id){
 
   if(link&&!link.startsWith('https://')){showToast('لینکەکە دەبێت بە https:// دەستپێبکات','err');return;}
 
-  // بودجەی کۆتایی (IQD) — دوای داشکاندنی ئاست و پڕۆمۆکۆد
+  // بودجەی کۆتایی (IQD) — دوای داشکاندنی ئاست و داشکاندنی تایبەت (بێ کۆد) و پڕۆمۆکۆد
   const levelDiscIQD = Math.round(budget * (_levelDiscountPercent||0));
-  const rawTotal   = Math.max(0, budget - levelDiscIQD);
+  const directDiscIQD = _directDiscountApplied ? _directDiscountApplied.discountAmount : 0;
+  const rawTotal   = Math.max(0, budget - levelDiscIQD - directDiscIQD);
   const finalTotal = _promoValidated ? _promoValidated.finalBudget : rawTotal;
   const _totalUSD  = dailyUSD * days;
 
@@ -9424,6 +9539,28 @@ function pickCard(el,id){
         }
         _promoValidated = null;
         clearPromoResult();
+      }
+
+      // ── تۆمارکردنی بەکارهێنانی داشکاندنی تایبەت (بێ کۆد) ──────────────────
+      if(_directDiscountApplied){
+        const adId = _fallbackAdNum || (typeof data === 'string' ? data : (data?.id || data?.ad_id || null));
+        try{
+          await sb.from('direct_discount_usages').insert({
+            direct_discount_id: _directDiscountApplied.id,
+            user_id           : cu.id,
+            ad_id              : adId ? String(adId) : null,
+            status             : 'active',
+            discount_applied   : _directDiscountApplied.discountAmount
+          });
+          if(_adNumFinal){
+            await sb.from('pa_ads').update({
+              direct_discount_id : _directDiscountApplied.id,
+              direct_discount_iqd: _directDiscountApplied.discountAmount
+            }).eq('ad_number', String(_adNumFinal));
+          }
+        }catch(e){}
+        _directDiscountApplied = null;
+        const ddRow=document.getElementById('bdDirectDiscountRow'); if(ddRow)ddRow.style.display='none';
       }
 
       await loadBal();
@@ -12266,6 +12403,16 @@ async function loadNotifications(){
     const icoBgMap={'notif-gr':'rgba(22,163,74,.1)','notif-rd':'rgba(220,38,38,.08)','notif-yw':'rgba(217,119,6,.08)','notif-bl':'rgba(37,99,235,.08)'};
     const icoBorderMap={'notif-gr':'rgba(22,163,74,.2)','notif-rd':'rgba(220,38,38,.15)','notif-yw':'rgba(217,119,6,.2)','notif-bl':'rgba(37,99,235,.15)'};
     const isRefund=(n.type==='refund'||n.type==='refund_rejected_ad');
+    const isDiscount=(n.type==='direct_discount');
+    const discountExtra=isDiscount&&n.meta?`
+      <div style="margin-top:8px;background:linear-gradient(135deg,rgba(219,39,119,.08),rgba(219,39,119,.02));border:1px solid rgba(219,39,119,.2);border-radius:12px;padding:10px 13px">
+        ${n.meta.item_name?`<div style="font-size:11px;font-weight:700;color:var(--dark);margin-bottom:6px;display:flex;align-items:center;gap:5px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#db2777" stroke-width="2" stroke-linejoin="round"><polygon points="4,4 12,4 21,13 12.5,21.5 3,12.5"/><circle cx="8" cy="8" r="1.3" fill="#db2777" stroke="none"/></svg>${n.meta.item_name}</div>`:''}
+        <div style="display:flex;align-items:baseline;gap:8px">
+          ${n.meta.original_price_iqd?`<span style="font-size:11px;color:var(--mt);text-decoration:line-through;font-family:'Inter',sans-serif">${Math.round(n.meta.original_price_iqd).toLocaleString()} IQD</span>`:''}
+          <span style="font-size:17px;font-weight:900;color:#db2777;font-family:'Inter',sans-serif">${Math.round(n.meta.final_price_iqd||0).toLocaleString()} IQD</span>
+        </div>
+        ${n.meta.expires_at?`<div style="font-size:10px;color:var(--mt);margin-top:5px;padding-top:5px;border-top:1px dashed rgba(219,39,119,.2)"><i class="fas fa-clock" style="margin-left:3px;opacity:.6"></i>بۆ ${new Date(n.meta.expires_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</div>`:''}
+      </div>`:'';
     const refundExtra=isRefund&&n.meta?`
       <div style="margin-top:8px;background:rgba(22,163,74,.06);border:1px solid rgba(22,163,74,.2);border-radius:10px;padding:9px 12px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
@@ -12275,6 +12422,7 @@ async function loadNotifications(){
         ${n.meta.ad_number?`<div style="font-size:10px;color:var(--mt2);display:flex;align-items:center;gap:4px"><i class="fas fa-rectangle-ad" style="font-size:9px"></i>ڕیکلام <span style="font-family:monospace;background:var(--bg);padding:1px 6px;border-radius:5px;border:1px solid var(--b1)">#${n.meta.ad_number}</span>${n.meta.ad_title?`— ${n.meta.ad_title}`:''}</div>`:''}
         ${n.meta.reason?`<div style="font-size:10px;color:var(--mt);margin-top:4px;padding-top:4px;border-top:1px dashed rgba(22,163,74,.2)"><i class="fas fa-info-circle" style="margin-left:3px;opacity:.6"></i>${n.meta.reason}</div>`:''}
       </div>`:
+    discountExtra?discountExtra:
     (n.meta?.ad_number&&!isRefund)?`
       <div style="margin-top:6px;display:inline-flex;align-items:center;gap:5px;background:var(--bg);border:1px solid var(--b1);border-radius:8px;padding:3px 9px;font-size:10px;color:var(--dark2)">
         <i class="fas fa-rectangle-ad" style="font-size:9px;opacity:.6"></i>
