@@ -1651,13 +1651,17 @@ html{scroll-behavior:smooth;}
 #userStoryOverlay.show{display:flex;opacity:1;background:rgba(8,10,20,.86);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);}
 .story-card{position:relative;width:100%;height:100%;max-width:460px;max-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;transform:scale(.9);transition:transform .38s cubic-bezier(.34,1.56,.64,1);}
 #userStoryOverlay.show .story-card{transform:scale(1);}
-.story-img-wrap{position:relative;width:100%;height:100%;}
-.story-img-wrap img{width:100%;height:100%;object-fit:contain;display:block;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
-.story-progress-wrap{position:absolute;top:calc(12px + env(safe-area-inset-top));left:12px;right:12px;height:3px;background:rgba(255,255,255,.3);border-radius:3px;overflow:hidden;z-index:3;}
-.story-progress-bar{height:100%;width:0%;background:#fff;border-radius:3px;}
-.story-progress-bar.anim{transition:width linear;}
-.story-close-btn{position:absolute;top:calc(24px + env(safe-area-inset-top));left:12px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.35);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;z-index:3;cursor:pointer;}
-.story-link-btn{position:absolute;bottom:calc(28px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);display:none;align-items:center;gap:8px;padding:13px 26px;background:#fff;color:var(--dark);border-radius:30px;font-family:'R',sans-serif;font-size:14px;font-weight:800;box-shadow:0 8px 24px rgba(0,0,0,.35);cursor:pointer;z-index:3;white-space:nowrap;}
+.story-img-wrap{position:relative;width:100%;height:100%;background:#000;}
+.story-img-wrap img,.story-img-wrap video{width:100%;height:100%;object-fit:contain;display:block;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;background:#000;}
+#storyBarsWrap{position:absolute;top:calc(12px + env(safe-area-inset-top));left:12px;right:12px;display:flex;gap:4px;z-index:4;}
+.story-bar-seg{flex:1;height:3px;background:rgba(255,255,255,.35);border-radius:3px;overflow:hidden;}
+.story-bar-fill{height:100%;width:0%;background:#fff;border-radius:3px;}
+.story-close-btn{position:absolute;top:calc(24px + env(safe-area-inset-top));left:12px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.35);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;z-index:4;cursor:pointer;}
+.story-mute-btn{position:absolute;top:calc(24px + env(safe-area-inset-top));right:12px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.35);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;color:#fff;font-size:13px;z-index:4;cursor:pointer;}
+.story-tap-zone{position:absolute;top:0;bottom:0;z-index:2;-webkit-user-select:none;user-select:none;}
+.story-tap-prev{left:0;width:32%;}
+.story-tap-next{right:0;width:68%;}
+.story-link-btn{position:absolute;bottom:calc(28px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);display:none;align-items:center;gap:8px;padding:13px 26px;background:#fff;color:var(--dark);border-radius:30px;font-family:'R',sans-serif;font-size:14px;font-weight:800;box-shadow:0 8px 24px rgba(0,0,0,.35);cursor:pointer;z-index:4;white-space:nowrap;}
 
 /* ══ GOOGLE PLAY BANNER ══ */
 #gplayBanner{display:flex;align-items:center;gap:10px;background:#1a1a2e;color:#fff;padding:10px 14px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.1);}
@@ -15253,7 +15257,9 @@ let _annDismissed = false;
 // ════════════════════════════════════════════════════════════════
 // ═══ USER STORY (وەک ستۆری — یەک جار پیشان دەدرێت) ═══════════════
 // ════════════════════════════════════════════════════════════════
-let _storyTimer = null, _storyData = null;
+let _storyData = null, _storySlides = [], _storyIdx = 0, _storyDur = 5, _storyElapsed = 0;
+let _storyPaused = false, _storyLastTs = 0, _storyRAF = null, _storyBarEls = [];
+let _storyHoldT = null, _storyHeld = false;
 const _STORY_NAV_LABELS = {
   home:'سەرەکی',create:'سپۆنسەری نوێ',proxolink:'ئامرازەکان',tutorials:'فێرکارییەکان',
   txhistory:'مێژووی مامەڵەکان',profile:'پرۆفایل',myads:'ڕیکلامەکانم',gifts:'خەڵاتەکان',
@@ -15266,59 +15272,188 @@ async function loadUserStory() {
     const {data, error} = await sb.from('pa_settings').select('value').eq('key','app_story').single();
     if (error || !data?.value) return;
     const story = JSON.parse(data.value);
-    if (!story.active || !story.image) return;
+    // پشتگیری فۆرماتی نوێ (کۆمەڵێک سلاید — وێنە/ڤیدیۆ) و فۆرماتی کۆنی یەک وێنە
+    let slides = [];
+    if (Array.isArray(story.slides) && story.slides.length) {
+      slides = story.slides.filter(s => s && s.src);
+    } else if (story.image) {
+      slides = [{ id:'legacy_'+(story.timestamp||Date.now()), type:'image', src:story.image, duration:story.duration||5, linkType:story.linkType||(story.link?'url':'none'), linkTarget:story.linkTarget||story.link||'' }];
+    }
+    if (!story.active || !slides.length) return;
     const seenTs = localStorage.getItem('proxo_seen_story_ts');
     if (seenTs && String(story.timestamp) === seenTs) return; // ئەم ستۆریە پێشتر بینراوە
     _storyData = story;
-    _showUserStory(story);
+    _storySlides = slides;
+    _showUserStory();
   } catch(e) {}
 }
 
-function _showUserStory(story) {
+function _showUserStory() {
   const ov = document.getElementById('userStoryOverlay');
-  const img = document.getElementById('storyImg');
-  const bar = document.getElementById('storyProgressBar');
-  const linkBtn = document.getElementById('storyLinkBtn');
-  if (!ov || !img || !bar) return;
-  img.src = story.image;
-  const dur = (story.duration && story.duration > 0) ? story.duration : 5;
-  bar.classList.remove('anim');
-  bar.style.transitionDuration = '0s';
-  bar.style.width = '0%';
+  if (!ov) return;
+  _buildStoryBars(_storySlides.length);
   ov.classList.add('show');
-  // force reflow پێش دەستپێکردنی ئەنیمەیشن — بۆ ئەوەی گۆڕانکاری width بگاتە چاو
-  void bar.offsetWidth;
-  requestAnimationFrame(() => {
-    bar.classList.add('anim');
-    bar.style.transitionDuration = dur + 's';
-    bar.style.width = '100%';
+  _playStorySlide(0);
+}
+
+function _buildStoryBars(n) {
+  const wrap = document.getElementById('storyBarsWrap');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  _storyBarEls = [];
+  for (let i = 0; i < n; i++) {
+    const seg = document.createElement('div');
+    seg.className = 'story-bar-seg';
+    const fill = document.createElement('div');
+    fill.className = 'story-bar-fill';
+    seg.appendChild(fill);
+    wrap.appendChild(seg);
+    _storyBarEls.push(fill);
+  }
+}
+
+function _setBarProgress(idx, pct) {
+  _storyBarEls.forEach((el, i) => {
+    el.style.width = i < idx ? '100%' : (i === idx ? pct + '%' : '0%');
   });
-  clearTimeout(_storyTimer);
-  _storyTimer = setTimeout(() => closeUserStory(), dur * 1000);
-  if (linkBtn) {
-    // پشتگیری فۆرماتی نوێ (linkType/linkTarget) و فۆرماتی کۆن (link — تەنها لینکی دەرەکی)
-    const navType = story.linkType || (story.link ? 'url' : 'none');
-    const navTarget = story.linkTarget || story.link || '';
-    if (navType === 'section' && navTarget) {
-      const _sec = _STORY_NAV_LABELS[navTarget] || 'بینینی زیاتر';
-      linkBtn.querySelector('span').textContent = _sec;
-      linkBtn.style.display = 'flex';
-      linkBtn.onclick = (e) => { e.stopPropagation(); closeUserStory(); if (typeof goPage === 'function') goPage(navTarget); };
-    } else if (navType === 'url' && navTarget) {
-      linkBtn.querySelector('span').textContent = 'بینینی زیاتر';
-      linkBtn.style.display = 'flex';
-      linkBtn.onclick = (e) => { e.stopPropagation(); window.open(navTarget, '_blank', 'noopener,noreferrer'); closeUserStory(); };
-    } else {
-      linkBtn.style.display = 'none';
-      linkBtn.onclick = null;
+}
+
+function _playStorySlide(idx) {
+  cancelAnimationFrame(_storyRAF);
+  if (idx >= _storySlides.length) { closeUserStory(); return; }
+  if (idx < 0) idx = 0;
+  _storyIdx = idx;
+  const slide = _storySlides[idx];
+  _setupStoryLinkBtn(slide);
+  _setBarProgress(idx, 0);
+  const imgEl = document.getElementById('storyImg');
+  const vidEl = document.getElementById('storyVideo');
+  const muteBtn = document.getElementById('storyMuteBtn');
+  if (slide.type === 'video') {
+    imgEl.style.display = 'none';
+    vidEl.style.display = 'block';
+    vidEl.muted = false;
+    vidEl.src = slide.src;
+    vidEl.currentTime = 0;
+    if (muteBtn) { muteBtn.style.display = 'flex'; _updateStoryMuteIcon(false); }
+    vidEl.play().catch(() => {
+      vidEl.muted = true;
+      _updateStoryMuteIcon(true);
+      vidEl.play().catch(()=>{});
+    });
+    _storyDur = 15;
+    vidEl.onloadedmetadata = () => { _storyDur = (vidEl.duration && isFinite(vidEl.duration)) ? vidEl.duration : 15; };
+  } else {
+    vidEl.pause();
+    try { vidEl.removeAttribute('src'); vidEl.load(); } catch(e) {}
+    vidEl.style.display = 'none';
+    if (muteBtn) muteBtn.style.display = 'none';
+    imgEl.style.display = 'block';
+    imgEl.src = slide.src;
+    _storyDur = (slide.duration && slide.duration > 0) ? slide.duration : 5;
+  }
+  _storyElapsed = 0;
+  _storyPaused = false;
+  _storyLastTs = 0;
+  _recordStoryView(slide.id);
+  _storyRAF = requestAnimationFrame(_storyTick);
+}
+
+function _storyTick(ts) {
+  if (!_storyLastTs) _storyLastTs = ts;
+  const dt = (ts - _storyLastTs) / 1000;
+  _storyLastTs = ts;
+  if (!_storyPaused) {
+    const slide = _storySlides[_storyIdx];
+    if (slide && slide.type === 'video') {
+      const vidEl = document.getElementById('storyVideo');
+      const dur = (vidEl.duration && isFinite(vidEl.duration)) ? vidEl.duration : _storyDur;
+      const cur = vidEl.currentTime || 0;
+      _setBarProgress(_storyIdx, dur > 0 ? Math.min(100, (cur/dur)*100) : 0);
+      if (vidEl.ended || (dur > 0 && cur >= dur - 0.08)) { _storyNext(); return; }
+    } else if (slide) {
+      _storyElapsed += dt;
+      _setBarProgress(_storyIdx, Math.min(100, (_storyElapsed/_storyDur)*100));
+      if (_storyElapsed >= _storyDur) { _storyNext(); return; }
     }
+  }
+  _storyRAF = requestAnimationFrame(_storyTick);
+}
+
+function _storyNext() { _playStorySlide(_storyIdx + 1); }
+function _storyPrev() { _playStorySlide(_storyIdx > 0 ? _storyIdx - 1 : 0); }
+
+function _storyHoldStart() {
+  _storyHeld = false;
+  clearTimeout(_storyHoldT);
+  _storyHoldT = setTimeout(() => {
+    _storyHeld = true;
+    _storyPaused = true;
+    const slide = _storySlides[_storyIdx];
+    if (slide && slide.type === 'video') { const v = document.getElementById('storyVideo'); if (v) v.pause(); }
+  }, 220);
+}
+function _storyHoldEnd() {
+  clearTimeout(_storyHoldT);
+  if (_storyHeld) {
+    _storyPaused = false;
+    _storyLastTs = 0;
+    const slide = _storySlides[_storyIdx];
+    if (slide && slide.type === 'video') { const v = document.getElementById('storyVideo'); if (v) v.play().catch(()=>{}); }
+  }
+}
+function _storyZoneClick(dir) {
+  if (_storyHeld) { _storyHeld = false; return; }
+  if (dir === 'next') _storyNext(); else _storyPrev();
+}
+
+function _updateStoryMuteIcon(muted) {
+  const ic = document.getElementById('storyMuteIcon');
+  if (ic) ic.className = muted ? 'fas fa-volume-xmark' : 'fas fa-volume-high';
+}
+function _toggleStoryMute() {
+  const vidEl = document.getElementById('storyVideo');
+  if (!vidEl) return;
+  vidEl.muted = !vidEl.muted;
+  _updateStoryMuteIcon(vidEl.muted);
+}
+
+async function _recordStoryView(slideId) {
+  if (!cu?.id || !_storyData || !_storyData.timestamp || !slideId) return;
+  try {
+    await sb.from('pa_story_views').upsert(
+      { story_ts: _storyData.timestamp, slide_id: slideId, user_id: cu.id },
+      { onConflict: 'slide_id,user_id', ignoreDuplicates: true }
+    );
+  } catch(e) {}
+}
+
+function _setupStoryLinkBtn(slide) {
+  const linkBtn = document.getElementById('storyLinkBtn');
+  if (!linkBtn) return;
+  const navType = slide.linkType || (slide.link ? 'url' : 'none');
+  const navTarget = slide.linkTarget || slide.link || '';
+  if (navType === 'section' && navTarget) {
+    const _sec = _STORY_NAV_LABELS[navTarget] || 'بینینی زیاتر';
+    linkBtn.querySelector('span').textContent = _sec;
+    linkBtn.style.display = 'flex';
+    linkBtn.onclick = (e) => { e.stopPropagation(); closeUserStory(); if (typeof goPage === 'function') goPage(navTarget); };
+  } else if (navType === 'url' && navTarget) {
+    linkBtn.querySelector('span').textContent = 'بینینی زیاتر';
+    linkBtn.style.display = 'flex';
+    linkBtn.onclick = (e) => { e.stopPropagation(); window.open(navTarget, '_blank', 'noopener,noreferrer'); closeUserStory(); };
+  } else {
+    linkBtn.style.display = 'none';
+    linkBtn.onclick = null;
   }
 }
 
 function closeUserStory() {
   const ov = document.getElementById('userStoryOverlay');
   if (!ov || !ov.classList.contains('show')) return;
-  clearTimeout(_storyTimer);
+  cancelAnimationFrame(_storyRAF);
+  const vidEl = document.getElementById('storyVideo');
+  if (vidEl) { vidEl.pause(); try { vidEl.removeAttribute('src'); vidEl.load(); } catch(e) {} }
   ov.classList.remove('show');
   if (_storyData && _storyData.timestamp) {
     try { localStorage.setItem('proxo_seen_story_ts', String(_storyData.timestamp)); } catch(e) {}
@@ -15695,9 +15830,15 @@ if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostn
 <!-- USER STORY OVERLAY -->
 <div id="userStoryOverlay" onclick="closeUserStory()">
   <div class="story-card">
-    <div class="story-progress-wrap"><div class="story-progress-bar" id="storyProgressBar"></div></div>
+    <div id="storyBarsWrap"></div>
     <div class="story-close-btn" onclick="closeUserStory()"><i class="fas fa-xmark"></i></div>
-    <div class="story-img-wrap"><img id="storyImg" src="" alt="ستۆری"></div>
+    <div class="story-mute-btn" id="storyMuteBtn" onclick="event.stopPropagation();_toggleStoryMute()"><i class="fas fa-volume-high" id="storyMuteIcon"></i></div>
+    <div class="story-img-wrap">
+      <img id="storyImg" src="" alt="ستۆری">
+      <video id="storyVideo" playsinline webkit-playsinline style="display:none"></video>
+      <div class="story-tap-zone story-tap-prev" onpointerdown="_storyHoldStart()" onpointerup="_storyHoldEnd()" onpointercancel="_storyHoldEnd()" onclick="event.stopPropagation();_storyZoneClick('prev')"></div>
+      <div class="story-tap-zone story-tap-next" onpointerdown="_storyHoldStart()" onpointerup="_storyHoldEnd()" onpointercancel="_storyHoldEnd()" onclick="event.stopPropagation();_storyZoneClick('next')"></div>
+    </div>
     <div class="story-link-btn" id="storyLinkBtn"><i class="fas fa-arrow-up-left"></i><span>بینینی زیاتر</span></div>
   </div>
 </div>
