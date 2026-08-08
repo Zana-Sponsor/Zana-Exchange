@@ -2068,10 +2068,15 @@ tr:hover td{background:rgba(28,35,51,.015);}
       <h3><i class="fas fa-fire" style="margin-left:8px;color:#16a34a"></i>داشکاندنی ڕاستەوخۆی نوێ</h3>
       <div class="modal-close" onclick="closeMo('moCreateDirectDiscount')"><i class="fas fa-xmark"></i></div>
     </div>
-    <div class="field-wrap">
-      <label class="modal-lbl" style="margin-top:0">ناونیشانی داشکاندن (Discount Title) <span style="color:var(--rd)">*</span></label>
+    <div style="background:rgba(219,39,119,.05);border:1.5px dashed rgba(219,39,119,.25);border-radius:13px;padding:12px 14px;margin-bottom:2px">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:9px">
+        <i class="fas fa-bell" style="color:#db2777;font-size:13px"></i>
+        <div style="font-size:13px;font-weight:700;color:var(--dark)">بۆ ئاگاداری</div>
+      </div>
+      <label class="modal-lbl" style="margin-top:0">ناونیشان <span style="color:var(--rd)">*</span></label>
       <input class="minp" type="text" id="ddTitle" placeholder="بۆ نموونە: Ramadan Mega Sale" oninput="clearFieldErr('ddTitle')">
       <div class="field-err" id="ddTitle-err">ناونیشان پڕ بکەرەوە</div>
+      <div style="font-size:11px;color:var(--mt);margin-top:7px;display:flex;align-items:center;gap:5px"><i class="fas fa-circle-info" style="opacity:.6"></i>ئەم دەقە بە تەواوی دەنێردرێت بۆ کڕیار وەک ناونیشانی ئاگاداری — هیچ دەقێکی زیاتری خۆکار زیاد ناکرێت</div>
     </div>
     <div class="field-wrap">
       <label class="modal-lbl">ناوی ڕیکلام/خزمەت (Ad / Service Name) <span style="color:var(--rd)">*</span></label>
