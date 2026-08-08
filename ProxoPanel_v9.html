@@ -3764,9 +3764,10 @@ async function showAdDetail(id){
       <div class="price-row total"><span class="plbl">کۆی گشتی</span><span class="pval" style="color:var(--gr)">${finalIQD.toLocaleString()+' IQD'}</span></div>
     </div>`;
 
-  const adViews=parseInt(a.views||a.total_views||0);
-  const adClicks=parseInt(a.clicks||a.total_clicks||0);
-  const adSpent=parseFloat(a.spent_budget||a.spent||0);
+  // ── ئاماری ڕاستەقینە لە خشتەی pa_ads: impressions/clicks/spend (+ prev_* بۆ کاتێک TikTok ID گۆڕدراوە) ──
+  const adViews=parseInt(a.impressions||0)+parseInt(a.prev_impressions||0);
+  const adClicks=parseInt(a.clicks||0);
+  const adSpent=parseFloat(a.spend||0)+parseFloat(a.prev_spend||0);
   const adCTR=adViews>0?(adClicks/adViews*100).toFixed(2):0;
   const adSpentPct=adPrice>0?Math.min(100,Math.round(adSpent/adPrice*100)):0;
 
@@ -5907,21 +5908,21 @@ async function createDirectDiscount(){
   loadDirectDiscountsAdmin();
 }
 
-// ══ داشکاندنی ڕاستەوخۆ — ناردنی ئیمەیلی ئاگادارکردنەوە بۆ بەکارهێنەرانی گونجاو ══
+// ══ داشکاندنی ڕاستەوخۆ — ناردنی ئاگاداری ناو ئەپ (pa_notifications + Firebase realtime/FCM) + ئیمەیل ══
 async function announceDiscount(d){
   try{
-    // 1) بەکارهێنەرانی گونجاو: تایبەت بۆ یەک بەکارهێنەر، یاخود گشتی بۆ هەموو
+    // 1) بەکارهێنەرانی گونجاو: تایبەت بۆ یەک بەکارهێنەر، یاخود گشتی بۆ هەموو — پێویستمان بە id ـیشیانە بۆ ئاگاداری ناو ئەپ
     let recipients=[];
     if(d.restricted_to_user_id){
-      const{data:prof}=await sb.from('profiles').select('email,full_name').eq('id',d.restricted_to_user_id).single();
-      if(prof?.email) recipients=[{email:prof.email,name:prof.full_name||''}];
+      const{data:prof}=await sb.from('profiles').select('id,email,full_name').eq('id',d.restricted_to_user_id).single();
+      if(prof) recipients=[{id:prof.id,email:prof.email,name:prof.full_name||''}];
     }else{
-      const{data:profs}=await sb.from('profiles').select('email,full_name').not('email','is',null);
-      recipients=(profs||[]).filter(p=>p.email).map(p=>({email:p.email,name:p.full_name||''}));
+      const{data:profs}=await sb.from('profiles').select('id,email,full_name');
+      recipients=(profs||[]).map(p=>({id:p.id,email:p.email,name:p.full_name||''}));
     }
     if(!recipients.length)return;
 
-    // 2) نرخی سەرەکی/داشکاندن/کۆتایی بۆ ئیمەیلەکە
+    // 2) نرخی سەرەکی/داشکاندن/کۆتایی
     const originalPrice=d.target_price_iqd;
     const discountAmount=d.discount_type==='percentage'
       ?Math.round(originalPrice*d.discount_value/100)
@@ -5929,30 +5930,47 @@ async function announceDiscount(d){
     const finalPrice=Math.max(0,originalPrice-discountAmount);
     const fmtDate=v=>v?new Date(v).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'';
 
-    // 3) ناردنی webhook بۆ n8n (هەمان endpoint کە ئیمەیلەکانی تر بەکاریدەهێنن)
-    await fetch('https://n8n.proxopages.com/webhook/send_otp1',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        type:'discount_announcement',
-        discount:{
-          title:d.title||'New Discount',
-          itemName:d.item_name||'—',
-          originalPrice,
-          discountType:d.discount_type,
-          discountValue:d.discount_value,
-          finalPrice,
-          startDate:fmtDate(d.starts_at),
-          expiresDate:fmtDate(d.expires_at),
-          maxUsesPerUser:d.max_uses_per_user||0,
-          isPublic:d.is_public,
-          offerUrl:d.offer_url||'https://www.proxopages.com'
-        },
-        recipients,
-        app:'ProxoPanel'
-      })
-    });
-  }catch(_annErr){/* silent — هەمان شێوازی webhookـەکانی تر */}
+    // 3) ئاگاداری ناو ئەپ — ئەمە ئەو ڕێگایەیە کە بەکارهێنەران ڕاستەوخۆ دەیبینن (زەنگی ئاگاداری + Firebase push)
+    //    پێشتر تەنها ئیمەیل دەنێردرا و هیچ ئاگاداریەکی ناو ئەپی نەبوو، بۆیە زۆربەی بەکارهێنەران نەیانبینی
+    const notifTitle='🔥 '+(d.title||'داشکاندنی نوێ');
+    const notifBody=`${d.item_name?d.item_name+' — ':''}لە ${Math.round(originalPrice).toLocaleString()} بۆ ${finalPrice.toLocaleString()} IQD${d.expires_at?' (بۆ '+fmtDate(d.expires_at)+')':''}`;
+    const withId=recipients.filter(r=>r.id);
+    if(withId.length){
+      const rows=withId.map(r=>({user_id:r.id,type:'direct_discount',title:notifTitle,body:notifBody,is_read:false,meta:{target_price_iqd:originalPrice,final_price_iqd:finalPrice}}));
+      for(let i=0;i<rows.length;i+=500){
+        const{error:_ne}=await sb.from('pa_notifications').insert(rows.slice(i,i+500));
+        if(_ne)console.warn('[announceDiscount] pa_notifications insert:',_ne.message);
+      }
+      withId.forEach(r=>{ _fbPushNotif(r.id, notifTitle, notifBody, 'direct_discount'); });
+    }
+
+    // 4) ناردنی ئیمەیل — وەک کەناڵێکی زیادە، لەگەڵ ئاگاداری ناو ئەپ
+    const emailRecipients=recipients.filter(r=>r.email).map(r=>({email:r.email,name:r.name}));
+    if(emailRecipients.length){
+      await fetch('https://n8n.proxopages.com/webhook/send_otp1',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          type:'discount_announcement',
+          discount:{
+            title:d.title||'New Discount',
+            itemName:d.item_name||'—',
+            originalPrice,
+            discountType:d.discount_type,
+            discountValue:d.discount_value,
+            finalPrice,
+            startDate:fmtDate(d.starts_at),
+            expiresDate:fmtDate(d.expires_at),
+            maxUsesPerUser:d.max_uses_per_user||0,
+            isPublic:d.is_public,
+            offerUrl:d.offer_url||'https://www.proxopages.com'
+          },
+          recipients:emailRecipients,
+          app:'ProxoPanel'
+        })
+      });
+    }
+  }catch(_annErr){console.warn('[announceDiscount]',_annErr?.message);}
 }
 
 async function toggleDirectDiscountAdmin(id,isActive){
