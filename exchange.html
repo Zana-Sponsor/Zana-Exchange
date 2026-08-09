@@ -1130,7 +1130,8 @@ const ICON = {
   asiacell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5v-2.2"/><path d="M8 20.5a5.7 5.7 0 0 1 8 0"/><path d="M4.8 17.3a10.2 10.2 0 0 1 14.4 0"/><path d="M2 14a14.2 14.2 0 0 1 20 0"/></svg>',
   korek: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/><path d="M8.3 15.7a5.2 5.2 0 0 1 7.4 0"/><path d="M5.4 12.8a9.3 9.3 0 0 1 13.2 0"/><path d="M2.6 10a13.4 13.4 0 0 1 18.8 0"/></svg>',
   usdt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.2"/><path d="M8 8.3h8M12 8.3v3M9.3 12.6c0 1.2 1.2 2 2.7 2s2.7-.8 2.7-1.9c0-1-1-1.5-2.7-1.7-1.7-.2-2.7-.7-2.7-1.7 0-1 1.2-1.8 2.7-1.8s2.5.6 2.6 1.5"/><path d="M12 14.6v3.1"/></svg>',
-  receive: '<svg class="icn icn-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2v10.8"/><path d="M7.3 9.8 12 14.5l4.7-4.7"/><path d="M4 18.3h16"/></svg>'
+  receive: '<svg class="icn icn-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2v10.8"/><path d="M7.3 9.8 12 14.5l4.7-4.7"/><path d="M4 18.3h16"/></svg>',
+  banknote: '<svg class="icn icn-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.3" y="6.3" width="19.4" height="11.4" rx="2.2"/><circle cx="12" cy="12" r="2.5"/><path d="M5.3 9.3h.01M18.7 14.7h.01"/></svg>'
 };
 
 // ══════════════════════════════════════════════════════════════
@@ -2228,7 +2229,7 @@ function renderHistory(rows){
             <span class="status-badge ${sClass}">${o.status}</span>
         </div>
         <div class="detail-item"><span class="detail-ico">${ICON.swap}</span> ${o.from_method} ➔ ${o.to_method}</div>
-        <div class="detail-item"><span class="detail-ico">${ICON.coins}</span> بڕ: <b>${formatNum(o.amount)}${o.from_method==='USDT'?'$':' IQD'}</b></div>
+        <div class="detail-item"><span class="detail-ico">${ICON.banknote}</span> بڕ: <b>${formatNum(o.amount)}${o.from_method==='USDT'?'$':' IQD'}</b></div>
         <div class="detail-item"><span class="detail-ico" style="color:var(--success)">${ICON.receive}</span> بڕی وەرگیراو: <b style="color:var(--success)">${formatNum(Math.floor(o.total))} IQD</b></div>
         <div class="detail-item"><span class="detail-ico">${ICON.phone}</span> ژمارە: ${o.phone}</div>
         ${o.extra_info?`<div class="detail-item"><span class="detail-ico">${ICON.info}</span> زانیاری زیاتر: ${o.extra_info}</div>`:''}
