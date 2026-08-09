@@ -206,6 +206,7 @@ tr:hover td{background:rgba(28,35,51,.015);}
 #toast.show{display:block;opacity:1;transform:translateX(-50%) translateY(0);}
 #toast.gr{background:var(--gr);}
 #toast.rd{background:var(--rd);}
+#toast.bl{background:var(--bl);}
 
 .empty{text-align:center;padding:50px 20px;color:var(--mt);}
 .empty i{font-size:40px;display:block;margin-bottom:12px;opacity:.3;}
@@ -715,6 +716,7 @@ function showApp(){
   document.getElementById('sbAv').textContent = (adminName||'A')[0].toUpperCase();
   document.getElementById('sbAdminName').textContent = adminName;
   goPage('dashboard');
+  subscribeOrdersAdmin();
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -751,6 +753,7 @@ function goPage(p){
 // ═══ HELPERS ═════════════════════════════════════════════════════
 // ══════════════════════════════════════════════════════════════
 function formatNum(n){ n=Math.round(parseFloat(n)||0); return n.toLocaleString(); }
+function fmtOrderNo(n){ return 'P-'+String(n).padStart(6,'0'); }
 function methodPill(key){
   const m=METHOD_META[key]; if(!m) return key||'—';
   return `<span class="method-pill"><span class="method-dot" style="background:${m.color}"></span>${m.label}</span>`;
@@ -836,6 +839,19 @@ async function loadDashOrders(){
 // ══════════════════════════════════════════════════════════════
 // ═══ ORDERS ══════════════════════════════════════════════════════
 // ══════════════════════════════════════════════════════════════
+let _ordersAdminChannel=null;
+function subscribeOrdersAdmin(){
+  if(_ordersAdminChannel) return;
+  _ordersAdminChannel = sb.channel('ex_orders_admin')
+    .on('postgres_changes', {event:'INSERT', schema:'public', table:'ex_orders'}, (payload)=>{
+      showToast('📥 داواکاریەکی نوێ هات '+fmtOrderNo(payload.new.order_number), 'bl');
+      refreshOrdersEverywhere();
+    })
+    .on('postgres_changes', {event:'UPDATE', schema:'public', table:'ex_orders'}, ()=>{
+      refreshOrdersEverywhere();
+    })
+    .subscribe();
+}
 async function loadOrders(){
   document.getElementById('ordersTableWrap').innerHTML='<div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
   try{
@@ -856,7 +872,7 @@ function filterOrders(el){
 function renderOrders(q=''){
   let list=allOrders;
   if(orderFilter!=='all') list=list.filter(o=>o.status===orderFilter);
-  if(q) list=list.filter(o=>(o.profile?.full_name||'').toLowerCase().includes(q)||(o.profile?.email||'').toLowerCase().includes(q)||String(o.order_number||'').includes(q)||(o.phone||'').includes(q));
+  if(q) list=list.filter(o=>(o.profile?.full_name||'').toLowerCase().includes(q)||(o.profile?.email||'').toLowerCase().includes(q)||String(o.order_number||'').includes(q)||fmtOrderNo(o.order_number).toLowerCase().includes(q)||(o.phone||'').includes(q));
   document.getElementById('ordersTableWrap').innerHTML = renderOrdersTable(list) + renderOrdersCards(list);
 }
 function renderOrdersTable(list){
@@ -889,7 +905,7 @@ function renderOrdersCards(list){
         <span style="font-size:12px">${methodPill(o.from_method)} <i class="fas fa-arrow-left" style="font-size:9px;color:var(--mt);margin:0 3px"></i> ${methodPill(o.to_method)}</span>
       </div>
       <div class="rec-card-meta">
-        <div class="rec-card-stat gr">#${o.order_number} • ${formatNum(o.total)} IQD</div>
+        <div class="rec-card-stat gr">${fmtOrderNo(o.order_number)} • ${formatNum(o.total)} IQD</div>
         <div class="rec-card-date">${new Date(o.created_at).toLocaleDateString('ku')}</div>
       </div>
       ${o.status===STATUS_PENDING?`<div class="rec-card-actions" onclick="event.stopPropagation()">
@@ -903,7 +919,7 @@ function showOrderDetail(id){
   const order = allOrders.find(x=>String(x.id)===String(id));
   if(!order){ showToast('نەدۆزرایەوە','rd'); return; }
   const displayAmt = formatNum(order.amount)+(order.from_method==='USDT'?' $':' IQD');
-  document.getElementById('odTitle').textContent = 'ئۆردەر #'+order.order_number;
+  document.getElementById('odTitle').textContent = 'ئۆردەر '+fmtOrderNo(order.order_number);
   document.getElementById('odContent').innerHTML = `
     <div class="detail-row"><span class="lbl">بەکارهێنەر</span><span class="val">${esc(order.profile?.full_name||'—')}</span></div>
     <div class="detail-row"><span class="lbl">ئیمەیل</span><span class="val">${esc(order.profile?.email||'—')}</span></div>
@@ -1381,7 +1397,7 @@ function renderNotifLog(){
   document.getElementById('notifLogWrap').innerHTML = `<table><thead><tr><th>بەکارهێنەر</th><th>جۆر</th><th>ناونیشان</th><th>پەیام</th><th>خوێندراوە</th><th>بەروار</th></tr></thead><tbody>
     ${allNotifs.map(n=>`<tr>
       <td><div class="user-cell"><div class="mini-av">${(n.profile?.full_name||n.profile?.email||'?')[0].toUpperCase()}</div><div><div class="user-cell-name">${esc(n.profile?.full_name||'—')}</div><div class="user-cell-email">${esc(n.profile?.email||'—')}</div></div></div></td>
-      <td><span class="badge ${n.type==='order_status'?'order_status':'adminmsg'}">${n.type==='order_status'?'دۆخی ئۆردەر':'ئادمین'}</span></td>
+      <td><span class="badge ${n.type==='order_approved'?'approved':n.type==='order_rejected'?'rejected':n.type==='order_status'?'order_status':'adminmsg'}">${n.type==='order_approved'?'پەسەندکرا':n.type==='order_rejected'?'ڕەتکرایەوە':n.type==='order_status'?'دۆخی ئۆردەر':'ئادمین'}</span></td>
       <td style="font-size:12.5px;font-weight:700">${esc(n.title)}</td>
       <td style="font-size:12px;color:var(--mt2);max-width:260px">${esc(n.message)}</td>
       <td>${n.is_read?'<i class="fas fa-check-double" style="color:var(--gr)"></i>':'<i class="fas fa-circle" style="color:var(--yw);font-size:8px"></i>'}</td>

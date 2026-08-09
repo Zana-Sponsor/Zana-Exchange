@@ -377,6 +377,8 @@ input[type="file"].input::file-selector-button:hover{ background:var(--border-st
 }
 .notif-bar.order_status{ border-inline-start-color:var(--primary); }
 .notif-bar.admin{ border-inline-start-color:var(--secondary); }
+.notif-bar.order_approved{ border-inline-start-color:var(--success); }
+.notif-bar.order_rejected{ border-inline-start-color:var(--error); }
 .notif-bar-ico{ width:30px; height:30px; border-radius:9px; flex-shrink:0; display:flex; align-items:center; justify-content:center; color:#fff; }
 .notif-bar-ico svg{ width:16px; height:16px; }
 .notif-bar-text{ flex:1; min-width:0; }
@@ -1223,7 +1225,7 @@ function showResultModal(opts){
   document.getElementById('resultTitle').textContent = title;
   document.getElementById('resultMsg').textContent = message;
   const chip = document.getElementById('resultOrderChip');
-  if(orderNumber){ chip.style.display='inline-flex'; document.getElementById('resultOrderNum').textContent = '#'+orderNumber; }
+  if(orderNumber){ chip.style.display='inline-flex'; document.getElementById('resultOrderNum').textContent = fmtOrderNo(orderNumber); }
   else chip.style.display='none';
   const pBtn = document.getElementById('resultPrimaryBtn');
   pBtn.textContent = primaryText;
@@ -1254,8 +1256,16 @@ function clearAllOrderFieldErrors(){ ['amt','userPhone','fileInput'].forEach(cle
 // ═══ NOTIFICATIONS (ex_notifications table — bell / panel / bar) ═
 // ══════════════════════════════════════════════════════════════
 let _notifChannel=null, _notifItems=[];
-function _notifIcon(type){ return type==='order_status' ? ICON.swap : ICON.message; }
-function _notifColor(type){ return type==='order_status' ? 'var(--primary)' : 'var(--secondary)'; }
+function _notifIcon(type){
+  if(type==='order_approved') return ICON.check;
+  if(type==='order_rejected') return ICON.cross;
+  return type==='order_status' ? ICON.swap : ICON.message;
+}
+function _notifColor(type){
+  if(type==='order_approved') return 'var(--success)';
+  if(type==='order_rejected') return 'var(--error)';
+  return type==='order_status' ? 'var(--primary)' : 'var(--secondary)';
+}
 
 async function loadNotifications(){
   try{
@@ -1846,6 +1856,7 @@ async function loadRates(){
   if(Object.keys(RATES).length===0) RATES=Object.assign({},FALLBACK_RATES);
 }
 function formatNum(num){ return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+function fmtOrderNo(n){ return 'P-'+String(n).padStart(6,'0'); }
 function closeModal(){ document.getElementById('tgModal').style.display='none'; }
 function updateWallet(){ document.getElementById('myNum').innerText=wallets[document.getElementById('from').value]; refreshTrigger('from'); calc(); }
 function updatePlaceholder(){ document.getElementById('userPhone').placeholder='ژمارەی '+document.getElementById('receiveVia').value; refreshTrigger('receiveVia'); }
@@ -1940,7 +1951,7 @@ async function processOrder(){
 
     const formData=new FormData();
     formData.append("chat_id","6259019006"); formData.append("photo",file);
-    formData.append("caption", `🚀 ئۆردەر: #${orderRow.order_number}\n👤 کڕیار: ${curProfile?.full_name||curUser.email}\n📥 لە: ${from}\n📤 بۆ: ${to}\n📱 ژمارە: ${phone}\n💵 بڕ: ${displayAmt}\n💰 وەرگرتن: ${totalTxt}`+(extra?`\n📝 زانیاری زیاتر: ${extra}`:''));
+    formData.append("caption", `🚀 ئۆردەر: ${fmtOrderNo(orderRow.order_number)}\n👤 کڕیار: ${curProfile?.full_name||curUser.email}\n📥 لە: ${from}\n📤 بۆ: ${to}\n📱 ژمارە: ${phone}\n💵 بڕ: ${displayAmt}\n💰 وەرگرتن: ${totalTxt}`+(extra?`\n📝 زانیاری زیاتر: ${extra}`:''));
     try{ await fetch(`https://api.telegram.org/bot8570457708:AAG_5hFu-octgBn1ruDJ3_OzEG7p4fWiNgo/sendPhoto`, { method: "POST", body: formData }); }catch(_){}
 
     showResultModal({
@@ -1983,7 +1994,7 @@ function renderHistory(rows){
     html += `
     <div class="order-card">
         <div class="order-header">
-            <span class="order-number">#${o.order_number}</span>
+            <span class="order-number">${fmtOrderNo(o.order_number)}</span>
             <span class="status-badge ${sClass}">${o.status}</span>
         </div>
         <div class="detail-item"><span class="detail-ico">${ICON.swap}</span> ${o.from_method} ➔ ${o.to_method}</div>
