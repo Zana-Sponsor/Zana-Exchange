@@ -248,6 +248,25 @@ tr:hover td{background:rgba(28,35,51,.015);}
 .method-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 
 .fee-toggle-note{font-size:11px;color:var(--mt);margin-top:6px;line-height:1.6;}
+
+/* ══ WALLETS ══ */
+.wallets-grid{display:grid;grid-template-columns:1fr;gap:12px;}
+@media(min-width:640px){.wallets-grid{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:1100px){.wallets-grid{grid-template-columns:repeat(3,1fr);}}
+.wallet-card{background:var(--w);border:1px solid var(--b1);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px;position:relative;transition:opacity .2s;}
+.wallet-card.locked{opacity:.6;}
+.wallet-card-top{display:flex;align-items:center;gap:12px;}
+.wallet-avatar{width:48px;height:48px;border-radius:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;overflow:hidden;}
+.wallet-avatar img{width:100%;height:100%;object-fit:cover;}
+.wallet-card-info{flex:1;min-width:0;}
+.wallet-card-name{font-size:14.5px;font-weight:800;color:var(--dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wallet-card-key{font-size:10.5px;color:var(--mt);direction:ltr;text-align:right;font-family:'Inter',sans-serif;}
+.wallet-card-num{background:var(--bg);border:1px solid var(--b1);border-radius:10px;padding:8px 12px;font-size:12.5px;font-weight:700;direction:ltr;text-align:left;color:var(--dark2);word-break:break-all;}
+.wallet-card-meta{display:flex;gap:8px;flex-wrap:wrap;}
+.wallet-card-badge{padding:3px 9px;border-radius:20px;font-size:10.5px;font-weight:700;background:var(--bg);border:1px solid var(--b1);color:var(--mt2);}
+.wallet-card-badge.gr{background:rgba(22,163,74,.09);color:var(--gr);border-color:rgba(22,163,74,.2);}
+.wallet-lock-row{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--b1);}
+.wallet-lock-row span{font-size:12px;font-weight:700;color:var(--dark);display:flex;align-items:center;gap:6px;}
 </style>
 </head>
 <body>
@@ -290,6 +309,7 @@ tr:hover td{background:rgba(28,35,51,.015);}
     <div class="sb-item" onclick="goPage('orders')"><i class="fas fa-money-bill-transfer"></i> ئۆردەرەکان <span class="sb-badge yw" id="sbOrdersCount" style="display:none">0</span></div>
     <div class="sb-item" onclick="goPage('accounts')"><i class="fas fa-users"></i> هەژمارەکان</div>
     <div class="sb-section">ڕێکخستن</div>
+    <div class="sb-item" onclick="goPage('wallets')"><i class="fas fa-wallet" style="color:#16a34a"></i> واڵێتەکان</div>
     <div class="sb-item" onclick="goPage('rates')"><i class="fas fa-percent" style="color:#f59e0b"></i> نرخ و کرێ</div>
     <div class="sb-section">پەیوەندی</div>
     <div class="sb-item" onclick="goPage('notifications')"><i class="fas fa-bell" style="color:#7c3aed"></i> ئاگادارییەکان</div>
@@ -380,6 +400,17 @@ tr:hover td{background:rgba(28,35,51,.015);}
         <div class="tbl-scroll tbl-wrap-scroll-target" id="accountsTableWrap">
           <div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>
         </div>
+      </div>
+    </div>
+
+    <!-- ══ WALLETS ══ -->
+    <div class="pg" id="pgWallets">
+      <div class="sec-hdr">
+        <h3>واڵێت و ڕێگای پارەدان</h3>
+        <div class="act-btn dark" onclick="openWalletModal(null)"><i class="fas fa-plus"></i> زیادکردنی واڵێت</div>
+      </div>
+      <div class="wallets-grid" id="walletsGridWrap">
+        <div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>
       </div>
     </div>
 
@@ -498,6 +529,65 @@ tr:hover td{background:rgba(28,35,51,.015);}
       <label class="mswitch"><input type="checkbox" id="rateActive" checked><span class="track"></span></label>
     </div>
     <button class="modal-btn dark" id="rateSaveBtn" onclick="saveRate()"><i class="fas fa-check"></i> پاشەکەوتکردن</button>
+  </div>
+</div>
+
+<!-- ══ WALLET ADD/EDIT MODAL ══ -->
+<div class="overlay" id="moWallet">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3 id="walletModalTitle">زیادکردنی واڵێتی نوێ</h3>
+      <div class="modal-close" onclick="closeMo('moWallet')"><i class="fas fa-xmark"></i></div>
+    </div>
+    <input type="hidden" id="walletId">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:6px">
+      <div id="walletImgPreview" style="width:58px;height:58px;border-radius:16px;background:var(--bg);border:1.5px dashed var(--b2);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;color:var(--mt);font-size:20px"><i class="fas fa-image"></i></div>
+      <div style="flex:1;min-width:0">
+        <label class="act-btn dark" style="cursor:pointer;display:inline-flex">
+          <i class="fas fa-upload"></i> هەڵبژاردنی وێنە
+          <input type="file" id="walletImgFile" accept="image/*" style="display:none" onchange="onWalletImgFile(this)">
+        </label>
+        <div class="fee-toggle-note">وێنەی لۆگۆی واڵێت (PNG/JPG). ئارەزوومەندانەیە.</div>
+      </div>
+    </div>
+    <input type="hidden" id="walletImageUrl">
+
+    <label class="modal-lbl">ناوی واڵێت</label>
+    <input class="minp" id="walletName" placeholder="بۆ نموونە: FastPay" oninput="autoFillWalletKey()">
+
+    <label class="modal-lbl">کلیل (Key — بەکاردەهێنرێت لە کۆدەکەدا، بێ بۆشایی)</label>
+    <input class="minp" id="walletKey" dir="ltr" placeholder="FastPay">
+
+    <label class="modal-lbl">ژمارە/ناونیشانی وەرگرتن</label>
+    <input class="minp" id="walletNumber" dir="ltr" placeholder="07XXXXXXXXX یان ناونیشانی USDT">
+
+    <div class="modal-row">
+      <div>
+        <label class="modal-lbl">نرخ (Price) — تەنها پیشاندان</label>
+        <input class="minp" type="number" step="0.0001" id="walletPrice" dir="ltr" placeholder="ئارەزوومەندانە">
+      </div>
+      <div>
+        <label class="modal-lbl">کرێ (Fee) — تەنها پیشاندان</label>
+        <input class="minp" type="number" step="0.0001" id="walletFee" dir="ltr" placeholder="ئارەزوومەندانە">
+      </div>
+    </div>
+    <label class="modal-lbl">جۆری کرێ</label>
+    <select class="msel" id="walletFeeType">
+      <option value="percent">ڕێژەی سەدی (%)</option>
+      <option value="fixed">بڕی جێگیر</option>
+    </select>
+    <div class="fee-toggle-note"><i class="fas fa-circle-info" style="margin-left:4px"></i>نرخ و کرێ لێرە تەنها بۆ پیشاندانن — حیسابکردنی ڕاستەقینە هەروەک خۆی لە پەڕەی «نرخ و کرێ»ەوە کۆنترۆڵ دەکرێت.</div>
+
+    <div class="mswitch-row">
+      <span>دەتوانرێت پارە بۆی وەربگیرێت (لە لیستی «وەرگرتن لە»دا دەردەکەوێت)</span>
+      <label class="mswitch"><input type="checkbox" id="walletCanReceive"><span class="track"></span></label>
+    </div>
+    <div class="mswitch-row">
+      <span>قوفڵکراوە (بەکارهێنەران نایبینن)</span>
+      <label class="mswitch"><input type="checkbox" id="walletLocked"><span class="track"></span></label>
+    </div>
+
+    <button class="modal-btn dark" id="walletSaveBtn" onclick="saveWallet()"><i class="fas fa-check"></i> پاشەکەوتکردن</button>
   </div>
 </div>
 
@@ -631,12 +721,13 @@ function showApp(){
 // ═══ PAGE ROUTING ════════════════════════════════════════════════
 // ══════════════════════════════════════════════════════════════
 const pageConfig = {
-  dashboard:{ title:'داشبۆرد', sub:'دیمەنی گشتی سیستەم', load: loadDashboard },
-  orders:{ title:'ئۆردەرەکان', sub:'پەسەندکردن و ڕەتکردنەوەی داواکارییە گۆڕینەوەکان', load: loadOrders },
-  accounts:{ title:'هەژمارەکان', sub:'بەڕێوەبردنی هەژمارەکانی بەکارهێنەران', load: loadAccounts },
-  rates:{ title:'نرخ و کرێ', sub:'ڕێکخستنی نرخی گۆڕینەوە و کرێی هەر ڕێگایەک', load: loadRates },
-  notifications:{ title:'ئاگادارییەکان', sub:'ناردنی ئاگاداری و بینینی مێژوو', load: loadNotifPage },
-  announcement:{ title:'بانەری ئاگاداری', sub:'ئاگاداری گشتی سەرەوەی ئەپەکە', load: loadAnnouncement },
+  dashboard:{ title:'داشبۆرد', sub:'دیمەنی گشتی سیستەم', load: ()=>loadDashboard() },
+  orders:{ title:'ئۆردەرەکان', sub:'پەسەندکردن و ڕەتکردنەوەی داواکارییە گۆڕینەوەکان', load: ()=>loadOrders() },
+  accounts:{ title:'هەژمارەکان', sub:'بەڕێوەبردنی هەژمارەکانی بەکارهێنەران', load: ()=>loadAccounts() },
+  wallets:{ title:'واڵێتەکان', sub:'زیادکردن، قوفڵکردن و دەستکاریکردنی واڵێتەکانی وەرگرتنی پارە', load: ()=>loadWalletsAdmin() },
+  rates:{ title:'نرخ و کرێ', sub:'ڕێکخستنی نرخی گۆڕینەوە و کرێی هەر ڕێگایەک', load: ()=>loadRates() },
+  notifications:{ title:'ئاگادارییەکان', sub:'ناردنی ئاگاداری و بینینی مێژوو', load: ()=>loadNotifPage() },
+  announcement:{ title:'بانەری ئاگاداری', sub:'ئاگاداری گشتی سەرەوەی ئەپەکە', load: ()=>loadAnnouncement() },
 };
 let _curPage='dashboard';
 function goPage(p){
@@ -1052,6 +1143,158 @@ async function saveRate(){
   showToast('پاشەکەوتکرا','gr');
   closeMo('moRate');
   loadRates();
+}
+</script>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// ═══ WALLETS ═════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════
+let allWallets=[];
+let _walletsAdminChannel=null;
+
+async function loadWalletsAdmin(){
+  document.getElementById('walletsGridWrap').innerHTML='<div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
+  try{
+    const {data,error} = await sb.from('ex_wallets').select('*').order('sort_order',{ascending:true});
+    if(error) throw error;
+    allWallets = data||[];
+    renderWalletsGrid();
+  }catch(e){
+    document.getElementById('walletsGridWrap').innerHTML=`<div class="empty"><i class="fas fa-triangle-exclamation"></i><p>هەڵە: ${esc(e.message)}</p><p style="font-size:11px;margin-top:6px">دڵنیابەرەوە خشتەی ex_wallets دروستکراوە (بڕوانە SQL پێشکەشکراو)</p></div>`;
+  }
+  subscribeWalletsAdmin();
+}
+function subscribeWalletsAdmin(){
+  if(_walletsAdminChannel) return;
+  _walletsAdminChannel = sb.channel('ex_wallets_admin')
+    .on('postgres_changes', {event:'*',schema:'public',table:'ex_wallets'}, ()=>{ if(_curPage==='wallets') loadWalletsAdmin(); })
+    .subscribe();
+}
+function renderWalletsGrid(){
+  const wrap=document.getElementById('walletsGridWrap');
+  if(!allWallets.length){ wrap.innerHTML='<div class="empty"><i class="fas fa-wallet"></i><p>هیچ واڵێتێک زیاد نەکراوە</p></div>'; return; }
+  wrap.innerHTML = allWallets.map(w=>{
+    const avatarInner = w.image_url ? `<img src="${esc(w.image_url)}" alt="">` : `<i class="fas fa-wallet"></i>`;
+    const avatarBg = w.image_url ? '' : `background:${esc(w.color||'#1c2333')}`;
+    return `<div class="wallet-card ${w.is_locked?'locked':''}">
+      <div class="wallet-card-top">
+        <div class="wallet-avatar" style="${avatarBg}">${avatarInner}</div>
+        <div class="wallet-card-info">
+          <div class="wallet-card-name">${esc(w.name)}</div>
+          <div class="wallet-card-key">${esc(w.key)}</div>
+        </div>
+      </div>
+      <div class="wallet-card-num">${esc(w.wallet_number||'—')}</div>
+      <div class="wallet-card-meta">
+        ${w.allow_receive?'<span class="wallet-card-badge gr"><i class="fas fa-arrow-down"></i> وەرگرتن چالاکە</span>':''}
+        ${w.price!=null?`<span class="wallet-card-badge">نرخ: ${esc(w.price)}</span>`:''}
+        ${w.fee!=null?`<span class="wallet-card-badge">کرێ: ${esc(w.fee)}${w.fee_type==='percent'?'%':''}</span>`:''}
+      </div>
+      <div class="act-grp">
+        <div class="act-btn dark" onclick='openWalletModal(${safeAttr(w)})'><i class="fas fa-pen"></i> دەستکاری</div>
+        <div class="act-btn rd" onclick="deleteWallet('${w.id}')"><i class="fas fa-trash"></i></div>
+      </div>
+      <div class="wallet-lock-row">
+        <span><i class="fas ${w.is_locked?'fa-lock':'fa-lock-open'}" style="color:${w.is_locked?'var(--rd)':'var(--gr)'}"></i> ${w.is_locked?'قوفڵکراوە':'کراوەیە'}</span>
+        <label class="mswitch"><input type="checkbox" ${w.is_locked?'':'checked'} onchange="toggleWalletLock('${w.id}',!this.checked)"><span class="track"></span></label>
+      </div>
+    </div>`;
+  }).join('');
+}
+async function toggleWalletLock(id, locked){
+  const {error} = await sb.from('ex_wallets').update({is_locked:locked}).eq('id',id);
+  if(error){ showToast('هەڵە: '+error.message,'rd'); loadWalletsAdmin(); return; }
+  showToast(locked?'واڵێت قوفڵکرا':'واڵێت کرایەوە','gr');
+  const w=allWallets.find(x=>x.id===id); if(w) w.is_locked=locked;
+  renderWalletsGrid();
+}
+function deleteWallet(id){
+  confirm2('سڕینەوەی واڵێت','ئایا دڵنیایت لە سڕینەوەی ئەم واڵێتە؟ ئۆردەرە کۆنەکان کاریگەر نابن.','fas fa-trash','var(--rd)', async()=>{
+    const {error} = await sb.from('ex_wallets').delete().eq('id',id);
+    if(error){ showToast('هەڵە: '+error.message,'rd'); return; }
+    showToast('واڵێتەکە سڕایەوە','gr');
+    loadWalletsAdmin();
+  });
+}
+function autoFillWalletKey(){
+  const keyInp=document.getElementById('walletKey');
+  if(keyInp.dataset.touched==='1') return; // don't overwrite once the admin edited it manually
+  const name=document.getElementById('walletName').value.trim();
+  keyInp.value = name.replace(/[^a-zA-Z0-9]+/g,'');
+}
+function onWalletImgFile(input){
+  const file=input.files[0]; if(!file) return;
+  if(file.size > 900*1024){ showToast('وێنەکە زۆر گەورەیە (زۆرترین 900KB)','rd'); input.value=''; return; }
+  const reader=new FileReader();
+  reader.onload=()=>{
+    document.getElementById('walletImageUrl').value = reader.result;
+    document.getElementById('walletImgPreview').innerHTML = `<img src="${reader.result}" style="width:100%;height:100%;object-fit:cover">`;
+  };
+  reader.readAsDataURL(file);
+}
+function openWalletModal(w){
+  document.getElementById('walletKey').dataset.touched='0';
+  if(w){
+    document.getElementById('walletModalTitle').textContent='دەستکاریکردنی واڵێت';
+    document.getElementById('walletId').value=w.id;
+    document.getElementById('walletName').value=w.name||'';
+    document.getElementById('walletKey').value=w.key||'';
+    document.getElementById('walletKey').dataset.touched='1';
+    document.getElementById('walletNumber').value=w.wallet_number||'';
+    document.getElementById('walletImageUrl').value=w.image_url||'';
+    document.getElementById('walletImgPreview').innerHTML = w.image_url ? `<img src="${esc(w.image_url)}" style="width:100%;height:100%;object-fit:cover">` : '<i class="fas fa-image"></i>';
+    document.getElementById('walletPrice').value=w.price??'';
+    document.getElementById('walletFee').value=w.fee??'';
+    document.getElementById('walletFeeType').value=w.fee_type||'percent';
+    document.getElementById('walletCanReceive').checked=!!w.allow_receive;
+    document.getElementById('walletLocked').checked=!!w.is_locked;
+  }else{
+    document.getElementById('walletModalTitle').textContent='زیادکردنی واڵێتی نوێ';
+    document.getElementById('walletId').value='';
+    document.getElementById('walletName').value='';
+    document.getElementById('walletKey').value='';
+    document.getElementById('walletNumber').value='';
+    document.getElementById('walletImageUrl').value='';
+    document.getElementById('walletImgPreview').innerHTML='<i class="fas fa-image"></i>';
+    document.getElementById('walletPrice').value='';
+    document.getElementById('walletFee').value='';
+    document.getElementById('walletFeeType').value='percent';
+    document.getElementById('walletCanReceive').checked=false;
+    document.getElementById('walletLocked').checked=false;
+  }
+  document.getElementById('walletImgFile').value='';
+  openMo('moWallet');
+}
+async function saveWallet(){
+  const id=document.getElementById('walletId').value;
+  const name=document.getElementById('walletName').value.trim();
+  const key=document.getElementById('walletKey').value.trim();
+  const wallet_number=document.getElementById('walletNumber').value.trim();
+  const image_url=document.getElementById('walletImageUrl').value.trim()||null;
+  const priceRaw=document.getElementById('walletPrice').value;
+  const feeRaw=document.getElementById('walletFee').value;
+  const price = priceRaw===''?null:parseFloat(priceRaw);
+  const fee = feeRaw===''?null:parseFloat(feeRaw);
+  const fee_type=document.getElementById('walletFeeType').value;
+  const allow_receive=document.getElementById('walletCanReceive').checked;
+  const is_locked=document.getElementById('walletLocked').checked;
+  if(!name){ showToast('ناوی واڵێت بنووسە','rd'); return; }
+  if(!key){ showToast('کلیلی واڵێت بنووسە','rd'); return; }
+  const btn=document.getElementById('walletSaveBtn'); btn.disabled=true;
+  const payload={ name, key, wallet_number: wallet_number||null, image_url, price, fee, fee_type, allow_receive, is_locked };
+  let error;
+  if(id){
+    ({error} = await sb.from('ex_wallets').update(payload).eq('id',id));
+  }else{
+    payload.sort_order = allWallets.length ? Math.max(...allWallets.map(w=>w.sort_order||0))+1 : 1;
+    ({error} = await sb.from('ex_wallets').insert(payload));
+  }
+  btn.disabled=false;
+  if(error){ showToast('هەڵە: '+(error.code==='23505'?'ئەم کلیلە پێشتر بەکارهاتووە':error.message),'rd'); return; }
+  showToast('پاشەکەوتکرا','gr');
+  closeMo('moWallet');
+  loadWalletsAdmin();
 }
 </script>
 
