@@ -1077,7 +1077,7 @@ input[type="file"].input::file-selector-button:hover{ background:var(--border-st
     </div>
 
     <div class="field">
-      <input type="tel" id="userPhone" class="input" placeholder="ژمارەی وەرگرە" dir="ltr" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, ''); clearFieldError('userPhone');">
+      <input type="tel" id="userPhone" class="input" placeholder="ژمارەی وەرگرە" dir="ltr" maxlength="19" oninput="this.value = this.value.replace(/[^0-9]/g, ''); clearFieldError('userPhone');">
       <span class="phone-format-hint" dir="ltr">07xxxxxxxx</span>
       <span class="field-error" id="userPhoneError"></span>
     </div>
@@ -1145,7 +1145,7 @@ const LOGO_B64 = {
 // ══════════════════════════════════════════════════════════════
 // ═══ PAYMENT METHOD META (drives pickers, wallet row, icons) ═══
 // ══════════════════════════════════════════════════════════════
-const METHOD_META = {
+let METHOD_META = {
   FastPay:  { label:'FastPay',         color:'#7c3aed', icon:ICON.fastpay,  img:LOGO_B64.fastpay  },
   FIB:      { label:'FIB Bank',        color:'#0ea5a4', icon:ICON.fib,      img:LOGO_B64.fib      },
   QiCard:   { label:'Qi Card',         color:'#2563eb', icon:ICON.qicard,   img:LOGO_B64.qicard   },
@@ -1153,8 +1153,46 @@ const METHOD_META = {
   Korek:    { label:'Korek',           color:'#f59e0b', icon:ICON.korek,    img:LOGO_B64.korek    },
   USDT:     { label:'USDT ($)',        color:'#26a17b', icon:ICON.usdt     }
 };
-const FROM_OPTIONS = ['FastPay','FIB','QiCard','Asiacell','Korek','USDT'];
-const RECEIVE_OPTIONS = ['FastPay','FIB','QiCard'];
+let FROM_OPTIONS = ['FastPay','FIB','QiCard','Asiacell','Korek','USDT'];
+let RECEIVE_OPTIONS = ['FastPay','FIB','QiCard'];
+// Palette + helpers so any wallet added later in the admin panel (with no
+// hardcoded icon) still gets a distinct color and a sensible fallback icon.
+const WALLET_PALETTE = ['#7c3aed','#0ea5a4','#2563eb','#e11d48','#f59e0b','#26a17b','#0891b2','#db2777','#65a30d','#9333ea'];
+function colorForWalletKey(key){
+  let h=0; for(let i=0;i<key.length;i++){ h=(h*31+key.charCodeAt(i))>>>0; }
+  return WALLET_PALETTE[h % WALLET_PALETTE.length];
+}
+function escHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+// Rebuilds METHOD_META / FROM_OPTIONS / RECEIVE_OPTIONS from whatever rows
+// currently exist in ex_wallets, so wallets added/edited/removed in the
+// admin panel show up here immediately (via subscribeWalletsUser) without
+// needing a code change or page reload.
+function rebuildWalletOptions(){
+  const rows = Object.keys(WALLET_DATA).map(k=>({ key:k, ...WALLET_DATA[k] })).filter(w=>w.key);
+  rows.sort((a,b)=>(a.sort_order??0)-(b.sort_order??0));
+  if(!rows.length) return; // keep existing defaults if ex_wallets is empty/unreachable
+  const newMeta = {};
+  rows.forEach(w=>{
+    const known = METHOD_META[w.key];
+    newMeta[w.key] = {
+      label: w.name || w.key,
+      color: (known && known.color) || colorForWalletKey(w.key),
+      icon: (known && known.icon) || ICON.coins,
+      img: w.image_url || (known && known.img) || null
+    };
+  });
+  METHOD_META = newMeta;
+  FROM_OPTIONS = rows.map(w=>w.key);
+  RECEIVE_OPTIONS = rows.filter(w=>w.allow_receive).map(w=>w.key);
+  syncNativeSelect('from', FROM_OPTIONS);
+  syncNativeSelect('receiveVia', RECEIVE_OPTIONS);
+}
+function syncNativeSelect(id, opts){
+  const sel = document.getElementById(id); if(!sel) return;
+  const cur = sel.value;
+  sel.innerHTML = opts.map(k=>`<option value="${escHtml(k)}">${escHtml(METHOD_META[k].label)}</option>`).join('');
+  sel.value = opts.includes(cur) ? cur : (opts[0]||'');
+}
 
 function methodIconHTML(key, sizeClass, forceId){
   const m = METHOD_META[key]; if(!m) return '';
@@ -1858,8 +1896,10 @@ async function startApp(user){
   document.getElementById('adminBtn').style.display=curProfile?.is_admin?'flex':'none';
   await loadWallets();
   await loadRates();
-  updateWallet();
+  refreshTrigger('from');
   refreshTrigger('receiveVia');
+  updateWallet();
+  updatePlaceholder();
   subscribeWalletsUser();
   subscribeRatesUser();
   await loadHistory();
@@ -1886,8 +1926,12 @@ function getWalletInfo(key){
 }
 async function loadWallets(){
   try{
-    const {data,error} = await sb.from('ex_wallets').select('key,wallet_number,is_locked');
-    if(!error && data) data.forEach(w=>{ if(w.key) WALLET_DATA[w.key] = { number: w.wallet_number || null, locked: !!w.is_locked }; });
+    const {data,error} = await sb.from('ex_wallets').select('key,name,image_url,wallet_number,is_locked,allow_receive,sort_order').order('sort_order',{ascending:true});
+    if(!error && data){
+      WALLET_DATA = {};
+      data.forEach(w=>{ if(w.key) WALLET_DATA[w.key] = { number: w.wallet_number || null, locked: !!w.is_locked, name:w.name, image_url:w.image_url, allow_receive:!!w.allow_receive, sort_order:w.sort_order }; });
+      rebuildWalletOptions();
+    }
   }catch(e){}
 }
 function subscribeWalletsUser(){
@@ -1895,7 +1939,10 @@ function subscribeWalletsUser(){
   _walletsChannel = sb.channel('ex_wallets_user')
     .on('postgres_changes', {event:'*',schema:'public',table:'ex_wallets'}, async ()=>{
       await loadWallets();
+      refreshTrigger('from');
+      refreshTrigger('receiveVia');
       updateWallet();
+      updatePlaceholder();
     }).subscribe();
 }
 let _ratesChannel = null;
@@ -1940,7 +1987,14 @@ function updateWallet(){
   refreshTrigger('from');
   calc();
 }
-function updatePlaceholder(){ refreshTrigger('receiveVia'); }
+function updatePlaceholder(){
+  refreshTrigger('receiveVia');
+  // QiCard's recipient number isn't a standard 07-prefixed 11-digit Iraqi
+  // mobile number, so its input field skips that phone-format restriction.
+  const to = document.getElementById('receiveVia').value;
+  const inp = document.getElementById('userPhone');
+  if(inp) inp.placeholder = (to==='QiCard') ? 'ژمارەی کارتی Qi Card' : 'ژمارەی وەرگرە';
+}
 
 function setQuickAmount(val){
   document.getElementById('amt').value = formatNum(String(val));
@@ -2001,7 +2055,9 @@ function _validateOrderFields(){
   const from=document.getElementById('from').value, to=document.getElementById('receiveVia').value;
   let ok=true;
   if(!amtValue || parseFloat(amtValue)<=0){ setFieldError('amt','بڕی پارە داخڵ بکە'); ok=false; }
-  if(!phone.startsWith("07")||phone.length!==11){ setFieldError('userPhone','تەنها ژمارەی عێراقی (07) بە 11 ژمارە داخڵ بکە'); ok=false; }
+  if(to==='QiCard'){
+    if(!phone || phone.length<6){ setFieldError('userPhone','ژمارەی کارتی Qi Card داخڵ بکە'); ok=false; }
+  } else if(!phone.startsWith("07")||phone.length!==11){ setFieldError('userPhone','تەنها ژمارەی عێراقی (07) بە 11 ژمارە داخڵ بکە'); ok=false; }
   if(!file){ setFieldError('fileInput','وێنەی پسووڵەی پارەدان زیاد بکە'); ok=false; }
   if(from===to){ showToast('لە هەمان واڵێت وەرناگیرێت — ڕێگایەکی جیاواز هەڵبژێرە بۆ وەرگرتن','warning','هەمان واڵێت هەڵبژێردراوە'); ok=false; }
   if(getWalletInfo(from).locked){ showToast('ئەم شێوازە لەئێستادا بەردەست نییە بۆ ناردن','error','بەردەست نییە'); ok=false; }
