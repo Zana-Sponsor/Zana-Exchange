@@ -753,7 +753,7 @@ function goPage(p){
 // ═══ HELPERS ═════════════════════════════════════════════════════
 // ══════════════════════════════════════════════════════════════
 function formatNum(n){ n=Math.round(parseFloat(n)||0); return n.toLocaleString(); }
-function fmtOrderNo(n){ return 'P-'+String(n).padStart(6,'0'); }
+function fmtOrderNo(n){ return '\u2068P-'+String(n).padStart(6,'0')+'\u2069'; }
 function methodPill(key){
   const m=METHOD_META[key]; if(!m) return key||'—';
   return `<span class="method-pill"><span class="method-dot" style="background:${m.color}"></span>${m.label}</span>`;
