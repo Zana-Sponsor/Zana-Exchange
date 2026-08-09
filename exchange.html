@@ -313,6 +313,7 @@ input[type="file"].input::file-selector-button:hover{ background:var(--border-st
 }
 .copy-btn{ background:none; border:none; cursor:pointer; color:var(--accent); display:flex; padding:4px; border-radius:8px; transition:background var(--t); flex-shrink:0; }
 .copy-btn:hover{ background:rgba(245,185,66,.15); }
+.phone-format-hint{ font-size:var(--fs-2xs); color:var(--text-faint); display:block; text-align:center; margin:-8px 2px 12px; }
 .wallet-value.locked-text{
   color:var(--error); font-weight:var(--fw-semibold); font-size:var(--fs-xs);
   white-space:normal; overflow:visible; text-align:center;
@@ -1076,7 +1077,8 @@ input[type="file"].input::file-selector-button:hover{ background:var(--border-st
     </div>
 
     <div class="field">
-      <input type="tel" id="userPhone" class="input" placeholder="07XXXXXXXXX" dir="ltr" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, ''); clearFieldError('userPhone');">
+      <input type="tel" id="userPhone" class="input" placeholder="ژمارەی وەرگرە" dir="ltr" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, ''); clearFieldError('userPhone');">
+      <span class="phone-format-hint" dir="ltr">07xxxxxxxx</span>
       <span class="field-error" id="userPhoneError"></span>
     </div>
     <div class="file-field">
@@ -1928,7 +1930,7 @@ function updateWallet(){
   refreshTrigger('from');
   calc();
 }
-function updatePlaceholder(){ document.getElementById('userPhone').placeholder='ژمارەی '+document.getElementById('receiveVia').value; refreshTrigger('receiveVia'); }
+function updatePlaceholder(){ refreshTrigger('receiveVia'); }
 
 function setQuickAmount(val){
   document.getElementById('amt').value = formatNum(String(val));
