@@ -1196,7 +1196,7 @@ function openPicker(which){
   const body = document.getElementById('pickerSheetBody');
   body.innerHTML = opts.map(key=>{
     const m = METHOD_META[key]; const sel = key===curVal;
-    const locked = which==='from' && getWalletInfo(key).locked;
+    const locked = getWalletInfo(key).locked;
     return '<button type="button" class="sheet-option'+(sel?' selected':'')+(locked?' locked-option':'')+'"'
       + (locked ? ' disabled' : ' onclick="selectPickerOption(\''+key+'\')"')
       + '>'
@@ -1984,7 +1984,8 @@ function _validateOrderFields(){
   if(!phone.startsWith("07")||phone.length!==11){ setFieldError('userPhone','تەنها ژمارەی عێراقی (07) بە 11 ژمارە داخڵ بکە'); ok=false; }
   if(!file){ setFieldError('fileInput','وێنەی پسووڵەی پارەدان زیاد بکە'); ok=false; }
   if(from===to){ showToast('لە هەمان واڵێت وەرناگیرێت — ڕێگایەکی جیاواز هەڵبژێرە بۆ وەرگرتن','warning','هەمان واڵێت هەڵبژێردراوە'); ok=false; }
-  if(getWalletInfo(from).locked){ showToast('ئەم شێوازە لەئێستادا بەردەست نییە','error','بەردەست نییە'); ok=false; }
+  if(getWalletInfo(from).locked){ showToast('ئەم شێوازە لەئێستادا بەردەست نییە بۆ ناردن','error','بەردەست نییە'); ok=false; }
+  if(getWalletInfo(to).locked){ showToast('ئەم شێوازە لەئێستادا بەردەست نییە بۆ وەرگرتن','error','بەردەست نییە'); ok=false; }
   if(!ok) showToast('تکایە خانە پێویستەکان پڕ بکەرەوە','error');
   return ok;
 }
