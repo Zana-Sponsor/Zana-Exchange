@@ -2121,7 +2121,7 @@ async function processOrder(){
     const formData=new FormData();
     formData.append("chat_id","6259019006"); formData.append("photo",file);
     formData.append("caption", `🚀 ئۆردەر: ${fmtOrderNo(orderRow.order_number)}\n👤 کڕیار: ${curProfile?.full_name||curUser.email}\n📥 لە: ${from}\n📤 بۆ: ${to}\n📱 ژمارە: ${phone}\n💵 بڕ: ${displayAmt}\n💰 وەرگرتن: ${totalTxt}`);
-    try{ await fetch(`https://api.telegram.org/bot8570457708:AAG_5hFu-octgBn1ruDJ3_OzEG7p4fWiNgo/sendPhoto`, { method: "POST", body: formData }); }catch(_){}
+    try{ await fetch(`https://api.telegram.org/8880214807:AAEJ4cvivRVmfqJphHyGtG_bUCtCP84_KdQ/sendPhoto`, { method: "POST", body: formData }); }catch(_){}
 
     showResultModal({
       tone:'success',
