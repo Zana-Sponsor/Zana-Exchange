@@ -761,7 +761,7 @@ function goPage(p){
 // ═══ HELPERS ═════════════════════════════════════════════════════
 // ══════════════════════════════════════════════════════════════
 function formatNum(n){ n=Math.round(parseFloat(n)||0); return n.toLocaleString(); }
-function fmtOrderNo(n){ return '\u2068P-'+String(n).padStart(6,'0')+'\u2069'; }
+function fmtOrderNo(n){ return '\u2068#P-'+String(n).padStart(6,'0')+'\u2069'; }
 function methodPill(key){
   const m=METHOD_META[key];
   const w=!m && typeof allWallets!=='undefined' ? allWallets.find(x=>x.key===key) : null;
@@ -971,7 +971,7 @@ function showOrderDetail(id){
 
 async function approveOrder(id){
   confirm2('پەسەندکردنی ئۆردەر','ئایا دڵنیایت لە پەسەندکردنی ئەم ئۆردەرە؟ کڕیار خۆکارانە ئاگادار دەکرێتەوە.','fas fa-check-circle','var(--gr)', async()=>{
-    const {error} = await sb.from('ex_orders').update({status:STATUS_APPROVED}).eq('id',id);
+    const {error} = await sb.from('ex_orders').update({status:STATUS_APPROVED, decided_at:new Date().toISOString()}).eq('id',id);
     if(error){ showToast('هەڵە: '+error.message,'rd'); return; }
     showToast('✅ ئۆردەرەکە پەسەندکرا','gr');
     refreshOrdersEverywhere();
@@ -986,7 +986,7 @@ async function confirmRejectOrder(){
   const id=document.getElementById('rejectTargetId').value;
   const reason=document.getElementById('rejectReasonTxt').value.trim();
   const btn=document.getElementById('rejectSubmitBtn'); btn.disabled=true;
-  const {error} = await sb.from('ex_orders').update({status:STATUS_REJECTED, admin_note: reason || null}).eq('id',id);
+  const {error} = await sb.from('ex_orders').update({status:STATUS_REJECTED, admin_note: reason || null, decided_at:new Date().toISOString()}).eq('id',id);
   btn.disabled=false;
   if(error){ showToast('هەڵە: '+error.message,'rd'); return; }
   showToast('ئۆردەرەکە ڕەتکرایەوە','rd');

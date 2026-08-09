@@ -1092,7 +1092,7 @@ input[type="file"].input::file-selector-button:hover{ background:var(--border-st
   </div>
 
   <h3 class="section-title">
-    <svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.2 10A7.9 7.9 0 1 1 5 15.3"/><path d="M4 5v4.5h4.5"/><path d="M12 8v4.3l2.8 1.8"/></svg>
+    <svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.5h12v18.2l-2.2-1.5-2 1.5-2-1.5-2 1.5-2-1.5-2 1.5V2.5z"/><path d="M8.5 7.3h7M8.5 10.8h7M8.5 14.3h4"/></svg>
     مێژووی داواکاریەکان
   </h3>
   <div id="historyList" style="width:100%;"></div>
@@ -1129,7 +1129,8 @@ const ICON = {
   qicard: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.7" y="5.5" width="18.6" height="13" rx="2.4"/><path d="M2.7 9.8h18.6"/><path d="M6 14.3h5"/></svg>',
   asiacell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5v-2.2"/><path d="M8 20.5a5.7 5.7 0 0 1 8 0"/><path d="M4.8 17.3a10.2 10.2 0 0 1 14.4 0"/><path d="M2 14a14.2 14.2 0 0 1 20 0"/></svg>',
   korek: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/><path d="M8.3 15.7a5.2 5.2 0 0 1 7.4 0"/><path d="M5.4 12.8a9.3 9.3 0 0 1 13.2 0"/><path d="M2.6 10a13.4 13.4 0 0 1 18.8 0"/></svg>',
-  usdt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.2"/><path d="M8 8.3h8M12 8.3v3M9.3 12.6c0 1.2 1.2 2 2.7 2s2.7-.8 2.7-1.9c0-1-1-1.5-2.7-1.7-1.7-.2-2.7-.7-2.7-1.7 0-1 1.2-1.8 2.7-1.8s2.5.6 2.6 1.5"/><path d="M12 14.6v3.1"/></svg>'
+  usdt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.2"/><path d="M8 8.3h8M12 8.3v3M9.3 12.6c0 1.2 1.2 2 2.7 2s2.7-.8 2.7-1.9c0-1-1-1.5-2.7-1.7-1.7-.2-2.7-.7-2.7-1.7 0-1 1.2-1.8 2.7-1.8s2.5.6 2.6 1.5"/><path d="M12 14.6v3.1"/></svg>',
+  receive: '<svg class="icn icn-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2v10.8"/><path d="M7.3 9.8 12 14.5l4.7-4.7"/><path d="M4 18.3h16"/></svg>'
 };
 
 // ══════════════════════════════════════════════════════════════
@@ -2026,7 +2027,7 @@ async function loadRates(){
   if(Object.keys(RATES).length===0) RATES=Object.assign({},FALLBACK_RATES);
 }
 function formatNum(num){ return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
-function fmtOrderNo(n){ return '\u2068P-'+String(n).padStart(6,'0')+'\u2069'; }
+function fmtOrderNo(n){ return '\u2068#P-'+String(n).padStart(6,'0')+'\u2069'; }
 function closeModal(){ document.getElementById('tgModal').style.display='none'; }
 function updateWallet(){
   const key = document.getElementById('from').value;
@@ -2217,6 +2218,9 @@ function renderHistory(rows){
   let html="";
   rows.forEach(o=>{
     let sClass = o.status==='پەسەندکرا' ? 'status-success' : (o.status==='ڕەتکرا' ? 'status-danger' : '');
+    const decidedRow = (o.status==='پەسەندکرا' || o.status==='ڕەتکرا') && o.decided_at
+      ? `<div class="detail-item"><span class="detail-ico" style="color:${o.status==='پەسەندکرا'?'var(--success)':'var(--error)'}">${o.status==='پەسەندکرا'?ICON.check:ICON.cross}</span> ${o.status}: ${new Date(o.decided_at).toLocaleString('ku-IQ')}</div>`
+      : '';
     html += `
     <div class="order-card">
         <div class="order-header">
@@ -2225,10 +2229,11 @@ function renderHistory(rows){
         </div>
         <div class="detail-item"><span class="detail-ico">${ICON.swap}</span> ${o.from_method} ➔ ${o.to_method}</div>
         <div class="detail-item"><span class="detail-ico">${ICON.coins}</span> بڕ: <b>${formatNum(o.amount)}${o.from_method==='USDT'?'$':' IQD'}</b></div>
-        <div class="detail-item"><span class="detail-ico" style="color:var(--success)">${ICON.checkDouble}</span> بڕی وەرگیراو: <b style="color:var(--success)">${formatNum(Math.floor(o.total))} IQD</b></div>
+        <div class="detail-item"><span class="detail-ico" style="color:var(--success)">${ICON.receive}</span> بڕی وەرگیراو: <b style="color:var(--success)">${formatNum(Math.floor(o.total))} IQD</b></div>
         <div class="detail-item"><span class="detail-ico">${ICON.phone}</span> ژمارە: ${o.phone}</div>
         ${o.extra_info?`<div class="detail-item"><span class="detail-ico">${ICON.info}</span> زانیاری زیاتر: ${o.extra_info}</div>`:''}
-        <div class="detail-item"><span class="detail-ico">${ICON.clock}</span> ${new Date(o.created_at).toLocaleString('ku-IQ')}</div>
+        <div class="detail-item"><span class="detail-ico">${ICON.send}</span> ناردرا: ${new Date(o.created_at).toLocaleString('ku-IQ')}</div>
+        ${decidedRow}
         ${o.admin_note?`<div class="detail-item"><span class="detail-ico">${ICON.message}</span> ${o.admin_note}</div>`:''}
     </div>`;
   });
