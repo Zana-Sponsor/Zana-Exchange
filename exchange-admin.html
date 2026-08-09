@@ -464,9 +464,13 @@ tr:hover td{background:rgba(28,35,51,.015);}
           <span>پیشاندانی بانەر لەناو ئەپەکە</span>
           <label class="mswitch"><input type="checkbox" id="annShow"><span class="track"></span></label>
         </div>
-        <label class="modal-lbl">دەقی بانەر</label>
-        <textarea class="minp mta" id="annText" placeholder="دەقی ئاگادارییەکە بنووسە..."></textarea>
-        <div class="fee-toggle-note"><i class="fas fa-circle-info" style="margin-left:4px"></i>ئەم بانەرە بە یەکسانی بۆ هەموو بەکارهێنەرانی ئەپی Exchange دەردەکەوێت (Firebase Realtime).</div>
+        <label class="modal-lbl">دەقەکانی بانەر (چەند دانە دەقی جیاواز، سلاید دەکرێن)</label>
+        <div id="annItemsWrap"></div>
+        <div class="act-btn dark" style="margin-top:2px;margin-bottom:16px;display:inline-flex" onclick="addAnnItem()"><i class="fas fa-plus"></i> زیادکردنی دەقێکی تر</div>
+
+        <label class="modal-lbl">چرکە لەنێوان گۆڕانی دەقەکان</label>
+        <input class="minp" type="number" min="2" step="1" id="annInterval" dir="ltr" placeholder="5">
+        <div class="fee-toggle-note"><i class="fas fa-circle-info" style="margin-left:4px"></i>ئەگەر زیاتر لە دەقێک هەبێت، بانەرەکە بەم ماوەیە (بە چرکە) لەنێوان دەقەکاندا سلاید دەکات. یەک دەق = بەبێ سلایدکردن.</div>
         <button class="modal-btn cy" id="annSaveBtn" onclick="saveAnnouncement()"><i class="fas fa-check"></i> پاشەکەوتکردن</button>
       </div>
     </div>
@@ -579,6 +583,10 @@ tr:hover td{background:rgba(28,35,51,.015);}
     </select>
     <div class="fee-toggle-note"><i class="fas fa-circle-info" style="margin-left:4px"></i>نرخ و کرێ لێرە تەنها بۆ پیشاندانن — حیسابکردنی ڕاستەقینە هەروەک خۆی لە پەڕەی «نرخ و کرێ»ەوە کۆنترۆڵ دەکرێت.</div>
 
+    <div class="mswitch-row">
+      <span>دەتوانرێت لێی بنێردرێت (لە لیستی «لە»ی ناردندا دەردەکەوێت)</span>
+      <label class="mswitch"><input type="checkbox" id="walletCanSend"><span class="track"></span></label>
+    </div>
     <div class="mswitch-row">
       <span>دەتوانرێت پارە بۆی وەربگیرێت (لە لیستی «وەرگرتن لە»دا دەردەکەوێت)</span>
       <label class="mswitch"><input type="checkbox" id="walletCanReceive"><span class="track"></span></label>
@@ -1250,6 +1258,7 @@ function renderWalletsGrid(){
       </div>
       <div class="wallet-card-num">${esc(w.wallet_number||'—')}</div>
       <div class="wallet-card-meta">
+        ${w.allow_from!==false?'<span class="wallet-card-badge"><i class="fas fa-arrow-up"></i> ناردن چالاکە</span>':''}
         ${w.allow_receive?'<span class="wallet-card-badge gr"><i class="fas fa-arrow-down"></i> وەرگرتن چالاکە</span>':''}
         ${w.price!=null?`<span class="wallet-card-badge">نرخ: ${esc(w.price)}</span>`:''}
         ${w.fee!=null?`<span class="wallet-card-badge">کرێ: ${esc(w.fee)}${w.fee_type==='percent'?'%':' د.ع'}</span>`:''}
@@ -1310,6 +1319,7 @@ function openWalletModal(w){
     document.getElementById('walletPrice').value=w.price??'';
     document.getElementById('walletFee').value=w.fee??'';
     document.getElementById('walletFeeType').value=w.fee_type||'percent';
+    document.getElementById('walletCanSend').checked=w.allow_from!==false;
     document.getElementById('walletCanReceive').checked=!!w.allow_receive;
     document.getElementById('walletLocked').checked=!!w.is_locked;
   }else{
@@ -1323,6 +1333,7 @@ function openWalletModal(w){
     document.getElementById('walletPrice').value='';
     document.getElementById('walletFee').value='';
     document.getElementById('walletFeeType').value='percent';
+    document.getElementById('walletCanSend').checked=true;
     document.getElementById('walletCanReceive').checked=false;
     document.getElementById('walletLocked').checked=false;
   }
@@ -1340,12 +1351,14 @@ async function saveWallet(){
   const price = priceRaw===''?null:parseFloat(priceRaw);
   const fee = feeRaw===''?null:parseFloat(feeRaw);
   const fee_type=document.getElementById('walletFeeType').value;
+  const allow_from=document.getElementById('walletCanSend').checked;
   const allow_receive=document.getElementById('walletCanReceive').checked;
   const is_locked=document.getElementById('walletLocked').checked;
   if(!name){ showToast('ناوی واڵێت بنووسە','rd'); return; }
   if(!key){ showToast('کلیلی واڵێت بنووسە','rd'); return; }
+  if(!allow_from && !allow_receive){ showToast('پێویستە لانیکەم یەکێک لە «ناردن» یان «وەرگرتن» چالاک بێت','rd'); return; }
   const btn=document.getElementById('walletSaveBtn'); btn.disabled=true;
-  const payload={ name, key, wallet_number: wallet_number||null, image_url, price, fee, fee_type, allow_receive, is_locked };
+  const payload={ name, key, wallet_number: wallet_number||null, image_url, price, fee, fee_type, allow_from, allow_receive, is_locked };
   let error;
   if(id){
     ({error} = await sb.from('ex_wallets').update(payload).eq('id',id));
@@ -1456,20 +1469,90 @@ function renderNotifLog(){
 // ══════════════════════════════════════════════════════════════
 // ═══ ANNOUNCEMENT BANNER (Firebase) ═════════════════════════════
 // ══════════════════════════════════════════════════════════════
+function renderAnnItemRow(item){
+  item = item || {};
+  const action = item.action || {type:'none'};
+  const wrap=document.getElementById('annItemsWrap');
+  const labelMap = buildMethodLabelMap();
+  const fromKeys = buildFromMethodKeys(), toKeys = buildToMethodKeys();
+  const fromOpts = fromKeys.map(k=>`<option value="${esc(k)}" ${action.from===k?'selected':''}>${esc(labelMap.get(k)||k)}</option>`).join('');
+  const toOpts = `<option value="">— دیاری مەکە —</option>` + toKeys.map(k=>`<option value="${esc(k)}" ${action.to===k?'selected':''}>${esc(labelMap.get(k)||k)}</option>`).join('');
+  const row=document.createElement('div');
+  row.className='ann-item-row';
+  row.style.cssText='border:1px solid var(--b1);border-radius:12px;padding:12px;margin-bottom:12px';
+  row.innerHTML = `
+    <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:10px">
+      <textarea class="minp mta ann-item-text" style="flex:1" placeholder="دەقی ئاگادارییەک بنووسە...">${esc(item.text||'')}</textarea>
+      <div class="act-btn rd" onclick="this.closest('.ann-item-row').remove()"><i class="fas fa-trash"></i></div>
+    </div>
+    <label class="modal-lbl" style="margin-top:0">کردار کاتێک بەکارهێنەر کلیکی لێدەکات</label>
+    <select class="msel ann-item-action-type" onchange="updateAnnItemActionUI(this)">
+      <option value="none" ${action.type==='none'?'selected':''}>هیچ (کلیک ناکات)</option>
+      <option value="url" ${action.type==='url'?'selected':''}>کردنەوەی لینک</option>
+      <option value="wallet" ${action.type==='wallet'?'selected':''}>دیاریکردنی ناردن/وەرگرتن لە فۆرمی گۆڕینەوە</option>
+    </select>
+    <div class="ann-item-url-wrap" style="display:${action.type==='url'?'':'none'};margin-top:8px">
+      <input class="minp ann-item-url" dir="ltr" placeholder="https://..." value="${esc(action.url||'')}">
+    </div>
+    <div class="ann-item-wallet-wrap" style="display:${action.type==='wallet'?'':'none'};margin-top:8px">
+      <div class="modal-row">
+        <div>
+          <label class="modal-lbl">ناردن لە (پێویستە)</label>
+          <select class="msel ann-item-from">${fromOpts}</select>
+        </div>
+        <div>
+          <label class="modal-lbl">وەرگرتن لە (ئارەزوومەندانە)</label>
+          <select class="msel ann-item-to">${toOpts}</select>
+        </div>
+      </div>
+    </div>`;
+  wrap.appendChild(row);
+}
+function updateAnnItemActionUI(sel){
+  const row = sel.closest('.ann-item-row');
+  row.querySelector('.ann-item-url-wrap').style.display = sel.value==='url' ? '' : 'none';
+  row.querySelector('.ann-item-wallet-wrap').style.display = sel.value==='wallet' ? '' : 'none';
+}
+function addAnnItem(){ renderAnnItemRow({}); }
 async function loadAnnouncement(){
   try{
+    if(!allWallets.length) await loadWalletsAdmin();
     const snap = await fbdb.ref('announcement').once('value');
     const val = snap.val() || {};
     document.getElementById('annShow').checked = !!val.show;
-    document.getElementById('annText').value = val.text || '';
+    document.getElementById('annInterval').value = val.interval || 5;
+    const wrap=document.getElementById('annItemsWrap'); wrap.innerHTML='';
+    // supports both the new {items:[{text,action}]} shape and the old single {text} shape
+    let items = Array.isArray(val.items)
+      ? val.items.map(x=> (typeof x==='string') ? {text:x} : {text:(x&&x.text)||'', action:(x&&x.action)||{type:'none'}})
+      : (val.text ? [{text:val.text}] : []);
+    if(!items.length) items=[{}];
+    items.forEach(it=>renderAnnItemRow(it));
   }catch(e){ showToast('هەڵەی بارکردنی بانەر: '+e.message,'rd'); }
 }
 async function saveAnnouncement(){
   const show=document.getElementById('annShow').checked;
-  const text=document.getElementById('annText').value.trim();
+  let interval=parseInt(document.getElementById('annInterval').value,10);
+  if(isNaN(interval)||interval<2) interval=5;
+  const items=[];
+  document.querySelectorAll('.ann-item-row').forEach(row=>{
+    const text=row.querySelector('.ann-item-text').value.trim();
+    if(!text) return;
+    const type=row.querySelector('.ann-item-action-type').value;
+    let action={type:'none'};
+    if(type==='url'){
+      const url=row.querySelector('.ann-item-url').value.trim();
+      if(url) action={type:'url', url};
+    }else if(type==='wallet'){
+      const from=row.querySelector('.ann-item-from').value;
+      const to=row.querySelector('.ann-item-to').value;
+      if(from){ action={type:'wallet', from}; if(to) action.to=to; }
+    }
+    items.push({text, action});
+  });
   const btn=document.getElementById('annSaveBtn'); btn.disabled=true;
   try{
-    await fbdb.ref('announcement').set({show, text});
+    await fbdb.ref('announcement').set({show, interval, items});
     showToast('✅ بانەر پاشەکەوتکرا','gr');
   }catch(e){
     showToast('هەڵە: '+e.message,'rd');

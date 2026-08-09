@@ -436,6 +436,7 @@ input[type="file"].input::file-selector-button:hover{ background:var(--border-st
   font-size:var(--fs-sm); display:none; align-items:center; gap:10px; box-shadow:var(--shadow-sm); animation:fadeUp .3s var(--ease);
 }
 #newsBanner .icn{ flex-shrink:0; }
+#newsText{ transition:opacity .25s ease; }
 
 /* ══════════════════════════════════════════════════════════════
    ORDER HISTORY
@@ -994,7 +995,7 @@ input[type="file"].input::file-selector-button:hover{ background:var(--border-st
     </div>
   </div>
 
-  <div id="newsBanner">
+  <div id="newsBanner" onclick="onNewsBannerClick()">
     <svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.3v3.4a1 1 0 0 0 1 1h1.7l1 4.3h2l-.8-4.3H9l9 3V6.3l-9 3H4a1 1 0 0 0-1 1z"/></svg>
     <span id="newsText"></span>
   </div>
@@ -1182,7 +1183,7 @@ function rebuildWalletOptions(){
     };
   });
   METHOD_META = newMeta;
-  FROM_OPTIONS = rows.map(w=>w.key);
+  FROM_OPTIONS = rows.filter(w=>w.allow_from!==false).map(w=>w.key);
   RECEIVE_OPTIONS = rows.filter(w=>w.allow_receive).map(w=>w.key);
   syncNativeSelect('from', FROM_OPTIONS);
   syncNativeSelect('receiveVia', RECEIVE_OPTIONS);
@@ -1447,13 +1448,70 @@ const SB_KEY=atob('ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnBjM01pT
 let sb, curUser=null, curProfile=null, RATES={};
 const N8N_WEBHOOK = 'https://email.proxopages.com/webhook/otp_exchange';
 
+let _newsItems = []; // [{text, action}]
+let _newsIdx = 0;
+let _newsTimer = null;
+function newsCursorFor(item){ return (item && item.action && item.action.type && item.action.type!=='none') ? 'pointer' : 'default'; }
+function showNewsItem(i){
+    const txt = document.getElementById('newsText');
+    txt.style.opacity = '0';
+    setTimeout(()=>{
+        const item = _newsItems[i] || {};
+        txt.innerText = item.text || '';
+        txt.style.opacity = '1';
+        document.getElementById('newsBanner').style.cursor = newsCursorFor(item);
+    }, 250);
+}
+function startNewsRotation(intervalSec){
+    if(_newsTimer){ clearInterval(_newsTimer); _newsTimer=null; }
+    if(_newsItems.length <= 1) return; // nothing to slide between
+    const ms = Math.max(2, Number(intervalSec)||5) * 1000;
+    _newsTimer = setInterval(()=>{
+        _newsIdx = (_newsIdx+1) % _newsItems.length;
+        showNewsItem(_newsIdx);
+    }, ms);
+}
+function onNewsBannerClick(){
+    const item = _newsItems[_newsIdx];
+    const action = item && item.action;
+    if(!action || action.type==='none') return;
+    if(action.type==='url' && action.url){
+        window.open(action.url, '_blank', 'noopener');
+    }else if(action.type==='wallet' && action.from){
+        if(FROM_OPTIONS.includes(action.from)){
+            document.getElementById('from').value = action.from;
+            updateWallet();
+        }
+        if(action.to && RECEIVE_OPTIONS.includes(action.to)){
+            document.getElementById('receiveVia').value = action.to;
+            updatePlaceholder();
+            calc();
+        }
+        const trig = document.getElementById('fromTrigger');
+        if(trig) trig.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+}
 function listenToNews() {
     db.ref('announcement').on('value', snap => {
         const data = snap.val();
-        if(data && data.show) {
-            document.getElementById('newsText').innerText = data.text;
+        // supports both the new {items:[{text,action}]} shape and the old single {text} shape
+        let items = (data && Array.isArray(data.items)) ? data.items.map(x=>{
+            if(typeof x==='string') return {text:x, action:{type:'none'}};
+            return {text:(x&&x.text)||'', action:(x&&x.action)||{type:'none'}};
+        }).filter(it=>it.text && String(it.text).trim()) : [];
+        if(!items.length && data && data.text) items = [{text:data.text, action:{type:'none'}}];
+        if(data && data.show && items.length){
+            _newsItems = items;
+            _newsIdx = 0;
+            document.getElementById('newsText').style.opacity = '1';
+            document.getElementById('newsText').innerText = _newsItems[0].text;
+            document.getElementById('newsBanner').style.cursor = newsCursorFor(_newsItems[0]);
             document.getElementById('newsBanner').style.display = 'flex';
-        } else { document.getElementById('newsBanner').style.display = 'none'; }
+            startNewsRotation(data.interval);
+        } else {
+            document.getElementById('newsBanner').style.display = 'none';
+            if(_newsTimer){ clearInterval(_newsTimer); _newsTimer=null; }
+        }
     });
 }
 
@@ -1926,10 +1984,10 @@ function getWalletInfo(key){
 }
 async function loadWallets(){
   try{
-    const {data,error} = await sb.from('ex_wallets').select('key,name,image_url,wallet_number,is_locked,allow_receive,sort_order').order('sort_order',{ascending:true});
+    const {data,error} = await sb.from('ex_wallets').select('key,name,image_url,wallet_number,is_locked,allow_from,allow_receive,sort_order').order('sort_order',{ascending:true});
     if(!error && data){
       WALLET_DATA = {};
-      data.forEach(w=>{ if(w.key) WALLET_DATA[w.key] = { number: w.wallet_number || null, locked: !!w.is_locked, name:w.name, image_url:w.image_url, allow_receive:!!w.allow_receive, sort_order:w.sort_order }; });
+      data.forEach(w=>{ if(w.key) WALLET_DATA[w.key] = { number: w.wallet_number || null, locked: !!w.is_locked, name:w.name, image_url:w.image_url, allow_from: w.allow_from!==false, allow_receive:!!w.allow_receive, sort_order:w.sort_order }; });
       rebuildWalletOptions();
     }
   }catch(e){}
