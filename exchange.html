@@ -1953,11 +1953,19 @@ function formatAmtField(el){
   el.setSelectionRange(newPos, newPos);
 }
 
+function updateSubmitState(from,to){
+  const btn=document.getElementById('submitBtn');
+  if(!btn || btn.dataset.submitting==='1') return;
+  const anyLocked = getWalletInfo(from).locked || getWalletInfo(to).locked;
+  btn.disabled = anyLocked;
+  btn.innerHTML = anyLocked ? 'ئەم شێوازە لەئێستادا بەردەست نییە' : 'ناردنی داواکاری';
+}
 function calc(){
   const val=getAmtRaw();
   const amt=parseFloat(val)||0;
   const from=document.getElementById('from').value;
   const to=document.getElementById('receiveVia').value;
+  updateSubmitState(from,to);
   document.getElementById('formattedHint').innerText=formatNum(val)+(from==='USDT'?' $':' IQD');
   const totalEl=document.getElementById('totalDisplay');
   if(from===to){ totalEl.innerText='هەمان واڵێت نابێت'; totalEl.classList.add('warn-text'); document.getElementById('feeDisplay').innerText=''; return; }
@@ -2021,7 +2029,7 @@ async function processOrder(){
   const amtValue=getAmtRaw();
   const from=document.getElementById('from').value, to=document.getElementById('receiveVia').value;
 
-  const btn=document.getElementById('submitBtn'); btn.disabled=true; btn.innerHTML=ICON.spin+' ناردن...';
+  const btn=document.getElementById('submitBtn'); btn.dataset.submitting='1'; btn.disabled=true; btn.innerHTML=ICON.spin+' ناردن...';
   const totalTxt=document.getElementById('totalDisplay').innerText;
   const totalNum=parseFloat(totalTxt.replace(/[^0-9.]/g,''))||0;
   const displayAmt=(from==='USDT')?`${formatNum(amtValue)}$`:`${formatNum(amtValue)} IQD`;
@@ -2067,7 +2075,7 @@ async function processOrder(){
       primaryText:'باشە'
     });
   }
-  finally{ btn.disabled=false; btn.innerHTML='ناردنی داواکاری'; }
+  finally{ btn.dataset.submitting='0'; btn.disabled=false; btn.innerHTML='ناردنی داواکاری'; updateSubmitState(from,to); }
 }
 
 let _historyChannel=null;
