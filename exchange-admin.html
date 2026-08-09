@@ -575,7 +575,7 @@ tr:hover td{background:rgba(28,35,51,.015);}
     <label class="modal-lbl">جۆری کرێ</label>
     <select class="msel" id="walletFeeType">
       <option value="percent">ڕێژەی سەدی (%)</option>
-      <option value="fixed">بڕی جێگیر</option>
+      <option value="flat">بڕی جێگیر (بە دینار)</option>
     </select>
     <div class="fee-toggle-note"><i class="fas fa-circle-info" style="margin-left:4px"></i>نرخ و کرێ لێرە تەنها بۆ پیشاندانن — حیسابکردنی ڕاستەقینە هەروەک خۆی لە پەڕەی «نرخ و کرێ»ەوە کۆنترۆڵ دەکرێت.</div>
 
@@ -755,12 +755,28 @@ function goPage(p){
 function formatNum(n){ n=Math.round(parseFloat(n)||0); return n.toLocaleString(); }
 function fmtOrderNo(n){ return '\u2068P-'+String(n).padStart(6,'0')+'\u2069'; }
 function methodPill(key){
-  const m=METHOD_META[key]; if(!m) return key||'—';
-  return `<span class="method-pill"><span class="method-dot" style="background:${m.color}"></span>${m.label}</span>`;
+  const m=METHOD_META[key];
+  const w=!m && typeof allWallets!=='undefined' ? allWallets.find(x=>x.key===key) : null;
+  const label = m ? m.label : (w ? (w.name||key) : (key||'—'));
+  const color = m ? m.color : 'var(--mt2)';
+  if(!key) return '—';
+  return `<span class="method-pill"><span class="method-dot" style="background:${color}"></span>${esc(label)}</span>`;
 }
 function statusBadgeClass(s){ return s===STATUS_APPROVED?'approved':(s===STATUS_REJECTED?'rejected':'pending'); }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function safeAttr(obj){ return JSON.stringify(obj).replace(/'/g,'&#39;'); }
+
+function isAuthDbError(error){
+  return !!error && (error.code==='42501' || /row-level security/i.test(error.message||''));
+}
+async function handleDbWriteError(error){
+  if(isAuthDbError(error)){
+    showToast('دەستگەیشتنی ئادمینت نەماوە یان چوونەژوورەوەکەت بەسەرچووە — دووبارە بچۆرەوە ژوورەوە','rd');
+    setTimeout(async ()=>{ try{ await sb.auth.signOut(); }catch(_){ } location.reload(); }, 1800);
+    return;
+  }
+  showToast('هەڵە: '+(error.code==='23505'?'ئەم کلیلە پێشتر بەکارهاتووە':error.message),'rd');
+}
 
 function openMo(id){ document.getElementById(id).classList.add('on'); }
 function closeMo(id){ document.getElementById(id).classList.remove('on'); }
@@ -1069,6 +1085,7 @@ function toggleAdmin(id, current){
 // ══════════════════════════════════════════════════════════════
 // ═══ RATES & FEES ════════════════════════════════════════════════
 // ══════════════════════════════════════════════════════════════
+let _ratesAdminChannel=null;
 async function loadRates(){
   document.getElementById('ratesTableWrap').innerHTML='<div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
   try{
@@ -1079,6 +1096,33 @@ async function loadRates(){
   }catch(e){
     document.getElementById('ratesTableWrap').innerHTML=`<div class="empty"><i class="fas fa-triangle-exclamation"></i><p>هەڵە: ${esc(e.message)}</p></div>`;
   }
+  subscribeRatesAdmin();
+}
+function subscribeRatesAdmin(){
+  if(_ratesAdminChannel) return;
+  _ratesAdminChannel = sb.channel('ex_rates_admin')
+    .on('postgres_changes', {event:'*',schema:'public',table:'ex_rates'}, ()=>{ if(_curPage==='rates') loadRates(); })
+    .subscribe();
+}
+// Method options for the rate From/To selects: the original fixed methods (kept so
+// existing rates like Korek/USDT — which have no ex_wallets row — still edit correctly)
+// merged live with whatever wallets exist in ex_wallets, so a newly-added wallet shows
+// up here automatically without any code change.
+function buildMethodLabelMap(){
+  const map=new Map();
+  ALL_METHODS.forEach(k=>map.set(k, (METHOD_META[k]&&METHOD_META[k].label)||k));
+  allWallets.forEach(w=>{ if(w.key) map.set(w.key, w.name||w.key); });
+  return map;
+}
+function buildFromMethodKeys(){
+  const set=new Set(ALL_METHODS);
+  allWallets.forEach(w=>{ if(w.key && w.allow_from!==false) set.add(w.key); });
+  return [...set];
+}
+function buildToMethodKeys(){
+  const set=new Set(RECEIVE_METHODS);
+  allWallets.forEach(w=>{ if(w.key && w.allow_receive===true) set.add(w.key); });
+  return [...set];
 }
 function rateTypeLabel(t){ return t==='fee_percent' ? 'ڕێژەی کرێ %' : 'مەزراپ'; }
 function renderRates(){
@@ -1099,22 +1143,25 @@ function renderRates(){
 }
 async function toggleRateActive(id, val){
   const {error} = await sb.from('ex_rates').update({is_active:val}).eq('id',id);
-  if(error){ showToast('هەڵە: '+error.message,'rd'); loadRates(); return; }
+  if(error){ await handleDbWriteError(error); loadRates(); return; }
   showToast(val?'چالاککرا':'ناچالاککرا','gr');
   const r=allRates.find(x=>x.id===id); if(r) r.is_active=val;
 }
 function deleteRate(id){
   confirm2('سڕینەوەی ڕێگا','ئایا دڵنیایت لە سڕینەوەی ئەم ڕێگا گۆڕینەوەیە؟','fas fa-trash','var(--rd)', async()=>{
     const {error} = await sb.from('ex_rates').delete().eq('id',id);
-    if(error){ showToast('هەڵە: '+error.message,'rd'); return; }
+    if(error){ await handleDbWriteError(error); return; }
     showToast('ڕێگاکە سڕایەوە','gr');
     loadRates();
   });
 }
-function openRateModal(rate){
+async function openRateModal(rate){
+  if(!allWallets.length) await loadWalletsAdmin();
+  const labelMap = buildMethodLabelMap();
+  const fromKeys = buildFromMethodKeys(), toKeys = buildToMethodKeys();
   const fromSel=document.getElementById('rateFrom'), toSel=document.getElementById('rateTo');
-  fromSel.innerHTML = ALL_METHODS.map(m=>`<option value="${m}">${METHOD_META[m].label}</option>`).join('');
-  toSel.innerHTML = RECEIVE_METHODS.map(m=>`<option value="${m}">${METHOD_META[m].label}</option>`).join('');
+  fromSel.innerHTML = fromKeys.map(k=>`<option value="${esc(k)}">${esc(labelMap.get(k)||k)}</option>`).join('');
+  toSel.innerHTML = toKeys.map(k=>`<option value="${esc(k)}">${esc(labelMap.get(k)||k)}</option>`).join('');
   if(rate){
     document.getElementById('rateModalTitle').textContent='دەستکاریکردنی ڕێگا';
     document.getElementById('rateId').value=rate.id;
@@ -1155,7 +1202,7 @@ async function saveRate(){
     ({error} = await sb.from('ex_rates').insert({from_method:from,to_method:to,rate_type,rate_value,is_active}));
   }
   btn.disabled=false;
-  if(error){ showToast('هەڵە: '+error.message,'rd'); return; }
+  if(error){ await handleDbWriteError(error); return; }
   showToast('پاشەکەوتکرا','gr');
   closeMo('moRate');
   loadRates();
@@ -1205,7 +1252,7 @@ function renderWalletsGrid(){
       <div class="wallet-card-meta">
         ${w.allow_receive?'<span class="wallet-card-badge gr"><i class="fas fa-arrow-down"></i> وەرگرتن چالاکە</span>':''}
         ${w.price!=null?`<span class="wallet-card-badge">نرخ: ${esc(w.price)}</span>`:''}
-        ${w.fee!=null?`<span class="wallet-card-badge">کرێ: ${esc(w.fee)}${w.fee_type==='percent'?'%':''}</span>`:''}
+        ${w.fee!=null?`<span class="wallet-card-badge">کرێ: ${esc(w.fee)}${w.fee_type==='percent'?'%':' د.ع'}</span>`:''}
       </div>
       <div class="act-grp">
         <div class="act-btn dark" onclick='openWalletModal(${safeAttr(w)})'><i class="fas fa-pen"></i> دەستکاری</div>
@@ -1220,7 +1267,7 @@ function renderWalletsGrid(){
 }
 async function toggleWalletLock(id, locked){
   const {error} = await sb.from('ex_wallets').update({is_locked:locked}).eq('id',id);
-  if(error){ showToast('هەڵە: '+error.message,'rd'); loadWalletsAdmin(); return; }
+  if(error){ await handleDbWriteError(error); loadWalletsAdmin(); return; }
   showToast(locked?'واڵێت قوفڵکرا':'واڵێت کرایەوە','gr');
   const w=allWallets.find(x=>x.id===id); if(w) w.is_locked=locked;
   renderWalletsGrid();
@@ -1228,7 +1275,7 @@ async function toggleWalletLock(id, locked){
 function deleteWallet(id){
   confirm2('سڕینەوەی واڵێت','ئایا دڵنیایت لە سڕینەوەی ئەم واڵێتە؟ ئۆردەرە کۆنەکان کاریگەر نابن.','fas fa-trash','var(--rd)', async()=>{
     const {error} = await sb.from('ex_wallets').delete().eq('id',id);
-    if(error){ showToast('هەڵە: '+error.message,'rd'); return; }
+    if(error){ await handleDbWriteError(error); return; }
     showToast('واڵێتەکە سڕایەوە','gr');
     loadWalletsAdmin();
   });
@@ -1307,7 +1354,7 @@ async function saveWallet(){
     ({error} = await sb.from('ex_wallets').insert(payload));
   }
   btn.disabled=false;
-  if(error){ showToast('هەڵە: '+(error.code==='23505'?'ئەم کلیلە پێشتر بەکارهاتووە':error.message),'rd'); return; }
+  if(error){ await handleDbWriteError(error); return; }
   showToast('پاشەکەوتکرا','gr');
   closeMo('moWallet');
   loadWalletsAdmin();

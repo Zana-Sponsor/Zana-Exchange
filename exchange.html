@@ -1861,6 +1861,7 @@ async function startApp(user){
   updateWallet();
   refreshTrigger('receiveVia');
   subscribeWalletsUser();
+  subscribeRatesUser();
   await loadHistory();
   await loadNotifications();
   listenToNews();
@@ -1895,6 +1896,15 @@ function subscribeWalletsUser(){
     .on('postgres_changes', {event:'*',schema:'public',table:'ex_wallets'}, async ()=>{
       await loadWallets();
       updateWallet();
+    }).subscribe();
+}
+let _ratesChannel = null;
+function subscribeRatesUser(){
+  if(_ratesChannel) return;
+  _ratesChannel = sb.channel('ex_rates_user')
+    .on('postgres_changes', {event:'*',schema:'public',table:'ex_rates'}, async ()=>{
+      await loadRates();
+      calc();
     }).subscribe();
 }
 const FALLBACK_RATES = {
