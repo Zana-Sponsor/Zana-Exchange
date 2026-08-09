@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZANA EXCHANGE | Pro System</title>
+<title>Proxo Exchange | Pro System</title>
 <meta name="theme-color" id="themeColorMeta" content="#0b0e14">
 <script>
 (function(){
@@ -246,10 +246,10 @@ a{ color:inherit; }
 .input:hover{ border-color:var(--border-strong); }
 .input:focus{ border-color:var(--primary); background:var(--surface); box-shadow:0 0 0 4px var(--focus-ring); }
 .input:disabled{ opacity:.55; cursor:not-allowed; }
-.input[dir="ltr"]{ text-align:center; }
+.input[dir="ltr"]{ text-align:center; direction:ltr; unicode-bidi:bidi-override; }
 
 .input-wrap{ position:relative; margin-bottom:var(--space-5); }
-.input-wrap .input{ padding-inline-end:46px; margin-bottom:0; }
+.input-wrap .input{ padding-inline:46px; margin-bottom:0; }
 .input-ico{ position:absolute; inset-inline-end:16px; top:50%; transform:translateY(-50%); color:var(--text-faint); pointer-events:none; }
 
 .pass-wrap{ position:relative; }
@@ -281,6 +281,16 @@ input[type="file"].input::file-selector-button:hover{ background:var(--border-st
 
 .formatted-amount{ font-size:var(--fs-xs); color:var(--primary); font-weight:var(--fw-semibold); display:block; text-align:center; margin:-8px 2px 12px; font-variant-numeric:tabular-nums; }
 
+.quick-amounts{ display:flex; gap:8px; margin:-6px 0 var(--space-5); }
+.quick-amount-btn{
+  flex:1; background:var(--surface-2); border:1.5px solid var(--border); color:var(--text-muted);
+  border-radius:var(--radius-sm); padding:9px 6px; font-family:inherit; font-size:var(--fs-xs);
+  font-weight:var(--fw-semibold); cursor:pointer; direction:ltr; unicode-bidi:bidi-override;
+  transition:border-color var(--t), color var(--t), background var(--t);
+}
+.quick-amount-btn:hover{ border-color:var(--primary); color:var(--primary); background:var(--surface-hover); }
+.quick-amount-btn:active{ transform:translateY(1px); }
+
 /* ══════════════════════════════════════════════════════════════
    SURFACES: panel / card / modal
    ══════════════════════════════════════════════════════════════ */
@@ -308,7 +318,8 @@ input[type="file"].input::file-selector-button:hover{ background:var(--border-st
   background:var(--accent-soft); border:1px solid rgba(245,185,66,.3); border-radius:var(--radius-md);
   text-align:center; padding:var(--space-6) var(--space-5); margin-bottom:var(--space-5);
 }
-.total-box .total-value{ font-size:var(--fs-2xl); font-weight:var(--fw-bold); color:var(--accent); font-variant-numeric:tabular-nums; }
+.total-box .total-value{ font-size:var(--fs-2xl); font-weight:var(--fw-bold); color:var(--accent); font-variant-numeric:tabular-nums; text-align:center; }
+.total-box .total-value.warn-text{ font-size:var(--fs-xl); }
 .total-box .fee-note{ font-size:var(--fs-xs); color:var(--warning); font-weight:var(--fw-medium); margin-top:8px; min-height:16px; }
 
 .modal-overlay{
@@ -341,7 +352,7 @@ input[type="file"].input::file-selector-button:hover{ background:var(--border-st
 .topbar{ width:100%; display:flex; justify-content:space-between; align-items:center; margin-bottom:var(--space-4); }
 .topbar-group{ display:flex; align-items:center; gap:8px; position:relative; }
 
-.user-info{ display:flex; flex-direction:column; align-items:center; gap:9px; text-align:center; margin-bottom:var(--space-5); }
+.user-info{ display:flex; flex-direction:column; align-items:center; gap:9px; text-align:center; margin-bottom:var(--space-5); margin-top:-10px; }
 .user-profile-img{
   width:64px; height:64px; border-radius:var(--radius-full); border:2.5px solid var(--primary);
   box-shadow:0 0 0 5px var(--secondary-soft); background:var(--surface-2); color:var(--primary);
@@ -498,10 +509,12 @@ input[type="file"].input::file-selector-button:hover{ background:var(--border-st
    FIELD ERRORS (inline validation)
    ══════════════════════════════════════════════════════════════ */
 .field-error{
-  display:none; align-items:center; justify-content:center; gap:6px; font-size:var(--fs-2xs); color:var(--error);
-  font-weight:var(--fw-medium); margin:8px 2px 0; animation:slideDown .2s var(--ease); text-align:center;
+  display:none; align-items:center; justify-content:center; gap:5px; font-size:var(--fs-2xs); color:var(--error);
+  font-weight:var(--fw-medium); margin:8px auto 0; animation:slideDown .2s var(--ease); text-align:center;
+  background:var(--error-soft); border-radius:var(--radius-sm); padding:6px 12px; width:fit-content; max-width:100%;
 }
 .field-error.show{ display:flex; }
+.field-error svg{ width:14px; height:14px; flex-shrink:0; }
 .input.has-error, .picker-trigger.has-error{ border-color:var(--error) !important; box-shadow:0 0 0 4px var(--error-soft) !important; }
 
 /* ══════════════════════════════════════════════════════════════
@@ -729,7 +742,7 @@ input[type="file"].input::file-selector-button:hover{ background:var(--border-st
     </div>
     <h2>ئاگاداری نرخەکان بە!</h2>
     <p>بۆ وەرگرتنی دوایین گۆڕانکارییەکانی بازاڕ و نرخەکان، جۆینی تیلیگرام بکەن.</p>
-    <a href="https://t.me/zana_exchange" target="_blank" class="btn btn-primary btn-block" onclick="closeModal()">
+    <a href="https://t.me/proxo_exchange" target="_blank" class="btn btn-primary btn-block" onclick="closeModal()">
       <svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2.5l-9.3 19-3-8.1-8.2-3.1z"/><path d="M12.2 13.5l4-6.8"/></svg>
       ئێستا جۆین ببە
     </a>
@@ -753,7 +766,7 @@ input[type="file"].input::file-selector-button:hover{ background:var(--border-st
       <div class="brand-mark">
         <svg class="icn icn-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13.5l-3-3.2"/><path d="M20 16H6.5l3 3.2"/></svg>
       </div>
-      <h1>ZANA EXCHANGE</h1>
+      <h1>Proxo Exchange</h1>
       <p>پلاتفۆرمی گۆڕینەوەی دراو</p>
     </div>
 
@@ -962,7 +975,7 @@ input[type="file"].input::file-selector-button:hover{ background:var(--border-st
     </div>
     <span id="userName">...</span>
     <div class="social-mini-icons">
-      <a class="brand-badge tg" href="https://t.me/zana_exchange" target="_blank" aria-label="تیلیگرام">
+      <a class="brand-badge tg" href="https://t.me/proxo_exchange" target="_blank" aria-label="تیلیگرام">
         <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M21.9 3.4 2.7 11c-1 .4-1 1.6.1 1.9l4.9 1.5 1.9 5.9c.3.9 1.4 1.1 2 .4l2.7-2.9 5 3.7c.8.6 2 .2 2.2-.8l3.4-15.6c.2-1-.8-1.8-1.9-1.7zM8.9 13.9l9.9-6.9c.3-.2.6.2.3.4l-8.3 8-.3 3.3-1.6-4.8z"/></svg>
       </a>
       <a class="brand-badge wa" href="https://wa.me/9647510074008" target="_blank" aria-label="واتساپ">
@@ -1021,9 +1034,15 @@ input[type="file"].input::file-selector-button:hover{ background:var(--border-st
     </div>
 
     <div class="field" style="position:relative;">
-      <input type="number" id="amt" class="input" placeholder="بڕی پارە" dir="ltr" oninput="calc(); clearFieldError('amt');">
+      <input type="text" inputmode="decimal" id="amt" class="input" placeholder="بڕی پارە" dir="ltr" oninput="formatAmtField(this); calc(); clearFieldError('amt');">
       <span id="formattedHint" class="formatted-amount">0 IQD</span>
       <span class="field-error" id="amtError"></span>
+    </div>
+
+    <div class="quick-amounts">
+      <button type="button" class="quick-amount-btn" onclick="setQuickAmount(1000)">1,000</button>
+      <button type="button" class="quick-amount-btn" onclick="setQuickAmount(10000)">10,000</button>
+      <button type="button" class="quick-amount-btn" onclick="setQuickAmount(100000)">100,000</button>
     </div>
 
     <div class="select-wrap">
@@ -1051,10 +1070,8 @@ input[type="file"].input::file-selector-button:hover{ background:var(--border-st
       <input type="tel" id="userPhone" class="input" placeholder="07XXXXXXXXX" dir="ltr" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, ''); clearFieldError('userPhone');">
       <span class="field-error" id="userPhoneError"></span>
     </div>
-    <div class="field">
-      <input type="text" id="extraInfo" class="input" placeholder="زانیاری زیاتر (ئارەزوومەندانە) — بۆ نموونە ژمارەی واڵێت" dir="auto">
-    </div>
     <div class="file-field">
+      <span class="field-label">بارکردنی فایل/وێنەی بەڵگەی پارەدان</span>
       <input type="file" id="fileInput" class="input" accept="image/*" onchange="clearFieldError('fileInput')">
       <span class="field-error" id="fileInputError"></span>
     </div>
@@ -1064,7 +1081,7 @@ input[type="file"].input::file-selector-button:hover{ background:var(--border-st
 
   <h3 class="section-title">
     <svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.2 10A7.9 7.9 0 1 1 5 15.3"/><path d="M4 5v4.5h4.5"/><path d="M12 8v4.3l2.8 1.8"/></svg>
-    مێژووی ئۆردەرەکان
+    مێژووی داواکاریەکان
   </h3>
   <div id="historyList" style="width:100%;"></div>
 </div>
@@ -1243,7 +1260,7 @@ function closeResultModal(){ document.getElementById('resultModal').style.displa
 function setFieldError(inputId, msg){
   const inp=document.getElementById(inputId); const err=document.getElementById(inputId+'Error');
   if(inp) inp.classList.add('has-error');
-  if(err){ err.textContent=msg; err.classList.add('show'); }
+  if(err){ err.innerHTML=ICON.warn+'<span>'+msg+'</span>'; err.classList.add('show'); }
 }
 function clearFieldError(inputId){
   const inp=document.getElementById(inputId); const err=document.getElementById(inputId+'Error');
@@ -1861,18 +1878,43 @@ function closeModal(){ document.getElementById('tgModal').style.display='none'; 
 function updateWallet(){ document.getElementById('myNum').innerText=wallets[document.getElementById('from').value]; refreshTrigger('from'); calc(); }
 function updatePlaceholder(){ document.getElementById('userPhone').placeholder='ژمارەی '+document.getElementById('receiveVia').value; refreshTrigger('receiveVia'); }
 
+function setQuickAmount(val){
+  document.getElementById('amt').value = formatNum(String(val));
+  clearFieldError('amt');
+  calc();
+}
+
+function getAmtRaw(){
+  return document.getElementById('amt').value.replace(/,/g,'');
+}
+
+function formatAmtField(el){
+  const cursorFromEnd = el.value.length - el.selectionEnd;
+  let raw = el.value.replace(/[^\d.]/g,'');
+  const firstDot = raw.indexOf('.');
+  if(firstDot !== -1){ raw = raw.slice(0, firstDot+1) + raw.slice(firstDot+1).replace(/\./g,''); }
+  let [intPart, decPart] = raw.split('.');
+  const formattedInt = intPart ? formatNum(intPart) : '';
+  const formatted = decPart !== undefined ? formattedInt+'.'+decPart : formattedInt;
+  el.value = formatted;
+  const newPos = Math.max(formatted.length - cursorFromEnd, 0);
+  el.setSelectionRange(newPos, newPos);
+}
+
 function calc(){
-  const val=document.getElementById('amt').value;
+  const val=getAmtRaw();
   const amt=parseFloat(val)||0;
   const from=document.getElementById('from').value;
   const to=document.getElementById('receiveVia').value;
   document.getElementById('formattedHint').innerText=formatNum(val)+(from==='USDT'?' $':' IQD');
-  if(from===to){ document.getElementById('totalDisplay').innerText='هەمان واڵێت نابێت'; document.getElementById('feeDisplay').innerText=''; return; }
+  const totalEl=document.getElementById('totalDisplay');
+  if(from===to){ totalEl.innerText='هەمان واڵێت نابێت'; totalEl.classList.add('warn-text'); document.getElementById('feeDisplay').innerText=''; return; }
+  totalEl.classList.remove('warn-text');
   let final=0;
   const r=RATES[from+'>'+to];
   if(r) final = r.type==='fee_percent' ? amt*(1-r.value/100) : amt*r.value;
   else final = amt*0.99;
-  document.getElementById('totalDisplay').innerText=formatNum(Math.floor(final))+' IQD';
+  totalEl.innerText=formatNum(Math.floor(final))+' IQD';
   if(amt>0){
     let fee=(from==='USDT')?0:(amt-final);
     document.getElementById('feeDisplay').innerText = fee>0 ? ('بڕی حمولە: '+formatNum(Math.floor(fee))+' IQD') : '';
@@ -1883,7 +1925,7 @@ function _validateOrderFields(){
   clearAllOrderFieldErrors();
   const phone=document.getElementById('userPhone').value;
   const file=document.getElementById('fileInput').files[0];
-  const amtValue=document.getElementById('amt').value;
+  const amtValue=getAmtRaw();
   const from=document.getElementById('from').value, to=document.getElementById('receiveVia').value;
   let ok=true;
   if(!amtValue || parseFloat(amtValue)<=0){ setFieldError('amt','بڕی پارە داخڵ بکە'); ok=false; }
@@ -1897,8 +1939,7 @@ function _validateOrderFields(){
 function openOrderConfirm(){
   if(!_validateOrderFields()) return;
   const phone=document.getElementById('userPhone').value;
-  const extra=document.getElementById('extraInfo').value.trim();
-  const amtValue=document.getElementById('amt').value;
+  const amtValue=getAmtRaw();
   const from=document.getElementById('from').value, to=document.getElementById('receiveVia').value;
   const totalTxt=document.getElementById('totalDisplay').innerText;
   const displayAmt=(from==='USDT')?`${formatNum(amtValue)}$`:`${formatNum(amtValue)} IQD`;
@@ -1907,8 +1948,7 @@ function openOrderConfirm(){
     + '<div class="confirm-row"><span class="confirm-row-label">'+methodIconHTML(to,'sz-sm')+' بۆ</span><span class="confirm-row-value">'+METHOD_META[to].label+'</span></div>'
     + '<div class="confirm-row"><span class="confirm-row-label">بڕی پارە</span><span class="confirm-row-value" dir="ltr">'+displayAmt+'</span></div>'
     + '<div class="confirm-row"><span class="confirm-row-label">بڕی وەرگیراو</span><span class="confirm-row-value accent" dir="ltr">'+totalTxt+'</span></div>'
-    + '<div class="confirm-row"><span class="confirm-row-label">ژمارەی مۆبایل</span><span class="confirm-row-value" dir="ltr">'+phone+'</span></div>'
-    + (extra ? '<div class="confirm-row"><span class="confirm-row-label">زانیاری زیاتر</span><span class="confirm-row-value" dir="auto">'+extra+'</span></div>' : '');
+    + '<div class="confirm-row"><span class="confirm-row-label">ژمارەی مۆبایل</span><span class="confirm-row-value" dir="ltr">'+phone+'</span></div>';
   const overlay=document.getElementById('confirmSheet');
   openSheet(overlay);
 }
@@ -1923,9 +1963,8 @@ async function confirmAndSubmitOrder(){
 async function processOrder(){
   if(!_validateOrderFields()) return;
   const phone=document.getElementById('userPhone').value;
-  const extra=document.getElementById('extraInfo').value.trim();
   const file=document.getElementById('fileInput').files[0];
-  const amtValue=document.getElementById('amt').value;
+  const amtValue=getAmtRaw();
   const from=document.getElementById('from').value, to=document.getElementById('receiveVia').value;
 
   const btn=document.getElementById('submitBtn'); btn.disabled=true; btn.innerHTML=ICON.spin+' ناردن...';
@@ -1945,13 +1984,13 @@ async function processOrder(){
     }
 
     const {data:orderRow,error:insErr}=await sb.from('ex_orders').insert({
-      user_id:curUser.id, from_method:from, to_method:to, amount:parseFloat(amtValue), total:totalNum, phone, extra_info: extra || null, receipt_url: receiptUrl
+      user_id:curUser.id, from_method:from, to_method:to, amount:parseFloat(amtValue), total:totalNum, phone, extra_info: null, receipt_url: receiptUrl
     }).select().single();
     if(insErr) throw insErr;
 
     const formData=new FormData();
     formData.append("chat_id","6259019006"); formData.append("photo",file);
-    formData.append("caption", `🚀 ئۆردەر: ${fmtOrderNo(orderRow.order_number)}\n👤 کڕیار: ${curProfile?.full_name||curUser.email}\n📥 لە: ${from}\n📤 بۆ: ${to}\n📱 ژمارە: ${phone}\n💵 بڕ: ${displayAmt}\n💰 وەرگرتن: ${totalTxt}`+(extra?`\n📝 زانیاری زیاتر: ${extra}`:''));
+    formData.append("caption", `🚀 ئۆردەر: ${fmtOrderNo(orderRow.order_number)}\n👤 کڕیار: ${curProfile?.full_name||curUser.email}\n📥 لە: ${from}\n📤 بۆ: ${to}\n📱 ژمارە: ${phone}\n💵 بڕ: ${displayAmt}\n💰 وەرگرتن: ${totalTxt}`);
     try{ await fetch(`https://api.telegram.org/bot8570457708:AAG_5hFu-octgBn1ruDJ3_OzEG7p4fWiNgo/sendPhoto`, { method: "POST", body: formData }); }catch(_){}
 
     showResultModal({
@@ -1963,7 +2002,6 @@ async function processOrder(){
     });
     document.getElementById('fileInput').value='';
     document.getElementById('userPhone').value='';
-    document.getElementById('extraInfo').value='';
     document.getElementById('amt').value='';
     clearAllOrderFieldErrors();
     calc();
@@ -2006,7 +2044,7 @@ function renderHistory(rows){
         ${o.admin_note?`<div class="detail-item"><span class="detail-ico">${ICON.message}</span> ${o.admin_note}</div>`:''}
     </div>`;
   });
-  document.getElementById('historyList').innerHTML = html || `<div class="empty-state">هیچ ئۆردەرێک نییە</div>`;
+  document.getElementById('historyList').innerHTML = html || `<div class="empty-state">هیچ داواکاریەک نییە</div>`;
 }
 function copyNum(){ navigator.clipboard.writeText(document.getElementById('myNum').innerText); showToast('ژمارەکە کۆپی کرا بۆ کلیپبۆرد','success'); }
 
@@ -2026,6 +2064,7 @@ window.addEventListener('online', ()=>showToast('پەیوەندیت بە ئین�
 
 document.addEventListener('DOMContentLoaded', async ()=>{
   applyTheme(document.documentElement.getAttribute('data-theme')||'dark');
+  document.querySelectorAll('.pass-eye-ico').forEach(el=>{ el.innerHTML=ICON.eyeOff; });
   refreshTrigger('from');
   refreshTrigger('receiveVia');
   if(!window.supabase){ showAmsg('هەڵەی بارکردنی سیستەم، پەڕەکە نوێ بکەرەوە','err'); return; }
