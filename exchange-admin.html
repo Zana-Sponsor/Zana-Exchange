@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>ZANA EXCHANGE | Admin Panel</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Firebase — announcement banner control only (same project as exchange.html) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<style>
+@font-face{font-family:'R';src:url('https://raw.githubusercontent.com/Zana-Sponsor/Zana-Sponsor/main/Rabar_021.woff2') format('woff2');}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#f0f2f5;--w:#fff;
+  --b1:#e4e8f0;--b2:#c8d0de;
+  --dark:#1c2333;--dark2:#2e3a50;
+  --pri:#1c2333;
+  --gr:#16a34a;--rd:#dc2626;--yw:#d97706;--bl:#2563eb;--pu:#7c3aed;--cy:#0891b2;
+  --mt:#8b95a8;--mt2:#6b7585;
+  --tx:#1c2333;
+  --sidebar-w:260px;
+}
+body{font-family:'R',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;display:flex;flex-wrap:wrap;overflow-x:hidden;max-width:100vw;}
+
+/* ══ AUTH ══ */
+#authWrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--dark);z-index:9999;padding:24px;}
+.auth-box{width:100%;max-width:380px;background:#fff;border-radius:24px;padding:36px 30px;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.auth-logo{text-align:center;margin-bottom:28px;}
+.auth-logo h1{font-size:26px;font-weight:900;color:var(--dark);font-family:'Inter',sans-serif;letter-spacing:-1px;}
+.auth-logo h1 span{color:var(--cy);}
+.auth-logo p{font-size:12px;color:var(--mt);margin-top:5px;}
+.auth-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:rgba(8,145,178,.08);border:1px solid rgba(8,145,178,.2);color:var(--cy);font-size:11px;font-weight:700;margin-bottom:20px;}
+.ainp{width:100%;padding:14px 16px;background:var(--bg);border:1.5px solid var(--b1);border-radius:13px;color:var(--tx);font-family:'R',sans-serif;font-size:15px;outline:none;margin-bottom:12px;transition:border-color .2s;}
+.ainp:focus{border-color:var(--dark);}
+.ainp[dir=ltr]{text-align:left;}
+.abtn{width:100%;padding:15px;background:var(--dark);color:#fff;border:none;border-radius:13px;font-family:'R',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;}
+.abtn:active{opacity:.9;}
+.abtn:disabled{opacity:.5;pointer-events:none;}
+.auth-err{display:none;padding:10px 14px;border-radius:10px;background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);color:var(--rd);font-size:12.5px;margin-top:10px;text-align:center;}
+
+/* ══ SIDEBAR OVERLAY (mobile) ══ */
+#sidebarOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(2px);z-index:790;}
+#sidebarOverlay.show{display:block;}
+
+/* ══ SIDEBAR ══ */
+#sidebar{width:var(--sidebar-w);height:100vh;background:var(--dark);display:flex;flex-direction:column;position:fixed;top:0;right:0;bottom:0;z-index:800;box-shadow:-4px 0 24px rgba(0,0,0,.2);transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);overflow:hidden;}
+@media(min-width:901px){#sidebar{transform:translateX(0) !important;}#sidebarOverlay{display:none !important;}#main{margin-right:var(--sidebar-w);}}
+#sidebar.show{transform:translateX(0);}
+
+.sb-logo{padding:24px 20px 18px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;}
+.sb-logo-text h1{font-size:19px;font-weight:900;color:#fff;font-family:'Inter',sans-serif;letter-spacing:-0.5px;}
+.sb-logo-text h1 span{color:var(--cy);}
+.sb-logo-text p{font-size:11px;color:rgba(255,255,255,.4);margin-top:3px;}
+.sb-close-btn{width:32px;height:32px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.5);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;transition:all .2s;}
+.sb-close-btn:hover{background:rgba(255,255,255,.15);color:#fff;}
+@media(min-width:901px){.sb-close-btn{display:none;}}
+
+.sb-nav{flex:1;padding:14px 12px;overflow-y:auto;min-height:0;}
+.sb-nav::-webkit-scrollbar{width:0;}
+.sb-section{font-size:10px;color:rgba(255,255,255,.3);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:10px 10px 4px;}
+.sb-item{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;cursor:pointer;color:rgba(255,255,255,.6);font-size:13.5px;font-weight:600;margin-bottom:2px;transition:all .18s;}
+.sb-item:hover{background:rgba(255,255,255,.07);color:#fff;}
+.sb-item.active{background:rgba(255,255,255,.1);color:#fff;}
+.sb-item i{width:20px;text-align:center;font-size:15px;}
+.sb-badge{margin-right:auto;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:var(--rd);color:#fff;}
+.sb-badge.yw{background:var(--yw);}
+.sb-badge.gr{background:var(--gr);}
+
+.sb-footer{padding:14px;border-top:1px solid rgba(255,255,255,.08);flex-shrink:0;}
+.sb-admin-info{display:flex;align-items:center;gap:10px;}
+.sb-av{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0;}
+.sb-admin-name{font-size:13px;font-weight:700;color:#fff;line-height:1.3;}
+.sb-admin-role{font-size:10px;color:rgba(255,255,255,.4);}
+
+/* ══ MAIN ══ */
+#main{flex:1;display:none;flex-direction:column;min-height:100vh;margin-right:0;max-width:100%;overflow-x:hidden;}
+#main.show{display:flex;}
+@media(max-width:900px){#main{margin-right:0 !important;}}
+
+/* ══ TOPBAR ══ */
+.topbar{padding:0 16px;height:60px;background:var(--w);border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 1px 8px rgba(0,0,0,.04);gap:10px;}
+.topbar-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0;}
+.hamburger{width:38px;height:38px;border-radius:10px;background:var(--bg);border:1.5px solid var(--b1);color:var(--dark);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;transition:all .2s;}
+.hamburger:hover{background:var(--dark);color:#fff;border-color:var(--dark);}
+@media(min-width:901px){.hamburger{display:none;}}
+.topbar-titles{flex:1;min-width:0;}
+.topbar-titles h2{font-size:17px;font-weight:900;color:var(--dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar-titles p{font-size:11px;color:var(--mt);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.tb-badge{padding:5px 11px;border-radius:20px;font-size:11.5px;font-weight:700;border:1px solid var(--b1);background:var(--bg);color:var(--mt2);white-space:nowrap;}
+.tb-badge span{font-family:'Inter',sans-serif;font-weight:800;}
+.tb-logout{width:36px;height:36px;border-radius:10px;background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.18);color:var(--rd);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;flex-shrink:0;transition:all .2s;}
+.tb-logout:hover{background:var(--rd);color:#fff;}
+
+.content{padding:16px;flex:1;max-width:100%;overflow-x:hidden;}
+@media(min-width:601px){.content{padding:24px;}}
+
+/* ══ STATS ══ */
+.stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
+@media(min-width:600px){.stats-row{grid-template-columns:repeat(3,1fr);}}
+@media(min-width:900px){.stats-row{grid-template-columns:repeat(auto-fit,minmax(180px,1fr));}}
+.stat-card{background:var(--w);border:1px solid var(--b1);border-radius:16px;padding:16px;display:flex;align-items:center;gap:12px;}
+.stat-ico{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
+.stat-ico.dark{background:var(--dark);color:#fff;}
+.stat-ico.gr{background:rgba(22,163,74,.1);color:var(--gr);}
+.stat-ico.rd{background:rgba(220,38,38,.08);color:var(--rd);}
+.stat-ico.yw{background:rgba(217,119,6,.08);color:var(--yw);}
+.stat-ico.bl{background:rgba(37,99,235,.08);color:var(--bl);}
+.stat-ico.pu{background:rgba(124,58,237,.08);color:var(--pu);}
+.stat-ico.cy{background:rgba(8,145,178,.08);color:var(--cy);}
+.stat-val{font-size:22px;font-weight:900;color:var(--dark);font-family:'Inter',sans-serif;line-height:1;}
+.stat-lbl{font-size:11px;color:var(--mt);margin-top:4px;}
+
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+.sec-hdr h3{font-size:15px;font-weight:800;color:var(--dark);}
+
+.tbl-wrap{background:var(--w);border:1px solid var(--b1);border-radius:16px;overflow:hidden;}
+.tbl-filter{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--b1);flex-wrap:wrap;}
+.tbl-search{flex:1;min-width:140px;padding:9px 14px;background:var(--bg);border:1.5px solid var(--b1);border-radius:10px;font-family:'R',sans-serif;font-size:13px;color:var(--tx);outline:none;}
+.tbl-search:focus{border-color:var(--dark);}
+.chip{padding:6px 12px;border-radius:20px;font-family:'R',sans-serif;font-size:11.5px;cursor:pointer;border:1.5px solid var(--b1);background:var(--w);color:var(--mt);transition:all .2s;font-weight:700;white-space:nowrap;}
+.chip.on{background:var(--dark);color:#fff;border-color:var(--dark);}
+.chip.gr.on{background:var(--gr);border-color:var(--gr);}
+.chip.rd.on{background:var(--rd);border-color:var(--rd);}
+.chip.yw.on{background:var(--yw);border-color:var(--yw);}
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;min-width:500px;}
+th{text-align:right;padding:10px 14px;font-size:11px;font-weight:700;color:var(--mt);background:var(--bg);border-bottom:1px solid var(--b1);}
+td{padding:12px 14px;font-size:13px;color:var(--dark);border-bottom:1px solid var(--b1);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(28,35,51,.015);}
+
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:10.5px;font-weight:700;white-space:nowrap;}
+.badge.pending{background:rgba(217,119,6,.09);color:var(--yw);border:1px solid rgba(217,119,6,.2);}
+.badge.approved,.badge.active{background:rgba(22,163,74,.09);color:var(--gr);border:1px solid rgba(22,163,74,.2);}
+.badge.rejected{background:rgba(220,38,38,.08);color:var(--rd);border:1px solid rgba(220,38,38,.2);}
+.badge.banned{background:rgba(124,58,237,.08);color:var(--pu);border:1px solid rgba(124,58,237,.15);}
+.badge.admin{background:rgba(8,145,178,.09);color:var(--cy);border:1px solid rgba(8,145,178,.22);}
+.badge.order_status{background:rgba(37,99,235,.08);color:var(--bl);border:1px solid rgba(37,99,235,.18);}
+.badge.adminmsg{background:rgba(124,58,237,.08);color:var(--pu);border:1px solid rgba(124,58,237,.18);}
+
+.act-btn{padding:6px 12px;border-radius:8px;font-family:'R',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid;transition:all .15s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
+.act-btn.gr{background:rgba(22,163,74,.08);color:var(--gr);border-color:rgba(22,163,74,.2);}
+.act-btn.gr:hover{background:var(--gr);color:#fff;}
+.act-btn.rd{background:rgba(220,38,38,.06);color:var(--rd);border-color:rgba(220,38,38,.18);}
+.act-btn.rd:hover{background:var(--rd);color:#fff;}
+.act-btn.yw{background:rgba(217,119,6,.06);color:var(--yw);border-color:rgba(217,119,6,.2);}
+.act-btn.yw:hover{background:var(--yw);color:#fff;}
+.act-btn.bl{background:rgba(37,99,235,.06);color:var(--bl);border-color:rgba(37,99,235,.18);}
+.act-btn.bl:hover{background:var(--bl);color:#fff;}
+.act-btn.dark{background:rgba(28,35,51,.06);color:var(--dark);border-color:var(--b2);}
+.act-btn.dark:hover{background:var(--dark);color:#fff;}
+.act-btn.pu{background:rgba(124,58,237,.07);color:var(--pu);border-color:rgba(124,58,237,.2);}
+.act-btn.pu:hover{background:var(--pu);color:#fff;}
+.act-btn.cy{background:rgba(8,145,178,.07);color:var(--cy);border-color:rgba(8,145,178,.2);}
+.act-btn.cy:hover{background:var(--cy);color:#fff;}
+.act-btn:disabled{opacity:.45;pointer-events:none;}
+.act-grp{display:flex;gap:6px;flex-wrap:wrap;}
+
+/* ══ MODAL ══ */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);z-index:5000;display:none;align-items:flex-end;justify-content:center;padding:0;}
+@media(min-width:601px){.overlay{align-items:center;padding:20px;}}
+.overlay.on{display:flex;}
+.modal{background:var(--w);border-radius:22px 22px 0 0;padding:22px 18px;width:100%;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 -8px 40px rgba(0,0,0,.15);}
+@media(min-width:601px){.modal{border-radius:22px;padding:26px 24px;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.2);}}
+.modal.wide{max-width:600px;}
+.modal::before{content:'';display:block;width:40px;height:4px;background:var(--b2);border-radius:2px;margin:0 auto 18px;}
+@media(min-width:601px){.modal::before{display:none;}}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.modal-hdr h3{font-size:16px;font-weight:800;color:var(--dark);}
+.modal-close{width:32px;height:32px;border-radius:50%;background:var(--bg);border:1px solid var(--b1);color:var(--mt);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.modal-lbl{font-size:12px;color:var(--mt);font-weight:700;display:block;margin-bottom:7px;margin-top:14px;}
+.modal-lbl:first-of-type{margin-top:0;}
+.minp{width:100%;padding:12px 15px;background:var(--bg);border:1.5px solid var(--b1);border-radius:12px;font-family:'R',sans-serif;font-size:14px;color:var(--tx);outline:none;transition:border-color .2s;}
+.minp:focus{border-color:var(--dark);}
+.minp[dir=ltr]{text-align:left;}
+.mta{resize:vertical;min-height:80px;}
+.msel{width:100%;padding:12px 15px;background:var(--bg);border:1.5px solid var(--b1);border-radius:12px;font-family:'R',sans-serif;font-size:14px;color:var(--tx);outline:none;cursor:pointer;}
+.modal-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.modal-btn{width:100%;padding:13px;border:none;border-radius:12px;font-family:'R',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.modal-btn.dark{background:var(--dark);color:#fff;}
+.modal-btn.gr{background:var(--gr);color:#fff;}
+.modal-btn.rd{background:var(--rd);color:#fff;}
+.modal-btn.cy{background:var(--cy);color:#fff;}
+.modal-btn:disabled{opacity:.5;pointer-events:none;}
+.mswitch-row{display:flex;align-items:center;justify-content:space-between;padding:12px 2px;}
+.mswitch-row span{font-size:13px;font-weight:700;color:var(--dark);}
+.mswitch{position:relative;width:46px;height:26px;flex-shrink:0;}
+.mswitch input{opacity:0;width:0;height:0;}
+.mswitch .track{position:absolute;inset:0;background:var(--b2);border-radius:20px;cursor:pointer;transition:.2s;}
+.mswitch .track::before{content:'';position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.3);}
+.mswitch input:checked+.track{background:var(--gr);}
+.mswitch input:checked+.track::before{transform:translateX(-20px);}
+
+.rcpt-img{width:100%;border-radius:12px;margin-top:10px;border:1px solid var(--b1);cursor:pointer;}
+.detail-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--b1);font-size:13px;gap:10px;}
+.detail-row:last-child{border-bottom:none;}
+.detail-row .lbl{color:var(--mt);font-size:12px;flex-shrink:0;}
+.detail-row .val{font-weight:700;color:var(--dark);text-align:left;direction:ltr;word-break:break-word;}
+
+#toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(8px);padding:12px 22px;border-radius:14px;font-size:13px;display:none;z-index:99999;background:var(--dark);color:#fff;opacity:0;transition:all .25s;white-space:nowrap;box-shadow:0 6px 24px rgba(0,0,0,.2);}
+#toast.show{display:block;opacity:1;transform:translateX(-50%) translateY(0);}
+#toast.gr{background:var(--gr);}
+#toast.rd{background:var(--rd);}
+
+.empty{text-align:center;padding:50px 20px;color:var(--mt);}
+.empty i{font-size:40px;display:block;margin-bottom:12px;opacity:.3;}
+.empty p{font-size:13px;}
+.loading{text-align:center;padding:30px;color:var(--mt);font-size:13px;}
+
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.pg{display:none;}
+.pg.on{animation:fu .2s cubic-bezier(.25,.46,.45,.94);display:block;}
+
+.mini-av{width:34px;height:34px;border-radius:50%;background:var(--dark);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;overflow:hidden;flex-shrink:0;}
+.user-cell{display:flex;align-items:center;gap:10px;}
+.user-cell-name{font-size:13px;font-weight:700;color:var(--dark);}
+.user-cell-email{font-size:10.5px;color:var(--mt);direction:ltr;text-align:right;}
+
+.rec-cards{display:flex;flex-direction:column;gap:10px;padding:12px;}
+.rec-card{background:var(--w);border:1px solid var(--b1);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;cursor:pointer;transition:box-shadow .18s;}
+.rec-card:active{box-shadow:0 2px 12px rgba(0,0,0,.1);}
+.rec-card-top{display:flex;align-items:center;gap:12px;}
+.rec-card-info{flex:1;min-width:0;}
+.rec-card-name{font-size:14px;font-weight:800;color:var(--dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rec-card-sub{font-size:11px;color:var(--mt);direction:ltr;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rec-card-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.rec-card-stat{display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:700;background:var(--bg);border:1px solid var(--b1);}
+.rec-card-stat.gr{background:rgba(22,163,74,.08);border-color:rgba(22,163,74,.2);color:var(--gr);}
+.rec-card-date{font-size:10.5px;color:var(--mt);margin-right:auto;}
+.rec-card-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.rec-card-actions.g3{grid-template-columns:repeat(3,1fr);}
+.rec-card-actions .act-btn{justify-content:center;padding:9px 4px;font-size:12.5px;}
+
+@media(max-width:900px){
+  .tbl-wrap-scroll-target table{display:none;}
+  .rec-cards{display:flex;}
+}
+@media(min-width:901px){
+  .rec-cards{display:none;}
+}
+
+.method-pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;}
+.method-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+.fee-toggle-note{font-size:11px;color:var(--mt);margin-top:6px;line-height:1.6;}
+</style>
+</head>
+<body>
+
+<!-- ══ AUTH ══ -->
+<div id="authWrap">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <h1>ZANA <span>EXCHANGE</span></h1>
+      <p>پانێڵی بەڕێوەبردن</p>
+    </div>
+    <div style="text-align:center;margin-bottom:18px">
+      <div class="auth-badge"><i class="fas fa-shield-halved"></i> دەسترسی ئادمین تەنها</div>
+    </div>
+    <input class="ainp" type="email" id="loginEmail" placeholder="ئیمەیلی ئادمین" dir="ltr">
+    <input class="ainp" type="password" id="loginPass" placeholder="پاسۆرد" dir="ltr" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="abtn" id="loginBtn" onclick="doLogin()">
+      <i class="fas fa-arrow-left"></i> چوونەژوورەوە
+    </button>
+    <div class="auth-err" id="authErr"></div>
+  </div>
+</div>
+
+<!-- ══ SIDEBAR OVERLAY ══ -->
+<div id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- ══ SIDEBAR ══ -->
+<nav id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-text">
+      <h1>Zana <span>Exchange</span></h1>
+      <p>پانێڵی ئادمین</p>
+    </div>
+    <div class="sb-close-btn" onclick="closeSidebar()"><i class="fas fa-xmark"></i></div>
+  </div>
+
+  <div class="sb-nav">
+    <div class="sb-section">سەرەکی</div>
+    <div class="sb-item active" onclick="goPage('dashboard')"><i class="fas fa-chart-pie"></i> داشبۆرد</div>
+    <div class="sb-item" onclick="goPage('orders')"><i class="fas fa-money-bill-transfer"></i> ئۆردەرەکان <span class="sb-badge yw" id="sbOrdersCount" style="display:none">0</span></div>
+    <div class="sb-item" onclick="goPage('accounts')"><i class="fas fa-users"></i> هەژمارەکان</div>
+    <div class="sb-section">ڕێکخستن</div>
+    <div class="sb-item" onclick="goPage('rates')"><i class="fas fa-percent" style="color:#f59e0b"></i> نرخ و کرێ</div>
+    <div class="sb-section">پەیوەندی</div>
+    <div class="sb-item" onclick="goPage('notifications')"><i class="fas fa-bell" style="color:#7c3aed"></i> ئاگادارییەکان</div>
+    <div class="sb-item" onclick="goPage('announcement')"><i class="fas fa-bullhorn" style="color:#0891b2"></i> بانەری ئاگاداری</div>
+  </div>
+
+  <div class="sb-footer">
+    <div class="sb-admin-info">
+      <div class="sb-av" id="sbAv">A</div>
+      <div style="flex:1;min-width:0;">
+        <div class="sb-admin-name" id="sbAdminName">ئادمین</div>
+        <div class="sb-admin-role">Admin Panel</div>
+      </div>
+      <button onclick="doLogout()" style="display:flex;align-items:center;gap:7px;padding:8px 14px;background:rgba(220,38,38,.15);border:1.5px solid rgba(220,38,38,.3);border-radius:12px;cursor:pointer;font-family:'R',sans-serif;font-size:13px;font-weight:700;color:#f87171;white-space:nowrap;transition:all .2s;flex-shrink:0">
+        <i class="fas fa-right-from-bracket"></i> دەرچوون
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ MAIN ══ -->
+<div id="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="hamburger" onclick="openSidebar()"><i class="fas fa-bars"></i></div>
+      <div class="topbar-titles">
+        <h2 id="pageTitle">داشبۆرد</h2>
+        <p id="pageSubtitle">دیمەنی گشتی سیستەم</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="tb-badge"><i class="fas fa-clock" style="margin-left:4px;opacity:.6"></i><span id="currentTime">—</span></div>
+      <div class="tb-logout" onclick="doLogout()" title="دەرچوون"><i class="fas fa-right-from-bracket"></i></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+
+    <!-- ══ DASHBOARD ══ -->
+    <div class="pg on" id="pgDashboard">
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-ico dark"><i class="fas fa-users"></i></div><div class="stat-info"><div class="stat-val" id="stUsers">—</div><div class="stat-lbl">کۆی بەکارهێنەران</div></div></div>
+        <div class="stat-card"><div class="stat-ico rd"><i class="fas fa-user-slash"></i></div><div class="stat-info"><div class="stat-val" id="stBanned">—</div><div class="stat-lbl">بۆیکۆتکراو</div></div></div>
+        <div class="stat-card"><div class="stat-ico yw"><i class="fas fa-clock"></i></div><div class="stat-info"><div class="stat-val" id="stPending">—</div><div class="stat-lbl">ئۆردەری چاوەڕوان</div></div></div>
+        <div class="stat-card"><div class="stat-ico gr"><i class="fas fa-check-double"></i></div><div class="stat-info"><div class="stat-val" id="stApproved">—</div><div class="stat-lbl">پەسەندکراو</div></div></div>
+        <div class="stat-card"><div class="stat-ico rd"><i class="fas fa-xmark"></i></div><div class="stat-info"><div class="stat-val" id="stRejected">—</div><div class="stat-lbl">ڕەتکراوە</div></div></div>
+        <div class="stat-card"><div class="stat-ico cy"><i class="fas fa-coins"></i></div><div class="stat-info"><div class="stat-val" id="stVolume">—</div><div class="stat-lbl">کۆی گۆڕینەوەی پەسەندکراو (IQD)</div></div></div>
+      </div>
+      <div class="sec-hdr">
+        <h3><i class="fas fa-clock" style="margin-left:8px;color:var(--yw)"></i>دواترین ئۆردەرەکان</h3>
+        <div class="act-btn dark" onclick="goPage('orders')" style="font-size:12px"><i class="fas fa-arrow-left"></i> هەموو</div>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-scroll" id="dashOrdersWrap">
+          <div class="loading"><i class="fas fa-circle-notch fa-spin"></i> چوارچێوەکردن...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ORDERS ══ -->
+    <div class="pg" id="pgOrders">
+      <div class="sec-hdr"><h3>هەموو ئۆردەرەکان</h3></div>
+      <div class="tbl-wrap">
+        <div class="tbl-filter">
+          <input class="tbl-search" id="orderSearch" placeholder="گەڕان بەپێی ناو، ئیمەیل یان ژمارەی ئۆردەر..." oninput="filterOrders()">
+          <div class="chip on" data-of="all" onclick="filterOrders(this)">هەموو</div>
+          <div class="chip yw" data-of="چاوەڕوانە" onclick="filterOrders(this)">چاوەڕوان</div>
+          <div class="chip gr" data-of="پەسەندکرا" onclick="filterOrders(this)">پەسەندکرا</div>
+          <div class="chip rd" data-of="ڕەتکرا" onclick="filterOrders(this)">ڕەتکرا</div>
+        </div>
+        <div class="tbl-scroll tbl-wrap-scroll-target" id="ordersTableWrap">
+          <div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ACCOUNTS ══ -->
+    <div class="pg" id="pgAccounts">
+      <div class="sec-hdr"><h3>هەموو بەکارهێنەران</h3></div>
+      <div class="tbl-wrap">
+        <div class="tbl-filter">
+          <input class="tbl-search" id="accSearch" placeholder="گەڕانی ناو یان ئیمەیل..." oninput="filterAccounts()">
+          <div class="chip on" data-af="all" onclick="filterAccounts(this)">هەموو</div>
+          <div class="chip rd" data-af="banned" onclick="filterAccounts(this)">بۆیکۆتکراو</div>
+          <div class="chip cy" data-af="admin" onclick="filterAccounts(this)">ئادمین</div>
+        </div>
+        <div class="tbl-scroll tbl-wrap-scroll-target" id="accountsTableWrap">
+          <div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ RATES & FEES ══ -->
+    <div class="pg" id="pgRates">
+      <div class="sec-hdr">
+        <h3>نرخی گۆڕینەوە و کرێ</h3>
+        <div class="act-btn dark" onclick="openRateModal(null)"><i class="fas fa-plus"></i> زیادکردنی ڕێگا</div>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-scroll" id="ratesTableWrap">
+          <div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ NOTIFICATIONS ══ -->
+    <div class="pg" id="pgNotifications">
+      <div class="sec-hdr"><h3>ناردنی ئاگاداری</h3></div>
+      <div class="tbl-wrap" style="padding:16px;margin-bottom:20px">
+        <div style="display:flex;gap:8px;margin-bottom:14px">
+          <div class="chip on" data-nt="all" onclick="setNotifTarget(this)">بۆ هەموو بەکارهێنەران</div>
+          <div class="chip" data-nt="one" onclick="setNotifTarget(this)">بۆ بەکارهێنەرێکی دیاریکراو</div>
+        </div>
+        <div id="notifUserPickWrap" style="display:none">
+          <label class="modal-lbl">بەکارهێنەر</label>
+          <input class="minp" id="notifUserSearch" placeholder="گەڕان بەپێی ناو یان ئیمەیل..." oninput="searchNotifUser()" autocomplete="off">
+          <div id="notifUserResults" style="margin-top:8px;display:flex;flex-direction:column;gap:6px;max-height:180px;overflow-y:auto"></div>
+          <div id="notifUserSelected" style="display:none;margin-top:10px;background:rgba(8,145,178,.06);border:1.5px solid rgba(8,145,178,.2);border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:10px"></div>
+        </div>
+        <label class="modal-lbl">ناونیشان</label>
+        <input class="minp" id="notifTitle" placeholder="بۆ نموونە: نرخەکان نوێ کرانەوە">
+        <label class="modal-lbl">پەیام</label>
+        <textarea class="minp mta" id="notifBody" placeholder="دەقی ئاگادارییەکە بنووسە..."></textarea>
+        <button class="modal-btn cy" id="notifSendBtn" onclick="sendAdminNotification()"><i class="fas fa-paper-plane"></i> ناردن</button>
+      </div>
+      <div class="sec-hdr"><h3>دواترین ئاگادارییەکان</h3></div>
+      <div class="tbl-wrap">
+        <div class="tbl-scroll" id="notifLogWrap">
+          <div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ANNOUNCEMENT BANNER ══ -->
+    <div class="pg" id="pgAnnouncement">
+      <div class="sec-hdr"><h3>بانەری ئاگاداری سەرەوەی ئەپ</h3></div>
+      <div class="tbl-wrap" style="padding:18px">
+        <div class="mswitch-row" style="border-bottom:1px solid var(--b1);padding-bottom:16px;margin-bottom:16px">
+          <span>پیشاندانی بانەر لەناو ئەپەکە</span>
+          <label class="mswitch"><input type="checkbox" id="annShow"><span class="track"></span></label>
+        </div>
+        <label class="modal-lbl">دەقی بانەر</label>
+        <textarea class="minp mta" id="annText" placeholder="دەقی ئاگادارییەکە بنووسە..."></textarea>
+        <div class="fee-toggle-note"><i class="fas fa-circle-info" style="margin-left:4px"></i>ئەم بانەرە بە یەکسانی بۆ هەموو بەکارهێنەرانی ئەپی Exchange دەردەکەوێت (Firebase Realtime).</div>
+        <button class="modal-btn cy" id="annSaveBtn" onclick="saveAnnouncement()"><i class="fas fa-check"></i> پاشەکەوتکردن</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ ORDER DETAIL MODAL ══ -->
+<div class="overlay" id="moOrderDetail">
+  <div class="modal wide">
+    <div class="modal-hdr">
+      <h3 id="odTitle">وردەکاری ئۆردەر</h3>
+      <div class="modal-close" onclick="closeMo('moOrderDetail')"><i class="fas fa-xmark"></i></div>
+    </div>
+    <div id="odContent"></div>
+  </div>
+</div>
+
+<!-- ══ REJECT REASON MODAL ══ -->
+<div class="overlay" id="moRejectReason">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3>هۆکاری ڕەتکردنەوە</h3>
+      <div class="modal-close" onclick="closeMo('moRejectReason')"><i class="fas fa-xmark"></i></div>
+    </div>
+    <input type="hidden" id="rejectTargetId">
+    <label class="modal-lbl">تێبینی بۆ ئۆردەرەکە (بۆ کڕیار دەردەکەوێت)</label>
+    <textarea class="minp mta" id="rejectReasonTxt" placeholder="هۆکار بنووسە..."></textarea>
+    <button class="modal-btn rd" id="rejectSubmitBtn" onclick="confirmRejectOrder()"><i class="fas fa-times"></i> ڕەتکردنەوە</button>
+  </div>
+</div>
+
+<!-- ══ RATE EDIT/ADD MODAL ══ -->
+<div class="overlay" id="moRate">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3 id="rateModalTitle">دەستکاریکردنی ڕێگا</h3>
+      <div class="modal-close" onclick="closeMo('moRate')"><i class="fas fa-xmark"></i></div>
+    </div>
+    <input type="hidden" id="rateId">
+    <div class="modal-row">
+      <div>
+        <label class="modal-lbl">لە</label>
+        <select class="msel" id="rateFrom"></select>
+      </div>
+      <div>
+        <label class="modal-lbl">بۆ</label>
+        <select class="msel" id="rateTo"></select>
+      </div>
+    </div>
+    <label class="modal-lbl">جۆری نرخ</label>
+    <select class="msel" id="rateType" onchange="updateRateValueHint()">
+      <option value="multiplier">مەزراپ (Multiplier)</option>
+      <option value="fee_percent">ڕێژەی کرێ (Fee %)</option>
+    </select>
+    <label class="modal-lbl">بەها</label>
+    <input class="minp" type="number" step="0.0001" id="rateValue" dir="ltr" placeholder="0.00">
+    <div class="fee-toggle-note" id="rateValueHint"></div>
+    <div class="mswitch-row">
+      <span>چالاکە (بەکاردەهێنرێت لە ئەپدا)</span>
+      <label class="mswitch"><input type="checkbox" id="rateActive" checked><span class="track"></span></label>
+    </div>
+    <button class="modal-btn dark" id="rateSaveBtn" onclick="saveRate()"><i class="fas fa-check"></i> پاشەکەوتکردن</button>
+  </div>
+</div>
+
+<!-- ══ IMAGE LIGHTBOX ══ -->
+<div class="overlay" id="moImgView" onclick="closeMo('moImgView')" style="align-items:center;padding:20px">
+  <img id="imgViewSrc" src="" style="max-width:100%;max-height:90vh;border-radius:14px;">
+</div>
+
+<!-- ══ GENERIC CONFIRM ══ -->
+<div class="overlay" id="moConfirm">
+  <div class="modal" style="max-width:360px;text-align:center">
+    <div style="width:60px;height:60px;border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:24px" id="confirmIco"></div>
+    <h3 style="font-size:17px;font-weight:800;color:var(--dark);margin-bottom:8px" id="confirmTitle">—</h3>
+    <p style="font-size:13px;color:var(--mt);margin-bottom:20px;line-height:1.7" id="confirmMsg">—</p>
+    <div style="display:flex;gap:10px">
+      <button class="modal-btn dark" style="margin-top:0;flex:1;padding:12px" onclick="closeMo('moConfirm')">پاشگەزبوونەوە</button>
+      <button id="confirmOkBtn" class="modal-btn rd" style="margin-top:0;flex:1;padding:12px">بەڵێ</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// ═══ CONFIG (same Exchange Supabase project + Firebase as exchange.html) ═
+// ══════════════════════════════════════════════════════════════
+const SB_URL='https://pycxuugoblkslvwebxuu.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5Y3h1dWdvYmxrc2x2d2VieHV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYyMTk3OTksImV4cCI6MjEwMTc5NTc5OX0.VRRwxnnuLs_WORuVUO3oX3CLxrPtgG_uewIJaGrzn_s';
+const firebaseConfig = { apiKey: "AIzaSyB056_g2Y3AJjtjG9715FgtXIhtjFcMPPU", authDomain: "zana-exchange.firebaseapp.com", databaseURL: "https://zana-exchange-default-rtdb.firebaseio.com", projectId: "zana-exchange" };
+firebase.initializeApp(firebaseConfig);
+const fbdb = firebase.database();
+
+const METHOD_META = {
+  FastPay:  { label:'FastPay',  color:'#7c3aed' },
+  FIB:      { label:'FIB Bank', color:'#0ea5a4' },
+  QiCard:   { label:'Qi Card',  color:'#2563eb' },
+  Asiacell: { label:'Asiacell', color:'#e11d48' },
+  Korek:    { label:'Korek',    color:'#f59e0b' },
+  USDT:     { label:'USDT ($)', color:'#26a17b' }
+};
+const ALL_METHODS = ['FastPay','FIB','QiCard','Asiacell','Korek','USDT'];
+const RECEIVE_METHODS = ['FastPay','FIB','QiCard'];
+const STATUS_PENDING='چاوەڕوانە', STATUS_APPROVED='پەسەندکرا', STATUS_REJECTED='ڕەتکرا';
+
+let sb, adminUser=null, adminName='ئادمین';
+let allOrders=[], allAccounts=[], allRates=[], allNotifs=[];
+let orderFilter='all', accFilter='all';
+let _notifTarget='all', _notifSelectedUser=null;
+let _profMap={};
+
+// ══════════════════════════════════════════════════════════════
+// ═══ SIDEBAR ═════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════
+function openSidebar(){ document.getElementById('sidebar').classList.add('show'); document.getElementById('sidebarOverlay').classList.add('show'); }
+function closeSidebar(){ document.getElementById('sidebar').classList.remove('show'); document.getElementById('sidebarOverlay').classList.remove('show'); }
+
+// ══════════════════════════════════════════════════════════════
+// ═══ INIT ════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', ()=>{
+  sb = window.supabase.createClient(SB_URL, SB_KEY, { auth:{ persistSession:true, autoRefreshToken:true, storageKey:'zex_admin_sb_session' } });
+  updateClock(); setInterval(updateClock, 60000);
+  sb.auth.getSession().then(async ({data:{session}})=>{
+    if(session?.user){
+      adminUser = session.user;
+      const ok = await verifyAdmin(adminUser.id, adminUser.email);
+      if(ok) showApp(); else { await sb.auth.signOut(); }
+    }
+  });
+  document.querySelectorAll('.overlay').forEach(o=>{
+    o.addEventListener('click', e=>{ if(e.target===o) closeMo(o.id); });
+  });
+});
+
+function updateClock(){ document.getElementById('currentTime').textContent = new Date().toLocaleTimeString('ku',{hour:'2-digit',minute:'2-digit'}); }
+
+// ══════════════════════════════════════════════════════════════
+// ═══ AUTH ════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════
+async function verifyAdmin(uid, email){
+  try{
+    const {data:prof} = await sb.from('ex_profiles').select('is_admin,full_name,email').eq('id',uid).single();
+    if(!prof || prof.is_admin!==true) return false;
+    adminName = prof.full_name || email.split('@')[0];
+    return true;
+  }catch(e){ return false; }
+}
+
+async function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  const btn=document.getElementById('loginBtn');
+  if(!email||!pass){ showAuthErr('ئیمەیل و پاسۆرد پڕ بکەرەوە'); return; }
+  btn.disabled=true; btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i>';
+  try{
+    const {data,error} = await sb.auth.signInWithPassword({email,password:pass});
+    if(error){ showAuthErr('ئیمەیل یان پاسۆرد هەڵەیە'); return; }
+    adminUser = data.user;
+    const ok = await verifyAdmin(adminUser.id, adminUser.email);
+    if(!ok){
+      await sb.auth.signOut();
+      showAuthErr('تۆ مافی دەستگەیشتن بە پانێڵی ئادمین نییەت');
+      return;
+    }
+    document.getElementById('authErr').style.display='none';
+    showApp();
+  }catch(e){
+    showAuthErr('هەڵەی پەیوەندی: '+e.message);
+  }finally{
+    btn.disabled=false; btn.innerHTML='<i class="fas fa-arrow-left"></i> چوونەژوورەوە';
+  }
+}
+function showAuthErr(msg){
+  const el=document.getElementById('authErr');
+  el.textContent=msg; el.style.display='block';
+}
+async function doLogout(){
+  try{ await sb.auth.signOut(); }catch(_){}
+  location.reload();
+}
+function showApp(){
+  document.getElementById('authWrap').style.display='none';
+  document.getElementById('main').classList.add('show');
+  document.getElementById('sbAv').textContent = (adminName||'A')[0].toUpperCase();
+  document.getElementById('sbAdminName').textContent = adminName;
+  goPage('dashboard');
+}
+
+// ══════════════════════════════════════════════════════════════
+// ═══ PAGE ROUTING ════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════
+const pageConfig = {
+  dashboard:{ title:'داشبۆرد', sub:'دیمەنی گشتی سیستەم', load: loadDashboard },
+  orders:{ title:'ئۆردەرەکان', sub:'پەسەندکردن و ڕەتکردنەوەی داواکارییە گۆڕینەوەکان', load: loadOrders },
+  accounts:{ title:'هەژمارەکان', sub:'بەڕێوەبردنی هەژمارەکانی بەکارهێنەران', load: loadAccounts },
+  rates:{ title:'نرخ و کرێ', sub:'ڕێکخستنی نرخی گۆڕینەوە و کرێی هەر ڕێگایەک', load: loadRates },
+  notifications:{ title:'ئاگادارییەکان', sub:'ناردنی ئاگاداری و بینینی مێژوو', load: loadNotifPage },
+  announcement:{ title:'بانەری ئاگاداری', sub:'ئاگاداری گشتی سەرەوەی ئەپەکە', load: loadAnnouncement },
+};
+let _curPage='dashboard';
+function goPage(p){
+  _curPage=p;
+  document.querySelectorAll('.pg').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.sb-item').forEach(x=>x.classList.remove('active'));
+  const pg=document.getElementById('pg'+p.charAt(0).toUpperCase()+p.slice(1));
+  if(pg) pg.classList.add('on');
+  const sbItem=document.querySelector(`.sb-item[onclick="goPage('${p}')"]`);
+  if(sbItem) sbItem.classList.add('active');
+  const cfg=pageConfig[p];
+  if(cfg){
+    document.getElementById('pageTitle').textContent=cfg.title;
+    document.getElementById('pageSubtitle').textContent=cfg.sub;
+    if(cfg.load) cfg.load();
+  }
+  closeSidebar();
+}
+
+// ══════════════════════════════════════════════════════════════
+// ═══ HELPERS ═════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════
+function formatNum(n){ n=Math.round(parseFloat(n)||0); return n.toLocaleString(); }
+function methodPill(key){
+  const m=METHOD_META[key]; if(!m) return key||'—';
+  return `<span class="method-pill"><span class="method-dot" style="background:${m.color}"></span>${m.label}</span>`;
+}
+function statusBadgeClass(s){ return s===STATUS_APPROVED?'approved':(s===STATUS_REJECTED?'rejected':'pending'); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function safeAttr(obj){ return JSON.stringify(obj).replace(/'/g,'&#39;'); }
+
+function openMo(id){ document.getElementById(id).classList.add('on'); }
+function closeMo(id){ document.getElementById(id).classList.remove('on'); }
+function showImg(src){ if(!src) return; document.getElementById('imgViewSrc').src=src; openMo('moImgView'); }
+
+function showToast(msg,cls=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='show'+(cls?' '+cls:'');
+  clearTimeout(t._t); t._t=setTimeout(()=>{ t.classList.remove('show'); },3000);
+}
+function confirm2(title,msg,icoClass,icoColor,onOk){
+  document.getElementById('confirmTitle').textContent=title;
+  document.getElementById('confirmMsg').textContent=msg;
+  const ico=document.getElementById('confirmIco');
+  ico.innerHTML=`<i class="${icoClass}"></i>`;
+  ico.style.background=icoColor+'22'; ico.style.color=icoColor;
+  const btn=document.getElementById('confirmOkBtn');
+  btn.style.background=icoColor;
+  btn.onclick=async()=>{ closeMo('moConfirm'); await onOk(); };
+  openMo('moConfirm');
+}
+
+async function loadProfilesFor(userIds){
+  const uids=[...new Set(userIds.filter(Boolean))];
+  if(!uids.length) return {};
+  const {data} = await sb.from('ex_profiles').select('id,full_name,email,phone,is_admin,is_banned').in('id',uids);
+  const map={}; (data||[]).forEach(p=>{ map[p.id]=p; });
+  return map;
+}
+</script>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// ═══ DASHBOARD ═══════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════
+async function loadDashboard(){
+  loadDashboardStats();
+  loadDashOrders();
+}
+async function loadDashboardStats(){
+  try{
+    const [{count:usersCount}, {count:bannedCount}, {count:pendingCount}, {data:approvedRows}, {count:rejectedCount}] = await Promise.all([
+      sb.from('ex_profiles').select('*',{count:'exact',head:true}),
+      sb.from('ex_profiles').select('*',{count:'exact',head:true}).eq('is_banned',true),
+      sb.from('ex_orders').select('*',{count:'exact',head:true}).eq('status',STATUS_PENDING),
+      sb.from('ex_orders').select('total').eq('status',STATUS_APPROVED),
+      sb.from('ex_orders').select('*',{count:'exact',head:true}).eq('status',STATUS_REJECTED),
+    ]);
+    document.getElementById('stUsers').textContent = usersCount ?? '—';
+    document.getElementById('stBanned').textContent = bannedCount ?? '—';
+    document.getElementById('stPending').textContent = pendingCount ?? '—';
+    document.getElementById('stRejected').textContent = rejectedCount ?? '—';
+    const approvedCount = (approvedRows||[]).length;
+    const volume = (approvedRows||[]).reduce((s,r)=>s+(parseFloat(r.total)||0),0);
+    document.getElementById('stApproved').textContent = approvedCount;
+    document.getElementById('stVolume').textContent = formatNum(volume);
+    const badge=document.getElementById('sbOrdersCount');
+    if(pendingCount>0){ badge.style.display='inline-flex'; badge.textContent=pendingCount; }
+    else badge.style.display='none';
+  }catch(e){ showToast('هەڵەی بارکردنی ئامار: '+e.message,'rd'); }
+}
+async function loadDashOrders(){
+  try{
+    const {data:orders} = await sb.from('ex_orders').select('*').order('created_at',{ascending:false}).limit(8);
+    const profMap = await loadProfilesFor((orders||[]).map(o=>o.user_id));
+    const list=(orders||[]).map(o=>({...o, profile:profMap[o.user_id]||null}));
+    // merge into the shared cache so showOrderDetail/approve/reject work even before the Orders page has loaded
+    list.forEach(o=>{
+      const idx=allOrders.findIndex(x=>x.id===o.id);
+      if(idx>-1) allOrders[idx]=o; else allOrders.push(o);
+    });
+    document.getElementById('dashOrdersWrap').innerHTML = renderOrdersTable(list);
+  }catch(e){ document.getElementById('dashOrdersWrap').innerHTML='<div class="empty"><i class="fas fa-triangle-exclamation"></i><p>هەڵەی بارکردن</p></div>'; }
+}
+
+// ══════════════════════════════════════════════════════════════
+// ═══ ORDERS ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════
+async function loadOrders(){
+  document.getElementById('ordersTableWrap').innerHTML='<div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
+  try{
+    const {data:orders,error} = await sb.from('ex_orders').select('*').order('created_at',{ascending:false}).limit(300);
+    if(error) throw error;
+    const profMap = await loadProfilesFor((orders||[]).map(o=>o.user_id));
+    _profMap = profMap;
+    allOrders = (orders||[]).map(o=>({...o, profile:profMap[o.user_id]||null}));
+    renderOrders();
+  }catch(e){
+    document.getElementById('ordersTableWrap').innerHTML=`<div class="empty"><i class="fas fa-triangle-exclamation"></i><p>هەڵە: ${esc(e.message)}</p></div>`;
+  }
+}
+function filterOrders(el){
+  if(el){ document.querySelectorAll('[data-of]').forEach(x=>x.classList.remove('on')); el.classList.add('on'); orderFilter=el.dataset.of; }
+  renderOrders((document.getElementById('orderSearch')?.value||'').toLowerCase());
+}
+function renderOrders(q=''){
+  let list=allOrders;
+  if(orderFilter!=='all') list=list.filter(o=>o.status===orderFilter);
+  if(q) list=list.filter(o=>(o.profile?.full_name||'').toLowerCase().includes(q)||(o.profile?.email||'').toLowerCase().includes(q)||String(o.order_number||'').includes(q)||(o.phone||'').includes(q));
+  document.getElementById('ordersTableWrap').innerHTML = renderOrdersTable(list) + renderOrdersCards(list);
+}
+function renderOrdersTable(list){
+  if(!list.length) return '<div class="empty"><i class="fas fa-inbox"></i><p>هیچ ئۆردەرێک نییە</p></div>';
+  return `<table><thead><tr><th>بەکارهێنەر</th><th>ڕێگا</th><th>بڕ</th><th>وەرگیراو</th><th>باری</th><th>بەروار</th><th>کردار</th></tr></thead><tbody>
+    ${list.map(o=>`<tr style="cursor:pointer" onclick='showOrderDetail(${safeAttr(o.id)})'>
+      <td><div class="user-cell"><div class="mini-av">${(o.profile?.full_name||o.profile?.email||'?')[0].toUpperCase()}</div><div><div class="user-cell-name">${esc(o.profile?.full_name||'—')}</div><div class="user-cell-email">${esc(o.profile?.email||'—')}</div></div></div></td>
+      <td>${methodPill(o.from_method)} <i class="fas fa-arrow-left" style="font-size:10px;color:var(--mt);margin:0 4px"></i> ${methodPill(o.to_method)}</td>
+      <td style="font-family:'Inter';font-weight:700">${formatNum(o.amount)}${o.from_method==='USDT'?'$':''}</td>
+      <td style="font-family:'Inter';font-weight:800;color:var(--gr)">${formatNum(o.total)} IQD</td>
+      <td><span class="badge ${statusBadgeClass(o.status)}">${esc(o.status)}</span></td>
+      <td style="font-size:11px;color:var(--mt)">${new Date(o.created_at).toLocaleDateString('ku')}</td>
+      <td onclick="event.stopPropagation()"><div class="act-grp">
+        <div class="act-btn dark" onclick='showOrderDetail(${safeAttr(o.id)})'><i class="fas fa-eye"></i></div>
+        ${o.status===STATUS_PENDING?`<div class="act-btn gr" onclick="approveOrder('${o.id}')"><i class="fas fa-check"></i></div><div class="act-btn rd" onclick="showRejectReason('${o.id}')"><i class="fas fa-times"></i></div>`:''}
+      </div></td>
+    </tr>`).join('')}
+  </tbody></table>`;
+}
+function renderOrdersCards(list){
+  if(!list.length) return '';
+  return `<div class="rec-cards">${list.map(o=>`
+    <div class="rec-card" onclick='showOrderDetail(${safeAttr(o.id)})'>
+      <div class="rec-card-top">
+        <div class="mini-av">${(o.profile?.full_name||o.profile?.email||'?')[0].toUpperCase()}</div>
+        <div class="rec-card-info"><div class="rec-card-name">${esc(o.profile?.full_name||'بێ ناو')}</div><div class="rec-card-sub">${esc(o.profile?.email||'—')}</div></div>
+        <span class="badge ${statusBadgeClass(o.status)}">${esc(o.status)}</span>
+      </div>
+      <div class="rec-card-meta">
+        <span style="font-size:12px">${methodPill(o.from_method)} <i class="fas fa-arrow-left" style="font-size:9px;color:var(--mt);margin:0 3px"></i> ${methodPill(o.to_method)}</span>
+      </div>
+      <div class="rec-card-meta">
+        <div class="rec-card-stat gr">#${o.order_number} • ${formatNum(o.total)} IQD</div>
+        <div class="rec-card-date">${new Date(o.created_at).toLocaleDateString('ku')}</div>
+      </div>
+      ${o.status===STATUS_PENDING?`<div class="rec-card-actions" onclick="event.stopPropagation()">
+        <div class="act-btn gr" onclick="approveOrder('${o.id}')"><i class="fas fa-check"></i> پەسەندکردن</div>
+        <div class="act-btn rd" onclick="showRejectReason('${o.id}')"><i class="fas fa-times"></i> ڕەتکردنەوە</div>
+      </div>`:`<div class="act-btn dark" style="justify-content:center;padding:8px">${'<i class="fas fa-eye"></i> زانیاری تەواو'}</div>`}
+    </div>`).join('')}</div>`;
+}
+
+function showOrderDetail(id){
+  const order = allOrders.find(x=>String(x.id)===String(id));
+  if(!order){ showToast('نەدۆزرایەوە','rd'); return; }
+  const displayAmt = formatNum(order.amount)+(order.from_method==='USDT'?' $':' IQD');
+  document.getElementById('odTitle').textContent = 'ئۆردەر #'+order.order_number;
+  document.getElementById('odContent').innerHTML = `
+    <div class="detail-row"><span class="lbl">بەکارهێنەر</span><span class="val">${esc(order.profile?.full_name||'—')}</span></div>
+    <div class="detail-row"><span class="lbl">ئیمەیل</span><span class="val">${esc(order.profile?.email||'—')}</span></div>
+    <div class="detail-row"><span class="lbl">لە</span><span class="val">${methodPill(order.from_method)}</span></div>
+    <div class="detail-row"><span class="lbl">بۆ</span><span class="val">${methodPill(order.to_method)}</span></div>
+    <div class="detail-row"><span class="lbl">بڕی نێردراو</span><span class="val">${displayAmt}</span></div>
+    <div class="detail-row"><span class="lbl">بڕی وەرگیراو</span><span class="val" style="color:var(--gr)">${formatNum(order.total)} IQD</span></div>
+    <div class="detail-row"><span class="lbl">ژمارەی مۆبایل</span><span class="val">${esc(order.phone||'—')}</span></div>
+    ${order.extra_info?`<div class="detail-row"><span class="lbl">زانیاری زیاتر</span><span class="val">${esc(order.extra_info)}</span></div>`:''}
+    <div class="detail-row"><span class="lbl">باری</span><span class="val"><span class="badge ${statusBadgeClass(order.status)}">${esc(order.status)}</span></span></div>
+    <div class="detail-row"><span class="lbl">بەروار</span><span class="val">${new Date(order.created_at).toLocaleString('ku')}</span></div>
+    ${order.receipt_url?`<div style="margin-top:10px"><div style="font-size:11px;color:var(--mt);margin-bottom:8px">وێنەی پسووڵە</div><img src="${order.receipt_url}" class="rcpt-img" onclick="showImg('${order.receipt_url}')"></div>`:`<div class="fee-toggle-note" style="margin-top:10px"><i class="fas fa-paper-plane" style="margin-left:4px"></i>وێنەی پسووڵە بۆ تیلیگرامی ئەدمین نێردراوە لەکاتی ناردنی داواکارییەکە.</div>`}
+    <label class="modal-lbl">تێبینی ئەدمین</label>
+    <textarea class="minp mta" id="odNote">${esc(order.admin_note||'')}</textarea>
+    <div class="act-grp" style="margin-top:12px">
+      <div class="act-btn dark" onclick="saveOrderNote('${order.id}')"><i class="fas fa-floppy-disk"></i> پاشەکەوتی تێبینی</div>
+    </div>
+    ${order.status===STATUS_PENDING?`<div class="act-grp" style="margin-top:12px">
+      <div class="act-btn gr" style="flex:1;justify-content:center" onclick="approveOrder('${order.id}');closeMo('moOrderDetail')"><i class="fas fa-check"></i> پەسەندکردن</div>
+      <div class="act-btn rd" style="flex:1;justify-content:center" onclick="showRejectReason('${order.id}');closeMo('moOrderDetail')"><i class="fas fa-times"></i> ڕەتکردنەوە</div>
+    </div>`:''}
+  `;
+  openMo('moOrderDetail');
+}
+
+async function approveOrder(id){
+  confirm2('پەسەندکردنی ئۆردەر','ئایا دڵنیایت لە پەسەندکردنی ئەم ئۆردەرە؟ کڕیار خۆکارانە ئاگادار دەکرێتەوە.','fas fa-check-circle','var(--gr)', async()=>{
+    const {error} = await sb.from('ex_orders').update({status:STATUS_APPROVED}).eq('id',id);
+    if(error){ showToast('هەڵە: '+error.message,'rd'); return; }
+    showToast('✅ ئۆردەرەکە پەسەندکرا','gr');
+    refreshOrdersEverywhere();
+  });
+}
+function showRejectReason(id){
+  document.getElementById('rejectTargetId').value=id;
+  document.getElementById('rejectReasonTxt').value='';
+  openMo('moRejectReason');
+}
+async function confirmRejectOrder(){
+  const id=document.getElementById('rejectTargetId').value;
+  const reason=document.getElementById('rejectReasonTxt').value.trim();
+  const btn=document.getElementById('rejectSubmitBtn'); btn.disabled=true;
+  const {error} = await sb.from('ex_orders').update({status:STATUS_REJECTED, admin_note: reason || null}).eq('id',id);
+  btn.disabled=false;
+  if(error){ showToast('هەڵە: '+error.message,'rd'); return; }
+  showToast('ئۆردەرەکە ڕەتکرایەوە','rd');
+  closeMo('moRejectReason'); closeMo('moOrderDetail');
+  refreshOrdersEverywhere();
+}
+async function saveOrderNote(id){
+  const note=document.getElementById('odNote').value.trim();
+  const {error} = await sb.from('ex_orders').update({admin_note: note || null}).eq('id',id);
+  if(error){ showToast('هەڵە: '+error.message,'rd'); return; }
+  showToast('تێبینی پاشەکەوتکرا','gr');
+  refreshOrdersEverywhere();
+}
+function refreshOrdersEverywhere(){
+  loadDashboardStats();
+  if(_curPage==='orders') loadOrders(); else loadDashOrders();
+}
+</script>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// ═══ ACCOUNTS ════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════
+async function loadAccounts(){
+  document.getElementById('accountsTableWrap').innerHTML='<div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
+  try{
+    const {data,error} = await sb.from('ex_profiles').select('*').order('created_at',{ascending:false}).limit(300);
+    if(error) throw error;
+    allAccounts = data||[];
+    renderAccounts();
+  }catch(e){
+    document.getElementById('accountsTableWrap').innerHTML=`<div class="empty"><i class="fas fa-triangle-exclamation"></i><p>هەڵە: ${esc(e.message)}</p></div>`;
+  }
+}
+function filterAccounts(el){
+  if(el){ document.querySelectorAll('[data-af]').forEach(x=>x.classList.remove('on')); el.classList.add('on'); accFilter=el.dataset.af; }
+  renderAccounts((document.getElementById('accSearch')?.value||'').toLowerCase());
+}
+function renderAccounts(q=''){
+  let list=allAccounts;
+  if(accFilter==='banned') list=list.filter(a=>a.is_banned);
+  if(accFilter==='admin') list=list.filter(a=>a.is_admin);
+  if(q) list=list.filter(a=>(a.full_name||'').toLowerCase().includes(q)||(a.email||'').toLowerCase().includes(q));
+  document.getElementById('accountsTableWrap').innerHTML = renderAccTable(list) + renderAccCards(list);
+}
+function accBadges(a){
+  let b='';
+  b += a.is_banned ? '<span class="badge banned">بۆیکۆتکراو</span>' : '<span class="badge active">چالاک</span>';
+  if(a.is_admin) b += ' <span class="badge admin">ئادمین</span>';
+  return b;
+}
+function renderAccTable(list){
+  if(!list.length) return '<div class="empty"><i class="fas fa-user-slash"></i><p>هیچ هەژمارێک نییە</p></div>';
+  return `<table><thead><tr><th>بەکارهێنەر</th><th>مۆبایل</th><th>باری</th><th>بەروار</th><th>کردار</th></tr></thead><tbody>
+    ${list.map(a=>`<tr>
+      <td><div class="user-cell"><div class="mini-av">${(a.full_name||a.email||'?')[0].toUpperCase()}</div><div><div class="user-cell-name">${esc(a.full_name||'—')}</div><div class="user-cell-email">${esc(a.email||'—')}</div></div></div></td>
+      <td style="direction:ltr;font-size:12px">${esc(a.phone||'—')}</td>
+      <td>${accBadges(a)}</td>
+      <td style="font-size:11px;color:var(--mt)">${new Date(a.created_at).toLocaleDateString('ku')}</td>
+      <td><div class="act-grp">
+        <div class="act-btn ${a.is_banned?'gr':'rd'}" onclick="toggleBan('${a.id}',${a.is_banned})"><i class="fas fa-${a.is_banned?'user-check':'user-slash'}"></i> ${a.is_banned?'لابردنی بۆیکۆت':'بۆیکۆتکردن'}</div>
+        <div class="act-btn ${a.is_admin?'yw':'cy'}" onclick="toggleAdmin('${a.id}',${a.is_admin})"><i class="fas fa-shield"></i> ${a.is_admin?'لابردنی ئادمین':'کردن بە ئادمین'}</div>
+      </div></td>
+    </tr>`).join('')}
+  </tbody></table>`;
+}
+function renderAccCards(list){
+  if(!list.length) return '';
+  return `<div class="rec-cards">${list.map(a=>`
+    <div class="rec-card" style="cursor:default">
+      <div class="rec-card-top">
+        <div class="mini-av">${(a.full_name||a.email||'?')[0].toUpperCase()}</div>
+        <div class="rec-card-info"><div class="rec-card-name">${esc(a.full_name||'بێ ناو')}</div><div class="rec-card-sub">${esc(a.email||'—')}</div></div>
+      </div>
+      <div class="rec-card-meta">${accBadges(a)}<div class="rec-card-date">${new Date(a.created_at).toLocaleDateString('ku')}</div></div>
+      <div class="rec-card-actions">
+        <div class="act-btn ${a.is_banned?'gr':'rd'}" onclick="toggleBan('${a.id}',${a.is_banned})"><i class="fas fa-${a.is_banned?'user-check':'user-slash'}"></i> ${a.is_banned?'لابردنی بۆیکۆت':'بۆیکۆت'}</div>
+        <div class="act-btn ${a.is_admin?'yw':'cy'}" onclick="toggleAdmin('${a.id}',${a.is_admin})"><i class="fas fa-shield"></i> ${a.is_admin?'لابردنی ئادمین':'کردن بە ئادمین'}</div>
+      </div>
+    </div>`).join('')}</div>`;
+}
+function toggleBan(id, current){
+  const next=!current;
+  confirm2(next?'بۆیکۆتکردنی هەژمار':'لابردنی بۆیکۆت', next?'ئایا دڵنیایت لە بۆیکۆتکردنی ئەم هەژمارە؟ ناتوانێت بچێتە ژوورەوە.':'ئایا دڵنیایت لە لابردنی بۆیکۆت؟',
+    'fas fa-user-slash','var(--rd)', async()=>{
+    const {error} = await sb.from('ex_profiles').update({is_banned:next}).eq('id',id);
+    if(error){ showToast('هەڵە: '+error.message,'rd'); return; }
+    showToast(next?'هەژمار بۆیکۆتکرا':'بۆیکۆت لابرا', next?'rd':'gr');
+    loadAccounts(); loadDashboardStats();
+  });
+}
+function toggleAdmin(id, current){
+  const next=!current;
+  const selfWarn = (adminUser && id===adminUser.id && !next) ? ' — ئاگاداری: ئەمە هەژماری خۆتە!' : '';
+  confirm2(next?'کردن بە ئادمین':'لابردنی ئادمین', (next?'ئایا دەتەوێت مافی ئادمین بدەیت بەم هەژمارە؟':'ئایا دەتەوێت مافی ئادمین لاببەیت؟')+selfWarn,
+    'fas fa-shield-halved','var(--cy)', async()=>{
+    const {error} = await sb.from('ex_profiles').update({is_admin:next}).eq('id',id);
+    if(error){ showToast('هەڵە: '+error.message,'rd'); return; }
+    showToast(next?'کرا بە ئادمین':'مافی ئادمین لابرا','gr');
+    loadAccounts();
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// ═══ RATES & FEES ════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════
+async function loadRates(){
+  document.getElementById('ratesTableWrap').innerHTML='<div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
+  try{
+    const {data,error} = await sb.from('ex_rates').select('*').order('from_method').order('to_method');
+    if(error) throw error;
+    allRates = data||[];
+    renderRates();
+  }catch(e){
+    document.getElementById('ratesTableWrap').innerHTML=`<div class="empty"><i class="fas fa-triangle-exclamation"></i><p>هەڵە: ${esc(e.message)}</p></div>`;
+  }
+}
+function rateTypeLabel(t){ return t==='fee_percent' ? 'ڕێژەی کرێ %' : 'مەزراپ'; }
+function renderRates(){
+  if(!allRates.length){ document.getElementById('ratesTableWrap').innerHTML='<div class="empty"><i class="fas fa-percent"></i><p>هیچ ڕێگایەک زیاد نەکراوە</p></div>'; return; }
+  document.getElementById('ratesTableWrap').innerHTML = `<table><thead><tr><th>لە</th><th>بۆ</th><th>جۆر</th><th>بەها</th><th>چالاک</th><th>کردار</th></tr></thead><tbody>
+    ${allRates.map(r=>`<tr>
+      <td>${methodPill(r.from_method)}</td>
+      <td>${methodPill(r.to_method)}</td>
+      <td style="font-size:12px">${rateTypeLabel(r.rate_type)}</td>
+      <td style="font-family:'Inter';font-weight:800;direction:ltr;text-align:right">${r.rate_type==='fee_percent'?r.rate_value+'%':r.rate_value}</td>
+      <td><label class="mswitch"><input type="checkbox" ${r.is_active?'checked':''} onchange="toggleRateActive('${r.id}',this.checked)"><span class="track"></span></label></td>
+      <td><div class="act-grp">
+        <div class="act-btn dark" onclick='openRateModal(${safeAttr(r)})'><i class="fas fa-pen"></i></div>
+        <div class="act-btn rd" onclick="deleteRate('${r.id}')"><i class="fas fa-trash"></i></div>
+      </div></td>
+    </tr>`).join('')}
+  </tbody></table>`;
+}
+async function toggleRateActive(id, val){
+  const {error} = await sb.from('ex_rates').update({is_active:val}).eq('id',id);
+  if(error){ showToast('هەڵە: '+error.message,'rd'); loadRates(); return; }
+  showToast(val?'چالاککرا':'ناچالاککرا','gr');
+  const r=allRates.find(x=>x.id===id); if(r) r.is_active=val;
+}
+function deleteRate(id){
+  confirm2('سڕینەوەی ڕێگا','ئایا دڵنیایت لە سڕینەوەی ئەم ڕێگا گۆڕینەوەیە؟','fas fa-trash','var(--rd)', async()=>{
+    const {error} = await sb.from('ex_rates').delete().eq('id',id);
+    if(error){ showToast('هەڵە: '+error.message,'rd'); return; }
+    showToast('ڕێگاکە سڕایەوە','gr');
+    loadRates();
+  });
+}
+function openRateModal(rate){
+  const fromSel=document.getElementById('rateFrom'), toSel=document.getElementById('rateTo');
+  fromSel.innerHTML = ALL_METHODS.map(m=>`<option value="${m}">${METHOD_META[m].label}</option>`).join('');
+  toSel.innerHTML = RECEIVE_METHODS.map(m=>`<option value="${m}">${METHOD_META[m].label}</option>`).join('');
+  if(rate){
+    document.getElementById('rateModalTitle').textContent='دەستکاریکردنی ڕێگا';
+    document.getElementById('rateId').value=rate.id;
+    fromSel.value=rate.from_method; toSel.value=rate.to_method;
+    document.getElementById('rateType').value=rate.rate_type;
+    document.getElementById('rateValue').value=rate.rate_value;
+    document.getElementById('rateActive').checked=rate.is_active;
+  }else{
+    document.getElementById('rateModalTitle').textContent='زیادکردنی ڕێگای نوێ';
+    document.getElementById('rateId').value='';
+    fromSel.selectedIndex=0; toSel.selectedIndex=0;
+    document.getElementById('rateType').value='multiplier';
+    document.getElementById('rateValue').value='';
+    document.getElementById('rateActive').checked=true;
+  }
+  updateRateValueHint();
+  openMo('moRate');
+}
+function updateRateValueHint(){
+  const t=document.getElementById('rateType').value;
+  document.getElementById('rateValueHint').textContent = t==='fee_percent'
+    ? 'بڕی وەرگیراو = بڕی نێردراو − (بڕی نێردراو × ڕێژە ÷ 100)'
+    : 'بڕی وەرگیراو = بڕی نێردراو × ژمارەی مەزراپ';
+}
+async function saveRate(){
+  const id=document.getElementById('rateId').value;
+  const from=document.getElementById('rateFrom').value, to=document.getElementById('rateTo').value;
+  const rate_type=document.getElementById('rateType').value;
+  const rate_value=parseFloat(document.getElementById('rateValue').value);
+  const is_active=document.getElementById('rateActive').checked;
+  if(from===to){ showToast('نابێت لە و بۆ یەکسان بن','rd'); return; }
+  if(isNaN(rate_value)){ showToast('بەهای دروست بنووسە','rd'); return; }
+  const btn=document.getElementById('rateSaveBtn'); btn.disabled=true;
+  let error;
+  if(id){
+    ({error} = await sb.from('ex_rates').update({from_method:from,to_method:to,rate_type,rate_value,is_active}).eq('id',id));
+  }else{
+    ({error} = await sb.from('ex_rates').insert({from_method:from,to_method:to,rate_type,rate_value,is_active}));
+  }
+  btn.disabled=false;
+  if(error){ showToast('هەڵە: '+error.message,'rd'); return; }
+  showToast('پاشەکەوتکرا','gr');
+  closeMo('moRate');
+  loadRates();
+}
+</script>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// ═══ NOTIFICATIONS ═══════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════
+async function loadNotifPage(){
+  loadNotifLog();
+}
+function setNotifTarget(el){
+  document.querySelectorAll('[data-nt]').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');
+  _notifTarget = el.dataset.nt;
+  document.getElementById('notifUserPickWrap').style.display = _notifTarget==='one' ? 'block' : 'none';
+}
+let _notifSearchTimer=null;
+function searchNotifUser(){
+  clearTimeout(_notifSearchTimer);
+  const q=document.getElementById('notifUserSearch').value.trim();
+  if(!q){ document.getElementById('notifUserResults').innerHTML=''; return; }
+  _notifSearchTimer=setTimeout(async()=>{
+    const {data} = await sb.from('ex_profiles').select('id,full_name,email').or(`full_name.ilike.%${q}%,email.ilike.%${q}%`).limit(6);
+    const box=document.getElementById('notifUserResults');
+    if(!data || !data.length){ box.innerHTML='<div style="font-size:12px;color:var(--mt);padding:6px 2px">هیچ نەدۆزرایەوە</div>'; return; }
+    box.innerHTML = data.map(u=>`<div onclick='pickNotifUser(${safeAttr(u)})' style="cursor:pointer;display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--b1);border-radius:10px">
+      <div class="mini-av" style="width:28px;height:28px;font-size:11px">${(u.full_name||u.email||'?')[0].toUpperCase()}</div>
+      <div style="min-width:0"><div style="font-size:12.5px;font-weight:700;color:var(--dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(u.full_name||'—')}</div><div style="font-size:10.5px;color:var(--mt);direction:ltr">${esc(u.email||'')}</div></div>
+    </div>`).join('');
+  }, 300);
+}
+function pickNotifUser(u){
+  _notifSelectedUser=u;
+  document.getElementById('notifUserResults').innerHTML='';
+  document.getElementById('notifUserSearch').value='';
+  const sel=document.getElementById('notifUserSelected');
+  sel.style.display='flex';
+  sel.innerHTML=`<div class="mini-av" style="width:28px;height:28px;font-size:11px">${(u.full_name||u.email||'?')[0].toUpperCase()}</div>
+    <div style="flex:1;min-width:0"><div style="font-size:12.5px;font-weight:700;color:var(--dark)">${esc(u.full_name||'—')}</div><div style="font-size:10.5px;color:var(--mt);direction:ltr">${esc(u.email||'')}</div></div>
+    <div style="cursor:pointer;color:var(--rd);font-size:13px" onclick="clearNotifUser()"><i class="fas fa-xmark"></i></div>`;
+}
+function clearNotifUser(){ _notifSelectedUser=null; document.getElementById('notifUserSelected').style.display='none'; }
+
+async function sendAdminNotification(){
+  const title=document.getElementById('notifTitle').value.trim();
+  const body=document.getElementById('notifBody').value.trim();
+  if(!title||!body){ showToast('ناونیشان و پەیام پڕ بکەرەوە','rd'); return; }
+  if(_notifTarget==='one' && !_notifSelectedUser){ showToast('بەکارهێنەرێک هەڵبژێرە','rd'); return; }
+  const btn=document.getElementById('notifSendBtn'); btn.disabled=true; btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i>';
+  try{
+    let error;
+    if(_notifTarget==='all'){
+      ({error} = await sb.rpc('ex_notify_all', {p_title:title, p_message:body}));
+    }else{
+      ({error} = await sb.rpc('ex_notify_user', {p_user_id:_notifSelectedUser.id, p_title:title, p_message:body}));
+    }
+    if(error) throw error;
+    showToast('✅ ئاگادارییەکە نێردرا','gr');
+    document.getElementById('notifTitle').value='';
+    document.getElementById('notifBody').value='';
+    clearNotifUser();
+    loadNotifLog();
+  }catch(e){
+    showToast('هەڵە: '+e.message,'rd');
+  }finally{
+    btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane"></i> ناردن';
+  }
+}
+async function loadNotifLog(){
+  const wrap=document.getElementById('notifLogWrap');
+  wrap.innerHTML='<div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
+  try{
+    const {data,error} = await sb.from('ex_notifications').select('*').order('created_at',{ascending:false}).limit(100);
+    if(error) throw error;
+    const profMap = await loadProfilesFor((data||[]).map(n=>n.user_id));
+    allNotifs = (data||[]).map(n=>({...n, profile:profMap[n.user_id]||null}));
+    renderNotifLog();
+  }catch(e){
+    wrap.innerHTML=`<div class="empty"><i class="fas fa-triangle-exclamation"></i><p>هەڵە: ${esc(e.message)}</p></div>`;
+  }
+}
+function renderNotifLog(){
+  if(!allNotifs.length){ document.getElementById('notifLogWrap').innerHTML='<div class="empty"><i class="fas fa-bell-slash"></i><p>هیچ ئاگادارییەک نەنێردراوە</p></div>'; return; }
+  document.getElementById('notifLogWrap').innerHTML = `<table><thead><tr><th>بەکارهێنەر</th><th>جۆر</th><th>ناونیشان</th><th>پەیام</th><th>خوێندراوە</th><th>بەروار</th></tr></thead><tbody>
+    ${allNotifs.map(n=>`<tr>
+      <td><div class="user-cell"><div class="mini-av">${(n.profile?.full_name||n.profile?.email||'?')[0].toUpperCase()}</div><div><div class="user-cell-name">${esc(n.profile?.full_name||'—')}</div><div class="user-cell-email">${esc(n.profile?.email||'—')}</div></div></div></td>
+      <td><span class="badge ${n.type==='order_status'?'order_status':'adminmsg'}">${n.type==='order_status'?'دۆخی ئۆردەر':'ئادمین'}</span></td>
+      <td style="font-size:12.5px;font-weight:700">${esc(n.title)}</td>
+      <td style="font-size:12px;color:var(--mt2);max-width:260px">${esc(n.message)}</td>
+      <td>${n.is_read?'<i class="fas fa-check-double" style="color:var(--gr)"></i>':'<i class="fas fa-circle" style="color:var(--yw);font-size:8px"></i>'}</td>
+      <td style="font-size:11px;color:var(--mt)">${new Date(n.created_at).toLocaleString('ku')}</td>
+    </tr>`).join('')}
+  </tbody></table>`;
+}
+
+// ══════════════════════════════════════════════════════════════
+// ═══ ANNOUNCEMENT BANNER (Firebase) ═════════════════════════════
+// ══════════════════════════════════════════════════════════════
+async function loadAnnouncement(){
+  try{
+    const snap = await fbdb.ref('announcement').once('value');
+    const val = snap.val() || {};
+    document.getElementById('annShow').checked = !!val.show;
+    document.getElementById('annText').value = val.text || '';
+  }catch(e){ showToast('هەڵەی بارکردنی بانەر: '+e.message,'rd'); }
+}
+async function saveAnnouncement(){
+  const show=document.getElementById('annShow').checked;
+  const text=document.getElementById('annText').value.trim();
+  const btn=document.getElementById('annSaveBtn'); btn.disabled=true;
+  try{
+    await fbdb.ref('announcement').set({show, text});
+    showToast('✅ بانەر پاشەکەوتکرا','gr');
+  }catch(e){
+    showToast('هەڵە: '+e.message,'rd');
+  }finally{ btn.disabled=false; }
+}
+</script>
+
+</body>
+</html>
