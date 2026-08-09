@@ -1213,7 +1213,7 @@ function renderWalletsGrid(){
       </div>
       <div class="wallet-lock-row">
         <span><i class="fas ${w.is_locked?'fa-lock':'fa-lock-open'}" style="color:${w.is_locked?'var(--rd)':'var(--gr)'}"></i> ${w.is_locked?'قوفڵکراوە':'کراوەیە'}</span>
-        <label class="mswitch"><input type="checkbox" ${w.is_locked?'':'checked'} onchange="toggleWalletLock('${w.id}',!this.checked)"><span class="track"></span></label>
+        <label class="mswitch"><input type="checkbox" ${w.is_locked?'checked':''} onchange="toggleWalletLock('${w.id}',this.checked)"><span class="track"></span></label>
       </div>
     </div>`;
   }).join('');

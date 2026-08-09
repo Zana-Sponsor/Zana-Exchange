@@ -313,6 +313,7 @@ input[type="file"].input::file-selector-button:hover{ background:var(--border-st
 }
 .copy-btn{ background:none; border:none; cursor:pointer; color:var(--accent); display:flex; padding:4px; border-radius:8px; transition:background var(--t); flex-shrink:0; }
 .copy-btn:hover{ background:rgba(245,185,66,.15); }
+.wallet-value.locked-text{ color:var(--error); font-weight:var(--fw-bold); white-space:normal; overflow:visible; }
 
 .total-box{
   background:var(--accent-soft); border:1px solid rgba(245,185,66,.3); border-radius:var(--radius-md);
@@ -588,6 +589,8 @@ input[type="file"].input::file-selector-button:hover{ background:var(--border-st
 .sheet-option.selected{ background:var(--secondary-soft); }
 .sheet-option.selected .sheet-option-check{ background:var(--primary); border-color:var(--primary); color:var(--on-primary); }
 .sheet-option.selected .sheet-option-name{ color:var(--primary); }
+.sheet-option.locked-option{ opacity:.5; cursor:not-allowed; }
+.sheet-option.locked-option .sheet-option-sub{ color:var(--error); }
 
 @media (min-width:640px){
   .sheet-overlay{ align-items:center; }
@@ -1187,9 +1190,13 @@ function openPicker(which){
   const body = document.getElementById('pickerSheetBody');
   body.innerHTML = opts.map(key=>{
     const m = METHOD_META[key]; const sel = key===curVal;
-    return '<button type="button" class="sheet-option'+(sel?' selected':'')+'" onclick="selectPickerOption(\''+key+'\')">'
+    const locked = which==='from' && getWalletInfo(key).locked;
+    return '<button type="button" class="sheet-option'+(sel?' selected':'')+(locked?' locked-option':'')+'"'
+      + (locked ? ' disabled' : ' onclick="selectPickerOption(\''+key+'\')"')
+      + '>'
       + methodIconHTML(key)
-      + '<span class="sheet-option-text"><span class="sheet-option-name">'+m.label+'</span></span>'
+      + '<span class="sheet-option-text"><span class="sheet-option-name">'+m.label+'</span>'
+      + (locked?'<span class="sheet-option-sub">قوفڵکراوە — بەردەست نییە</span>':'')+'</span>'
       + '<span class="sheet-option-check"><svg class="icn icn-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.8l4.3 4.3L19 7.5"/></svg></span>'
       + '</button>';
   }).join('');
@@ -1841,9 +1848,11 @@ async function startApp(user){
   document.getElementById('mainApp').style.display='block';
   document.getElementById('userName').innerText=curProfile?.full_name || user.email;
   document.getElementById('adminBtn').style.display=curProfile?.is_admin?'flex':'none';
+  await loadWallets();
   await loadRates();
   updateWallet();
   refreshTrigger('receiveVia');
+  subscribeWalletsUser();
   await loadHistory();
   await loadNotifications();
   listenToNews();
@@ -1859,6 +1868,27 @@ async function logout(){
 // ═══ EXCHANGE CALCULATOR (rates come from ex_rates) ═════════════
 // ══════════════════════════════════════════════════════════════
 const wallets = { "FastPay": "07510074008", "FIB": "07510074008", "QiCard": "07510074008", "Asiacell": "07758887488", "Korek": "07510074008", "USDT": "TTaNnxWNt2bjgSvpRY7NpvyCHUXDi6wjYc" };
+// ═══ LIVE WALLET DATA (numbers + lock state come from ex_wallets, admin panel) ═══
+let WALLET_DATA = {};
+let _walletsChannel = null;
+function getWalletInfo(key){
+  const w = WALLET_DATA[key];
+  return { number: (w && w.number) || wallets[key] || null, locked: !!(w && w.locked) };
+}
+async function loadWallets(){
+  try{
+    const {data,error} = await sb.from('ex_wallets').select('key,wallet_number,is_locked');
+    if(!error && data) data.forEach(w=>{ if(w.key) WALLET_DATA[w.key] = { number: w.wallet_number || null, locked: !!w.is_locked }; });
+  }catch(e){}
+}
+function subscribeWalletsUser(){
+  if(_walletsChannel) return;
+  _walletsChannel = sb.channel('ex_wallets_user')
+    .on('postgres_changes', {event:'*',schema:'public',table:'ex_wallets'}, async ()=>{
+      await loadWallets();
+      updateWallet();
+    }).subscribe();
+}
 const FALLBACK_RATES = {
   'Korek>FastPay':{type:'multiplier',value:0.82}, 'Korek>FIB':{type:'multiplier',value:0.825}, 'Korek>QiCard':{type:'multiplier',value:0.81},
   'Asiacell>FastPay':{type:'multiplier',value:0.84}, 'Asiacell>FIB':{type:'multiplier',value:0.82}, 'Asiacell>QiCard':{type:'multiplier',value:0.835},
@@ -1875,7 +1905,23 @@ async function loadRates(){
 function formatNum(num){ return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
 function fmtOrderNo(n){ return '\u2068P-'+String(n).padStart(6,'0')+'\u2069'; }
 function closeModal(){ document.getElementById('tgModal').style.display='none'; }
-function updateWallet(){ document.getElementById('myNum').innerText=wallets[document.getElementById('from').value]; refreshTrigger('from'); calc(); }
+function updateWallet(){
+  const key = document.getElementById('from').value;
+  const info = getWalletInfo(key);
+  const numEl = document.getElementById('myNum');
+  const copyBtn = document.querySelector('.wallet-row .copy-btn');
+  if(info.locked){
+    numEl.innerText = 'ئێستا کراوە نییە بۆ نێردن';
+    numEl.classList.add('locked-text');
+    if(copyBtn) copyBtn.style.display = 'none';
+  } else {
+    numEl.innerText = info.number || '---';
+    numEl.classList.remove('locked-text');
+    if(copyBtn) copyBtn.style.display = '';
+  }
+  refreshTrigger('from');
+  calc();
+}
 function updatePlaceholder(){ document.getElementById('userPhone').placeholder='ژمارەی '+document.getElementById('receiveVia').value; refreshTrigger('receiveVia'); }
 
 function setQuickAmount(val){
@@ -1932,6 +1978,7 @@ function _validateOrderFields(){
   if(!phone.startsWith("07")||phone.length!==11){ setFieldError('userPhone','تەنها ژمارەی عێراقی (07) بە 11 ژمارە داخڵ بکە'); ok=false; }
   if(!file){ setFieldError('fileInput','وێنەی پسووڵەی پارەدان زیاد بکە'); ok=false; }
   if(from===to){ showToast('لە هەمان واڵێت وەرناگیرێت — ڕێگایەکی جیاواز هەڵبژێرە بۆ وەرگرتن','warning','هەمان واڵێت هەڵبژێردراوە'); ok=false; }
+  if(getWalletInfo(from).locked){ showToast('ئەم واڵێتە قوفڵکراوە و ئێستا بەردەست نییە','error','واڵێت قوفڵکراوە'); ok=false; }
   if(!ok) showToast('تکایە خانە پێویستەکان پڕ بکەرەوە','error');
   return ok;
 }
