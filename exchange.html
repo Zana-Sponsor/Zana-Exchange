@@ -313,7 +313,13 @@ input[type="file"].input::file-selector-button:hover{ background:var(--border-st
 }
 .copy-btn{ background:none; border:none; cursor:pointer; color:var(--accent); display:flex; padding:4px; border-radius:8px; transition:background var(--t); flex-shrink:0; }
 .copy-btn:hover{ background:rgba(245,185,66,.15); }
-.wallet-value.locked-text{ color:var(--error); font-weight:var(--fw-bold); white-space:normal; overflow:visible; }
+.wallet-value.locked-text{
+  color:var(--error); font-weight:var(--fw-semibold); font-size:var(--fs-xs);
+  white-space:normal; overflow:visible; text-align:center;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  background:var(--error-soft); border-radius:var(--radius-full); padding:6px 12px;
+}
+.wallet-value.locked-text .icn{ width:15px; height:15px; flex-shrink:0; }
 
 .total-box{
   background:var(--accent-soft); border:1px solid rgba(245,185,66,.3); border-radius:var(--radius-md);
@@ -1196,7 +1202,7 @@ function openPicker(which){
       + '>'
       + methodIconHTML(key)
       + '<span class="sheet-option-text"><span class="sheet-option-name">'+m.label+'</span>'
-      + (locked?'<span class="sheet-option-sub">قوفڵکراوە — بەردەست نییە</span>':'')+'</span>'
+      + (locked?'<span class="sheet-option-sub">بەردەست نییە</span>':'')+'</span>'
       + '<span class="sheet-option-check"><svg class="icn icn-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.8l4.3 4.3L19 7.5"/></svg></span>'
       + '</button>';
   }).join('');
@@ -1911,11 +1917,11 @@ function updateWallet(){
   const numEl = document.getElementById('myNum');
   const copyBtn = document.querySelector('.wallet-row .copy-btn');
   if(info.locked){
-    numEl.innerText = 'ئێستا کراوە نییە بۆ نێردن';
+    numEl.innerHTML = ICON.lock + '<span>ئەم شێوازە لەئێستادا بەردەست نییە</span>';
     numEl.classList.add('locked-text');
     if(copyBtn) copyBtn.style.display = 'none';
   } else {
-    numEl.innerText = info.number || '---';
+    numEl.textContent = info.number || '---';
     numEl.classList.remove('locked-text');
     if(copyBtn) copyBtn.style.display = '';
   }
@@ -1978,7 +1984,7 @@ function _validateOrderFields(){
   if(!phone.startsWith("07")||phone.length!==11){ setFieldError('userPhone','تەنها ژمارەی عێراقی (07) بە 11 ژمارە داخڵ بکە'); ok=false; }
   if(!file){ setFieldError('fileInput','وێنەی پسووڵەی پارەدان زیاد بکە'); ok=false; }
   if(from===to){ showToast('لە هەمان واڵێت وەرناگیرێت — ڕێگایەکی جیاواز هەڵبژێرە بۆ وەرگرتن','warning','هەمان واڵێت هەڵبژێردراوە'); ok=false; }
-  if(getWalletInfo(from).locked){ showToast('ئەم واڵێتە قوفڵکراوە و ئێستا بەردەست نییە','error','واڵێت قوفڵکراوە'); ok=false; }
+  if(getWalletInfo(from).locked){ showToast('ئەم شێوازە لەئێستادا بەردەست نییە','error','بەردەست نییە'); ok=false; }
   if(!ok) showToast('تکایە خانە پێویستەکان پڕ بکەرەوە','error');
   return ok;
 }
