@@ -645,6 +645,7 @@ input[type="file"].input::file-selector-button:hover{ background:var(--border-st
 .sheet-option.selected .sheet-option-name{ color:var(--primary); }
 .sheet-option.locked-option{ opacity:.5; cursor:not-allowed; }
 .sheet-option.locked-option .sheet-option-sub{ color:var(--error); }
+.picker-empty{ padding:22px 14px 26px; text-align:center; font-size:var(--fs-sm); color:var(--text-muted); line-height:1.8; }
 
 @media (min-width:640px){
   .sheet-overlay{ align-items:center; }
@@ -1279,10 +1280,21 @@ function closeSheet(overlay){
 let _pickerContext=null;
 function openPicker(which){
   _pickerContext = which;
-  const opts = which==='from' ? FROM_OPTIONS : RECEIVE_OPTIONS;
+  // The receive list holds only the destinations the admin has opened for the
+  // wallet currently selected as the source. A closed direction is not offered.
+  const fromVal = document.getElementById('from').value;
   const curVal = document.getElementById(which==='from'?'from':'receiveVia').value;
+  const opts = which==='from'
+    ? FROM_OPTIONS.filter(k => k===curVal || getWalletInfo(k).locked || allowedReceiveOptions(k).length>0)
+    : allowedReceiveOptions(fromVal);
   document.getElementById('pickerSheetTitle').textContent = which==='from' ? 'لە کوێوە دەنێریت' : 'وەرگرتن لە';
   const body = document.getElementById('pickerSheetBody');
+  if(which!=='from' && !opts.length){
+    const fromLbl = (METHOD_META[fromVal] && METHOD_META[fromVal].label) || fromVal;
+    body.innerHTML = '<div class="picker-empty">لە ئێستادا هیچ واڵێتێک نییە کە بتوانیت لە '+escHtml(fromLbl)+'ەوە بۆی بگۆڕیت.<br>تکایە واڵێتێکی تر بۆ ناردن هەڵبژێرە.</div>';
+    openSheet(document.getElementById('pickerSheet'));
+    return;
+  }
   body.innerHTML = opts.map(key=>{
     const m = METHOD_META[key]; const sel = key===curVal;
     const locked = getWalletInfo(key).locked;
@@ -1530,7 +1542,7 @@ function onNewsBannerClick(){
             document.getElementById('from').value = action.from;
             updateWallet();
         }
-        if(action.to && RECEIVE_OPTIONS.includes(action.to)){
+        if(action.to && RECEIVE_OPTIONS.includes(action.to) && routeAllowed(document.getElementById('from').value, action.to)){
             document.getElementById('receiveVia').value = action.to;
             updatePlaceholder();
             calc();
@@ -2065,13 +2077,29 @@ const FALLBACK_RATES = {
   'Asiacell>FastPay':{type:'multiplier',value:0.84}, 'Asiacell>FIB':{type:'multiplier',value:0.82}, 'Asiacell>QiCard':{type:'multiplier',value:0.835},
   'USDT>FastPay':{type:'multiplier',value:1450}, 'USDT>FIB':{type:'multiplier',value:1440}, 'USDT>QiCard':{type:'multiplier',value:1445}
 };
+// RATES_STRICT means "the admin's route table was reached" — then ONLY the pairs
+// the admin switched on exist. Anything not in RATES is closed: no guessed rate,
+// no silent swap to another wallet. The old hardcoded table is used only when the
+// database itself is unreachable, so a network blip can't close the whole site.
+let RATES_STRICT=false;
 async function loadRates(){
-  RATES={};
+  RATES={}; RATES_STRICT=false;
   try{
     const {data,error}=await sb.from('ex_rates').select('*').eq('is_active',true);
-    if(!error && data) data.forEach(r=>{ RATES[r.from_method+'>'+r.to_method]={type:r.rate_type,value:Number(r.rate_value)}; });
+    if(!error && data){
+      data.forEach(r=>{ RATES[r.from_method+'>'+r.to_method]={type:r.rate_type,value:Number(r.rate_value)}; });
+      RATES_STRICT=true;
+    }
   }catch(e){}
-  if(Object.keys(RATES).length===0) RATES=Object.assign({},FALLBACK_RATES);
+  if(!RATES_STRICT) RATES=Object.assign({},FALLBACK_RATES);
+}
+function routeAllowed(from,to){
+  if(!from || !to || from===to) return false;
+  if(!RATES_STRICT) return true;
+  return !!RATES[from+'>'+to];
+}
+function allowedReceiveOptions(from){
+  return RECEIVE_OPTIONS.filter(k=>routeAllowed(from,k));
 }
 function formatNum(num){ return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
 function fmtOrderNo(n){ return '\u2068#P-'+String(n).padStart(6,'0')+'\u2069'; }
@@ -2129,8 +2157,13 @@ function updateSubmitState(from,to){
   const btn=document.getElementById('submitBtn');
   if(!btn || btn.dataset.submitting==='1') return;
   const anyLocked = getWalletInfo(from).locked || getWalletInfo(to).locked;
-  btn.disabled = anyLocked;
-  btn.innerHTML = anyLocked ? 'ئەم شێوازە لەئێستادا بەردەست نییە' : 'ناردنی داواکاری';
+  const same = from===to;
+  const closed = !same && !routeAllowed(from,to);
+  btn.disabled = anyLocked || same || closed;
+  btn.innerHTML = anyLocked ? 'ئەم شێوازە لەئێستادا بەردەست نییە'
+    : same ? 'هەمان واڵێت نابێت'
+    : closed ? 'ئەم گۆڕینەوەیە داخراوە'
+    : 'ناردنی داواکاری';
 }
 function calc(){
   const val=getAmtRaw();
@@ -2140,17 +2173,25 @@ function calc(){
   updateSubmitState(from,to);
   document.getElementById('formattedHint').innerText=formatNum(val)+(from==='USDT'?' $':' IQD');
   const totalEl=document.getElementById('totalDisplay');
-  if(from===to){ totalEl.innerText='هەمان واڵێت نابێت'; totalEl.classList.add('warn-text'); document.getElementById('feeDisplay').innerText=''; return; }
-  totalEl.classList.remove('warn-text');
-  let final=0;
+  const feeEl=document.getElementById('feeDisplay');
+  if(from===to){ totalEl.innerText='هەمان واڵێت نابێت'; totalEl.classList.add('warn-text'); feeEl.innerText=''; return; }
   const r=RATES[from+'>'+to];
-  if(r) final = r.type==='fee_percent' ? amt*(1-r.value/100) : amt*r.value;
-  else final = amt*0.99;
+  // Closed direction: show it as closed. Never fall back to a guessed rate and
+  // never quietly move the order to a different wallet.
+  if(!routeAllowed(from,to)){
+    totalEl.innerText='ئەم گۆڕینەوەیە داخراوە';
+    totalEl.classList.add('warn-text');
+    const toLbl=(METHOD_META[to]&&METHOD_META[to].label)||to;
+    feeEl.innerText = getWalletInfo(to).locked ? '' : ('گۆڕینەوە بۆ '+toLbl+' لە ئێستادا بەردەست نییە');
+    return;
+  }
+  totalEl.classList.remove('warn-text');
+  let final=0, fee=0, showFee=false;
+  if(r.type==='fee_percent'){ fee=amt*r.value/100; final=amt-fee; showFee=true; }
+  else if(r.type==='fee_fixed'){ fee=r.value; final=Math.max(0, amt-fee); showFee=true; }
+  else { final=amt*r.value; }
   totalEl.innerText=formatNum(Math.floor(final))+' IQD';
-  if(amt>0){
-    let fee=(from==='USDT')?0:(amt-final);
-    document.getElementById('feeDisplay').innerText = fee>0 ? ('بڕی حمولە: '+formatNum(Math.floor(fee))+' IQD') : '';
-  } else document.getElementById('feeDisplay').innerText='';
+  feeEl.innerText = (amt>0 && showFee && fee>0) ? ('بڕی حمولە: '+formatNum(Math.floor(fee))+' IQD') : '';
 }
 
 function _validateOrderFields(){
@@ -2168,6 +2209,9 @@ function _validateOrderFields(){
   if(from===to){ showToast('لە هەمان واڵێت وەرناگیرێت — ڕێگایەکی جیاواز هەڵبژێرە بۆ وەرگرتن','warning','هەمان واڵێت هەڵبژێردراوە'); ok=false; }
   if(getWalletInfo(from).locked){ showToast('ئەم شێوازە لەئێستادا بەردەست نییە بۆ ناردن','error','بەردەست نییە'); ok=false; }
   if(getWalletInfo(to).locked){ showToast('ئەم شێوازە لەئێستادا بەردەست نییە بۆ وەرگرتن','error','بەردەست نییە'); ok=false; }
+  else if(from!==to && !getWalletInfo(from).locked && !routeAllowed(from,to)){
+    showToast('گۆڕینەوە لەم واڵێتەوە بۆ ئەوی تر داخراوە — واڵێتێکی تر بۆ وەرگرتن هەڵبژێرە','error','گۆڕینەوە داخراوە'); ok=false;
+  }
   if(!ok) showToast('تکایە خانە پێویستەکان پڕ بکەرەوە','error');
   return ok;
 }

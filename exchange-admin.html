@@ -268,6 +268,44 @@ tr:hover td{background:rgba(28,35,51,.015);}
 .wallet-card-badge.gr{background:rgba(22,163,74,.09);color:var(--gr);border-color:rgba(22,163,74,.2);}
 .wallet-lock-row{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--b1);}
 .wallet-lock-row span{font-size:12px;font-weight:700;color:var(--dark);display:flex;align-items:center;gap:6px;}
+/* ══ PER-PAIR ROUTES & FEES (wallet modal) ══ */
+.pair-block{margin-top:18px;border-top:1px solid var(--b1);padding-top:16px;}
+.pair-hdr{font-size:13.5px;font-weight:800;color:var(--dark);display:flex;align-items:center;gap:7px;margin-bottom:4px;}
+.pair-sub{font-size:11px;color:var(--mt);line-height:1.6;margin-bottom:10px;}
+.pair-tabs{display:flex;gap:5px;background:var(--bg);border:1px solid var(--b1);border-radius:12px;padding:4px;margin-bottom:10px;}
+.pair-tab{flex:1;text-align:center;padding:9px 6px;border-radius:9px;font-size:12px;font-weight:700;color:var(--mt2);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:5px;}
+.pair-tab.on{background:var(--w);color:var(--dark);box-shadow:0 1px 4px rgba(0,0,0,.08);}
+.pair-tab .cnt{font-family:'Inter',sans-serif;font-size:10px;background:var(--b1);color:var(--mt2);border-radius:20px;padding:1px 6px;}
+.pair-tab.on .cnt{background:rgba(37,99,235,.12);color:#2563eb;}
+.pair-bulk{display:flex;gap:6px;align-items:stretch;margin-bottom:10px;}
+.pair-bulk .msel{flex:1.3;padding:9px 10px;font-size:12px;}
+.pair-bulk .minp{flex:1;padding:9px 10px;font-size:12.5px;}
+.pair-bulk .act-btn{white-space:nowrap;}
+.pair-list{display:flex;flex-direction:column;gap:8px;}
+.pair-item{border:1.5px solid var(--b1);border-radius:14px;padding:10px 12px;background:var(--bg);transition:border-color .15s,background .15s;}
+.pair-item.on{border-color:rgba(37,99,235,.4);background:var(--w);}
+.pair-item-top{display:flex;align-items:center;gap:10px;}
+.pair-av{width:34px;height:34px;border-radius:11px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;overflow:hidden;}
+.pair-av img{width:100%;height:100%;object-fit:cover;}
+.pair-nm{flex:1;min-width:0;}
+.pair-nm b{display:block;font-size:13px;font-weight:800;color:var(--dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pair-nm small{font-size:10.5px;color:var(--mt);display:block;line-height:1.5;}
+.pair-nm small.warn{color:var(--rd);}
+.pair-state{font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;flex-shrink:0;}
+.pair-state.op{background:rgba(22,163,74,.1);color:var(--gr);}
+.pair-state.cl{background:rgba(220,38,38,.09);color:var(--rd);}
+.pair-ctl{display:flex;gap:6px;margin-top:9px;}
+.pair-ctl .msel{flex:1.3;padding:9px 10px;font-size:12px;}
+.pair-ctl .minp{flex:1;padding:9px 10px;font-size:12.5px;}
+.pair-empty{font-size:12px;color:var(--mt);text-align:center;padding:18px 6px;line-height:1.7;}
+.pair-note{font-size:11.5px;font-weight:700;color:var(--rd);background:rgba(220,38,38,.07);border:1px solid rgba(220,38,38,.18);border-radius:10px;padding:8px 10px;margin-bottom:9px;line-height:1.6;}
+/* ══ ROUTE CHIPS (wallet card) ══ */
+.wallet-pairs{border-top:1px solid var(--b1);padding-top:10px;display:flex;flex-direction:column;gap:7px;}
+.wallet-pairs-row{display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap;}
+.wallet-pairs-lbl{font-size:10.5px;font-weight:800;color:var(--mt2);display:flex;align-items:center;gap:4px;padding-top:3px;flex-shrink:0;}
+.pair-chip{font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:20px;background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.18);color:var(--gr);}
+.pair-chip b{font-family:'Inter',sans-serif;direction:ltr;display:inline-block;font-weight:800;}
+.pair-chip.mut{background:var(--bg);border-color:var(--b1);color:var(--mt);font-weight:600;}
 </style>
 </head>
 <body>
@@ -524,7 +562,8 @@ tr:hover td{background:rgba(28,35,51,.015);}
     <label class="modal-lbl">جۆری نرخ</label>
     <select class="msel" id="rateType" onchange="updateRateValueHint()">
       <option value="multiplier">مەزراپ (Multiplier)</option>
-      <option value="fee_percent">ڕێژەی کرێ (Fee %)</option>
+      <option value="fee_percent">حمولە بە ڕێژە (Fee %)</option>
+      <option value="fee_fixed">حمولەی جێگیر (د.ع)</option>
     </select>
     <label class="modal-lbl">بەها</label>
     <input class="minp" type="number" step="0.0001" id="rateValue" dir="ltr" placeholder="0.00">
@@ -581,19 +620,38 @@ tr:hover td{background:rgba(28,35,51,.015);}
       <option value="percent">ڕێژەی سەدی (%)</option>
       <option value="flat">بڕی جێگیر (بە دینار)</option>
     </select>
-    <div class="fee-toggle-note"><i class="fas fa-circle-info" style="margin-left:4px"></i>نرخ و کرێ لێرە تەنها بۆ پیشاندانن — حیسابکردنی ڕاستەقینە هەروەک خۆی لە پەڕەی «نرخ و کرێ»ەوە کۆنترۆڵ دەکرێت.</div>
+    <div class="fee-toggle-note"><i class="fas fa-circle-info" style="margin-left:4px"></i>ئەم دوو خانەیە تەنها بۆ پیشاندانن. حمولەی ڕاستەقینەی هەر گۆڕینەوەیەک لە بەشی خوارەوە («گۆڕینەوە و حمولە بەرامبەر هەر واڵێتێکی تر») دیاری دەکرێت.</div>
 
     <div class="mswitch-row">
       <span>دەتوانرێت لێی بنێردرێت (لە لیستی «لە»ی ناردندا دەردەکەوێت)</span>
-      <label class="mswitch"><input type="checkbox" id="walletCanSend"><span class="track"></span></label>
+      <label class="mswitch"><input type="checkbox" id="walletCanSend" onchange="renderPairList()"><span class="track"></span></label>
     </div>
     <div class="mswitch-row">
       <span>دەتوانرێت پارە بۆی وەربگیرێت (لە لیستی «وەرگرتن لە»دا دەردەکەوێت)</span>
-      <label class="mswitch"><input type="checkbox" id="walletCanReceive"><span class="track"></span></label>
+      <label class="mswitch"><input type="checkbox" id="walletCanReceive" onchange="renderPairList()"><span class="track"></span></label>
     </div>
     <div class="mswitch-row">
       <span>قوفڵکراوە (بەکارهێنەران نایبینن)</span>
       <label class="mswitch"><input type="checkbox" id="walletLocked"><span class="track"></span></label>
+    </div>
+
+    <div class="pair-block">
+      <div class="pair-hdr"><i class="fas fa-right-left" style="color:#2563eb"></i> گۆڕینەوە و حمولە بەرامبەر هەر واڵێتێکی تر</div>
+      <div class="pair-sub">هەر ئاراستەیەک سەربەخۆیە: دەتوانیت «A ← B» بکەیتەوە و «B ← A» دابخەیت. ئەو ئاراستەیەی داخراوە، بەکارهێنەر بە هیچ شێوەیەک ناتوانێت بەکاری بهێنێت و لە لیستەکەیدا دەرناکەوێت.</div>
+      <div class="pair-tabs">
+        <div class="pair-tab on" data-ptab="out" onclick="switchPairTab('out')"><i class="fas fa-arrow-left"></i> ناردن بۆ <span class="cnt" id="pairCntOut">0</span></div>
+        <div class="pair-tab" data-ptab="in" onclick="switchPairTab('in')"><i class="fas fa-arrow-right"></i> وەرگرتن لە <span class="cnt" id="pairCntIn">0</span></div>
+      </div>
+      <div class="pair-bulk">
+        <select class="msel" id="pairBulkType">
+          <option value="fee_percent">حمولە بە ڕێژە (%)</option>
+          <option value="fee_fixed">حمولەی جێگیر (د.ع)</option>
+          <option value="multiplier">مەزراپ (×)</option>
+        </select>
+        <input class="minp" id="pairBulkValue" type="number" step="0.0001" dir="ltr" placeholder="بەها">
+        <button type="button" class="act-btn dark" onclick="applyPairBulk()"><i class="fas fa-bolt"></i> بۆ هەمووی</button>
+      </div>
+      <div class="pair-list" id="pairListWrap"></div>
     </div>
 
     <button class="modal-btn dark" id="walletSaveBtn" onclick="saveWallet()"><i class="fas fa-check"></i> پاشەکەوتکردن</button>
@@ -1132,7 +1190,7 @@ function buildToMethodKeys(){
   allWallets.forEach(w=>{ if(w.key && w.allow_receive===true) set.add(w.key); });
   return [...set];
 }
-function rateTypeLabel(t){ return t==='fee_percent' ? 'ڕێژەی کرێ %' : 'مەزراپ'; }
+function rateTypeLabel(t){ return t==='fee_percent' ? 'حمولە %' : t==='fee_fixed' ? 'حمولەی جێگیر' : 'مەزراپ'; }
 function renderRates(){
   if(!allRates.length){ document.getElementById('ratesTableWrap').innerHTML='<div class="empty"><i class="fas fa-percent"></i><p>هیچ ڕێگایەک زیاد نەکراوە</p></div>'; return; }
   document.getElementById('ratesTableWrap').innerHTML = `<table><thead><tr><th>لە</th><th>بۆ</th><th>جۆر</th><th>بەها</th><th>چالاک</th><th>کردار</th></tr></thead><tbody>
@@ -1140,7 +1198,7 @@ function renderRates(){
       <td>${methodPill(r.from_method)}</td>
       <td>${methodPill(r.to_method)}</td>
       <td style="font-size:12px">${rateTypeLabel(r.rate_type)}</td>
-      <td style="font-family:'Inter';font-weight:800;direction:ltr;text-align:right">${r.rate_type==='fee_percent'?r.rate_value+'%':r.rate_value}</td>
+      <td style="font-family:'Inter';font-weight:800;direction:ltr;text-align:right">${esc(fmtPairValue(r.rate_type,r.rate_value))}</td>
       <td><label class="mswitch"><input type="checkbox" ${r.is_active?'checked':''} onchange="toggleRateActive('${r.id}',this.checked)"><span class="track"></span></label></td>
       <td><div class="act-grp">
         <div class="act-btn dark" onclick='openRateModal(${safeAttr(r)})'><i class="fas fa-pen"></i></div>
@@ -1192,6 +1250,8 @@ function updateRateValueHint(){
   const t=document.getElementById('rateType').value;
   document.getElementById('rateValueHint').textContent = t==='fee_percent'
     ? 'بڕی وەرگیراو = بڕی نێردراو − (بڕی نێردراو × ڕێژە ÷ 100)'
+    : t==='fee_fixed'
+    ? 'بڕی وەرگیراو = بڕی نێردراو − حمولەی جێگیر'
     : 'بڕی وەرگیراو = بڕی نێردراو × ژمارەی مەزراپ';
 }
 async function saveRate(){
@@ -1230,6 +1290,7 @@ async function loadWalletsAdmin(){
     const {data,error} = await sb.from('ex_wallets').select('*').order('sort_order',{ascending:true});
     if(error) throw error;
     allWallets = data||[];
+    await loadPairs();
     renderWalletsGrid();
   }catch(e){
     document.getElementById('walletsGridWrap').innerHTML=`<div class="empty"><i class="fas fa-triangle-exclamation"></i><p>هەڵە: ${esc(e.message)}</p><p style="font-size:11px;margin-top:6px">دڵنیابەرەوە خشتەی ex_wallets دروستکراوە (بڕوانە SQL پێشکەشکراو)</p></div>`;
@@ -1238,8 +1299,15 @@ async function loadWalletsAdmin(){
 }
 function subscribeWalletsAdmin(){
   if(_walletsAdminChannel) return;
+  const refreshWalletsPage = ()=>{
+    if(_curPage!=='wallets') return;
+    // don't yank data out from under an admin who is mid-edit
+    if(document.getElementById('moWallet').classList.contains('on')) return;
+    loadWalletsAdmin();
+  };
   _walletsAdminChannel = sb.channel('ex_wallets_admin')
-    .on('postgres_changes', {event:'*',schema:'public',table:'ex_wallets'}, ()=>{ if(_curPage==='wallets') loadWalletsAdmin(); })
+    .on('postgres_changes', {event:'*',schema:'public',table:'ex_wallets'}, refreshWalletsPage)
+    .on('postgres_changes', {event:'*',schema:'public',table:'ex_rates'}, refreshWalletsPage)
     .subscribe();
 }
 function renderWalletsGrid(){
@@ -1263,9 +1331,10 @@ function renderWalletsGrid(){
         ${w.price!=null?`<span class="wallet-card-badge">نرخ: ${esc(w.price)}</span>`:''}
         ${w.fee!=null?`<span class="wallet-card-badge">کرێ: ${esc(w.fee)}${w.fee_type==='percent'?'%':' د.ع'}</span>`:''}
       </div>
+      ${walletPairsHTML(w)}
       <div class="act-grp">
         <div class="act-btn dark" onclick='openWalletModal(${safeAttr(w)})'><i class="fas fa-pen"></i> دەستکاری</div>
-        <div class="act-btn rd" onclick="deleteWallet('${w.id}')"><i class="fas fa-trash"></i></div>
+        <div class="act-btn rd" onclick="deleteWallet('${w.id}','${esc(w.key)}')"><i class="fas fa-trash"></i></div>
       </div>
       <div class="wallet-lock-row">
         <span><i class="fas ${w.is_locked?'fa-lock':'fa-lock-open'}" style="color:${w.is_locked?'var(--rd)':'var(--gr)'}"></i> ${w.is_locked?'قوفڵکراوە':'کراوەیە'}</span>
@@ -1281,10 +1350,11 @@ async function toggleWalletLock(id, locked){
   const w=allWallets.find(x=>x.id===id); if(w) w.is_locked=locked;
   renderWalletsGrid();
 }
-function deleteWallet(id){
-  confirm2('سڕینەوەی واڵێت','ئایا دڵنیایت لە سڕینەوەی ئەم واڵێتە؟ ئۆردەرە کۆنەکان کاریگەر نابن.','fas fa-trash','var(--rd)', async()=>{
+function deleteWallet(id, key){
+  confirm2('سڕینەوەی واڵێت','ئایا دڵنیایت لە سڕینەوەی ئەم واڵێتە؟ هەموو ڕێگا و حمولەکانیشی دەسڕێنەوە. ئۆردەرە کۆنەکان کاریگەر نابن.','fas fa-trash','var(--rd)', async()=>{
     const {error} = await sb.from('ex_wallets').delete().eq('id',id);
     if(error){ await handleDbWriteError(error); return; }
+    if(key){ await sb.from('ex_rates').delete().or(`from_method.eq.${key},to_method.eq.${key}`); }
     showToast('واڵێتەکە سڕایەوە','gr');
     loadWalletsAdmin();
   });
@@ -1307,6 +1377,7 @@ function onWalletImgFile(input){
 }
 function openWalletModal(w){
   document.getElementById('walletKey').dataset.touched='0';
+  _walletOldKey = w ? (w.key||'') : '';
   if(w){
     document.getElementById('walletModalTitle').textContent='دەستکاریکردنی واڵێت';
     document.getElementById('walletId').value=w.id;
@@ -1338,6 +1409,8 @@ function openWalletModal(w){
     document.getElementById('walletLocked').checked=false;
   }
   document.getElementById('walletImgFile').value='';
+  document.getElementById('pairBulkValue').value='';
+  buildPairDraft(w);
   openMo('moWallet');
 }
 async function saveWallet(){
@@ -1366,11 +1439,161 @@ async function saveWallet(){
     payload.sort_order = allWallets.length ? Math.max(...allWallets.map(w=>w.sort_order||0))+1 : 1;
     ({error} = await sb.from('ex_wallets').insert(payload));
   }
+  if(error){ btn.disabled=false; await handleDbWriteError(error); return; }
+  await syncWalletPairs(key, id ? _walletOldKey : '');
   btn.disabled=false;
-  if(error){ await handleDbWriteError(error); return; }
   showToast('پاشەکەوتکرا','gr');
   closeMo('moWallet');
   loadWalletsAdmin();
+}
+
+// ══════════════════════════════════════════════════════════════
+// ═══ PER-PAIR ROUTES & FEES ══════════════════════════════════════
+// Every wallet-to-wallet direction is one ex_rates row: is_active is the
+// open/closed switch, rate_type + rate_value is that direction's fee.
+// A→B and B→A are separate rows, so they open, close and price independently.
+// ══════════════════════════════════════════════════════════════
+let allPairs=[];                       // every ex_rates row, active and inactive
+let _pairDraft={out:{},in:{}};         // unsaved state of the matrix in the modal
+let _pairTab='out';
+let _pairSelfKey='';
+let _walletOldKey='';
+const PAIR_TYPES=[['fee_percent','حمولە بە ڕێژە (%)'],['fee_fixed','حمولەی جێگیر (د.ع)'],['multiplier','مەزراپ (×)']];
+function fmtPairValue(t,v){ return t==='fee_percent' ? v+'%' : t==='fee_fixed' ? v+' د.ع' : '×'+v; }
+function walletLabelFor(key){
+  const w=allWallets.find(x=>x.key===key);
+  return w ? (w.name||key) : ((METHOD_META[key]&&METHOD_META[key].label)||key);
+}
+async function loadPairs(){
+  try{
+    const {data,error} = await sb.from('ex_rates').select('*');
+    allPairs = (!error && data) ? data : [];
+  }catch(e){ allPairs=[]; }
+}
+function walletPairsHTML(w){
+  const outs=allPairs.filter(r=>r.from_method===w.key && r.is_active);
+  const ins =allPairs.filter(r=>r.to_method===w.key && r.is_active);
+  const chips=(arr,pick)=> arr.length
+    ? arr.map(r=>`<span class="pair-chip">${esc(walletLabelFor(pick(r)))} · <b>${esc(fmtPairValue(r.rate_type,r.rate_value))}</b></span>`).join('')
+    : '<span class="pair-chip mut">هیچ ڕێگایەک کراوە نییە</span>';
+  return `<div class="wallet-pairs">
+    <div class="wallet-pairs-row"><span class="wallet-pairs-lbl"><i class="fas fa-arrow-left"></i> ناردن بۆ</span>${chips(outs,r=>r.to_method)}</div>
+    <div class="wallet-pairs-row"><span class="wallet-pairs-lbl"><i class="fas fa-arrow-right"></i> وەرگرتن لە</span>${chips(ins,r=>r.from_method)}</div>
+  </div>`;
+}
+function pairOtherWallets(){
+  const selfId=document.getElementById('walletId').value;
+  return allWallets.filter(x=> selfId ? x.id!==selfId : (_pairSelfKey ? x.key!==_pairSelfKey : true));
+}
+function buildPairDraft(w){
+  _pairSelfKey = w ? (w.key||'') : '';
+  _pairDraft={out:{},in:{}};
+  allWallets.forEach(o=>{
+    if(w && o.id===w.id) return;
+    const ro = allPairs.find(r=>r.from_method===_pairSelfKey && r.to_method===o.key);
+    const ri = allPairs.find(r=>r.from_method===o.key && r.to_method===_pairSelfKey);
+    _pairDraft.out[o.key] = ro ? {on:!!ro.is_active, type:ro.rate_type, value:String(ro.rate_value)} : {on:false,type:'fee_percent',value:''};
+    _pairDraft.in[o.key]  = ri ? {on:!!ri.is_active, type:ri.rate_type, value:String(ri.rate_value)} : {on:false,type:'fee_percent',value:''};
+  });
+  switchPairTab('out');
+}
+function switchPairTab(tab){
+  _pairTab=tab;
+  document.querySelectorAll('[data-ptab]').forEach(t=>t.classList.toggle('on', t.dataset.ptab===tab));
+  renderPairList();
+}
+function renderPairCounts(){
+  const cnt=d=>Object.values(_pairDraft[d]).filter(s=>s.on).length;
+  document.getElementById('pairCntOut').textContent=cnt('out');
+  document.getElementById('pairCntIn').textContent=cnt('in');
+}
+function renderPairList(){
+  const wrap=document.getElementById('pairListWrap');
+  renderPairCounts();
+  const others=pairOtherWallets();
+  if(!others.length){
+    wrap.innerHTML='<div class="pair-empty">هێشتا واڵێتێکی تر نییە.<br>دوای زیادکردنی واڵێتی دووەم، ڕێگا و حمولەکان لێرە دەردەکەون.</div>';
+    return;
+  }
+  const outMode=_pairTab==='out';
+  const canSend=document.getElementById('walletCanSend').checked;
+  const canRecv=document.getElementById('walletCanReceive').checked;
+  let note='';
+  if(outMode && !canSend) note='<div class="pair-note"><i class="fas fa-triangle-exclamation"></i> «ناردن» بۆ ئەم واڵێتە ناچالاکە، بۆیە ئەم ڕێگایانە کار ناکەن تا چالاکی نەکەیت.</div>';
+  if(!outMode && !canRecv) note='<div class="pair-note"><i class="fas fa-triangle-exclamation"></i> «وەرگرتن» بۆ ئەم واڵێتە ناچالاکە، بۆیە ئەم ڕێگایانە کار ناکەن تا چالاکی نەکەیت.</div>';
+  wrap.innerHTML = note + others.map(o=>{
+    const st=_pairDraft[_pairTab][o.key] || (_pairDraft[_pairTab][o.key]={on:false,type:'fee_percent',value:''});
+    const av = o.image_url ? `<img src="${esc(o.image_url)}" alt="">` : '<i class="fas fa-wallet"></i>';
+    const bg = o.image_url ? '' : `background:${esc(o.color||'#1c2333')}`;
+    const dead = outMode ? (o.allow_receive!==true) : (o.allow_from===false);
+    const deadTxt = outMode ? 'ئەم واڵێتە وەرگرتنی ناچالاکە' : 'ئەم واڵێتە ناردنی ناچالاکە';
+    const dir = outMode ? `لەم واڵێتەوە ← ${esc(o.name||o.key)}` : `${esc(o.name||o.key)} ← بۆ ئەم واڵێتە`;
+    return `<div class="pair-item ${st.on?'on':''}">
+      <div class="pair-item-top">
+        <div class="pair-av" style="${bg}">${av}</div>
+        <div class="pair-nm">
+          <b>${esc(o.name||o.key)}</b>
+          <small class="${dead?'warn':''}">${dir}${dead?' — '+deadTxt:''}</small>
+        </div>
+        <span class="pair-state ${st.on?'op':'cl'}">${st.on?'کراوە':'داخراوە'}</span>
+        <label class="mswitch"><input type="checkbox" ${st.on?'checked':''} onchange="togglePair('${esc(o.key)}',this.checked)"><span class="track"></span></label>
+      </div>
+      ${st.on?`<div class="pair-ctl">
+        <select class="msel" onchange="setPairType('${esc(o.key)}',this.value)">${PAIR_TYPES.map(t=>`<option value="${t[0]}" ${st.type===t[0]?'selected':''}>${t[1]}</option>`).join('')}</select>
+        <input class="minp" type="number" step="0.0001" dir="ltr" placeholder="بەهای حمولە" value="${esc(st.value)}" oninput="setPairValue('${esc(o.key)}',this.value)">
+      </div>`:''}
+    </div>`;
+  }).join('');
+}
+function togglePair(key,on){
+  const st=_pairDraft[_pairTab][key] || (_pairDraft[_pairTab][key]={type:'fee_percent',value:''});
+  st.on=on;
+  renderPairList();
+}
+function setPairType(key,t){ if(_pairDraft[_pairTab][key]) _pairDraft[_pairTab][key].type=t; }
+function setPairValue(key,v){ if(_pairDraft[_pairTab][key]) _pairDraft[_pairTab][key].value=v; renderPairCounts(); }
+function applyPairBulk(){
+  const t=document.getElementById('pairBulkType').value;
+  const v=document.getElementById('pairBulkValue').value;
+  if(v===''){ showToast('سەرەتا بەهای حمولە بنووسە','rd'); return; }
+  const keys=Object.keys(_pairDraft[_pairTab]);
+  if(!keys.length){ showToast('واڵێتی تر نییە','rd'); return; }
+  keys.forEach(k=>{ _pairDraft[_pairTab][k]={on:true,type:t,value:v}; });
+  renderPairList();
+  showToast('بۆ هەموو واڵێتەکانی ئەم ئاراستەیە دانرا','gr');
+}
+// Writes the matrix back to ex_rates. Closed directions keep their row with
+// is_active=false so the fee is still there when they're re-opened later.
+async function syncWalletPairs(newKey, oldKey){
+  if(oldKey && oldKey!==newKey){
+    await sb.from('ex_rates').update({from_method:newKey}).eq('from_method',oldKey);
+    await sb.from('ex_rates').update({to_method:newKey}).eq('to_method',oldKey);
+  }
+  const known = allPairs.map(r=>({
+    from_method: (oldKey && r.from_method===oldKey) ? newKey : r.from_method,
+    to_method:   (oldKey && r.to_method===oldKey)   ? newKey : r.to_method,
+    rate_type:r.rate_type, rate_value:r.rate_value
+  }));
+  const rows=[]; let skipped=0;
+  const push=(f,t,st)=>{
+    if(!f||!t||f===t) return;
+    const prev=known.find(r=>r.from_method===f && r.to_method===t);
+    if(st.on){
+      const val=parseFloat(st.value);
+      if(isNaN(val)){ skipped++; return; }
+      rows.push({from_method:f,to_method:t,rate_type:st.type,rate_value:val,is_active:true});
+    }else if(prev){
+      rows.push({from_method:f,to_method:t,rate_type:prev.rate_type,rate_value:prev.rate_value,is_active:false});
+    }
+  };
+  Object.keys(_pairDraft.out).forEach(k=>push(newKey,k,_pairDraft.out[k]));
+  Object.keys(_pairDraft.in).forEach(k=>push(k,newKey,_pairDraft.in[k]));
+  if(rows.length){
+    const {error} = await sb.from('ex_rates').upsert(rows,{onConflict:'from_method,to_method'});
+    if(error){ await handleDbWriteError(error); return false; }
+  }
+  if(skipped) showToast(skipped+' ڕێگا پاشەکەوت نەکرا — بەهای حمولەی بۆ نەنووسرابوو','rd');
+  return true;
 }
 </script>
 
