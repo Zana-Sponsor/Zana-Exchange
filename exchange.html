@@ -1092,14 +1092,14 @@ input[type="file"].input::file-selector-button:hover{ background:var(--border-st
     </div>
 
     <div class="field" style="position:relative;">
-      <input type="text" inputmode="decimal" id="amt" class="input" placeholder="بڕی پارە" dir="ltr" oninput="formatAmtField(this); calc(); clearFieldError('amt');">
+      <input type="text" inputmode="decimal" id="amt" class="input" placeholder="بڕی پارە (کەمترین 10,000)" dir="ltr" oninput="formatAmtField(this); calc(); clearFieldError('amt');">
       <span id="formattedHint" class="formatted-amount">0 IQD</span>
       <span class="field-error" id="amtError"></span>
     </div>
 
     <div class="quick-amounts">
-      <button type="button" class="quick-amount-btn" onclick="setQuickAmount(1000)">1,000</button>
       <button type="button" class="quick-amount-btn" onclick="setQuickAmount(10000)">10,000</button>
+      <button type="button" class="quick-amount-btn" onclick="setQuickAmount(50000)">50,000</button>
       <button type="button" class="quick-amount-btn" onclick="setQuickAmount(100000)">100,000</button>
     </div>
 
@@ -2093,6 +2093,8 @@ async function loadRates(){
   }catch(e){}
   if(!RATES_STRICT) RATES=Object.assign({},FALLBACK_RATES);
 }
+// Smallest amount any exchange is accepted for, in IQD.
+const MIN_AMOUNT = 10000;
 function routeAllowed(from,to){
   if(!from || !to || from===to) return false;
   if(!RATES_STRICT) return true;
@@ -2101,6 +2103,8 @@ function routeAllowed(from,to){
 function allowedReceiveOptions(from){
   return RECEIVE_OPTIONS.filter(k=>routeAllowed(from,k));
 }
+// 0.85 → "15", 0.825 → "17.5" (no trailing zeros)
+function fmtPct(n){ return String(Math.round(n*100)/100); }
 function formatNum(num){ return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
 function fmtOrderNo(n){ return '\u2068#P-'+String(n).padStart(6,'0')+'\u2069'; }
 function closeModal(){ document.getElementById('tgModal').style.display='none'; }
@@ -2159,10 +2163,13 @@ function updateSubmitState(from,to){
   const anyLocked = getWalletInfo(from).locked || getWalletInfo(to).locked;
   const same = from===to;
   const closed = !same && !routeAllowed(from,to);
-  btn.disabled = anyLocked || same || closed;
+  const amt = parseFloat(getAmtRaw())||0;
+  const tooSmall = amt>0 && amt<MIN_AMOUNT;
+  btn.disabled = anyLocked || same || closed || tooSmall;
   btn.innerHTML = anyLocked ? 'ئەم شێوازە لەئێستادا بەردەست نییە'
     : same ? 'هەمان واڵێت نابێت'
     : closed ? 'ئەم گۆڕینەوەیە داخراوە'
+    : tooSmall ? 'کەمترین بڕ '+formatNum(MIN_AMOUNT)+' دینارە'
     : 'ناردنی داواکاری';
 }
 function calc(){
@@ -2186,12 +2193,27 @@ function calc(){
     return;
   }
   totalEl.classList.remove('warn-text');
-  let final=0, fee=0, showFee=false;
-  if(r.type==='fee_percent'){ fee=amt*r.value/100; final=amt-fee; showFee=true; }
-  else if(r.type==='fee_fixed'){ fee=r.value; final=Math.max(0, amt-fee); showFee=true; }
-  else { final=amt*r.value; }
+  if(amt>0 && amt<MIN_AMOUNT){
+    totalEl.innerText='کەمترین بڕ '+formatNum(MIN_AMOUNT)+' دینارە';
+    totalEl.classList.add('warn-text');
+    feeEl.innerText='';
+    return;
+  }
+  let final=0, feeTxt='';
+  if(r.type==='fee_percent'){
+    const fee=amt*r.value/100; final=amt-fee;
+    if(amt>0 && fee>0) feeTxt='کرێ: '+formatNum(Math.floor(fee))+' IQD';
+  }else if(r.type==='fee_fixed'){
+    final=Math.max(0, amt-r.value);
+    if(amt>0 && r.value>0) feeTxt='کرێ: '+formatNum(Math.floor(r.value))+' IQD';
+  }else{
+    final=amt*r.value;
+    // A multiplier under 1 (Korek/Asiacell style transfers) is a straight cut off
+    // the amount, so it reads as a rate — "کرێ: 15%" — rather than an amount.
+    if(r.value<1) feeTxt='کرێ: '+fmtPct(100-r.value*100)+'%';
+  }
   totalEl.innerText=formatNum(Math.floor(final))+' IQD';
-  feeEl.innerText = (amt>0 && showFee && fee>0) ? ('بڕی حمولە: '+formatNum(Math.floor(fee))+' IQD') : '';
+  feeEl.innerText=feeTxt;
 }
 
 function _validateOrderFields(){
@@ -2202,6 +2224,7 @@ function _validateOrderFields(){
   const from=document.getElementById('from').value, to=document.getElementById('receiveVia').value;
   let ok=true;
   if(!amtValue || parseFloat(amtValue)<=0){ setFieldError('amt','بڕی پارە داخڵ بکە'); ok=false; }
+  else if(parseFloat(amtValue)<MIN_AMOUNT){ setFieldError('amt','کەمترین بڕی مامەڵە '+formatNum(MIN_AMOUNT)+' دینارە'); ok=false; }
   if(to==='QiCard'){
     if(!phone || phone.length<6){ setFieldError('userPhone','ژمارەی کارتی Qi Card داخڵ بکە'); ok=false; }
   } else if(!phone.startsWith("07")||phone.length!==11){ setFieldError('userPhone','تەنها ژمارەی عێراقی (07) بە 11 ژمارە داخڵ بکە'); ok=false; }

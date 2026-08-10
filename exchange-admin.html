@@ -1198,7 +1198,9 @@ function renderRates(){
       <td>${methodPill(r.from_method)}</td>
       <td>${methodPill(r.to_method)}</td>
       <td style="font-size:12px">${rateTypeLabel(r.rate_type)}</td>
-      <td style="font-family:'Inter';font-weight:800;direction:ltr;text-align:right">${esc(fmtPairValue(r.rate_type,r.rate_value))}</td>
+      <td style="font-family:'Inter';font-weight:800;direction:ltr;text-align:right">${r.rate_type==='multiplier' && Number(r.rate_value)<1
+        ? `×${esc(r.rate_value)} <span style="font-family:'R';font-size:10.5px;font-weight:700;color:var(--mt2)">(${esc(fmtPairValue(r.rate_type,r.rate_value))})</span>`
+        : esc(fmtPairValue(r.rate_type,r.rate_value))}</td>
       <td><label class="mswitch"><input type="checkbox" ${r.is_active?'checked':''} onchange="toggleRateActive('${r.id}',this.checked)"><span class="track"></span></label></td>
       <td><div class="act-grp">
         <div class="act-btn dark" onclick='openRateModal(${safeAttr(r)})'><i class="fas fa-pen"></i></div>
@@ -1459,7 +1461,16 @@ let _pairTab='out';
 let _pairSelfKey='';
 let _walletOldKey='';
 const PAIR_TYPES=[['fee_percent','حمولە بە ڕێژە (%)'],['fee_fixed','حمولەی جێگیر (د.ع)'],['multiplier','مەزراپ (×)']];
-function fmtPairValue(t,v){ return t==='fee_percent' ? v+'%' : t==='fee_fixed' ? v+' د.ع' : '×'+v; }
+// 0.85 → "15" (no trailing zeros)
+function fmtPct(n){ return String(Math.round(n*100)/100); }
+// A multiplier under 1 is a straight cut off the amount, so it's shown to both
+// admin and user as a rate — "کرێ 15%" — rather than a raw ×0.85.
+function fmtPairValue(t,v){
+  const n=Number(v);
+  if(t==='fee_percent') return v+'%';
+  if(t==='fee_fixed') return v+' د.ع';
+  return n<1 ? 'کرێ '+fmtPct(100-n*100)+'%' : '×'+v;
+}
 function walletLabelFor(key){
   const w=allWallets.find(x=>x.key===key);
   return w ? (w.name||key) : ((METHOD_META[key]&&METHOD_META[key].label)||key);
@@ -1541,17 +1552,26 @@ function renderPairList(){
       ${st.on?`<div class="pair-ctl">
         <select class="msel" onchange="setPairType('${esc(o.key)}',this.value)">${PAIR_TYPES.map(t=>`<option value="${t[0]}" ${st.type===t[0]?'selected':''}>${t[1]}</option>`).join('')}</select>
         <input class="minp" type="number" step="0.0001" dir="ltr" placeholder="بەهای حمولە" value="${esc(st.value)}" oninput="setPairValue('${esc(o.key)}',this.value)">
-      </div>`:''}
+      </div><small class="pair-hint" id="pairHint-${esc(o.key)}" style="display:block;font-size:10.5px;color:var(--mt);margin-top:5px">${pairHintText(st)}</small>`:''}
     </div>`;
   }).join('');
+}
+function pairHintText(st){
+  if(st.type==='multiplier' && st.value!=='' && !isNaN(Number(st.value)) && Number(st.value)<1)
+    return 'یەکسانە بە کرێی '+fmtPct(100-Number(st.value)*100)+'% — بەکارهێنەر بەم شێوەیە دەیبینێت';
+  return '';
 }
 function togglePair(key,on){
   const st=_pairDraft[_pairTab][key] || (_pairDraft[_pairTab][key]={type:'fee_percent',value:''});
   st.on=on;
   renderPairList();
 }
-function setPairType(key,t){ if(_pairDraft[_pairTab][key]) _pairDraft[_pairTab][key].type=t; }
-function setPairValue(key,v){ if(_pairDraft[_pairTab][key]) _pairDraft[_pairTab][key].value=v; renderPairCounts(); }
+function setPairType(key,t){ if(_pairDraft[_pairTab][key]){ _pairDraft[_pairTab][key].type=t; refreshPairHint(key); } }
+function setPairValue(key,v){ if(_pairDraft[_pairTab][key]){ _pairDraft[_pairTab][key].value=v; refreshPairHint(key); } renderPairCounts(); }
+function refreshPairHint(key){
+  const el=document.getElementById('pairHint-'+key);
+  if(el) el.textContent = pairHintText(_pairDraft[_pairTab][key]);
+}
 function applyPairBulk(){
   const t=document.getElementById('pairBulkType').value;
   const v=document.getElementById('pairBulkValue').value;
