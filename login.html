@@ -292,6 +292,13 @@ html[data-theme="dark"] input,html[data-theme="dark"] textarea,html[data-theme="
 html[data-theme="dark"] ::-webkit-scrollbar-track{background:#0f131a}
 html[data-theme="dark"] ::-webkit-scrollbar-thumb{background:#2f3a4f}
 html[data-theme="dark"] hr{border-color:#2a3140}
+/* ── چاککراوەکانی پشکنین ── */
+/* جێگری ڤیدیۆ (لە JS بە inline دانراوە) */
+html[data-theme="dark"] [style*="background:#f4f6fb"]{background:#1a2029!important}
+/* بازنەیەکی نەرم بۆ ئایکۆنی لۆگۆی پارەدانەکان تا لەسەر تاریکی مەلە نەکەن */
+html[data-theme="dark"] .meth-ico{box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+/* ناڤیگەیشنی خوارەوە هەمان خێزانی ڕەنگی کارتەکان */
+html[data-theme="dark"] .bnav{background:rgba(23,29,39,.97)}
 /* ستایلی ناوەکی (inline) کە var(--dark) وەک پاشبنەما بەکاردەهێنن */
 html[data-theme="dark"] [style*="background:var(--dark)"]{background:#2f3a4f!important}
 html[data-theme="dark"] [style*="background: var(--dark)"]{background:#2f3a4f!important}
@@ -1425,7 +1432,9 @@ html[data-theme="dark"] .pxth-float button.on{background:#2f3a4f;color:#fff}
     r.style.colorScheme=e;
     var mt=document.querySelector('meta[name="theme-color"]');
     if(!mt){mt=document.createElement('meta');mt.setAttribute('name','theme-color');document.head.appendChild(mt);}
-    mt.setAttribute('content', e==='dark'?'#0f131a':'#f4f6fb');
+    var sl=document.getElementById('sessionLoader');
+    var splashUp=sl&&sl.style.display!=='none'&&sl.className.indexOf('hidden')<0;
+    mt.setAttribute('content', splashUp?'#0B0E14':(e==='dark'?'#0f131a':'#f4f6fb'));
     var btns=document.querySelectorAll('[data-pxth]');
     for(var i=0;i<btns.length;i++){
       var on=btns[i].getAttribute('data-pxth')===m;
