@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="ku" dir="rtl">
 <head>
+<!-- ══ THEME BOOT (ڕووناک / تاریک / سیستەم) — پێش ڕەندەرکردن دادەنرێت تا چرکەیەک سپی نەبڕوسکێتەوە ══ -->
+<script id="proxo-theme-boot">
+(function(){try{
+  var m=localStorage.getItem('proxo_theme')||'system';
+  var d=(m==='dark')||(m==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);
+  var r=document.documentElement;
+  r.setAttribute('data-theme',d?'dark':'light');
+  r.setAttribute('data-theme-mode',m);
+  r.style.colorScheme=d?'dark':'light';
+}catch(e){}})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>خۆت تۆماربکە | Proxo App</title>
@@ -251,6 +262,68 @@ button,a{touch-action:manipulation;}
   ]
 }
 </script>
+<!-- ══ DARK THEME STYLES (زیادکراو — هیچ ستایلێکی کۆن نەگۆڕدراوە) ══ -->
+<style id="proxo-theme-css">
+html[data-theme="dark"]{
+  --bg:#0f131a;--w:#1a2029;--card:#1a2029;
+  --b1:#2a3140;--b2:#3a4354;
+  --dark:#e7eaf1;--dark2:#c8cfdd;
+  --pri:#e7eaf1;--acc:#e7eaf1;--tx:#e7eaf1;
+  --mt:#96a1b4;--mt2:#a5afbf;
+  --gr:#4ade80;--rd:#f87171;--yw:#fbbf24;--bl:#60a5fa;
+  --lc-bg:#0f131a;--lc-surface:rgba(26,32,41,.82);--lc-hairline:rgba(255,255,255,.10);
+  --lc-ink:#e7eaf1;--lc-ink2:#a5afbf;--lc-bubble-in:#262d3a;
+  color-scheme:dark;
+}
+html[data-theme="dark"] body{background:#0f131a;color:#e7eaf1}
+html[data-theme="dark"]{background:#1a2029}
+html[data-theme="dark"] .toast{background:#2f3a4f}
+html[data-theme="dark"] #authWrap{background:#1a2029}
+html[data-theme="dark"] .auth-brand h1{color:#e7eaf1}
+html[data-theme="dark"] .auth-brand h1 span{color:#c8cfdd}
+html[data-theme="dark"] .auth-brand p{color:#96a1b4}
+html[data-theme="dark"] .auth-card{background:#1a2029;border:1px solid rgba(255,255,255,0.16)}
+html[data-theme="dark"] .finp{background:#0f131a;border:1.5px solid rgba(255,255,255,0.16);color:#e7eaf1}
+html[data-theme="dark"] .finp:focus{border-color:#2f3a4f;background:#1a2029}
+html[data-theme="dark"] .finp::placeholder{color:#96a1b4}
+html[data-theme="dark"] .abtn{background:#2f3a4f}
+html[data-theme="dark"] .amsg.ok{border:1px solid rgba(255,255,255,0.05);color:#84ebaa}
+html[data-theme="dark"] .amsg.err{border:1px solid rgba(255,255,255,0.05);color:#ea7b7b}
+html[data-theme="dark"] .auth-step-dot{background:#3a4354}
+html[data-theme="dark"] .auth-step-dot.done{background:#2f3a4f}
+html[data-theme="dark"] .auth-step-dot.active{background:#2f3a4f}
+html[data-theme="dark"] .auth-step-icon{background:#0f131a;border:1.5px solid #2a3140}
+html[data-theme="dark"] .auth-step-label h3{color:#e7eaf1}
+html[data-theme="dark"] .auth-step-label p{color:#96a1b4}
+html[data-theme="dark"] .auth-step-back{color:#96a1b4}
+html[data-theme="dark"] .auth-inp-ico{color:#96a1b4}
+html[data-theme="dark"] .pass-eye{color:#96a1b4}
+html[data-theme="dark"] .str-bar{background:#2a3140}
+html[data-theme="dark"] .str-txt{color:#96a1b4}
+html[data-theme="dark"] .otp-digit{border:1.5px solid #2a3140;background:#0f131a;color:#e7eaf1}
+html[data-theme="dark"] .otp-digit:focus{border-color:#2f3a4f;background:#1a2029}
+html[data-theme="dark"] .otp-timer{color:#96a1b4}
+html[data-theme="dark"] .otp-timer span{color:#e7eaf1}
+html[data-theme="dark"] .otp-resend{color:#799dec}
+html[data-theme="dark"] .terms-agree-row{background:#0f131a;border:1.5px solid #2a3140}
+html[data-theme="dark"] .terms-agree-row.checked{border-color:#263a6a}
+html[data-theme="dark"] .terms-agree-box{border:2px solid #3a4354;background:#1a2029}
+html[data-theme="dark"] .terms-agree-box.checked{background:linear-gradient(135deg,#263a6a,#1e3a5f)}
+html[data-theme="dark"] .terms-agree-label{color:#e7eaf1}
+html[data-theme="dark"] .terms-agree-label span{color:#cfd5dc}
+/* ── دەستکاری کۆتایی ── */
+html[data-theme="dark"] ::placeholder{color:#7d8798;opacity:1}
+html[data-theme="dark"] input,html[data-theme="dark"] textarea,html[data-theme="dark"] select{color:#e7eaf1}
+html[data-theme="dark"] ::-webkit-scrollbar-track{background:#0f131a}
+html[data-theme="dark"] ::-webkit-scrollbar-thumb{background:#2f3a4f}
+html[data-theme="dark"] hr{border-color:#2a3140}
+/* ستایلی ناوەکی (inline) کە var(--dark) وەک پاشبنەما بەکاردەهێنن */
+html[data-theme="dark"] [style*="background:var(--dark)"]{background:#2f3a4f!important}
+html[data-theme="dark"] [style*="background: var(--dark)"]{background:#2f3a4f!important}
+html[data-theme="dark"] [style*="border-color:var(--dark)"]{border-color:#3d4a63!important}
+/* وێنە و لۆگۆ بە تۆزێک نەرمکردن لە مۆدی تاریکدا */
+html[data-theme="dark"] img:not([src*=".svg"]){filter:brightness(.94)}
+</style>
 </head>
 <body>
 <!-- SEO: Crawlable internal links -->
@@ -1220,5 +1293,83 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 </script>
 
+<!-- ══ THEME SWITCHER (ڕووناک / تاریک / سیستەم) ══ -->
+<style id="proxo-theme-ui-css">
+/* ══ THEME SWITCHER UI ══ */
+.pxth-row{display:flex;align-items:center;padding:6px 4px 2px}
+.pxth-seg{display:flex;flex:1;gap:4px;padding:4px;border-radius:14px;background:var(--bg);border:1px solid var(--b1)}
+.pxth-seg button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 4px;border:0;border-radius:10px;background:transparent;color:var(--mt);font-family:inherit;font-size:11.5px;font-weight:700;cursor:pointer;transition:background .18s,color .18s;-webkit-tap-highlight-color:transparent}
+.pxth-seg button i{font-size:12px}
+.pxth-seg button.on{background:var(--w);color:var(--dark);box-shadow:0 2px 8px rgba(0,0,0,.12)}
+html[data-theme="dark"] .pxth-seg{background:#141a23;border-color:rgba(255,255,255,.10)}
+html[data-theme="dark"] .pxth-seg button{color:#96a1b4}
+html[data-theme="dark"] .pxth-seg button.on{background:#2f3a4f;color:#fff;box-shadow:none}
+.pxth-float{position:fixed;top:12px;left:12px;z-index:99999;display:flex;gap:3px;padding:4px;border-radius:999px;background:var(--w);border:1px solid var(--b1);box-shadow:0 4px 16px rgba(0,0,0,.10)}
+.pxth-float button{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:transparent;color:var(--mt);font-size:12.5px;cursor:pointer;transition:background .18s,color .18s;-webkit-tap-highlight-color:transparent}
+.pxth-float button.on{background:var(--dark);color:#fff}
+html[data-theme="dark"] .pxth-float{background:#1a2029;border-color:rgba(255,255,255,.12);box-shadow:0 4px 16px rgba(0,0,0,.45)}
+html[data-theme="dark"] .pxth-float button{color:#96a1b4}
+html[data-theme="dark"] .pxth-float button.on{background:#2f3a4f;color:#fff}
+</style>
+<script id="proxo-theme-ui">
+(function(){
+  var KEY='proxo_theme';
+  var mq=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
+  var MODES=[
+    {m:'light', i:'fa-sun',            t:'ڕووناک'},
+    {m:'dark',  i:'fa-moon',           t:'تاریک'},
+    {m:'system',i:'fa-circle-half-stroke', t:'سیستەم'}
+  ];
+  function getMode(){try{return localStorage.getItem(KEY)||'system';}catch(e){return 'system';}}
+  function effective(m){return (m==='dark'||(m==='system'&&mq&&mq.matches))?'dark':'light';}
+  function apply(m){
+    var e=effective(m), r=document.documentElement;
+    r.setAttribute('data-theme',e);
+    r.setAttribute('data-theme-mode',m);
+    r.style.colorScheme=e;
+    var mt=document.querySelector('meta[name="theme-color"]');
+    if(!mt){mt=document.createElement('meta');mt.setAttribute('name','theme-color');document.head.appendChild(mt);}
+    mt.setAttribute('content', e==='dark'?'#0f131a':'#f4f6fb');
+    var btns=document.querySelectorAll('[data-pxth]');
+    for(var i=0;i<btns.length;i++){
+      var on=btns[i].getAttribute('data-pxth')===m;
+      btns[i].className=btns[i].className.replace(/\s*\bon\b/,'')+(on?' on':'');
+      btns[i].setAttribute('aria-pressed',on?'true':'false');
+    }
+  }
+  window.proxoSetTheme=function(m){try{localStorage.setItem(KEY,m);}catch(e){}apply(m);};
+  window.proxoGetTheme=getMode;
+  if(mq){
+    var onSys=function(){if(getMode()==='system')apply('system');};
+    if(mq.addEventListener)mq.addEventListener('change',onSys);
+    else if(mq.addListener)mq.addListener(onSys);
+  }
+  function seg(cls,withText){
+    var w=document.createElement('div'); w.className=cls;
+    for(var i=0;i<MODES.length;i++){
+      var o=MODES[i], b=document.createElement('button');
+      b.type='button'; b.setAttribute('data-pxth',o.m); b.title=o.t;
+      b.setAttribute('aria-label',o.t);
+      b.innerHTML='<i class="fas '+o.i+'"></i>'+(withText?'<span>'+o.t+'</span>':'');
+      b.onclick=(function(mm){return function(ev){ev.stopPropagation();window.proxoSetTheme(mm);};})(o.m);
+      w.appendChild(b);
+    }
+    return w;
+  }
+  window.__pxthSeg=seg;
+  window.__pxthApply=apply;
+  apply(getMode());
+})();
+(function(){
+  function mount(){
+    if(document.querySelector('.pxth-float'))return true;
+    if(!document.body)return false;
+    document.body.appendChild(window.__pxthSeg('pxth-float',false));
+    window.__pxthApply(window.proxoGetTheme());
+    return true;
+  }
+  if(!mount())document.addEventListener('DOMContentLoaded',mount);
+})();
+</script>
 </body>
 </html>
