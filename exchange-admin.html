@@ -696,6 +696,9 @@ tr:hover td{background:rgba(28,35,51,.015);}
     <input class="minp" type="password" id="spNewPass" dir="ltr" placeholder="لانیکەم ٨ پیت/ژمارە" autocomplete="new-password">
     <label class="modal-lbl">دووبارەکردنەوەی وشەی نهێنی</label>
     <input class="minp" type="password" id="spNewPass2" dir="ltr" placeholder="دووبارە بنووسەوە" autocomplete="new-password">
+    <div style="display:flex;align-items:center;gap:7px;margin-top:9px;cursor:pointer;font-size:12px;color:var(--mt)" onclick="toggleSpVisibility()">
+      <i class="fas fa-eye" id="spEyeIco"></i><span id="spEyeTxt">پیشاندانی وشەی نهێنی</span>
+    </div>
     <div class="fee-toggle-note" style="margin-top:10px">
       <i class="fas fa-circle-info" style="margin-left:4px"></i>
       دەستبەجێ دوای پاشەکەوتکردن، چوونەژوورەوەی چالاکی بەکارهێنەرەکە دەبڕدرێتەوە و دەبێت بە وشەی نهێنی نوێ دووبارە بچێتەژوورەوە.
@@ -1234,13 +1237,86 @@ function toggleAdmin(id, current){
 // server-side function may hold it. This client just calls that
 // function with the admin's own session token.
 // ══════════════════════════════════════════════════════════════
+
+// Shared caller for the admin Edge Functions.
+// The old code did `await res.json()` straight away — when the function
+// returned a non-JSON body (platform 404/401/5xx, cold-start timeout, CORS
+// block) that threw "Unexpected token" or "Failed to fetch" and the panel
+// showed a meaningless error. This reads the body as text first, parses it
+// only if it IS JSON, and always ends up with a message that says which
+// step actually failed.
+const ADMIN_FN_ERRORS = {
+  missing_authorization: 'تۆکنی چوونەژوورەوە نەنێردرا — دووبارە بچۆرەوە ژوورەوە',
+  invalid_session:       'چوونەژوورەوەت بەسەرچووە — دووبارە بچۆرەوە ژوورەوە',
+  forbidden:             'ئەم هەژمارە مافی ئادمینی نییە',
+  profile_lookup_failed: 'نەتوانرا پرۆفایلی ئادمین بخوێندرێتەوە',
+  user_not_found:        'ئەم بەکارهێنەرە لە سیستەمدا نەدۆزرایەوە',
+  password_too_short:    'وشەی نهێنی دەبێت لانیکەم ٨ پیت/ژمارە بێت',
+  update_failed:         'سێرڤەر نەیتوانی وشەی نهێنی نوێ بکاتەوە',
+  create_failed:         'دروستکردنی هەژمار سەرکەوتوو نەبوو',
+  missing_env:           'کلیلی service-role لە سێرڤەردا دانەنراوە',
+  unhandled_exception:   'هەڵەیەکی چاوەڕوان‌نەکراو لە سێرڤەر',
+};
+
+async function callAdminFn(fnName, payload){
+  const {data:{session}, error:sessErr} = await sb.auth.getSession();
+  if(sessErr || !session?.access_token){
+    throw new Error('چوونەژوورەوەت بەسەرچووە — دووبارە بچۆرەوە ژوورەوە');
+  }
+
+  const ctrl = new AbortController();
+  const timer = setTimeout(()=>ctrl.abort(), 25000);
+  let res;
+  try{
+    res = await fetch(SB_URL + '/functions/v1/' + fnName, {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer '+session.access_token,
+        'apikey': SB_KEY
+      },
+      body: JSON.stringify(payload),
+      signal: ctrl.signal
+    });
+  }catch(e){
+    if(e.name === 'AbortError') throw new Error('سێرڤەر وەڵامی نەدایەوە (٢٥ چرکە) — دووبارە هەوڵبدەوە');
+    throw new Error('نەگەیشتە سێرڤەر — ئینتەرنێت یان CORS بلۆکی کردووە ['+fnName+']');
+  }finally{ clearTimeout(timer); }
+
+  const raw = await res.text();
+  let data = null;
+  try{ data = raw ? JSON.parse(raw) : null; }catch(_){ /* not JSON */ }
+
+  if(!res.ok || !data || data.success !== true){
+    if(res.status === 404 && !data?.error){
+      throw new Error('فەنکشنی «'+fnName+'» لە Supabase دانەمەزراوە (404)');
+    }
+    const code = data?.error || '';
+    const base = data?.message || ADMIN_FN_ERRORS[code] || (raw ? raw.slice(0,160) : '') || 'هەڵەی سێرڤەر';
+    const tag  = [code || ('HTTP '+res.status), data?.stage].filter(Boolean).join('/');
+    const err  = new Error(base + ' [' + tag + ']');
+    err.code = code; err.httpStatus = res.status;
+    throw err;
+  }
+  return data;
+}
+
 function openSetPasswordModal(userId, email){
   document.getElementById('spUserId').value = userId;
   document.getElementById('spUserLabel').textContent = email || '—';
   document.getElementById('spNewPass').value = '';
   document.getElementById('spNewPass2').value = '';
   document.getElementById('spErr').style.display='none';
+  setSpVisibility(false);
   openMo('moSetPassword');
+}
+function setSpVisibility(show){
+  ['spNewPass','spNewPass2'].forEach(id=>{ document.getElementById(id).type = show ? 'text' : 'password'; });
+  document.getElementById('spEyeIco').className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
+  document.getElementById('spEyeTxt').textContent = show ? 'شاردنەوەی وشەی نهێنی' : 'پیشاندانی وشەی نهێنی';
+}
+function toggleSpVisibility(){
+  setSpVisibility(document.getElementById('spNewPass').type === 'password');
 }
 async function submitSetPassword(){
   const errEl = document.getElementById('spErr');
@@ -1248,24 +1324,21 @@ async function submitSetPassword(){
   const userId = document.getElementById('spUserId').value;
   const pass = document.getElementById('spNewPass').value;
   const pass2 = document.getElementById('spNewPass2').value;
+  if(!userId){ errEl.textContent='بەکارهێنەر دیاری نەکراوە — پەنجەرەکە دابخە و دووبارە هەوڵبدەوە'; errEl.style.display='block'; return; }
   if(pass.length < 8){ errEl.textContent='وشەی نهێنی دەبێت لانیکەم ٨ پیت/ژمارە بێت'; errEl.style.display='block'; return; }
   if(pass !== pass2){ errEl.textContent='وشەکانی نهێنی وەک یەک نین'; errEl.style.display='block'; return; }
   const btn = document.getElementById('spSaveBtn');
   btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
   try{
-    const {data:{session}} = await sb.auth.getSession();
-    if(!session){ throw new Error('چوونەژوورەوەت بەسەرچووە، دووبارە بچۆرەوە ژوورەوە'); }
-    const res = await fetch(SB_URL + '/functions/v1/admin-set-password', {
-      method:'POST',
-      headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+session.access_token, 'apikey': SB_KEY },
-      body: JSON.stringify({ target_user_id:userId, new_password:pass })
-    });
-    const data = await res.json();
-    if(!res.ok || !data.success){ throw new Error(data.message || data.error || 'هەڵەیەک ڕوویدا'); }
+    const data = await callAdminFn('admin-set-password', { target_user_id:userId, new_password:pass });
     closeMo('moSetPassword');
-    showToast('✅ وشەی نهێنی گۆڕدرا — چوونەژوورەوەی ئەو بەکارهێنەرە بڕدرایەوە','gr');
+    let msg = '✅ وشەی نهێنی گۆڕدرا';
+    if(data.sessions_revoked > 0) msg += ' — '+data.sessions_revoked+' ئامێری چوونەژوورەوە بڕدرایەوە';
+    showToast(msg,'gr');
+    if(data.warning) console.warn('admin-set-password warning:', data.warning);
   }catch(e){
     errEl.textContent = e.message; errEl.style.display='block';
+    console.error('admin-set-password failed:', e);
   }finally{
     btn.disabled=false; btn.innerHTML='<i class="fas fa-check"></i> پاشەکەوتکردن';
   }
@@ -1296,20 +1369,13 @@ async function submitCreateUser(){
   const btn = document.getElementById('cuSaveBtn');
   btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
   try{
-    const {data:{session}} = await sb.auth.getSession();
-    if(!session){ throw new Error('چوونەژوورەوەت بەسەرچووە، دووبارە بچۆرەوە ژوورەوە'); }
-    const res = await fetch(SB_URL + '/functions/v1/admin-create-user', {
-      method:'POST',
-      headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+session.access_token, 'apikey': SB_KEY },
-      body: JSON.stringify({ email, password, full_name, phone, is_admin })
-    });
-    const data = await res.json();
-    if(!res.ok || !data.success){ throw new Error(data.message || data.error || 'هەڵەیەک ڕوویدا'); }
+    await callAdminFn('admin-create-user', { email, password, full_name, phone, is_admin });
     closeMo('moCreateUser');
     showToast('✅ هەژمار دروستکرا','gr');
     loadAccounts(); loadDashboardStats();
   }catch(e){
     errEl.textContent = e.message; errEl.style.display='block';
+    console.error('admin-create-user failed:', e);
   }finally{
     btn.disabled=false; btn.innerHTML='<i class="fas fa-check"></i> دروستکردن';
   }
