@@ -996,7 +996,8 @@ async function doAuth(){
   btn.disabled=true;
   btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> پشکنین...';
   try{
-    const {data:existCheck}=await sb.from('profiles').select('id').eq('email',email).maybeSingle();
+    const {data:existRows}=await sb.rpc('find_user_by_email',{p_email:email});
+    const existCheck = (existRows && existRows.length>0) ? existRows[0] : null;
     if(existCheck){
       showAmsg('ئەم ئیمەیلە پێشتر تۆمارکراوە — یەکسەر دەگوازرێتەوە بۆ چوونەژوورەوە','err');
       setTimeout(()=>{ window.location.href='/'; },1800);

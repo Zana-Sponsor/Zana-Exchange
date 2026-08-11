@@ -1025,8 +1025,9 @@ async function doForgotSendOtp(){
   btn.disabled=true;
   btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> پشکنین...';
   try{
-    const {data,error}=await sb.from('profiles').select('id').eq('email',email).maybeSingle();
-    if(error&&error.code!=='PGRST116') throw {message:'هەڵەی پشکنین، دووبارە هەوڵ بدەرەوە'};
+    const {data:fpRows,error}=await sb.rpc('find_user_by_email',{p_email:email});
+    if(error) throw {message:'هەڵەی پشکنین، دووبارە هەوڵ بدەرەوە'};
+    const data = (fpRows && fpRows.length>0) ? fpRows[0] : null;
     if(!data){fpShowMsg('A','ئەم ئیمەیلە تۆمارنەکراوە','err');btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> ناردنی کۆدی دڵنیاکردنەوە';return;}
   }catch(e){
     fpShowMsg('A',e.message||'هەڵەی پشکنین','err');
@@ -1135,7 +1136,8 @@ async function doAuth(){
   btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> پشکنین...';
   try{
     // ئایا ئیمەیلەکە تۆمارکراوە؟
-    const {data:emailExist}=await sb.from('profiles').select('id').eq('email',email).maybeSingle();
+    const {data:emailRows}=await sb.rpc('find_user_by_email',{p_email:email});
+    const emailExist = (emailRows && emailRows.length>0) ? emailRows[0] : null;
     if(!emailExist){
       showAmsg('ئەم ئیمەیلە تۆمارنەکراوە — یەکسەر دەگوازرێتەوە بۆ تۆمارکردن','err');
       btn.disabled=false;
