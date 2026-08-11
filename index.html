@@ -297,38 +297,55 @@ button,a,.home-card,.ad-card,.plist-item,.bn,.hbal,.hcoins,.notif-btn{touch-acti
 .maint-brand{font-size:12px;color:#94a3b8;margin-top:20px;display:flex;align-items:center;justify-content:center;gap:5px;}
 .maint-proxo-logo{font-size:15px;font-weight:900;color:#0E78FF;font-family:'R',sans-serif;letter-spacing:-.5px;}
 
-/* ── SPLASH SCREEN / SESSION LOADING OVERLAY ── */
-#sessionLoader{position:fixed;top:0;left:0;right:0;bottom:0;inset:0;z-index:99998;background:var(--w);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;transition:opacity .34s cubic-bezier(.4,0,.2,1),transform .34s cubic-bezier(.4,0,.2,1);}
-#sessionLoader.hidden{opacity:0;transform:scale(1.04);pointer-events:none;}
-/* ڕووناکییەکی نەرمی پاشبنەما */
-#sessionLoader::before{content:'';position:absolute;width:min(125vw,540px);height:min(125vw,540px);border-radius:50%;top:44%;left:50%;transform:translate(-50%,-50%);pointer-events:none;background:radial-gradient(circle,rgba(28,35,51,.09) 0%,rgba(28,35,51,0) 68%);animation:slGlow 4.6s ease-in-out infinite;}
-.sl-stage{position:relative;display:flex;flex-direction:column;align-items:center;gap:20px;}
-/* ── نیشانەی براند + ئایکۆنی بارکردن (شێوازی تیکتۆک) ── */
-.sl-mark{position:relative;width:108px;height:108px;display:flex;align-items:center;justify-content:center;animation:slPop .8s cubic-bezier(.16,1,.3,1) both;}
-/* بازنەکان */
-.sl-arc{position:absolute;border-radius:50%;border:2.6px solid transparent;pointer-events:none;}
-.sl-arc.t{inset:0;border-color:rgba(28,35,51,.07);}
-.sl-arc.c{inset:0;border-top-color:#25F4EE;border-right-color:#25F4EE;animation:slSpin 1.15s cubic-bezier(.55,.15,.45,.85) infinite;}
-.sl-arc.m{inset:9px;border-width:2px;border-bottom-color:#FE2C55;border-left-color:#FE2C55;animation:slSpin 1.75s linear infinite reverse;}
-/* تایڵی ناوەڕاست + جیاکردنەوەی ڕەنگ (chromatic split) */
-.sl-tile{position:relative;width:72px;height:72px;border-radius:24px;display:flex;align-items:center;justify-content:center;background:linear-gradient(150deg,#2b3448 0%,#12161f 100%);box-shadow:0 14px 34px rgba(28,35,51,.32),inset 0 1px 0 rgba(255,255,255,.13);}
+/* ── SPLASH SCREEN — دیزاینێکی یەکسان بۆ ڕووناک و تاریک ── */
+#sessionLoader{position:fixed;top:0;left:0;right:0;bottom:0;inset:0;z-index:99998;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;background:#0B0E14;transition:opacity .42s cubic-bezier(.4,0,.2,1),transform .42s cubic-bezier(.4,0,.2,1);}
+#sessionLoader.hidden{opacity:0;transform:scale(1.05);pointer-events:none;}
+/* ── ئۆرۆرا: دوو تیشکی شین و سوری تیکتۆک ── */
+.sl-aura{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none;will-change:transform;}
+.sl-aura.a{width:320px;height:320px;background:#25F4EE;opacity:.20;top:11%;right:-14%;animation:slDriftA 12s ease-in-out infinite;}
+.sl-aura.b{width:350px;height:350px;background:#FE2C55;opacity:.17;bottom:9%;left:-16%;animation:slDriftB 14s ease-in-out infinite;}
+/* ── توڕی نەرم + ڤینیێت ── */
+.sl-grid{position:absolute;inset:0;pointer-events:none;opacity:.9;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:36px 36px;-webkit-mask:radial-gradient(circle at 50% 42%,#000 0%,transparent 70%);mask:radial-gradient(circle at 50% 42%,#000 0%,transparent 70%);}
+.sl-vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 40%,transparent 26%,rgba(0,0,0,.6) 100%);}
+.sl-stage{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:22px;}
+/* ── نیشانەی براند + ئایکۆنی بارکردن ── */
+.sl-mark{position:relative;width:118px;height:118px;display:flex;align-items:center;justify-content:center;animation:slPop .85s cubic-bezier(.16,1,.3,1) both;}
+.sl-halo{position:absolute;inset:-16px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(37,244,238,.17) 0%,rgba(254,44,85,.11) 44%,transparent 70%);animation:slPulse 3.4s ease-in-out infinite;}
+.sl-arc{position:absolute;border-radius:50%;border:2.4px solid transparent;pointer-events:none;}
+.sl-arc.t{inset:0;border-color:rgba(255,255,255,.07);}
+.sl-arc.c{inset:0;border-top-color:#25F4EE;border-right-color:#25F4EE;filter:drop-shadow(0 0 5px rgba(37,244,238,.55));animation:slSpin 1.2s cubic-bezier(.55,.15,.45,.85) infinite;}
+.sl-arc.m{inset:11px;border-width:1.8px;border-bottom-color:#FE2C55;border-left-color:#FE2C55;filter:drop-shadow(0 0 5px rgba(254,44,85,.5));animation:slSpin 1.9s linear infinite reverse;}
+.sl-tile{position:relative;width:76px;height:76px;border-radius:26px;display:flex;align-items:center;justify-content:center;background:linear-gradient(155deg,#2d3953 0%,#161c28 55%,#10141c 100%);box-shadow:0 18px 44px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.07),inset 0 1px 0 rgba(255,255,255,.16);}
 .sl-tile::before,.sl-tile::after{content:'';position:absolute;inset:0;border-radius:inherit;z-index:-1;}
-.sl-tile::before{background:#25F4EE;animation:slGlitchC 3.4s steps(1,end) infinite;}
-.sl-tile::after{background:#FE2C55;animation:slGlitchM 3.4s steps(1,end) infinite;}
+.sl-tile::before{background:#25F4EE;animation:slGlitchC 3.6s steps(1,end) infinite;}
+.sl-tile::after{background:#FE2C55;animation:slGlitchM 3.6s steps(1,end) infinite;}
 .sl-tile svg{width:40px;height:40px;display:block;position:relative;z-index:1;}
-/* باجی «بەرزکردنەوە / سپۆنسەر» */
-.sl-boost{position:absolute;right:1px;bottom:1px;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#25F4EE 0%,#FE2C55 100%);box-shadow:0 4px 14px rgba(254,44,85,.4);border:2.5px solid var(--w);animation:slBoost .7s .5s cubic-bezier(.16,1,.3,1) both;}
+/* ── باجی بەرزکردنەوەی ڕیکلام ── */
+.sl-boost{position:absolute;right:4px;bottom:4px;width:29px;height:29px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#25F4EE 0%,#FE2C55 100%);box-shadow:0 5px 16px rgba(254,44,85,.45);border:3px solid #0B0E14;animation:slBoost .75s .55s cubic-bezier(.16,1,.3,1) both;}
 .sl-boost svg{width:13px;height:13px;display:block;}
-.sl-status{font-family:'R',sans-serif;font-size:12.5px;font-weight:600;color:var(--mt);animation:slUp .6s .26s cubic-bezier(.16,1,.3,1) both;}
-.sl-foot{position:absolute;bottom:calc(28px + env(safe-area-inset-bottom,0px));font-family:'R',sans-serif;font-size:11.5px;font-weight:600;color:var(--mt);opacity:.7;animation:slUp .6s .38s cubic-bezier(.16,1,.3,1) both;}
+/* ── ناوی براند ── */
+.sl-word{display:flex;align-items:center;gap:9px;font-family:'Inter',sans-serif;animation:slUp .65s .16s cubic-bezier(.16,1,.3,1) both;}
+.sl-word b{font-size:29px;font-weight:800;letter-spacing:-.8px;color:#fff;text-shadow:-1.2px 0 rgba(37,244,238,.45),1.2px 0 rgba(254,44,85,.4);}
+.sl-word span{font-size:9.5px;font-weight:800;letter-spacing:1.5px;color:#0B0E14;background:linear-gradient(100deg,#25F4EE 0%,#FE2C55 100%);border-radius:6px;padding:4px 8px;box-shadow:0 4px 14px rgba(254,44,85,.3);}
+.sl-status{font-family:'R',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,.5);animation:slUp .65s .28s cubic-bezier(.16,1,.3,1) both;}
+/* ── باری پێشکەوتن ── */
+.sl-prog{position:relative;width:144px;height:3px;border-radius:3px;background:rgba(255,255,255,.10);overflow:hidden;animation:slUp .65s .36s cubic-bezier(.16,1,.3,1) both;}
+.sl-prog i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,#25F4EE 0%,#FE2C55 100%);transform:scaleX(.04);transform-origin:right;animation:slProg var(--sl-dur,2600ms) cubic-bezier(.35,0,.15,1) forwards;}
+.sl-prog::after{content:'';position:absolute;top:0;bottom:0;width:40%;left:-45%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);animation:slShine 1.5s ease-in-out infinite;}
+.sl-foot{position:absolute;z-index:2;bottom:calc(30px + env(safe-area-inset-bottom,0px));font-family:'R',sans-serif;font-size:11.5px;font-weight:600;color:rgba(255,255,255,.36);animation:slUp .65s .44s cubic-bezier(.16,1,.3,1) both;}
+/* ── ئەنیمەیشنەکان ── */
 @keyframes slSpin{to{transform:rotate(360deg);}}
-@keyframes slGlitchC{0%,100%{transform:translate(-3.5px,2px);}47%{transform:translate(-3.5px,2px);}50%{transform:translate(-6.5px,3px);}53%{transform:translate(-2px,1px);}56%{transform:translate(-3.5px,2px);}}
-@keyframes slGlitchM{0%,100%{transform:translate(3.5px,-2px);}47%{transform:translate(3.5px,-2px);}50%{transform:translate(6.5px,-3px);}53%{transform:translate(2px,-1px);}56%{transform:translate(3.5px,-2px);}}
+@keyframes slPop{0%{opacity:0;transform:scale(.68);}60%{opacity:1;}100%{opacity:1;transform:scale(1);}}
+@keyframes slUp{from{opacity:0;transform:translateY(11px);}to{opacity:1;transform:translateY(0);}}
+@keyframes slPulse{0%,100%{opacity:.6;transform:scale(.94);}50%{opacity:1;transform:scale(1.07);}}
+@keyframes slDriftA{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-26px,34px) scale(1.14);}}
+@keyframes slDriftB{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(30px,-28px) scale(1.1);}}
+@keyframes slShine{0%{left:-45%;}60%,100%{left:105%;}}
+@keyframes slProg{0%{transform:scaleX(.04);}62%{transform:scaleX(.78);}100%{transform:scaleX(1);}}
+@keyframes slGlitchC{0%,100%{transform:translate(-3.5px,2px);}47%{transform:translate(-3.5px,2px);}50%{transform:translate(-7px,3px);}53%{transform:translate(-2px,1px);}56%{transform:translate(-3.5px,2px);}}
+@keyframes slGlitchM{0%,100%{transform:translate(3.5px,-2px);}47%{transform:translate(3.5px,-2px);}50%{transform:translate(7px,-3px);}53%{transform:translate(2px,-1px);}56%{transform:translate(3.5px,-2px);}}
 @keyframes slBoost{0%{opacity:0;transform:scale(.4) rotate(-25deg);}100%{opacity:1;transform:scale(1) rotate(0);}}
-@keyframes slPop{0%{opacity:0;transform:scale(.7);}60%{opacity:1;}100%{opacity:1;transform:scale(1);}}
-@keyframes slUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-@keyframes slGlow{0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(1);}50%{opacity:1;transform:translate(-50%,-50%) scale(1.13);}}
-@media (prefers-reduced-motion:reduce){.sl-mark,.sl-word,.sl-status,.sl-foot,.sl-boost,#sessionLoader::before,.sl-tile::before,.sl-tile::after{animation:none!important;opacity:1!important;}.sl-tile::before{transform:translate(-3.5px,2px)!important;}.sl-tile::after{transform:translate(3.5px,-2px)!important;}}
+@media (prefers-reduced-motion:reduce){.sl-mark,.sl-word,.sl-status,.sl-prog,.sl-foot,.sl-boost,.sl-halo,.sl-aura,.sl-tile::before,.sl-tile::after,.sl-prog::after{animation:none!important;opacity:1!important;}.sl-aura.a{opacity:.20!important;}.sl-aura.b{opacity:.17!important;}.sl-tile::before{transform:translate(-3.5px,2px)!important;}.sl-tile::after{transform:translate(3.5px,-2px)!important;}}
 @keyframes spin{to{transform:rotate(360deg);}}
 
 /* ══ APP ══ */
@@ -2891,12 +2908,6 @@ html[data-theme="dark"] .maint-timer-box{border:1.5px solid rgba(255,255,255,0.0
 html[data-theme="dark"] .maint-timer-lbl{color:#9aa5b6}
 html[data-theme="dark"] .maint-brand{color:#9aa5b6}
 html[data-theme="dark"] .maint-proxo-logo{color:#79acec}
-html[data-theme="dark"] #sessionLoader{background:#1a2029}
-html[data-theme="dark"] .sl-arc.t{border-color:rgba(255,255,255,0.05)}
-html[data-theme="dark"] .sl-tile{background:linear-gradient(150deg,#404d6b 0%,#323d56 100%);box-shadow:0 14px 34px rgba(28,35,51,.32),inset 0 1px 0 rgba(41,41,41,0.13)}
-html[data-theme="dark"] .sl-boost{box-shadow:0 4px 14px rgba(47,35,37,0.4);border:2.5px solid #1a2029}
-html[data-theme="dark"] .sl-status{color:#96a1b4}
-html[data-theme="dark"] .sl-foot{color:#96a1b4}
 html[data-theme="dark"] #app{background:#0f131a}
 html[data-theme="dark"] .topbar{background:#1a2029;border-bottom:1px solid #2a3140}
 html[data-theme="dark"] .topbar-brand-proxo{color:#e7eaf1}
@@ -3745,24 +3756,8 @@ html[data-theme="dark"] hr{border-color:#2a3140}
 html[data-theme="dark"] [style*="background:var(--dark)"]{background:#2f3a4f!important}
 html[data-theme="dark"] [style*="background: var(--dark)"]{background:#2f3a4f!important}
 html[data-theme="dark"] [style*="border-color:var(--dark)"]{border-color:#3d4a63!important}
-/* ── SPLASH SCREEN لە مۆدی تاریکدا (ڕەنگی تیکتۆک وەک خۆی دەمێنێتەوە) ── */
-html[data-theme="dark"] #sessionLoader{background:#0b0e14}
-html[data-theme="dark"] #sessionLoader::before{background:radial-gradient(circle,rgba(37,244,238,.09) 0%,rgba(254,44,85,.05) 42%,rgba(0,0,0,0) 70%)}
-html[data-theme="dark"] .sl-arc.t{border-color:rgba(255,255,255,.07)}
-html[data-theme="dark"] .sl-arc.c{border-top-color:#25F4EE;border-right-color:#25F4EE}
-html[data-theme="dark"] .sl-arc.m{border-bottom-color:#FE2C55;border-left-color:#FE2C55}
-html[data-theme="dark"] .sl-tile{background:linear-gradient(150deg,#333e57 0%,#161b26 100%);box-shadow:0 16px 40px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.10)}
-html[data-theme="dark"] .sl-tile::before{background:#25F4EE}
-html[data-theme="dark"] .sl-tile::after{background:#FE2C55}
-html[data-theme="dark"] .sl-tile svg rect{stroke:#fff}
-html[data-theme="dark"] .sl-tile svg path{fill:#fff}
-html[data-theme="dark"] .sl-boost{background:linear-gradient(135deg,#25F4EE 0%,#FE2C55 100%);border-color:#0b0e14}
-html[data-theme="dark"] .sl-boost svg path{stroke:#fff}
-html[data-theme="dark"] .sl-word b{color:#e7eaf1;text-shadow:-1.1px 0 rgba(37,244,238,.42),1.1px 0 rgba(254,44,85,.38)}
-html[data-theme="dark"] .sl-word span{color:#0b0e14;background:linear-gradient(100deg,#25F4EE 0%,#FE2C55 100%)}
 /* وێنە و لۆگۆ بە تۆزێک نەرمکردن لە مۆدی تاریکدا */
 html[data-theme="dark"] img:not([src*=".svg"]){filter:brightness(.94)}
-html[data-theme="dark"] #sessionLoader img{filter:none}
 </style>
 </head>
 
@@ -3815,8 +3810,13 @@ function _toWebP(dataUrl,quality){
 
 <!-- ══ SPLASH SCREEN / SESSION LOADER ══ -->
 <div id="sessionLoader" role="status" aria-live="polite" aria-label="بارکردنی ئاپ">
+  <span class="sl-aura a" aria-hidden="true"></span>
+  <span class="sl-aura b" aria-hidden="true"></span>
+  <span class="sl-grid" aria-hidden="true"></span>
+  <span class="sl-vig" aria-hidden="true"></span>
   <div class="sl-stage">
     <div class="sl-mark">
+      <span class="sl-halo" aria-hidden="true"></span>
       <span class="sl-arc t" aria-hidden="true"></span>
       <span class="sl-arc c" aria-hidden="true"></span>
       <span class="sl-arc m" aria-hidden="true"></span>
@@ -3837,9 +3837,33 @@ function _toWebP(dataUrl,quality){
     </div>
     <div class="sl-word"><b>Proxo</b><span>TIKTOK ADS</span></div>
     <div class="sl-status">چاوەڕێ بکە — هەژمارەکەت دەپشکنین</div>
+    <div class="sl-prog" aria-hidden="true"><i></i></div>
   </div>
   <div class="sl-foot">بەڕێوەبردنی ڕیکلامەکانی تیکتۆک</div>
 </div>
+<script id="proxo-splash-timing">
+/* ══ کۆنترۆڵی ماوەی SPLASH ══
+   ئەم ژمارەیە کەمترین ماوەی پیشاندانی splash-ە بە میلی‌چرکە.
+   ١٠٠٠ = ١ چرکە.  بۆ نموونە: 4000 = ٤ چرکە.
+   ئەگەر ئاپەکە خێراتر ئامادە بێت، هێشتا چاوەڕێ دەکات تا ئەم ماوەیە تەواو دەبێت. */
+window.PROXO_SPLASH_MIN_MS = 2600;
+(function(){
+  var t0 = Date.now(), scheduled = false;
+  try{ document.documentElement.style.setProperty('--sl-dur', window.PROXO_SPLASH_MIN_MS + 'ms'); }catch(e){}
+  window.proxoHideSplash = function(){
+    if(scheduled) return;
+    scheduled = true;
+    var el = document.getElementById('sessionLoader');
+    if(!el) return;
+    var wait = Math.max(0, (window.PROXO_SPLASH_MIN_MS||0) - (Date.now() - t0));
+    setTimeout(function(){
+      el.classList.add('hidden');
+      try{ if(window.__pxthApply && window.proxoGetTheme) window.__pxthApply(window.proxoGetTheme()); }catch(e){}
+      setTimeout(function(){ el.style.display = 'none'; }, 420);
+    }, wait);
+  };
+})();
+</script>
 
 <!-- AUTH -->
 <div id="authWrap">
@@ -8072,12 +8096,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(!e.target.closest('.asset-select-wrap'))closeAssetDropdown();
   });
   // ── SESSION CHECK: لوود کردنی سێشنی پارێزراو ──────────────────
-  function _hideSessionLoader(){
-    const sl=document.getElementById('sessionLoader');
-    if(!sl)return;
-    sl.classList.add('hidden');
-    setTimeout(()=>{sl.style.display='none';},350);
-  }
+  function _hideSessionLoader(){ proxoHideSplash(); }
   sb.auth.getSession().then(({data:{session}})=>{
     if(session?.user){cu=session.user;boot();}
     else{_hideSessionLoader();showAuth();}
@@ -8085,7 +8104,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   // ڵاوەڽی: ئەگەر Supabase لە ماوەی ٨ چرکەدا ﺒﺴ دەی نەبووایە، فۆرمی چوونەژوورەوە پیشان بدە
   setTimeout(()=>{
     const _sl=document.getElementById('sessionLoader');
-    if(_sl&&_sl.style.display!=='none'&&!cu){_sl.style.display='none';showAuth();}
+    if(_sl&&_sl.style.display!=='none'&&!cu){proxoHideSplash();showAuth();}
   },8000);
   sb.auth.onAuthStateChange((_,s)=>{
     if(s?.user&&!cu){cu=s.user;_hideSessionLoader();}
@@ -8108,13 +8127,13 @@ async function boot(){
     if (_bp?.is_banned) {
       await sb.auth.signOut();
       cu = null;
-      const sl2=document.getElementById('sessionLoader');if(sl2)sl2.style.display='none';
+      proxoHideSplash();
       showAuth();
       showAmsg('ئەکاونتەکەت هاوگرتراوە' + (_bp.ban_reason ? ' — ' + _bp.ban_reason : ''), 'err');
       return;
     }
   } catch(_e) {}
-  const sl=document.getElementById('sessionLoader');if(sl)sl.style.display='none';
+  proxoHideSplash();
   document.getElementById('authWrap').style.display='none';
   document.getElementById('app').style.display='flex';
   document.getElementById('bnav').style.display='block';
@@ -11128,7 +11147,7 @@ async function shareAd(ad){
 // ══ PUBLIC LIVE AD VIEW — کەسی وەرگر بێ چوونەژوورەوە دەتوانێت ئامارەکان ببینێت ══
 let _pubAdPollTimer=null;
 async function initPublicAdView(adId){
-  document.getElementById('sessionLoader')?.style.setProperty('display','none');
+  proxoHideSplash();
   document.getElementById('authWrap')?.style.setProperty('display','none');
   document.getElementById('app')?.style.setProperty('display','none');
   document.getElementById('bnav')?.style.setProperty('display','none');
@@ -17048,7 +17067,9 @@ html[data-theme="dark"] .pxth-float button.on{background:#2f3a4f;color:#fff}
     r.style.colorScheme=e;
     var mt=document.querySelector('meta[name="theme-color"]');
     if(!mt){mt=document.createElement('meta');mt.setAttribute('name','theme-color');document.head.appendChild(mt);}
-    mt.setAttribute('content', e==='dark'?'#0f131a':'#f4f6fb');
+    var sl=document.getElementById('sessionLoader');
+    var splashUp=sl&&sl.style.display!=='none'&&sl.className.indexOf('hidden')<0;
+    mt.setAttribute('content', splashUp?'#0B0E14':(e==='dark'?'#0f131a':'#f4f6fb'));
     var btns=document.querySelectorAll('[data-pxth]');
     for(var i=0;i<btns.length;i++){
       var on=btns[i].getAttribute('data-pxth')===m;
