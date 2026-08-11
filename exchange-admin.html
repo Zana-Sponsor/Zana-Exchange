@@ -353,6 +353,8 @@ tr:hover td{background:rgba(28,35,51,.015);}
     <div class="sb-section">پەیوەندی</div>
     <div class="sb-item" onclick="goPage('notifications')"><i class="fas fa-bell" style="color:#7c3aed"></i> ئاگادارییەکان</div>
     <div class="sb-item" onclick="goPage('announcement')"><i class="fas fa-bullhorn" style="color:#0891b2"></i> بانەری ئاگاداری</div>
+    <div class="sb-section">ئاسایش</div>
+    <div class="sb-item" onclick="goPage('otp')"><i class="fas fa-key" style="color:#dc2626"></i> کۆدەکانی OTP</div>
   </div>
 
   <div class="sb-footer">
@@ -428,7 +430,10 @@ tr:hover td{background:rgba(28,35,51,.015);}
 
     <!-- ══ ACCOUNTS ══ -->
     <div class="pg" id="pgAccounts">
-      <div class="sec-hdr"><h3>هەموو بەکارهێنەران</h3></div>
+      <div class="sec-hdr">
+        <h3>هەموو بەکارهێنەران</h3>
+        <div class="act-btn dark" onclick="openCreateUserModal()"><i class="fas fa-user-plus"></i> زیادکردنی هەژمار</div>
+      </div>
       <div class="tbl-wrap">
         <div class="tbl-filter">
           <input class="tbl-search" id="accSearch" placeholder="گەڕانی ناو یان ئیمەیل..." oninput="filterAccounts()">
@@ -510,6 +515,23 @@ tr:hover td{background:rgba(28,35,51,.015);}
         <input class="minp" type="number" min="2" step="1" id="annInterval" dir="ltr" placeholder="5">
         <div class="fee-toggle-note"><i class="fas fa-circle-info" style="margin-left:4px"></i>ئەگەر زیاتر لە دەقێک هەبێت، بانەرەکە بەم ماوەیە (بە چرکە) لەنێوان دەقەکاندا سلاید دەکات. یەک دەق = بەبێ سلایدکردن.</div>
         <button class="modal-btn cy" id="annSaveBtn" onclick="saveAnnouncement()"><i class="fas fa-check"></i> پاشەکەوتکردن</button>
+      </div>
+    </div>
+
+    <!-- ══ OTP CODES ══ -->
+    <div class="pg" id="pgOtp">
+      <div class="sec-hdr"><h3>کۆدەکانی OTP</h3></div>
+      <div class="fee-toggle-note" style="margin-bottom:14px">
+        <i class="fas fa-shield-halved" style="margin-left:4px"></i>
+        بۆ پاراستنی هەژمارەکان، کۆدی OTP خۆی ناتوانرێت ببینرێت یان بگۆڕدرێت بۆ بەهایەکی دیاریکراو — چونکە ئەوە کۆتایی بە مانای دڵنیاکردنەوەی OTP دەهێنێت (هەرکەسێک لە پانێڵدا بتوانێت کۆدی هەر هەژمارێک بزانێت/دابنێت، دەتوانێت بچێتە ژوورەوەی هەر هەژمارێکەوە). لێرەوە دەتوانیت کۆدێک زووتر بەسەرببەیت (ناچاری کردنی بەکارهێنەر بۆ داواکردنی کۆدێکی نوێ) یان بیسڕیتەوە.
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-filter">
+          <div class="act-btn dark" onclick="loadOtp()"><i class="fas fa-arrows-rotate"></i> نوێکردنەوە</div>
+        </div>
+        <div class="tbl-scroll" id="otpTableWrap">
+          <div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>
+        </div>
       </div>
     </div>
 
@@ -658,6 +680,59 @@ tr:hover td{background:rgba(28,35,51,.015);}
   </div>
 </div>
 
+<!-- ══ SET USER PASSWORD MODAL ══ -->
+<div class="overlay" id="moSetPassword">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3>گۆڕینی وشەی نهێنی</h3>
+      <div class="modal-close" onclick="closeMo('moSetPassword')"><i class="fas fa-xmark"></i></div>
+    </div>
+    <input type="hidden" id="spUserId">
+    <div class="detail-row" style="margin-bottom:6px">
+      <div class="lbl">بۆ بەکارهێنەر</div>
+      <div class="val" id="spUserLabel" dir="ltr">—</div>
+    </div>
+    <label class="modal-lbl">وشەی نهێنی نوێ</label>
+    <input class="minp" type="password" id="spNewPass" dir="ltr" placeholder="لانیکەم ٨ پیت/ژمارە" autocomplete="new-password">
+    <label class="modal-lbl">دووبارەکردنەوەی وشەی نهێنی</label>
+    <input class="minp" type="password" id="spNewPass2" dir="ltr" placeholder="دووبارە بنووسەوە" autocomplete="new-password">
+    <div class="fee-toggle-note" style="margin-top:10px">
+      <i class="fas fa-circle-info" style="margin-left:4px"></i>
+      دەستبەجێ دوای پاشەکەوتکردن، چوونەژوورەوەی چالاکی بەکارهێنەرەکە دەبڕدرێتەوە و دەبێت بە وشەی نهێنی نوێ دووبارە بچێتەژوورەوە.
+    </div>
+    <div class="auth-err" id="spErr" style="margin-top:10px"></div>
+    <button class="modal-btn dark" id="spSaveBtn" onclick="submitSetPassword()"><i class="fas fa-check"></i> پاشەکەوتکردن</button>
+  </div>
+</div>
+
+<!-- ══ CREATE USER MODAL ══ -->
+<div class="overlay" id="moCreateUser">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3>زیادکردنی هەژماری نوێ</h3>
+      <div class="modal-close" onclick="closeMo('moCreateUser')"><i class="fas fa-xmark"></i></div>
+    </div>
+    <label class="modal-lbl">ناوی تەواو</label>
+    <input class="minp" id="cuName" placeholder="ناوی بەکارهێنەر">
+    <label class="modal-lbl">ئیمەیل</label>
+    <input class="minp" type="email" id="cuEmail" dir="ltr" placeholder="user@example.com" autocomplete="off">
+    <label class="modal-lbl">ژمارەی مۆبایل (ئارەزوومەندانە)</label>
+    <input class="minp" id="cuPhone" dir="ltr" placeholder="07xxxxxxxxx">
+    <label class="modal-lbl">وشەی نهێنی</label>
+    <input class="minp" type="password" id="cuPass" dir="ltr" placeholder="لانیکەم ٨ پیت/ژمارە" autocomplete="new-password">
+    <div class="mswitch-row">
+      <span>مافی ئادمین بدرێت</span>
+      <label class="mswitch"><input type="checkbox" id="cuIsAdmin"><span class="track"></span></label>
+    </div>
+    <div class="fee-toggle-note" style="margin-top:6px">
+      <i class="fas fa-circle-info" style="margin-left:4px"></i>
+      هەژمارەکە ڕاستەوخۆ پەسەندکراو دروست دەبێت (پێویستی بە کۆدی OTP نییە) و دەتوانێت یەکسەر بچێتە ژوورەوە.
+    </div>
+    <div class="auth-err" id="cuErr" style="margin-top:10px"></div>
+    <button class="modal-btn dark" id="cuSaveBtn" onclick="submitCreateUser()"><i class="fas fa-check"></i> دروستکردن</button>
+  </div>
+</div>
+
 <!-- ══ IMAGE LIGHTBOX ══ -->
 <div class="overlay" id="moImgView" onclick="closeMo('moImgView')" style="align-items:center;padding:20px">
   <img id="imgViewSrc" src="" style="max-width:100%;max-height:90vh;border-radius:14px;">
@@ -796,6 +871,7 @@ const pageConfig = {
   rates:{ title:'نرخ و کرێ', sub:'ڕێکخستنی نرخی گۆڕینەوە و کرێی هەر ڕێگایەک', load: ()=>loadRates() },
   notifications:{ title:'ئاگادارییەکان', sub:'ناردنی ئاگاداری و بینینی مێژوو', load: ()=>loadNotifPage() },
   announcement:{ title:'بانەری ئاگاداری', sub:'ئاگاداری گشتی سەرەوەی ئەپەکە', load: ()=>loadAnnouncement() },
+  otp:{ title:'کۆدەکانی OTP', sub:'بینین و بەڕێوەبردنی کۆدەکانی دڵنیاکردنەوە', load: ()=>loadOtp() },
 };
 let _curPage='dashboard';
 function goPage(p){
@@ -1105,6 +1181,7 @@ function renderAccTable(list){
       <td>${accBadges(a)}</td>
       <td style="font-size:11px;color:var(--mt)">${new Date(a.created_at).toLocaleDateString('ku')}</td>
       <td><div class="act-grp">
+        <div class="act-btn dark" onclick="openSetPasswordModal('${a.id}','${esc(a.email||'').replace(/'/g,"\\'")}')"><i class="fas fa-key"></i> گۆڕینی وشەی نهێنی</div>
         <div class="act-btn ${a.is_banned?'gr':'rd'}" onclick="toggleBan('${a.id}',${a.is_banned})"><i class="fas fa-${a.is_banned?'user-check':'user-slash'}"></i> ${a.is_banned?'لابردنی بۆیکۆت':'بۆیکۆتکردن'}</div>
         <div class="act-btn ${a.is_admin?'yw':'cy'}" onclick="toggleAdmin('${a.id}',${a.is_admin})"><i class="fas fa-shield"></i> ${a.is_admin?'لابردنی ئادمین':'کردن بە ئادمین'}</div>
       </div></td>
@@ -1121,6 +1198,7 @@ function renderAccCards(list){
       </div>
       <div class="rec-card-meta">${accBadges(a)}<div class="rec-card-date">${new Date(a.created_at).toLocaleDateString('ku')}</div></div>
       <div class="rec-card-actions">
+        <div class="act-btn dark" onclick="openSetPasswordModal('${a.id}','${esc(a.email||'').replace(/'/g,"\\'")}')"><i class="fas fa-key"></i> وشەی نهێنی</div>
         <div class="act-btn ${a.is_banned?'gr':'rd'}" onclick="toggleBan('${a.id}',${a.is_banned})"><i class="fas fa-${a.is_banned?'user-check':'user-slash'}"></i> ${a.is_banned?'لابردنی بۆیکۆت':'بۆیکۆت'}</div>
         <div class="act-btn ${a.is_admin?'yw':'cy'}" onclick="toggleAdmin('${a.id}',${a.is_admin})"><i class="fas fa-shield"></i> ${a.is_admin?'لابردنی ئادمین':'کردن بە ئادمین'}</div>
       </div>
@@ -1146,6 +1224,95 @@ function toggleAdmin(id, current){
     showToast(next?'کرا بە ئادمین':'مافی ئادمین لابرا','gr');
     loadAccounts();
   });
+}
+
+// ══════════════════════════════════════════════════════════════
+// ═══ ADMIN: SET USER PASSWORD (via secure Edge Function) ════════
+// The actual password write happens server-side in the
+// "admin-set-password" Edge Function using the service-role key.
+// That key is never present in this admin panel's code — only a
+// server-side function may hold it. This client just calls that
+// function with the admin's own session token.
+// ══════════════════════════════════════════════════════════════
+function openSetPasswordModal(userId, email){
+  document.getElementById('spUserId').value = userId;
+  document.getElementById('spUserLabel').textContent = email || '—';
+  document.getElementById('spNewPass').value = '';
+  document.getElementById('spNewPass2').value = '';
+  document.getElementById('spErr').style.display='none';
+  openMo('moSetPassword');
+}
+async function submitSetPassword(){
+  const errEl = document.getElementById('spErr');
+  errEl.style.display='none';
+  const userId = document.getElementById('spUserId').value;
+  const pass = document.getElementById('spNewPass').value;
+  const pass2 = document.getElementById('spNewPass2').value;
+  if(pass.length < 8){ errEl.textContent='وشەی نهێنی دەبێت لانیکەم ٨ پیت/ژمارە بێت'; errEl.style.display='block'; return; }
+  if(pass !== pass2){ errEl.textContent='وشەکانی نهێنی وەک یەک نین'; errEl.style.display='block'; return; }
+  const btn = document.getElementById('spSaveBtn');
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+  try{
+    const {data:{session}} = await sb.auth.getSession();
+    if(!session){ throw new Error('چوونەژوورەوەت بەسەرچووە، دووبارە بچۆرەوە ژوورەوە'); }
+    const res = await fetch(SB_URL + '/functions/v1/admin-set-password', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+session.access_token, 'apikey': SB_KEY },
+      body: JSON.stringify({ target_user_id:userId, new_password:pass })
+    });
+    const data = await res.json();
+    if(!res.ok || !data.success){ throw new Error(data.message || data.error || 'هەڵەیەک ڕوویدا'); }
+    closeMo('moSetPassword');
+    showToast('✅ وشەی نهێنی گۆڕدرا — چوونەژوورەوەی ئەو بەکارهێنەرە بڕدرایەوە','gr');
+  }catch(e){
+    errEl.textContent = e.message; errEl.style.display='block';
+  }finally{
+    btn.disabled=false; btn.innerHTML='<i class="fas fa-check"></i> پاشەکەوتکردن';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// ═══ ADMIN: CREATE USER (via secure Edge Function) ══════════════
+// ══════════════════════════════════════════════════════════════
+function openCreateUserModal(){
+  document.getElementById('cuName').value = '';
+  document.getElementById('cuEmail').value = '';
+  document.getElementById('cuPhone').value = '';
+  document.getElementById('cuPass').value = '';
+  document.getElementById('cuIsAdmin').checked = false;
+  document.getElementById('cuErr').style.display='none';
+  openMo('moCreateUser');
+}
+async function submitCreateUser(){
+  const errEl = document.getElementById('cuErr');
+  errEl.style.display='none';
+  const full_name = document.getElementById('cuName').value.trim();
+  const email = document.getElementById('cuEmail').value.trim();
+  const phone = document.getElementById('cuPhone').value.trim();
+  const password = document.getElementById('cuPass').value;
+  const is_admin = document.getElementById('cuIsAdmin').checked;
+  if(!email || !email.includes('@')){ errEl.textContent='ئیمەیلێکی دروست بنووسە'; errEl.style.display='block'; return; }
+  if(password.length < 8){ errEl.textContent='وشەی نهێنی دەبێت لانیکەم ٨ پیت/ژمارە بێت'; errEl.style.display='block'; return; }
+  const btn = document.getElementById('cuSaveBtn');
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+  try{
+    const {data:{session}} = await sb.auth.getSession();
+    if(!session){ throw new Error('چوونەژوورەوەت بەسەرچووە، دووبارە بچۆرەوە ژوورەوە'); }
+    const res = await fetch(SB_URL + '/functions/v1/admin-create-user', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+session.access_token, 'apikey': SB_KEY },
+      body: JSON.stringify({ email, password, full_name, phone, is_admin })
+    });
+    const data = await res.json();
+    if(!res.ok || !data.success){ throw new Error(data.message || data.error || 'هەڵەیەک ڕوویدا'); }
+    closeMo('moCreateUser');
+    showToast('✅ هەژمار دروستکرا','gr');
+    loadAccounts(); loadDashboardStats();
+  }catch(e){
+    errEl.textContent = e.message; errEl.style.display='block';
+  }finally{
+    btn.disabled=false; btn.innerHTML='<i class="fas fa-check"></i> دروستکردن';
+  }
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -1800,6 +1967,70 @@ async function saveAnnouncement(){
   }catch(e){
     showToast('هەڵە: '+e.message,'rd');
   }finally{ btn.disabled=false; }
+}
+</script>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// ═══ OTP CODES (support/monitoring only — no code exposure) ════
+// These calls go through SECURITY DEFINER RPCs (ex_admin_list_otp /
+// ex_admin_expire_otp / ex_admin_delete_otp) that never return or
+// accept the raw `code` value, and never accept a custom expiry.
+// ══════════════════════════════════════════════════════════════
+let allOtp=[];
+async function loadOtp(){
+  const wrap=document.getElementById('otpTableWrap');
+  wrap.innerHTML='<div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
+  try{
+    const {data,error} = await sb.rpc('ex_admin_list_otp',{p_limit:200});
+    if(error) throw error;
+    allOtp = data||[];
+    renderOtpTable();
+  }catch(e){
+    wrap.innerHTML=`<div class="empty"><i class="fas fa-triangle-exclamation"></i><p>هەڵە: ${esc(e.message)}</p></div>`;
+  }
+}
+function otpStatusBadge(status){
+  if(status==='active') return '<span class="badge active">چالاک</span>';
+  if(status==='used') return '<span class="badge approved">بەکارهاتووە</span>';
+  return '<span class="badge rejected">بەسەرچووە</span>';
+}
+function otpPurposeLbl(p){
+  return { login:'چوونەژوورەوە', signup:'خۆتۆمارکردن', reset_password:'گۆڕینی وشەی نهێنی' }[p] || (p||'—');
+}
+function renderOtpTable(){
+  if(!allOtp.length){ document.getElementById('otpTableWrap').innerHTML='<div class="empty"><i class="fas fa-key"></i><p>هیچ کۆدێکی OTP نییە</p></div>'; return; }
+  document.getElementById('otpTableWrap').innerHTML = `<table><thead><tr><th>ئیمەیل</th><th>مەبەست</th><th>باری</th><th>دروستکرا</th><th>بەسەردەچێت</th><th>کردار</th></tr></thead><tbody>
+    ${allOtp.map(o=>`<tr>
+      <td style="direction:ltr;font-size:12px">${esc(o.email||'—')}</td>
+      <td style="font-size:12px">${otpPurposeLbl(o.purpose)}</td>
+      <td>${otpStatusBadge(o.status)}</td>
+      <td style="font-size:11px;color:var(--mt)">${new Date(o.created_at).toLocaleString('ku')}</td>
+      <td style="font-size:11px;color:var(--mt)">${new Date(o.expires_at).toLocaleString('ku')}</td>
+      <td><div class="act-grp">
+        <div class="act-btn yw" ${o.status!=='active'?'style="opacity:.4;pointer-events:none"':''} onclick="otpForceExpire('${o.id}')"><i class="fas fa-hourglass-end"></i> بەسەرببە</div>
+        <div class="act-btn rd" onclick="otpDelete('${o.id}')"><i class="fas fa-trash"></i> سڕینەوە</div>
+      </div></td>
+    </tr>`).join('')}
+  </tbody></table>`;
+}
+function otpForceExpire(id){
+  confirm2('بەسەرخستنی کۆد', 'ئەم کۆدە OTP یە دەبێتە نەچالاک و بەکارهێنەر ناتوانێت بەکاری بهێنێت — دەبێت داوای کۆدێکی نوێ بکات. ئایا دڵنیایت؟',
+    'fas fa-hourglass-end','var(--yw)', async()=>{
+    const {error} = await sb.rpc('ex_admin_expire_otp',{p_id:id});
+    if(error){ showToast('هەڵە: '+error.message,'rd'); return; }
+    showToast('کۆدەکە بەسەرخرا','gr');
+    loadOtp();
+  });
+}
+function otpDelete(id){
+  confirm2('سڕینەوەی کۆد', 'ئەم تۆمارە OTP یە بە تەواوی دەسڕدرێتەوە. ئایا دڵنیایت؟',
+    'fas fa-trash','var(--rd)', async()=>{
+    const {error} = await sb.rpc('ex_admin_delete_otp',{p_id:id});
+    if(error){ showToast('هەڵە: '+error.message,'rd'); return; }
+    showToast('تۆمارەکە سڕدرایەوە','gr');
+    loadOtp();
+  });
 }
 </script>
 
