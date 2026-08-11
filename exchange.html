@@ -2014,6 +2014,7 @@ async function startApp(user){
   document.getElementById('adminBtn').style.display=curProfile?.is_admin?'flex':'none';
   await loadWallets();
   await loadRates();
+  pickInitialWallets();
   refreshTrigger('from');
   refreshTrigger('receiveVia');
   updateWallet();
@@ -2102,6 +2103,32 @@ function routeAllowed(from,to){
 }
 function allowedReceiveOptions(from){
   return RECEIVE_OPTIONS.filter(k=>routeAllowed(from,k));
+}
+// ── Opening state: never start with the same wallet on both sides ──
+// The first entry of both lists is normally the same wallet (FastPay), so the
+// page used to open on "هەمان واڵێت نابێت" with a dead submit button. This runs
+// ONLY when the page opens — a same-wallet or closed pair the user picks
+// themselves is still shown as blocked and is never auto-switched.
+function pickInitialWallets(){
+  const fromSel = document.getElementById('from');
+  const toSel   = document.getElementById('receiveVia');
+  if(!fromSel || !toSel) return;
+  const free = k => !!k && !getWalletInfo(k).locked;
+  const targetsFor = f => allowedReceiveOptions(f).filter(t => t!==f && free(t));
+
+  let from = FROM_OPTIONS.includes(fromSel.value) ? fromSel.value : (FROM_OPTIONS[0]||'');
+  let targets = targetsFor(from);
+
+  // first send-wallet is locked or has no open route out → start on one that works
+  if(!free(from) || !targets.length){
+    const alt = FROM_OPTIONS.find(k => free(k) && targetsFor(k).length);
+    if(alt){ from = alt; targets = targetsFor(from); }
+  }
+  // nothing open anywhere: leave the blocked state visible rather than fake a pair
+  if(!targets.length) return;
+
+  fromSel.value = from;
+  toSel.value = targets.includes(toSel.value) ? toSel.value : targets[0];
 }
 // 0.85 → "15", 0.825 → "17.5" (no trailing zeros)
 function fmtPct(n){ return String(Math.round(n*100)/100); }
