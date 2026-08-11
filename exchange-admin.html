@@ -489,8 +489,27 @@ tr:hover td{background:rgba(28,35,51,.015);}
         <input class="minp" id="notifTitle" placeholder="بۆ نموونە: نرخەکان نوێ کرانەوە">
         <label class="modal-lbl">پەیام</label>
         <textarea class="minp mta" id="notifBody" placeholder="دەقی ئاگادارییەکە بنووسە..."></textarea>
+        <div class="mswitch-row" id="notifKeepRow">
+          <span>خەزنکردن بۆ بەکارهێنەرانی نوێش</span>
+          <label class="mswitch"><input type="checkbox" id="notifDeliverNew" checked><span class="track"></span></label>
+        </div>
+        <div class="fee-toggle-note" id="notifKeepNote">
+          <i class="fas fa-circle-info" style="margin-left:4px"></i>
+          ئەگەر چالاک بێت، ئەم ئاگادارییە خەزن دەکرێت و هەر بەکارهێنەرێکی نوێ کە دواتر خۆی تۆمار بکات، دەستبەجێ وەریدەگرێت — تەنانەت ئەگەر ئاگادارییەکە پێش چەند ڕۆژێک نێردرابێت.
+        </div>
         <button class="modal-btn cy" id="notifSendBtn" onclick="sendAdminNotification()"><i class="fas fa-paper-plane"></i> ناردن</button>
       </div>
+
+      <div class="sec-hdr">
+        <h3>ئاگادارییە گشتییە خەزنکراوەکان</h3>
+        <div class="act-btn dark" onclick="loadBroadcasts()" style="font-size:12px"><i class="fas fa-arrows-rotate"></i> نوێکردنەوە</div>
+      </div>
+      <div class="tbl-wrap" style="margin-bottom:20px">
+        <div class="tbl-scroll" id="broadcastWrap">
+          <div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>
+        </div>
+      </div>
+
       <div class="sec-hdr"><h3>دواترین ئاگادارییەکان</h3></div>
       <div class="tbl-wrap">
         <div class="tbl-scroll" id="notifLogWrap">
@@ -1930,12 +1949,17 @@ async function syncWalletPairs(newKey, oldKey){
 // ══════════════════════════════════════════════════════════════
 async function loadNotifPage(){
   loadNotifLog();
+  loadBroadcasts();
 }
 function setNotifTarget(el){
   document.querySelectorAll('[data-nt]').forEach(x=>x.classList.remove('on'));
   el.classList.add('on');
   _notifTarget = el.dataset.nt;
   document.getElementById('notifUserPickWrap').style.display = _notifTarget==='one' ? 'block' : 'none';
+  // "keep for future users" only makes sense for a broadcast
+  const show = _notifTarget==='all' ? '' : 'none';
+  document.getElementById('notifKeepRow').style.display = show;
+  document.getElementById('notifKeepNote').style.display = show;
 }
 let _notifSearchTimer=null;
 function searchNotifUser(){
@@ -1973,7 +1997,8 @@ async function sendAdminNotification(){
   try{
     let error;
     if(_notifTarget==='all'){
-      ({error} = await sb.rpc('ex_notify_all', {p_title:title, p_message:body}));
+      const keep = document.getElementById('notifDeliverNew').checked;
+      ({error} = await sb.rpc('ex_notify_all', {p_title:title, p_message:body, p_deliver_to_new:keep}));
     }else{
       ({error} = await sb.rpc('ex_notify_user', {p_user_id:_notifSelectedUser.id, p_title:title, p_message:body}));
     }
@@ -1983,6 +2008,7 @@ async function sendAdminNotification(){
     document.getElementById('notifBody').value='';
     clearNotifUser();
     loadNotifLog();
+    loadBroadcasts();
   }catch(e){
     showToast('هەڵە: '+e.message,'rd');
   }finally{
@@ -2007,13 +2033,80 @@ function renderNotifLog(){
   document.getElementById('notifLogWrap').innerHTML = `<table><thead><tr><th>بەکارهێنەر</th><th>جۆر</th><th>ناونیشان</th><th>پەیام</th><th>خوێندراوە</th><th>بەروار</th></tr></thead><tbody>
     ${allNotifs.map(n=>`<tr>
       <td><div class="user-cell"><div class="mini-av">${(n.profile?.full_name||n.profile?.email||'?')[0].toUpperCase()}</div><div><div class="user-cell-name">${esc(n.profile?.full_name||'—')}</div><div class="user-cell-email">${esc(n.profile?.email||'—')}</div></div></div></td>
-      <td><span class="badge ${n.type==='order_approved'?'approved':n.type==='order_rejected'?'rejected':n.type==='order_status'?'order_status':'adminmsg'}">${n.type==='order_approved'?'پەسەندکرا':n.type==='order_rejected'?'ڕەتکرایەوە':n.type==='order_status'?'دۆخی ئۆردەر':'ئادمین'}</span></td>
+      <td><span class="badge ${n.type==='order_approved'?'approved':n.type==='order_rejected'?'rejected':n.type==='order_status'?'order_status':'adminmsg'}">${n.type==='order_approved'?'پەسەندکرا':n.type==='order_rejected'?'ڕەتکرایەوە':n.type==='order_status'?'دۆخی ئۆردەر':'ئادمین'}</span>${n.broadcast_id?' <span class="badge admin">گشتی</span>':''}</td>
       <td style="font-size:12.5px;font-weight:700">${esc(n.title)}</td>
       <td style="font-size:12px;color:var(--mt2);max-width:260px">${esc(n.message)}</td>
       <td>${n.is_read?'<i class="fas fa-check-double" style="color:var(--gr)"></i>':'<i class="fas fa-circle" style="color:var(--yw);font-size:8px"></i>'}</td>
       <td style="font-size:11px;color:var(--mt)">${new Date(n.created_at).toLocaleString('ku')}</td>
     </tr>`).join('')}
   </tbody></table>`;
+}
+
+// ══════════════════════════════════════════════════════════════
+// ═══ STORED BROADCASTS ═══════════════════════════════════════════
+// A broadcast is kept as a template in ex_broadcasts. Existing users
+// get their copy the moment it's sent; anyone who signs up later gets
+// it automatically from the trg_ex_profiles_broadcasts trigger — so a
+// message sent yesterday still reaches a user who registers today.
+// ══════════════════════════════════════════════════════════════
+let allBroadcasts=[];
+async function loadBroadcasts(){
+  const wrap=document.getElementById('broadcastWrap');
+  wrap.innerHTML='<div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
+  try{
+    const {data,error} = await sb.rpc('ex_admin_list_broadcasts');
+    if(error) throw error;
+    allBroadcasts = data||[];
+    renderBroadcasts();
+  }catch(e){
+    wrap.innerHTML=`<div class="empty"><i class="fas fa-triangle-exclamation"></i><p>هەڵە: ${esc(e.message)}</p></div>`;
+  }
+}
+function renderBroadcasts(){
+  const wrap=document.getElementById('broadcastWrap');
+  if(!allBroadcasts.length){
+    wrap.innerHTML='<div class="empty"><i class="fas fa-bullhorn"></i><p>هیچ ئاگادارییەکی گشتی خەزن نەکراوە</p></div>';
+    return;
+  }
+  wrap.innerHTML = `<table><thead><tr><th>ناونیشان</th><th>پەیام</th><th>نێردراو</th><th>خوێندراوە</th><th>چاوەڕوان</th><th>بۆ نوێکان</th><th>بەروار</th><th>کردار</th></tr></thead><tbody>
+    ${allBroadcasts.map(b=>`<tr>
+      <td style="font-size:12.5px;font-weight:700">${esc(b.title)}</td>
+      <td style="font-size:12px;color:var(--mt2);max-width:240px">${esc(b.message)}</td>
+      <td style="font-size:12px">${b.delivered_count}</td>
+      <td style="font-size:12px">${b.read_count}</td>
+      <td>${b.pending_count>0?`<span class="badge banned">${b.pending_count}</span>`:'<span class="badge active">٠</span>'}</td>
+      <td><label class="mswitch"><input type="checkbox" ${b.deliver_to_new?'checked':''} onchange="toggleBroadcastNew('${b.id}',this.checked)"><span class="track"></span></label></td>
+      <td style="font-size:11px;color:var(--mt)">${new Date(b.created_at).toLocaleString('ku')}</td>
+      <td><div class="act-grp">
+        <div class="act-btn cy" ${b.pending_count>0?'':'style="opacity:.4;pointer-events:none"'} onclick="syncBroadcast('${b.id}')"><i class="fas fa-paper-plane"></i> ناردن بۆ چاوەڕوانەکان</div>
+        <div class="act-btn rd" onclick="deleteBroadcast('${b.id}')"><i class="fas fa-trash"></i> سڕینەوە</div>
+      </div></td>
+    </tr>`).join('')}
+  </tbody></table>`;
+}
+async function toggleBroadcastNew(id, on){
+  const {error} = await sb.rpc('ex_admin_set_broadcast_new',{p_id:id, p_deliver:on});
+  if(error){ showToast('هەڵە: '+error.message,'rd'); loadBroadcasts(); return; }
+  showToast(on?'بۆ بەکارهێنەرانی نوێ دەنێردرێت':'چیتر بۆ بەکارهێنەرانی نوێ نانێردرێت','gr');
+  loadBroadcasts();
+}
+function syncBroadcast(id){
+  confirm2('ناردن بۆ چاوەڕوانەکان','ئەم ئاگادارییە دەنێردرێت بۆ هەموو ئەو بەکارهێنەرانەی هێشتا وەریان نەگرتووە. ئایا دڵنیایت؟',
+    'fas fa-paper-plane','var(--cy)', async()=>{
+    const {data,error} = await sb.rpc('ex_admin_sync_broadcast',{p_id:id});
+    if(error){ showToast('هەڵە: '+error.message,'rd'); return; }
+    showToast('نێردرا بۆ '+(data||0)+' بەکارهێنەر','gr');
+    loadBroadcasts(); loadNotifLog();
+  });
+}
+function deleteBroadcast(id){
+  confirm2('سڕینەوەی ئاگاداری گشتی','ئەم ئاگادارییە لە لیستی هەموو بەکارهێنەرەکان دەسڕدرێتەوە و چیتر بۆ بەکارهێنەری نوێش نانێردرێت. ئایا دڵنیایت؟',
+    'fas fa-trash','var(--rd)', async()=>{
+    const {error} = await sb.rpc('ex_admin_delete_broadcast',{p_id:id, p_purge:true});
+    if(error){ showToast('هەڵە: '+error.message,'rd'); return; }
+    showToast('سڕدرایەوە','gr');
+    loadBroadcasts(); loadNotifLog();
+  });
 }
 
 // ══════════════════════════════════════════════════════════════
