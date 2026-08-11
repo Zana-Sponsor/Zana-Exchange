@@ -118,8 +118,8 @@ button,a{touch-action:manipulation;}
 
 /* ══ OTP ══ */
 .otp-inputs{display:flex;gap:10px;justify-content:center;margin:16px 0;direction:ltr;}
-.otp-digit{width:46px;height:56px;border-radius:13px;border:1.5px solid var(--b1);background:var(--bg);font-size:22px;font-weight:900;color:var(--dark);text-align:center;font-family:'Inter',sans-serif;outline:none;transition:all .2s;}
-.otp-digit:focus{border-color:var(--dark);background:var(--w);}
+.otp-digit{width:46px;height:56px;border-radius:14px;border:1px solid var(--b1);background:var(--bg);font-size:20px;font-weight:600;color:var(--dark);text-align:center;font-family:'Inter',sans-serif;outline:none;transition:all .2s;box-shadow:0 1px 3px rgba(28,35,51,.04);}
+.otp-digit:focus{border-color:var(--dark);background:var(--w);box-shadow:0 2px 10px rgba(28,35,51,.08);}
 .otp-timer{font-size:12px;color:var(--mt);text-align:center;margin-top:6px;}
 .otp-timer span{font-weight:700;color:var(--dark);}
 .otp-resend{font-size:12px;color:var(--bl);text-align:center;margin-top:8px;cursor:pointer;display:none;}
@@ -417,12 +417,12 @@ html[data-theme="dark"] img:not([src*=".svg"]){filter:brightness(.94)}
             <div style="font-size:12px;color:var(--mt)" id="fpOtpLbl">کۆدی ٦ ژمارە بۆ ئیمەیلەکەت نێردرا</div>
           </div>
           <div class="otp-inputs">
-            <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="fp1" oninput="fpOtpMove(this,null,'fp2')" onkeydown="fpOtpBack(event,this,null)">
-            <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="fp2" oninput="fpOtpMove(this,'fp1','fp3')" onkeydown="fpOtpBack(event,this,'fp1')">
-            <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="fp3" oninput="fpOtpMove(this,'fp2','fp4')" onkeydown="fpOtpBack(event,this,'fp2')">
-            <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="fp4" oninput="fpOtpMove(this,'fp3','fp5')" onkeydown="fpOtpBack(event,this,'fp3')">
-            <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="fp5" oninput="fpOtpMove(this,'fp4','fp6')" onkeydown="fpOtpBack(event,this,'fp4')">
-            <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="fp6" oninput="fpOtpMove(this,'fp5',null)" onkeydown="fpOtpBack(event,this,'fp5')">
+            <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="fp1" oninput="fpOtpMove(this,null,'fp2')" onkeydown="fpOtpBack(event,this,null)" onpaste="otpPasteFill(event,['fp1','fp2','fp3','fp4','fp5','fp6'],doForgotVerifyOtp)">
+            <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="fp2" oninput="fpOtpMove(this,'fp1','fp3')" onkeydown="fpOtpBack(event,this,'fp1')" onpaste="otpPasteFill(event,['fp1','fp2','fp3','fp4','fp5','fp6'],doForgotVerifyOtp)">
+            <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="fp3" oninput="fpOtpMove(this,'fp2','fp4')" onkeydown="fpOtpBack(event,this,'fp2')" onpaste="otpPasteFill(event,['fp1','fp2','fp3','fp4','fp5','fp6'],doForgotVerifyOtp)">
+            <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="fp4" oninput="fpOtpMove(this,'fp3','fp5')" onkeydown="fpOtpBack(event,this,'fp3')" onpaste="otpPasteFill(event,['fp1','fp2','fp3','fp4','fp5','fp6'],doForgotVerifyOtp)">
+            <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="fp5" oninput="fpOtpMove(this,'fp4','fp6')" onkeydown="fpOtpBack(event,this,'fp4')" onpaste="otpPasteFill(event,['fp1','fp2','fp3','fp4','fp5','fp6'],doForgotVerifyOtp)">
+            <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="fp6" oninput="fpOtpMove(this,'fp5',null)" onkeydown="fpOtpBack(event,this,'fp5')" onpaste="otpPasteFill(event,['fp1','fp2','fp3','fp4','fp5','fp6'],doForgotVerifyOtp)">
           </div>
           <div class="otp-timer" id="fpTimerWrap" style="margin-top:10px">ماوەی ئەم کۆدە: <span id="fpTimerVal">10:00</span></div>
           <div class="otp-resend" id="fpResendBtn" onclick="fpResendOtp()"><i class="fas fa-rotate-right" style="margin-left:5px"></i>کۆدی نوێ بنێرە</div>
@@ -473,12 +473,12 @@ html[data-theme="dark"] img:not([src*=".svg"]){filter:brightness(.94)}
           <div style="font-size:12px;color:var(--mt)" id="otpEmailLbl">کۆدی ٦ ژمارەی بۆ ئیمەیلەکەت نێردرا</div>
         </div>
         <div class="otp-inputs">
-          <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="otp1" oninput="otpMove(this,null,'otp2')" onkeydown="otpBack(event,this,null)">
-          <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="otp2" oninput="otpMove(this,'otp1','otp3')" onkeydown="otpBack(event,this,'otp1')">
-          <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="otp3" oninput="otpMove(this,'otp2','otp4')" onkeydown="otpBack(event,this,'otp2')">
-          <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="otp4" oninput="otpMove(this,'otp3','otp5')" onkeydown="otpBack(event,this,'otp3')">
-          <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="otp5" oninput="otpMove(this,'otp4','otp6')" onkeydown="otpBack(event,this,'otp4')">
-          <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="otp6" oninput="otpMove(this,'otp5',null)" onkeydown="otpBack(event,this,'otp5')">
+          <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="otp1" oninput="otpMove(this,null,'otp2')" onkeydown="otpBack(event,this,null)" onpaste="otpPasteFill(event,['otp1','otp2','otp3','otp4','otp5','otp6'],verifyOtp)">
+          <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="otp2" oninput="otpMove(this,'otp1','otp3')" onkeydown="otpBack(event,this,'otp1')" onpaste="otpPasteFill(event,['otp1','otp2','otp3','otp4','otp5','otp6'],verifyOtp)">
+          <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="otp3" oninput="otpMove(this,'otp2','otp4')" onkeydown="otpBack(event,this,'otp2')" onpaste="otpPasteFill(event,['otp1','otp2','otp3','otp4','otp5','otp6'],verifyOtp)">
+          <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="otp4" oninput="otpMove(this,'otp3','otp5')" onkeydown="otpBack(event,this,'otp3')" onpaste="otpPasteFill(event,['otp1','otp2','otp3','otp4','otp5','otp6'],verifyOtp)">
+          <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="otp5" oninput="otpMove(this,'otp4','otp6')" onkeydown="otpBack(event,this,'otp4')" onpaste="otpPasteFill(event,['otp1','otp2','otp3','otp4','otp5','otp6'],verifyOtp)">
+          <input class="otp-digit" type="text" inputmode="tel" maxlength="1" id="otp6" oninput="otpMove(this,'otp5',null)" onkeydown="otpBack(event,this,'otp5')" onpaste="otpPasteFill(event,['otp1','otp2','otp3','otp4','otp5','otp6'],verifyOtp)">
         </div>
         <div class="otp-timer" id="otpTimerWrap">ماوەی ئەم کۆدە: <span id="otpTimerVal">10:00</span></div>
         <div class="otp-resend" id="otpResendBtn" onclick="resendOtp()"><i class="fas fa-rotate-right" style="margin-left:5px"></i>کۆدی نوێ بنێرە</div>
@@ -836,6 +836,21 @@ function otpMove(el, prevId, nextId) {
 function otpBack(e, el, prevId) {
   if(e.key === 'Backspace' && !el.value && prevId) document.getElementById(prevId)?.focus();
 }
+function otpPasteFill(e, ids, submitFn) {
+  const text = (e.clipboardData || window.clipboardData)?.getData('text') || '';
+  const digits = text.replace(/[^0-9]/g, '').slice(0, ids.length);
+  if(!digits) return;
+  e.preventDefault();
+  let lastIdx = -1;
+  digits.split('').forEach((d, i) => {
+    const el = document.getElementById(ids[i]);
+    if(el){ el.value = d; lastIdx = i; }
+  });
+  const nextIdx = lastIdx + 1 < ids.length ? lastIdx + 1 : lastIdx;
+  document.getElementById(ids[nextIdx])?.focus();
+  const code = ids.map(id => document.getElementById(id)?.value || '').join('');
+  if(code.length === ids.length && submitFn) submitFn();
+}
 
 // ══ BAN COUNTDOWN ══
 let _banIntervals = {};
@@ -1139,10 +1154,9 @@ async function doAuth(){
     const {data:emailRows}=await sb.rpc('find_user_by_email',{p_email:email});
     const emailExist = (emailRows && emailRows.length>0) ? emailRows[0] : null;
     if(!emailExist){
-      showAmsg('ئەم ئیمەیلە تۆمارنەکراوە — یەکسەر دەگوازرێتەوە بۆ تۆمارکردن','err');
+      showAmsg('ئەم ئیمەیلە تۆمارنەکراوە','err');
       btn.disabled=false;
       btn.innerHTML='<i class="fas fa-arrow-left"></i><span id="authBtnTxt">چوونەژوورەوە</span>';
-      setTimeout(()=>{window.location.href='/signup.html';},1800);
       return;
     }
     // پاسۆرد پشکنین پێش نێردنی OTP
