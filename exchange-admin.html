@@ -520,13 +520,21 @@ tr:hover td{background:rgba(28,35,51,.015);}
 
     <!-- ══ OTP CODES ══ -->
     <div class="pg" id="pgOtp">
-      <div class="sec-hdr"><h3>کۆدەکانی OTP</h3></div>
+      <div class="sec-hdr">
+        <h3>کۆدەکانی OTP</h3>
+        <div class="act-btn dark" onclick="openOtpCreateModal()"><i class="fas fa-plus"></i> کۆدی نوێ</div>
+      </div>
       <div class="fee-toggle-note" style="margin-bottom:14px">
         <i class="fas fa-shield-halved" style="margin-left:4px"></i>
-        بۆ پاراستنی هەژمارەکان، کۆدی OTP خۆی ناتوانرێت ببینرێت یان بگۆڕدرێت بۆ بەهایەکی دیاریکراو — چونکە ئەوە کۆتایی بە مانای دڵنیاکردنەوەی OTP دەهێنێت (هەرکەسێک لە پانێڵدا بتوانێت کۆدی هەر هەژمارێک بزانێت/دابنێت، دەتوانێت بچێتە ژوورەوەی هەر هەژمارێکەوە). لێرەوە دەتوانیت کۆدێک زووتر بەسەرببەیت (ناچاری کردنی بەکارهێنەر بۆ داواکردنی کۆدێکی نوێ) یان بیسڕیتەوە.
+        ئادمین دەتوانێت هەموو کۆدەکان ببینێت و دەستکاریان بکات. ئاگاداربە: هەرکەسێک دەستی بەم پەڕەیە بگات، دەتوانێت کۆدی چوونەژوورەوەی هەر هەژمارێک ببینێت — بۆیە تەنها بە هەژماری ئادمینی متمانەپێکراو بەکاری بهێنە. هەموو گۆڕانکارییەک لە ex_admin_audit_log تۆمار دەکرێت.
       </div>
       <div class="tbl-wrap">
         <div class="tbl-filter">
+          <input class="tbl-search" id="otpSearch" placeholder="گەڕان بەپێی ئیمەیل یان کۆد..." oninput="filterOtp()">
+          <div class="chip on" data-otpf="all" onclick="filterOtp(this)">هەموو</div>
+          <div class="chip" data-otpf="active" onclick="filterOtp(this)">چالاک</div>
+          <div class="chip" data-otpf="used" onclick="filterOtp(this)">بەکارهاتوو</div>
+          <div class="chip" data-otpf="expired" onclick="filterOtp(this)">بەسەرچوو</div>
           <div class="act-btn dark" onclick="loadOtp()"><i class="fas fa-arrows-rotate"></i> نوێکردنەوە</div>
         </div>
         <div class="tbl-scroll" id="otpTableWrap">
@@ -733,6 +741,72 @@ tr:hover td{background:rgba(28,35,51,.015);}
     </div>
     <div class="auth-err" id="cuErr" style="margin-top:10px"></div>
     <button class="modal-btn dark" id="cuSaveBtn" onclick="submitCreateUser()"><i class="fas fa-check"></i> دروستکردن</button>
+  </div>
+</div>
+
+<!-- ══ OTP EDIT MODAL ══ -->
+<div class="overlay" id="moOtpEdit">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3>دەستکاریکردنی کۆدی OTP</h3>
+      <div class="modal-close" onclick="closeMo('moOtpEdit')"><i class="fas fa-xmark"></i></div>
+    </div>
+    <input type="hidden" id="oeId">
+    <div class="detail-row" style="margin-bottom:6px">
+      <div class="lbl">ئیمەیل</div>
+      <div class="val" id="oeEmail" dir="ltr">—</div>
+    </div>
+    <label class="modal-lbl">کۆد</label>
+    <input class="minp" id="oeCode" dir="ltr" placeholder="123456" inputmode="numeric">
+    <label class="modal-lbl">مەبەست</label>
+    <select class="msel" id="oePurpose">
+      <option value="login">چوونەژوورەوە</option>
+      <option value="signup">خۆتۆمارکردن</option>
+      <option value="reset_password">گۆڕینی وشەی نهێنی</option>
+    </select>
+    <label class="modal-lbl">کاتی بەسەرچوون</label>
+    <input class="minp" type="datetime-local" id="oeExpires" dir="ltr">
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <div class="act-btn dark" onclick="bumpOtpExpiry(10)"><i class="fas fa-clock"></i> +١٠ خولەک لە ئێستاوە</div>
+      <div class="act-btn dark" onclick="bumpOtpExpiry(60)"><i class="fas fa-clock"></i> +١ کاتژمێر</div>
+    </div>
+    <div class="mswitch-row">
+      <span>وەک بەکارهاتوو نیشانی بکە</span>
+      <label class="mswitch"><input type="checkbox" id="oeIsUsed"><span class="track"></span></label>
+    </div>
+    <div class="auth-err" id="oeErr" style="margin-top:10px"></div>
+    <button class="modal-btn dark" id="oeSaveBtn" onclick="submitOtpEdit()"><i class="fas fa-check"></i> پاشەکەوتکردن</button>
+  </div>
+</div>
+
+<!-- ══ OTP CREATE MODAL ══ -->
+<div class="overlay" id="moOtpCreate">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3>دروستکردنی کۆدی نوێ</h3>
+      <div class="modal-close" onclick="closeMo('moOtpCreate')"><i class="fas fa-xmark"></i></div>
+    </div>
+    <label class="modal-lbl">ئیمەیلی بەکارهێنەر</label>
+    <input class="minp" type="email" id="ocEmail" dir="ltr" placeholder="user@example.com" autocomplete="off">
+    <label class="modal-lbl">کۆد</label>
+    <div style="display:flex;gap:8px;align-items:center">
+      <input class="minp" id="ocCode" dir="ltr" placeholder="123456" inputmode="numeric" style="flex:1">
+      <div class="act-btn dark" onclick="genOtpCode()" style="white-space:nowrap"><i class="fas fa-dice"></i> هەڕەمەکی</div>
+    </div>
+    <label class="modal-lbl">مەبەست</label>
+    <select class="msel" id="ocPurpose">
+      <option value="login">چوونەژوورەوە</option>
+      <option value="signup">خۆتۆمارکردن</option>
+      <option value="reset_password">گۆڕینی وشەی نهێنی</option>
+    </select>
+    <label class="modal-lbl">ماوەی کارکردن (خولەک)</label>
+    <input class="minp" type="number" id="ocMinutes" dir="ltr" value="10" min="1" max="1440">
+    <div class="fee-toggle-note" style="margin-top:8px">
+      <i class="fas fa-circle-info" style="margin-left:4px"></i>
+      ئەم کۆدە بە ئیمەیل نانێردرێت — تەنها لە داتابەیس دروست دەبێت، دەبێت خۆت بیدەیت بە بەکارهێنەر.
+    </div>
+    <div class="auth-err" id="ocErr" style="margin-top:10px"></div>
+    <button class="modal-btn dark" id="ocSaveBtn" onclick="submitOtpCreate()"><i class="fas fa-check"></i> دروستکردن</button>
   </div>
 </div>
 
@@ -2038,23 +2112,28 @@ async function saveAnnouncement(){
 
 <script>
 // ══════════════════════════════════════════════════════════════
-// ═══ OTP CODES (support/monitoring only — no code exposure) ════
-// These calls go through SECURITY DEFINER RPCs (ex_admin_list_otp /
-// ex_admin_expire_otp / ex_admin_delete_otp) that never return or
-// accept the raw `code` value, and never accept a custom expiry.
+// ═══ OTP CODES (full admin read + edit) ════════════════════════
+// All calls go through SECURITY DEFINER RPCs gated by is_ex_admin():
+// ex_admin_list_otp / ex_admin_update_otp / ex_admin_create_otp /
+// ex_admin_expire_otp / ex_admin_delete_otp. Every write is recorded
+// in ex_admin_audit_log.
 // ══════════════════════════════════════════════════════════════
-let allOtp=[];
+let allOtp=[], otpFilter='all';
 async function loadOtp(){
   const wrap=document.getElementById('otpTableWrap');
   wrap.innerHTML='<div class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
   try{
-    const {data,error} = await sb.rpc('ex_admin_list_otp',{p_limit:200});
+    const {data,error} = await sb.rpc('ex_admin_list_otp',{p_limit:300});
     if(error) throw error;
     allOtp = data||[];
     renderOtpTable();
   }catch(e){
     wrap.innerHTML=`<div class="empty"><i class="fas fa-triangle-exclamation"></i><p>هەڵە: ${esc(e.message)}</p></div>`;
   }
+}
+function filterOtp(el){
+  if(el){ document.querySelectorAll('[data-otpf]').forEach(x=>x.classList.remove('on')); el.classList.add('on'); otpFilter=el.dataset.otpf; }
+  renderOtpTable();
 }
 function otpStatusBadge(status){
   if(status==='active') return '<span class="badge active">چالاک</span>';
@@ -2064,22 +2143,128 @@ function otpStatusBadge(status){
 function otpPurposeLbl(p){
   return { login:'چوونەژوورەوە', signup:'خۆتۆمارکردن', reset_password:'گۆڕینی وشەی نهێنی' }[p] || (p||'—');
 }
+function copyOtpCode(code){
+  const done=()=>showToast('کۆد کۆپی کرا: '+code,'gr');
+  if(navigator.clipboard?.writeText){ navigator.clipboard.writeText(code).then(done).catch(()=>done()); }
+  else{
+    const t=document.createElement('textarea'); t.value=code; document.body.appendChild(t);
+    t.select(); try{ document.execCommand('copy'); }catch(_){}
+    document.body.removeChild(t); done();
+  }
+}
 function renderOtpTable(){
-  if(!allOtp.length){ document.getElementById('otpTableWrap').innerHTML='<div class="empty"><i class="fas fa-key"></i><p>هیچ کۆدێکی OTP نییە</p></div>'; return; }
-  document.getElementById('otpTableWrap').innerHTML = `<table><thead><tr><th>ئیمەیل</th><th>مەبەست</th><th>باری</th><th>دروستکرا</th><th>بەسەردەچێت</th><th>کردار</th></tr></thead><tbody>
-    ${allOtp.map(o=>`<tr>
+  const q=(document.getElementById('otpSearch')?.value||'').toLowerCase().trim();
+  let list=allOtp;
+  if(otpFilter!=='all') list=list.filter(o=>o.status===otpFilter);
+  if(q) list=list.filter(o=>(o.email||'').toLowerCase().includes(q)||(o.code||'').includes(q));
+  const wrap=document.getElementById('otpTableWrap');
+  if(!list.length){ wrap.innerHTML='<div class="empty"><i class="fas fa-key"></i><p>هیچ کۆدێکی OTP نییە</p></div>'; return; }
+  wrap.innerHTML = `<table><thead><tr><th>ئیمەیل</th><th>کۆد</th><th>مەبەست</th><th>باری</th><th>دروستکرا</th><th>بەسەردەچێت</th><th>کردار</th></tr></thead><tbody>
+    ${list.map(o=>`<tr>
       <td style="direction:ltr;font-size:12px">${esc(o.email||'—')}</td>
+      <td><span onclick="copyOtpCode('${esc(o.code||'')}')" title="کلیک بۆ کۆپیکردن" style="direction:ltr;display:inline-block;font-family:monospace;font-size:14px;font-weight:800;letter-spacing:2px;color:var(--dark);background:var(--bg);border:1.5px solid var(--b1);border-radius:8px;padding:4px 10px;cursor:pointer">${esc(o.code||'—')}</span></td>
       <td style="font-size:12px">${otpPurposeLbl(o.purpose)}</td>
       <td>${otpStatusBadge(o.status)}</td>
       <td style="font-size:11px;color:var(--mt)">${new Date(o.created_at).toLocaleString('ku')}</td>
       <td style="font-size:11px;color:var(--mt)">${new Date(o.expires_at).toLocaleString('ku')}</td>
       <td><div class="act-grp">
+        <div class="act-btn cy" onclick='openOtpEditModal(${safeAttr(o)})'><i class="fas fa-pen"></i> دەستکاری</div>
         <div class="act-btn yw" ${o.status!=='active'?'style="opacity:.4;pointer-events:none"':''} onclick="otpForceExpire('${o.id}')"><i class="fas fa-hourglass-end"></i> بەسەرببە</div>
         <div class="act-btn rd" onclick="otpDelete('${o.id}')"><i class="fas fa-trash"></i> سڕینەوە</div>
       </div></td>
     </tr>`).join('')}
   </tbody></table>`;
 }
+
+// ─── datetime-local <-> ISO helpers (input works in local time) ───
+function toLocalInput(iso){
+  const d=new Date(iso); if(isNaN(d)) return '';
+  const p=n=>String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+function fromLocalInput(v){ if(!v) return null; const d=new Date(v); return isNaN(d)?null:d.toISOString(); }
+
+function openOtpEditModal(o){
+  document.getElementById('oeId').value = o.id;
+  document.getElementById('oeEmail').textContent = o.email || '—';
+  document.getElementById('oeCode').value = o.code || '';
+  const purposeSel=document.getElementById('oePurpose');
+  if(o.purpose && !Array.from(purposeSel.options).some(x=>x.value===o.purpose)){
+    purposeSel.add(new Option(o.purpose, o.purpose));
+  }
+  purposeSel.value = o.purpose || 'login';
+  document.getElementById('oeExpires').value = toLocalInput(o.expires_at);
+  document.getElementById('oeIsUsed').checked = !!o.is_used;
+  document.getElementById('oeErr').style.display='none';
+  openMo('moOtpEdit');
+}
+function bumpOtpExpiry(mins){
+  const d=new Date(Date.now()+mins*60000);
+  document.getElementById('oeExpires').value = toLocalInput(d.toISOString());
+  document.getElementById('oeIsUsed').checked = false;
+}
+async function submitOtpEdit(){
+  const errEl=document.getElementById('oeErr'); errEl.style.display='none';
+  const id=document.getElementById('oeId').value;
+  const code=document.getElementById('oeCode').value.trim();
+  const purpose=document.getElementById('oePurpose').value;
+  const expires=fromLocalInput(document.getElementById('oeExpires').value);
+  const isUsed=document.getElementById('oeIsUsed').checked;
+  if(!code){ errEl.textContent='کۆد نابێت بەتاڵ بێت'; errEl.style.display='block'; return; }
+  if(!expires){ errEl.textContent='کاتی بەسەرچوون دروست نییە'; errEl.style.display='block'; return; }
+  const btn=document.getElementById('oeSaveBtn');
+  btn.disabled=true; btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i>';
+  try{
+    const {error} = await sb.rpc('ex_admin_update_otp',{
+      p_id:id, p_code:code, p_purpose:purpose, p_expires_at:expires, p_is_used:isUsed
+    });
+    if(error) throw error;
+    closeMo('moOtpEdit');
+    showToast('کۆدەکە نوێکرایەوە','gr');
+    loadOtp();
+  }catch(e){
+    errEl.textContent='هەڵە: '+e.message; errEl.style.display='block';
+  }finally{
+    btn.disabled=false; btn.innerHTML='<i class="fas fa-check"></i> پاشەکەوتکردن';
+  }
+}
+
+function openOtpCreateModal(){
+  document.getElementById('ocEmail').value='';
+  document.getElementById('ocCode').value='';
+  document.getElementById('ocPurpose').value='login';
+  document.getElementById('ocMinutes').value=10;
+  document.getElementById('ocErr').style.display='none';
+  openMo('moOtpCreate');
+}
+function genOtpCode(){
+  document.getElementById('ocCode').value = String(Math.floor(100000+Math.random()*900000));
+}
+async function submitOtpCreate(){
+  const errEl=document.getElementById('ocErr'); errEl.style.display='none';
+  const email=document.getElementById('ocEmail').value.trim();
+  const code=document.getElementById('ocCode').value.trim();
+  const purpose=document.getElementById('ocPurpose').value;
+  const mins=parseInt(document.getElementById('ocMinutes').value,10)||10;
+  if(!email||!email.includes('@')){ errEl.textContent='ئیمەیلێکی دروست بنووسە'; errEl.style.display='block'; return; }
+  if(!code){ errEl.textContent='کۆد بنووسە یان کۆدێکی هەڕەمەکی دروست بکە'; errEl.style.display='block'; return; }
+  const btn=document.getElementById('ocSaveBtn');
+  btn.disabled=true; btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i>';
+  try{
+    const {error} = await sb.rpc('ex_admin_create_otp',{
+      p_email:email, p_code:code, p_purpose:purpose, p_minutes:mins
+    });
+    if(error) throw error;
+    closeMo('moOtpCreate');
+    showToast('کۆد دروستکرا: '+code,'gr');
+    loadOtp();
+  }catch(e){
+    errEl.textContent='هەڵە: '+e.message; errEl.style.display='block';
+  }finally{
+    btn.disabled=false; btn.innerHTML='<i class="fas fa-check"></i> دروستکردن';
+  }
+}
+
 function otpForceExpire(id){
   confirm2('بەسەرخستنی کۆد', 'ئەم کۆدە OTP یە دەبێتە نەچالاک و بەکارهێنەر ناتوانێت بەکاری بهێنێت — دەبێت داوای کۆدێکی نوێ بکات. ئایا دڵنیایت؟',
     'fas fa-hourglass-end','var(--yw)', async()=>{
