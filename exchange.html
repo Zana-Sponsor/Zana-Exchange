@@ -502,6 +502,11 @@ input[type="file"].input::file-selector-button:hover{ background:var(--border-st
 .detail-ico{ width:26px; height:26px; border-radius:8px; background:var(--surface-2); color:var(--primary); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 .detail-ico svg{ width:16px; height:16px; }
 .empty-state{ text-align:center; color:var(--text-faint); font-size:var(--fs-sm); padding:28px 10px; }
+.order-card.has-receipt{ cursor:pointer; transition:border-color .15s var(--ease); }
+.order-card.has-receipt:active{ transform:scale(.995); }
+.rcpt-hint{ color:var(--primary) !important; font-weight:var(--fw-medium); }
+.rcpt-wrap{ margin-top:12px; padding-top:12px; border-top:1px dashed var(--border); animation:slideDown .2s var(--ease); }
+.rcpt-img{ width:100%; display:block; border-radius:var(--radius-md); border:1px solid var(--border); cursor:pointer; }
 
 /* ══════════════════════════════════════════════════════════════
    AUTH SCREEN
@@ -1178,6 +1183,7 @@ const ICON = {
   korek: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/><path d="M8.3 15.7a5.2 5.2 0 0 1 7.4 0"/><path d="M5.4 12.8a9.3 9.3 0 0 1 13.2 0"/><path d="M2.6 10a13.4 13.4 0 0 1 18.8 0"/></svg>',
   usdt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.2"/><path d="M8 8.3h8M12 8.3v3M9.3 12.6c0 1.2 1.2 2 2.7 2s2.7-.8 2.7-1.9c0-1-1-1.5-2.7-1.7-1.7-.2-2.7-.7-2.7-1.7 0-1 1.2-1.8 2.7-1.8s2.5.6 2.6 1.5"/><path d="M12 14.6v3.1"/></svg>',
   receive: '<svg class="icn icn-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2v10.8"/><path d="M7.3 9.8 12 14.5l4.7-4.7"/><path d="M4 18.3h16"/></svg>',
+  image: '<svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15.5l-5.5-5.5L5 20"/></svg>',
   banknote: '<svg class="icn icn-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.3" y="6.3" width="19.4" height="11.4" rx="2.2"/><circle cx="12" cy="12" r="2.5"/><path d="M5.3 9.3h.01M18.7 14.7h.01"/></svg>'
 };
 
@@ -2362,8 +2368,10 @@ function renderHistory(rows){
     const decidedRow = (o.status==='پەسەندکرا' || o.status==='ڕەتکرا') && o.decided_at
       ? `<div class="detail-item"><span class="detail-ico" style="color:${o.status==='پەسەندکرا'?'var(--success)':'var(--error)'}">${o.status==='پەسەندکرا'?ICON.check:ICON.cross}</span> ${o.status}: ${new Date(o.decided_at).toLocaleString('ku-IQ')}</div>`
       : '';
+    const hasReceipt = !!o.payout_receipt_url;
+    const rcptId = 'rcpt_'+o.id;
     html += `
-    <div class="order-card">
+    <div class="order-card${hasReceipt?' has-receipt':''}" ${hasReceipt?`onclick="toggleReceipt('${rcptId}')"`:''}>
         <div class="order-header">
             <span class="order-number">${fmtOrderNo(o.order_number)}</span>
             <span class="status-badge ${sClass}">${o.status}</span>
@@ -2376,11 +2384,20 @@ function renderHistory(rows){
         <div class="detail-item"><span class="detail-ico">${ICON.send}</span> ناردرا: ${new Date(o.created_at).toLocaleString('ku-IQ')}</div>
         ${decidedRow}
         ${o.admin_note?`<div class="detail-item"><span class="detail-ico">${ICON.message}</span> ${o.admin_note}</div>`:''}
+        ${hasReceipt?`<div class="detail-item rcpt-hint"><span class="detail-ico">${ICON.image}</span> وێنەی پسووڵە بەردەستە — کلیک بکە بۆ بینین</div>
+        <div class="rcpt-wrap" id="${rcptId}" style="display:none">
+          <img src="${escHtml(o.payout_receipt_url)}" class="rcpt-img" onclick="event.stopPropagation(); document.getElementById('${rcptId}').style.display='none';">
+        </div>`:''}
     </div>`;
   });
   document.getElementById('historyList').innerHTML = html || `<div class="empty-state">هیچ داواکاریەک نییە</div>`;
 }
 function copyNum(){ navigator.clipboard.writeText(document.getElementById('myNum').innerText); showToast('ژمارەکە کۆپی کرا بۆ کلیپبۆرد','success'); }
+function toggleReceipt(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.style.display = (el.style.display==='none') ? 'block' : 'none';
+}
 
 // Admin panel now lives in its own page — see exchange-admin.html
 
