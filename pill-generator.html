@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ku">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>دروستکەری قاڵبی پرۆکسۆ — Proxo Template Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:#f3f1f8;color:#222;min-height:100vh;}
+.app-hdr{background:linear-gradient(120deg,#5b1fa8,#8a2be2 55%,#c855e0);color:#fff;padding:26px 20px;text-align:center;box-shadow:0 4px 18px rgba(91,31,168,.25);}
+.app-hdr h1{font-size:20px;font-weight:800;margin-bottom:6px;}
+.app-hdr p{font-size:13px;opacity:.88;}
+.app-body{display:flex;flex-wrap:wrap;gap:24px;padding:24px;max-width:1200px;margin:0 auto;align-items:flex-start;}
+.form-panel{flex:1 1 380px;min-width:320px;background:#fff;border-radius:18px;padding:22px;box-shadow:0 4px 20px rgba(17,10,30,.06);}
+.form-panel h2{font-size:15px;font-weight:800;color:#5b1fa8;margin-bottom:16px;}
+.field-group{margin-bottom:16px;}
+.field-group label{display:block;font-size:13px;font-weight:700;color:#444;margin-bottom:6px;}
+.field-group input[type="text"],
+.field-group input[type="url"]{width:100%;padding:11px 13px;border:1px solid #e4e1ec;border-radius:12px;font-size:14px;font-family:inherit;background:#fafafd;transition:border-color .15s ease;}
+.field-group input[type="tel"]{width:100%;padding:11px 13px;border:1px solid #e4e1ec;border-radius:12px;font-size:14px;font-family:'Inter',sans-serif;background:#fafafd;transition:border-color .15s ease;}
+.field-group input:focus{outline:none;border-color:#c855e0;}
+.field-group input[type="file"]{width:100%;font-size:13px;padding:8px 0;}
+.img-preview{margin-top:8px;max-width:100px;max-height:100px;border-radius:10px;object-fit:cover;border:1px solid #eee;}
+.section-divider{border:none;border-top:1px dashed #e4e1ec;margin:20px 0;}
+.actions{display:flex;flex-direction:column;gap:10px;margin-top:22px;}
+.btn{border:none;border-radius:50px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;transition:transform .15s ease,opacity .15s ease;}
+.btn:active{transform:scale(.97);}
+.btn-secondary{background:#f3f0fa;color:#5b1fa8;}
+.btn-primary{background:linear-gradient(120deg,#5b1fa8,#c855e0);color:#fff;box-shadow:0 6px 18px rgba(91,31,168,.35);}
+.preview-panel{flex:0 0 auto;position:sticky;top:24px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.preview-label{font-size:12px;font-weight:700;color:#888;}
+.phone-frame{width:400px;max-width:90vw;height:800px;max-height:82vh;background:#111;border-radius:36px;padding:12px;box-shadow:0 14px 40px rgba(17,10,30,.28);}
+.phone-frame iframe{width:100%;height:100%;border:none;border-radius:26px;background:#fff;}
+@media (max-width:860px){
+  .preview-panel{position:static;width:100%;}
+  .phone-frame{width:100%;max-width:430px;height:720px;}
+}
+</style>
+</head>
+<body>
+
+<div class="app-hdr">
+  <h1>دروستکەری قاڵبی پرۆکسۆ</h1>
+  <p>هەموو خانەکان پڕبکەرەوە، پێشبینینی زیندوو ببینە، دواتر پەڕەکە دابگرە وەک فایلی HTML</p>
+</div>
+
+<div class="app-body">
+
+  <section class="form-panel">
+    <h2>زانیاری بزنس</h2>
+
+    <div class="field-group">
+      <label>ناوی بزنس / پرۆفایل</label>
+      <input type="text" id="businessName" class="form-input" placeholder="بۆ نموونە: عەقارات قەلاسنج">
+    </div>
+
+    <div class="field-group">
+      <label>وێنەی پرۆفایل</label>
+      <input type="file" id="profileImageInput" accept="image/*">
+      <img id="profileImagePreview" class="img-preview" style="display:none;">
+    </div>
+
+    <hr class="section-divider">
+    <h2>بانەری تیکتۆک</h2>
+
+    <div class="field-group">
+      <label>وێنەی بانەر (Thumbnail)</label>
+      <input type="file" id="bannerImageInput" accept="image/*">
+      <img id="bannerImagePreview" class="img-preview" style="display:none;">
+    </div>
+
+    <div class="field-group">
+      <label>تایتڵی سەرەکی بانەر</label>
+      <input type="text" id="bannerTitle" class="form-input" placeholder="تایتڵی ڤیدیۆکە لێرە">
+    </div>
+
+    <div class="field-group">
+      <label>ژێرنووسی بانەر</label>
+      <input type="text" id="bannerSubtitle" class="form-input" placeholder="ناونیشانی کورت لەسەر ڤیدیۆکە">
+    </div>
+
+    <div class="field-group">
+      <label>لینکی بانەر / ڤیدیۆی تیکتۆک</label>
+      <input type="url" id="bannerLink" class="form-input" placeholder="https://www.tiktok.com/@user/video/123">
+    </div>
+
+    <hr class="section-divider">
+    <h2>تیکتۆک</h2>
+
+    <div class="field-group">
+      <label>ناوی بەکارهێنەری تیکتۆک (بەبێ @)</label>
+      <input type="text" id="tiktokUsername" class="form-input" placeholder="haqaratqalasnj">
+    </div>
+
+    <div class="field-group">
+      <label>لینکی پرۆفایلی تیکتۆک</label>
+      <input type="url" id="tiktokProfileLink" class="form-input" placeholder="https://www.tiktok.com/@haqaratqalasnj">
+    </div>
+
+    <hr class="section-divider">
+    <h2>ژمارە پەیوەندییەکان</h2>
+
+    <div class="field-group">
+      <label>ژمارەی واتسئاپ</label>
+      <input type="tel" id="whatsappNumber" class="form-input" placeholder="9647501245223">
+    </div>
+
+    <div class="field-group">
+      <label>ژمارەی ڤایبەر</label>
+      <input type="tel" id="viberNumber" class="form-input" placeholder="9647501245223">
+    </div>
+
+    <div class="field-group">
+      <label>ژمارەی کۆرەک / تەلەفۆن</label>
+      <input type="tel" id="phoneNumber" class="form-input" placeholder="9647501245223">
+    </div>
+
+    <hr class="section-divider">
+    <h2>پرسیار و وەڵامەکانی مۆداڵ</h2>
+
+    <div class="field-group">
+      <label>سەردێری پرسیار</label>
+      <input type="text" id="modalQuestion" class="form-input" placeholder="چۆن هاوکارت بین؟">
+    </div>
+
+    <div class="field-group" style="display:flex;gap:8px;">
+      <div style="flex:0 0 60px;">
+        <label>ئیمۆجی ١</label>
+        <input type="text" id="intent1Emoji" class="form-input" placeholder="🏷️">
+      </div>
+      <div style="flex:1;">
+        <label>وەڵام ١ (دەق)</label>
+        <input type="text" id="intent1Label" class="form-input" placeholder="داواکردنی نرخ">
+      </div>
+    </div>
+    <div class="field-group">
+      <label>پەیامی ناردن بۆ وەڵام ١</label>
+      <input type="text" id="intent1Msg" class="form-input" placeholder="سڵاو، دەمەوێت نرخەکان بزانم 🙏">
+    </div>
+
+    <div class="field-group" style="display:flex;gap:8px;">
+      <div style="flex:0 0 60px;">
+        <label>ئیمۆجی ٢</label>
+        <input type="text" id="intent2Emoji" class="form-input" placeholder="❓">
+      </div>
+      <div style="flex:1;">
+        <label>وەڵام ٢ (دەق)</label>
+        <input type="text" id="intent2Label" class="form-input" placeholder="پرسیارم هەیە">
+      </div>
+    </div>
+    <div class="field-group">
+      <label>پەیامی ناردن بۆ وەڵام ٢</label>
+      <input type="text" id="intent2Msg" class="form-input" placeholder="سڵاو، پرسیارێکم هەیە دەربارەی بەرهەم/خزمەتگوزارییەکەتان">
+    </div>
+
+    <div class="field-group" style="display:flex;gap:8px;">
+      <div style="flex:0 0 60px;">
+        <label>ئیمۆجی ٣</label>
+        <input type="text" id="intent3Emoji" class="form-input" placeholder="📦">
+      </div>
+      <div style="flex:1;">
+        <label>وەڵام ٣ (دەق)</label>
+        <input type="text" id="intent3Label" class="form-input" placeholder="دەمەوێت داواکارییەک بکەم">
+      </div>
+    </div>
+    <div class="field-group">
+      <label>پەیامی ناردن بۆ وەڵام ٣</label>
+      <input type="text" id="intent3Msg" class="form-input" placeholder="سڵاو، دەمەوێت داواکارییەک بکەم">
+    </div>
+
+    <div class="actions">
+      <button id="previewBtn" class="btn btn-secondary" type="button">چاودێری (Preview)</button>
+      <button id="downloadBtn" class="btn btn-primary" type="button">دروستکردن / داگرتنی HTML</button>
+    </div>
+  </section>
+
+  <section class="preview-panel">
+    <div class="preview-label">پێشبینینی زیندوو</div>
+    <div class="phone-frame">
+      <iframe id="previewFrame" title="Live Preview"></iframe>
+    </div>
+  </section>
+
+</div>
+
+<script>
+// ---- persistent image state (base64 data URLs) ----
+let profileImageData = '';
+let bannerImageData = '';
+
+// ---- helpers ----
+function escapeHtml(str){
+  return String(str || '').replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+function digitsOnly(str){
+  return String(str || '').replace(/[^0-9]/g, '');
+}
+function escapeJsStr(str){
+  return String(str || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n').replace(/</g, '\\u003c');
+}
+
+function getFormData(){
+  return {
+    businessName: document.getElementById('businessName').value.trim(),
+    bannerTitle: document.getElementById('bannerTitle').value.trim(),
+    bannerSubtitle: document.getElementById('bannerSubtitle').value.trim(),
+    bannerLink: document.getElementById('bannerLink').value.trim(),
+    tiktokUsername: document.getElementById('tiktokUsername').value.trim().replace(/^@/, ''),
+    tiktokProfileLink: document.getElementById('tiktokProfileLink').value.trim(),
+    whatsapp: digitsOnly(document.getElementById('whatsappNumber').value),
+    viber: digitsOnly(document.getElementById('viberNumber').value),
+    phone: digitsOnly(document.getElementById('phoneNumber').value),
+    modalQuestion: document.getElementById('modalQuestion').value.trim(),
+    intents: [1,2,3].map(function(i){
+      return {
+        emoji: document.getElementById('intent'+i+'Emoji').value.trim(),
+        label: document.getElementById('intent'+i+'Label').value.trim(),
+        msg: document.getElementById('intent'+i+'Msg').value.trim()
+      };
+    })
+  };
+}
+
+// ---- builds the full standalone generated-page.html, reusing the reference design 1:1 ----
+function buildGeneratedHTML(data){
+  var rawName = data.businessName || 'ناوی بزنس';
+  var businessName = escapeHtml(rawName);
+  var initial = escapeHtml(rawName.trim().charAt(0) || '?');
+
+  var bannerTitle = escapeHtml(data.bannerTitle || 'تایتڵی ڤیدیۆکە لێرە');
+  var bannerSubtitle = escapeHtml(data.bannerSubtitle || 'ناونیشانی کورت لەسەر ڤیدیۆکە لێرە دەنووسرێت');
+
+  var tiktokUsername = escapeHtml(data.tiktokUsername || 'username');
+  var tiktokProfileLink = data.tiktokProfileLink || (data.tiktokUsername ? 'https://www.tiktok.com/@' + data.tiktokUsername : 'https://www.tiktok.com/');
+  var bannerLink = data.bannerLink || tiktokProfileLink;
+  var bannerImg = bannerImageData || 'https://placehold.co/234x312/111111/ffffff?text=TikTok';
+
+  var avatarInner = profileImageData
+    ? '<img src="' + profileImageData + '" alt="' + businessName + '" style="width:100%;height:100%;object-fit:cover;display:block;">'
+    : initial;
+
+  var whatsapp = data.whatsapp || '';
+  var viber = data.viber || '';
+  var phone = data.phone || '';
+
+  var modalQuestion = escapeJsStr(data.modalQuestion || 'چۆن هاوکارت بین؟');
+
+  var defaultIntents = [
+    {emoji:'🏷️',label:'داواکردنی نرخ',msg:'سڵاو، دەمەوێت نرخەکان بزانم 🙏'},
+    {emoji:'❓',label:'پرسیارم هەیە',msg:'سڵاو، پرسیارێکم هەیە دەربارەی بەرهەم/خزمەتگوزارییەکەتان'},
+    {emoji:'📦',label:'دەمەوێت داواکارییەک بکەم',msg:'سڵاو، دەمەوێت داواکارییەک بکەم'}
+  ];
+  var intents = defaultIntents.map(function(d, i){
+    var it = (data.intents && data.intents[i]) || {};
+    return {
+      emoji: it.emoji || d.emoji,
+      label: it.label || d.label,
+      msg: it.msg || d.msg
+    };
+  });
+  var intentsJSON = JSON.stringify(intents).replace(/</g, '\\u003c');
+
+  return `<!DOCTYPE html><html dir="rtl" lang="ku"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>${businessName}</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+@font-face{font-family:'R';src:url('https://raw.githubusercontent.com/Zana-Sponsor/Zana-Sponsor/main/Rabar_021.woff2') format('woff2');}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:'R',sans-serif;background:#eef0f5;min-height:100vh;display:flex;justify-content:center;}
+.wrap{width:100%;max-width:430px;min-height:100vh;background:#fff;display:flex;flex-direction:column;}
+.hdr{height:118px;background:linear-gradient(120deg,#5b1fa8,#8a2be2 55%,#c855e0);position:relative;overflow:hidden;}
+.hdr::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 85% 20%,rgba(255,255,255,.16),transparent 45%),radial-gradient(circle at 10% 85%,rgba(255,255,255,.12),transparent 40%);}
+.hdr::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:22px;background:#fff;border-radius:50% 50% 0 0/100% 100% 0 0;}
+.av-wrap{display:flex;justify-content:center;margin-top:-48px;margin-bottom:12px;position:relative;z-index:2;}
+.av{width:88px;height:88px;border-radius:50%;padding:3px;background:linear-gradient(135deg,#5b1fa8,#c855e0);box-shadow:0 6px 20px rgba(91,31,168,.3);}
+.av-in{width:100%;height:100%;border-radius:50%;border:3px solid #fff;overflow:hidden;background:#5b1fa8;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:#fff;}
+.av img{width:100%;height:100%;object-fit:cover;display:block;}
+.profile{padding:0 22px;text-align:center;margin-bottom:24px;}
+.uname{font-size:19px;font-weight:700;color:#111;margin-bottom:5px;}
+.ubio{font-size:14px;color:#777;line-height:1.9;white-space:pre-line;}
+.vbanner-wrap{padding:0 22px;margin-bottom:24px;}
+.vbanner{position:relative;display:flex;align-items:center;gap:13px;width:100%;background:#fff;border-radius:18px;padding:11px 13px 11px 11px;text-decoration:none;box-shadow:0 1px 3px rgba(17,10,30,.06),0 12px 26px -10px rgba(17,10,30,.2);border:1px solid #f0eef7;border-right:3px solid #c855e0;}
+.vbanner:active{transform:scale(.98);}
+.vbanner-thumb{position:relative;flex-shrink:0;width:70px;height:94px;border-radius:13px;overflow:hidden;background:#111;}
+.vbanner-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.vbanner-text{flex:1;min-width:0;text-align:right;display:flex;flex-direction:column;justify-content:flex-start;padding:2px 0;}
+.vbanner-title{color:#111;font-size:14px;font-weight:800;margin-bottom:4px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.vbanner-sub{color:#8a8792;font-size:11.5px;line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word;}
+.vbanner-chev{flex-shrink:0;color:#c6c2d1;font-size:12px;align-self:center;}
+.btns{padding:0 22px;display:flex;flex-direction:column;gap:12px;}
+.pl-btn{display:flex;align-items:center;width:100%;padding:15px 14px;border-radius:50px;color:#fff;text-decoration:none;cursor:pointer;transition:transform .18s ease,opacity .18s ease;position:relative;overflow:hidden;}
+.pl-btn:active{transform:scale(.97);opacity:.92;}
+.pl-btn::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.2);opacity:0;transition:opacity .32s ease-out;pointer-events:none;}
+.pl-btn.pressed::before{opacity:1;transition:opacity .06s ease-in;}
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.4);transform:scale(0);animation:rippleAnim .6s ease-out forwards;pointer-events:none;}
+@keyframes rippleAnim{to{transform:scale(1);opacity:0;}}
+.pl-lbl{flex:1;text-align:center;font-size:17px;font-weight:700;}
+.tt-wrap{display:flex;justify-content:center;margin:14px 22px 0;}
+.tt-sm{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:50px;background:#111;color:#fff;text-decoration:none;font-size:14px;font-weight:700;box-shadow:0 5px 16px rgba(0,0,0,.3);}
+.tt-sm:active{transform:scale(.97);}
+.footer{width:100%;margin-top:auto;padding:60px 20px 24px;text-align:center;}
+.footer small{display:block;font-size:11px;color:#bbb;margin-bottom:6px;font-weight:600;}
+.footer img{height:15px;display:block;margin:0 auto 10px;opacity:.75;}
+.legal{font-size:10px;color:#bbb;}.legal a{color:inherit;text-decoration:none;margin:0 5px;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;justify-content:center;align-items:center;z-index:9999;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}
+.modal-overlay.active{display:flex;animation:fi .2s ease;}
+.modal-box{width:84%;max-width:310px;background:#fff;border-radius:22px;text-align:center;overflow:hidden;}
+.modal-hdr{height:60px;background:linear-gradient(120deg,#5b1fa8,#8a2be2 55%,#c855e0);position:relative;overflow:hidden;}
+.modal-hdr::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 85% 20%,rgba(255,255,255,.16),transparent 45%),radial-gradient(circle at 10% 85%,rgba(255,255,255,.12),transparent 40%);}
+.modal-icon{width:52px;height:52px;border-radius:50%;margin:-26px auto 14px;position:relative;z-index:2;background:linear-gradient(135deg,#5b1fa8,#c855e0);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(91,31,168,.35);border:3px solid #fff;}
+.modal-icon i{color:#fff;font-size:19px;}
+.modal-close{position:absolute;top:12px;left:12px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;cursor:pointer;z-index:3;transition:transform .15s ease,background .15s ease;}
+.modal-close:active{transform:scale(.9);background:rgba(255,255,255,.32);}
+.modal-inner{padding:0 22px 24px;}
+.modal-box h3{font-size:19px;font-weight:800;color:#111;margin-bottom:6px;}
+.modal-box p{font-size:12.5px;color:#9a97a3;margin-bottom:18px;line-height:1.6;}
+.modal-ok{width:100%;padding:15px;border-radius:50px;border:none;font-family:'R';font-size:16px;font-weight:800;cursor:pointer;margin-bottom:10px;color:#fff;}
+.modal-options{display:none;flex-direction:column;gap:10px;margin-bottom:6px;}
+.intent-btn{width:100%;padding:11px 14px;border-radius:15px;border:1px solid #f0eef7;border-right:3px solid #c855e0;background:#fafafd;color:#222;font-family:'R';font-size:14px;font-weight:700;text-align:right;cursor:pointer;display:flex;align-items:center;gap:11px;transition:transform .15s ease,background .15s ease,border-color .15s ease;box-shadow:0 1px 3px rgba(17,10,30,.06);}
+.intent-btn:active{transform:scale(.97);background:#f3f0fa;}
+.intent-ico{width:38px;height:38px;border-radius:12px;flex-shrink:0;background:linear-gradient(135deg,#f3ecff,#fbeaf9);display:flex;align-items:center;justify-content:center;font-size:17px;}
+.intent-lbl{flex:1;}
+.intent-chev{color:#c6c2d1;font-size:11px;flex-shrink:0;}
+.skel-bar{border-radius:8px;background:linear-gradient(100deg,#ececf2 28%,#f7f6fa 45%,#ececf2 62%);background-size:250% 100%;animation:skelShine 1.3s ease-in-out infinite;box-shadow:0 2px 10px rgba(17,10,30,.05);}
+@keyframes skelShine{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+.skel-ttl{height:19px;width:58%;margin:0 auto 8px;}
+.skel-sub{height:10px;width:74%;margin:0 auto 18px;}
+.skel-opt{height:60px;width:100%;border-radius:15px;margin-bottom:10px;}
+.modal-real{display:none;opacity:0;}
+.modal-box.loaded .modal-skel{display:none;}
+.modal-box.loaded .modal-real{display:block;animation:modReal .25s ease forwards;}
+@keyframes modReal{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fi{from{opacity:0}to{opacity:1}}@keyframes sh{0%{left:-100%}100%{left:160%}}
+.shine-active::after{content:'';position:absolute;top:0;left:-100%;width:55%;height:100%;background:linear-gradient(to right,transparent,rgba(255,255,255,.18),transparent);transform:skewX(-20deg);animation:sh 2.4s ease-in-out infinite;pointer-events:none;}
+.no-sh::after{animation:none!important;display:none;}
+</style></head><body>
+<div class="modal-overlay" id="mod"><div class="modal-box" id="modBox">
+<div class="modal-hdr"><div class="modal-close" onclick="closeMod()"><i class="fas fa-times"></i></div></div>
+<div class="modal-icon"><i class="fas fa-comments"></i></div>
+<div class="modal-inner">
+<div class="modal-skel"><div class="skel-bar skel-ttl"></div><div class="skel-bar skel-sub"></div><div class="skel-bar skel-opt"></div><div class="skel-bar skel-opt"></div><div class="skel-bar skel-opt"></div></div>
+<div class="modal-real"><h3 id="mod-ttl">...</h3><p id="mod-desc">هەڵبژاردنێک بکە بۆ بەردەوامبوون</p><div id="mod-options" class="modal-options"></div><button id="mod-ok" class="modal-ok" onclick="goLink()">بەڵێ، بەردەوام بە</button></div>
+</div>
+</div></div>
+<div class="wrap">
+<div class="hdr"></div>
+<div class="av-wrap"><div class="av"><div class="av-in">${avatarInner}</div></div></div>
+<div class="profile"><div class="uname">${businessName}</div></div>
+
+<div class="vbanner-wrap">
+<a class="vbanner" href="${bannerLink}" target="_blank" rel="noopener">
+<div class="vbanner-thumb">
+<img src="${bannerImg}" alt="ڤیدیۆی تیکتۆک">
+</div>
+<div class="vbanner-text">
+<div class="vbanner-title">${bannerTitle}</div>
+<div class="vbanner-sub">${bannerSubtitle}</div>
+</div>
+<i class="fas fa-chevron-left vbanner-chev"></i>
+</a>
+</div>
+
+<div class="btns"><a id="wa" class="pl-btn shine-active" style="background:linear-gradient(to left,#128c7e,#25d366);box-shadow:0 6px 20px rgba(37,211,102,.42);"><span style="width:44px;flex-shrink:0;"></span><span class="pl-lbl">واتسئاپ</span><i class="fab fa-whatsapp" style="font-size:25px;width:44px;flex-shrink:0;text-align:center;"></i></a><a id="vb" class="pl-btn" style="background:linear-gradient(to left,#5c4fd6,#7360f2);box-shadow:0 6px 20px rgba(115,96,242,.42);"><span style="width:44px;flex-shrink:0;"></span><span class="pl-lbl">ڤایبەر</span><i class="fab fa-viber" style="font-size:22px;width:44px;flex-shrink:0;text-align:center;"></i></a><a id="ph" class="pl-btn" style="background:linear-gradient(to left,#1d4ed8,#2563eb);box-shadow:0 6px 20px rgba(37,99,235,.42);"><span style="width:44px;flex-shrink:0;"></span><span class="pl-lbl">کۆرەک</span><i class="fas fa-phone-alt" style="font-size:20px;width:44px;flex-shrink:0;text-align:center;"></i></a></div>
+<div class="tt-wrap"><a href="${tiktokProfileLink}" target="_blank" class="tt-sm"><span dir="ltr">@${tiktokUsername}</span><i class="fab fa-tiktok" style="font-size:18px"></i></a></div>
+<div class="footer"><small>سپۆنسەر کراوە لەئەپی</small><a href="https://www.tiktok.com/@proxo_iq" target="_blank"><img src="https://image2url.com/r2/default/images/1772757087694-7bee9862-8ba7-44c2-9056-a4543f25aa32.webp" alt="Proxo"></a><div class="legal"><a href="https://proxopages.com/policy" target="_blank">Privacy Policy</a> | <a href="https://proxopages.com/terms" target="_blank">Terms &amp; Conditions</a></div></div>
+</div>
+<script>
+const INTENTS=${intentsJSON};
+let _app='',_url='',_videoLink='';
+(function(){
+  var params=new URLSearchParams(location.search);
+  var vid=params.get('vid'),user=params.get('user');
+  if(!vid||!user)return;
+  _videoLink='https://www.tiktok.com/@'+user+'/video/'+vid;
+  var a=document.querySelector('.vbanner');
+  if(a)a.href=_videoLink;
+  fetch('https://www.tiktok.com/oembed?url='+encodeURIComponent(_videoLink))
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.thumbnail_url){var img=document.querySelector('.vbanner-thumb img');if(img)img.src=d.thumbnail_url;}
+      if(d.title){var t=document.querySelector('.vbanner-title');if(t)t.textContent=d.title;}
+    })
+    .catch(function(){});
+})();
+function openModal(){var box=document.getElementById('modBox');box.classList.remove('loaded');document.getElementById('mod').classList.add('active');if(navigator.vibrate)navigator.vibrate(22);setTimeout(function(){box.classList.add('loaded');},550);}
+function askIntent(n,u){_app=n;document.getElementById('mod-ttl').innerText='${modalQuestion}';document.getElementById('mod-desc').style.display='block';document.getElementById('mod-ok').style.display='none';var wrap=document.getElementById('mod-options');wrap.innerHTML='';wrap.style.display='flex';INTENTS.forEach(function(it){var b=document.createElement('button');b.className='intent-btn';b.innerHTML='<span class="intent-ico">'+it.emoji+'</span><span class="intent-lbl">'+it.label+'</span><i class="fas fa-chevron-left intent-chev"></i>';b.onclick=function(){selectIntent(u,it.msg);};wrap.appendChild(b);});openModal();}
+function selectIntent(u,msg){if(_videoLink)msg+='\\n\\n🎬 '+_videoLink;if(u.indexOf('tel:')===0){_url=u;goLink();return;}var sep=u.indexOf('?')>-1?'&':'?';_url=u+sep+'text='+encodeURIComponent(msg);goLink();}
+function closeMod(){document.getElementById('mod').classList.remove('active');}
+function goLink(){const lt=localStorage.getItem('tt_ct');const ct=Date.now();if(window.ttq&&(!lt||ct-lt>86400000)){ttq.track('Contact',{content_id:'contact_button',content_name:_app});localStorage.setItem('tt_ct',ct);}closeMod();setTimeout(()=>{window.location.href=_url;},700);}
+!function(w,d,t){w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=['page','track','identify','instances','debug','on','off','once','ready','alias','group','enableCookie','disableCookie','holdConsent','revokeConsent','grantConsent'];ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)));};};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e;};ttq.load=function(e,n){var r='https://analytics.tiktok.com/i18n/pixel/events.js';ttq._i=ttq._i||{};ttq._i[e]=[];ttq._i[e]._u=r;ttq._t=ttq._t||{};ttq._t[e]=+new Date;ttq._o=ttq._o||{};ttq._o[e]=n||{};var s=document.createElement('script');s.type='text/javascript';s.async=!0;s.src=r+'?sdkid='+e+'&lib='+t;var x=document.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);};ttq.load('D6BIIA3C77U1CE9DCUMG');ttq.page();}(window,document,'ttq');
+function spawnRipple(e){
+  var btn=e.currentTarget;
+  var rect=btn.getBoundingClientRect();
+  var size=Math.max(rect.width,rect.height)*1.6;
+  var pt=e.changedTouches?e.changedTouches[0]:e;
+  var x=pt.clientX-rect.left-size/2;
+  var y=pt.clientY-rect.top-size/2;
+  var r=document.createElement('span');
+  r.className='ripple';
+  r.style.width=r.style.height=size+'px';
+  r.style.left=x+'px';
+  r.style.top=y+'px';
+  btn.appendChild(r);
+  r.addEventListener('animationend',function(){r.remove();});
+}
+document.addEventListener('DOMContentLoaded',function(){
+  document.querySelectorAll('.pl-btn').forEach(function(btn){
+    btn.addEventListener('click',spawnRipple);
+    btn.addEventListener('pointerdown',function(){btn.classList.add('pressed');});
+    ['pointerup','pointerleave','pointercancel'].forEach(function(ev){
+      btn.addEventListener(ev,function(){btn.classList.remove('pressed');});
+    });
+  });
+  document.getElementById('wa').onclick = function(){
+    askIntent('whatsapp', 'whatsapp://send?phone=${whatsapp}');
+  };
+  document.getElementById('vb').onclick = function(){
+    askIntent('viber', 'viber://chat?number=${viber}');
+  };
+  document.getElementById('ph').onclick = function(){
+    askIntent('phone', 'tel:${phone}');
+  };
+  window.onclick=function(e){if(e.target.id==='mod')closeMod();};
+  setTimeout(function(){var s=document.querySelector('.shine-active');if(s)s.classList.add('no-sh');},10000);
+});
+<\/script></body></html>`;
+}
+
+// ---- live preview ----
+let previewTimer = null;
+function schedulePreviewUpdate(){
+  clearTimeout(previewTimer);
+  previewTimer = setTimeout(updatePreview, 150);
+}
+function updatePreview(){
+  var data = getFormData();
+  var html = buildGeneratedHTML(data);
+  document.getElementById('previewFrame').srcdoc = html;
+}
+
+// ---- image uploads -> base64 ----
+function handleImageUpload(inputEl, onLoaded){
+  var file = inputEl.files && inputEl.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    onLoaded(e.target.result);
+    schedulePreviewUpdate();
+  };
+  reader.readAsDataURL(file);
+}
+
+document.getElementById('profileImageInput').addEventListener('change', function(){
+  handleImageUpload(this, function(dataUrl){
+    profileImageData = dataUrl;
+    var p = document.getElementById('profileImagePreview');
+    p.src = dataUrl;
+    p.style.display = 'block';
+  });
+});
+
+document.getElementById('bannerImageInput').addEventListener('change', function(){
+  handleImageUpload(this, function(dataUrl){
+    bannerImageData = dataUrl;
+    var p = document.getElementById('bannerImagePreview');
+    p.src = dataUrl;
+    p.style.display = 'block';
+  });
+});
+
+// ---- wire up all text inputs for live preview ----
+document.querySelectorAll('.form-panel input[type="text"], .form-panel input[type="url"], .form-panel input[type="tel"]').forEach(function(el){
+  el.addEventListener('input', schedulePreviewUpdate);
+});
+
+// ---- preview button (manual refresh) ----
+document.getElementById('previewBtn').addEventListener('click', updatePreview);
+
+// ---- generate & download the standalone generated-page.html ----
+document.getElementById('downloadBtn').addEventListener('click', function(){
+  var data = getFormData();
+  var html = buildGeneratedHTML(data);
+  var blob = new Blob([html], {type:'text/html'});
+  var url = URL.createObjectURL(blob);
+  var slugSource = data.businessName || 'generated-page';
+  var slug = slugSource.replace(/[^a-zA-Z0-9\u0600-\u06FF\-]+/g, '-').replace(/^-+|-+$/g, '') || 'generated-page';
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = slug + '.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
+
+// ---- initial preview render ----
+updatePreview();
+</script>
+
+</body>
+</html>
