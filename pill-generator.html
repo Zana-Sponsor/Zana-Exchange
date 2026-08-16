@@ -197,6 +197,10 @@ function escapeHtml(str){
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
   });
 }
+function toWesternDigits(str){
+  var map={'٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9','۰':'0','۱':'1','۲':'2','۳':'3','۴':'4','۵':'5','۶':'6','۷':'7','۸':'8','۹':'9'};
+  return String(str || '').replace(/[٠-٩۰-۹]/g, function(c){ return map[c]; });
+}
 function digitsOnly(str){
   return String(str || '').replace(/[^0-9]/g, '');
 }
@@ -228,12 +232,12 @@ function getFormData(){
 
 // ---- builds the full standalone generated-page.html, reusing the reference design 1:1 ----
 function buildGeneratedHTML(data){
-  var rawName = data.businessName || 'ناوی بزنس';
+  var rawName = toWesternDigits(data.businessName) || 'ناوی بزنس';
   var businessName = escapeHtml(rawName);
   var initial = escapeHtml(rawName.trim().charAt(0) || '?');
 
-  var bannerTitle = escapeHtml(data.bannerTitle || 'تایتڵی ڤیدیۆکە لێرە');
-  var bannerSubtitle = escapeHtml(data.bannerSubtitle || 'ناونیشانی کورت لەسەر ڤیدیۆکە لێرە دەنووسرێت');
+  var bannerTitle = escapeHtml(toWesternDigits(data.bannerTitle) || 'تایتڵی ڤیدیۆکە لێرە');
+  var bannerSubtitle = escapeHtml(toWesternDigits(data.bannerSubtitle) || 'ناونیشانی کورت لەسەر ڤیدیۆکە لێرە دەنووسرێت');
 
   var tiktokUsername = escapeHtml(data.tiktokUsername || 'username');
   var tiktokProfileLink = data.tiktokProfileLink || (data.tiktokUsername ? 'https://www.tiktok.com/@' + data.tiktokUsername : 'https://www.tiktok.com/');
@@ -384,13 +388,12 @@ let _app='',_url='',_videoLink='';
     .then(function(r){return r.json();})
     .then(function(d){
       if(d.thumbnail_url){var img=document.querySelector('.vbanner-thumb img');if(img)img.src=d.thumbnail_url;}
-      if(d.title){var t=document.querySelector('.vbanner-title');if(t)t.textContent=d.title;}
     })
     .catch(function(){});
 })();
 function openModal(){var box=document.getElementById('modBox');box.classList.remove('loaded');document.getElementById('mod').classList.add('active');if(navigator.vibrate)navigator.vibrate(22);setTimeout(function(){box.classList.add('loaded');},550);}
 function askIntent(n,u){_app=n;document.getElementById('mod-ttl').innerText='${modalQuestion}';document.getElementById('mod-desc').style.display='block';document.getElementById('mod-ok').style.display='none';var wrap=document.getElementById('mod-options');wrap.innerHTML='';wrap.style.display='flex';INTENTS.forEach(function(it){var b=document.createElement('button');b.className='intent-btn';b.innerHTML='<span class="intent-ico">'+it.emoji+'</span><span class="intent-lbl">'+it.label+'</span><i class="fas fa-chevron-left intent-chev"></i>';b.onclick=function(){selectIntent(u,it.msg);};wrap.appendChild(b);});openModal();}
-function selectIntent(u,msg){if(_videoLink)msg+='\\n\\n🎬 '+_videoLink;if(u.indexOf('tel:')===0){_url=u;goLink();return;}var sep=u.indexOf('?')>-1?'&':'?';_url=u+sep+'text='+encodeURIComponent(msg);goLink();}
+function selectIntent(u,msg){if(_videoLink)msg='🎬 '+_videoLink+'\\n\\n'+msg;if(u.indexOf('tel:')===0){_url=u;goLink();return;}var sep=u.indexOf('?')>-1?'&':'?';_url=u+sep+'text='+encodeURIComponent(msg);goLink();}
 function closeMod(){document.getElementById('mod').classList.remove('active');}
 function goLink(){const lt=localStorage.getItem('tt_ct');const ct=Date.now();if(window.ttq&&(!lt||ct-lt>86400000)){ttq.track('Contact',{content_id:'contact_button',content_name:_app});localStorage.setItem('tt_ct',ct);}closeMod();setTimeout(()=>{window.location.href=_url;},700);}
 !function(w,d,t){w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=['page','track','identify','instances','debug','on','off','once','ready','alias','group','enableCookie','disableCookie','holdConsent','revokeConsent','grantConsent'];ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)));};};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e;};ttq.load=function(e,n){var r='https://analytics.tiktok.com/i18n/pixel/events.js';ttq._i=ttq._i||{};ttq._i[e]=[];ttq._i[e]._u=r;ttq._t=ttq._t||{};ttq._t[e]=+new Date;ttq._o=ttq._o||{};ttq._o[e]=n||{};var s=document.createElement('script');s.type='text/javascript';s.async=!0;s.src=r+'?sdkid='+e+'&lib='+t;var x=document.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);};ttq.load('D6BIIA3C77U1CE9DCUMG');ttq.page();}(window,document,'ttq');
