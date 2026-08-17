@@ -4636,14 +4636,6 @@ window.PROXO_SPLASH_MIN_MS = 2600;
           <span id="bdTotal" style="font-size:15px;font-weight:900;color:var(--dark);font-family:'Inter',sans-serif">18,500 IQD</span>
         </div>
       </div>
-      <!-- ══ ئاگاداری قفڵی باڵانس ══ -->
-      <div id="paBalLockBar" style="display:none;align-items:flex-start;gap:10px;background:rgba(217,119,6,.08);border:1.5px solid rgba(217,119,6,.28);border-radius:14px;padding:12px 14px;margin-top:16px">
-        <i class="fas fa-lock" style="color:#d97706;font-size:15px;margin-top:2px;flex-shrink:0"></i>
-        <div style="min-width:0">
-          <div style="font-size:13px;font-weight:800;color:#b45309;margin-bottom:3px">باڵانسەکەت قفڵکراوە</div>
-          <div style="font-size:11.5px;color:#92400e;line-height:1.7" id="paBalLockReason">بۆ زانیاری زیاتر پەیوەندی بە پشتگیری بکە</div>
-        </div>
-      </div>
       <button class="create-submit" id="submitBtn" onclick="submitAd()" style="margin-top:16px">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9"/></svg>
         ناردنی داواکاری
@@ -8190,6 +8182,7 @@ async function boot(){
   startReqListener();    // ── Firebase wallet requests realtime ──
   _trackSession(); // ── session tracking on every login ──
   paInitialGuard(); // ── پاسەوانی بان / دەرکردن / بلۆکی IP / قفڵی باڵانس ──
+  proxoEarlyIpGuard(); // ── داخستنی پەڕەکە ئەگەر IP بلۆککرابێت ──
   // ═══ MAINTENANCE MODE CHECK ═══
   checkMaintenanceMode();
   // Real-time maintenance listener
@@ -8241,7 +8234,7 @@ async function boot(){
     if(!cu||_paKicked)return;
     try{
       const{data:_pb}=await sb.from('profiles')
-        .select('is_banned,ban_reason,force_logout_at,balance_locked,balance_lock_reason')
+        .select('is_banned,ban_reason,force_logout_at,balance_locked,balance_lock_reason,banned_ip')
         .eq('id',cu.id).single();
       if(!_pb)return;
       if(_pb.is_banned){
@@ -8251,6 +8244,8 @@ async function boot(){
       if(_pb.force_logout_at){
         const t=new Date(_pb.force_logout_at).getTime();
         if(!isNaN(t)&&Date.now()-t<180000){
+          const _r=await paCheckIpBanned();
+          if(_r?.banned){ proxoIpLockdown(); return; }
           await paKickOut('سێشنەکەت لەلایەن بەڕێوەبەرەوە کۆتایی هێنرا — تکایە دووبارە بچۆ ژوورەوە');
           return;
         }
@@ -8264,7 +8259,7 @@ async function boot(){
     if(document.hidden||!cu||_paKicked)return;
     _paPublicIp=null; // ئایپی نوێ (گۆڕینی وایفای/داتا)
     const res=await paCheckIpBanned();
-    if(res?.banned) await paKickOut('ئەم ئایپی ئینتەرنێتە بلۆککراوە'+(res.reason?' — '+res.reason:''));
+    if(res?.banned) proxoIpLockdown();
   });
 
   // Realtime: Section lock changes → refresh locks cache
@@ -9197,6 +9192,7 @@ async function paCheckIpBanned(ip){
 }
 
 // دەرکردنی خێرا لە هەژمار بە پەیامێکی ڕوون
+// (بۆ بلۆکی IP بەکارنایەت — لەوێدا proxoIpLockdown بەکاردێت)
 async function paKickOut(msg){
   if(_paKicked) return;
   _paKicked = true;
@@ -9228,6 +9224,14 @@ function paStartGuard(){
       if(row.force_logout_at){
         const t=new Date(row.force_logout_at).getTime();
         if(!isNaN(t) && Date.now()-t < 120000){
+          // ئەگەر هۆکارەکە بلۆکی IP بوو → داخستنی تەواوی پەڕەکە بەبێ هیچ پەیامێک
+          if(row.banned_ip){
+            paCheckIpBanned().then(r=>{
+              if(r?.banned) proxoIpLockdown();
+              else paKickOut('سێشنەکەت کۆتایی هێنرا — تکایە دووبارە بچۆ ژوورەوە');
+            }).catch(()=>paKickOut('سێشنەکەت کۆتایی هێنرا — تکایە دووبارە بچۆ ژوورەوە'));
+            return;
+          }
           paKickOut('سێشنەکەت لەلایەن بەڕێوەبەرەوە کۆتایی هێنرا — تکایە دووبارە بچۆ ژوورەوە');
           return;
         }
@@ -9238,24 +9242,11 @@ function paStartGuard(){
     .subscribe();
 }
 
-// پیشاندانی باری قفڵی باڵانس لە هەموو شوێنێکی UI
+// قفڵی باڵانس بێدەنگ تۆمار دەکرێت — ⚠️ بە ئەنقەست هیچ ئاگاداری، توست،
+// بانەر، پەیام یان ئیمەیلێک بۆ بەکارهێنەر نانێردرێت. تەنها دۆخەکە هەڵدەگیرێت.
 function paApplyBalanceLock(locked, reason){
-  const changed = (_paBalanceLocked !== locked);
   _paBalanceLocked = locked;
   _paBalanceLockReason = reason||'';
-  const bar=document.getElementById('paBalLockBar');
-  if(bar){
-    bar.style.display = locked ? 'flex' : 'none';
-    const r=document.getElementById('paBalLockReason');
-    if(r) r.textContent = _paBalanceLockReason ? ('هۆکار: '+_paBalanceLockReason) : 'بۆ زانیاری زیاتر پەیوەندی بە پشتگیری بکە';
-  }
-  const btn=document.getElementById('submitBtn');
-  if(btn){
-    btn.style.opacity = locked ? '.55' : '';
-    btn.title = locked ? 'باڵانسەکەت قفڵکراوە' : '';
-  }
-  if(changed && locked) showToast('باڵانسەکەت لەلایەن بەڕێوەبەرەوە قفڵکرا','err');
-  if(changed && !locked) showToast('باڵانسەکەت کرایەوە ✅','ok');
 }
 
 // پشکنینی سەرەتایی — بان + قفڵی باڵانس + بلۆکی IP
@@ -9271,37 +9262,106 @@ async function paInitialGuard(){
     }
     paApplyBalanceLock(!!p?.balance_locked, p?.balance_lock_reason||'');
   }catch(_){}
-  // ── پشکنینی IP (لە پاشەوە — UI ڕانەدەگرێت) ──
-  paCheckIpBanned().then(async res=>{
-    if(res?.banned){
-      await paKickOut('ئەم ئایپی ئینتەرنێتە بلۆککراوە'+(res.reason?' — '+res.reason:''));
-    }
+  // ── پشکنینی IP — ئەگەر بلۆککرابوو، پەڕەکە بەتەواوی دادەخرێت ──
+  paCheckIpBanned().then(res=>{
+    if(res?.banned) proxoIpLockdown();
   }).catch(()=>{});
   paStartGuard();
   return false;
 }
 
-// پشکنینی قفڵ پێش هەر خەرجکردنێک (داتابەیسیش دووبارە دەیپشکنێت)
+// پشکنینی قفڵ — بێدەنگ، هیچ پەیامێک ناخاتە ڕوو (بانگکەرەکە بڕیار دەدات)
 async function paAssertCanSpend(){
-  if(!cu?.id) return false;
+  if(!cu?.id) return true;
   try{
     const{data:p}=await sb.from('profiles').select('balance_locked,balance_lock_reason').eq('id',cu.id).single();
-    if(p?.balance_locked){
-      paApplyBalanceLock(true, p.balance_lock_reason||'');
-      showToast('باڵانسەکەت قفڵکراوە — ناتوانیت بەکاری بهێنیت'+(p.balance_lock_reason?(' ('+p.balance_lock_reason+')'):''),'err');
-      return false;
-    }
-    paApplyBalanceLock(false,'');
-    return true;
+    paApplyBalanceLock(!!p?.balance_locked, p?.balance_lock_reason||'');
+    return !p?.balance_locked;
   }catch(_){ return true; }
 }
 
-// ناساندنی هەڵەی داتابەیس بۆ پەیامێکی کوردی
+// پەیامێکی گشتی و بێلایەن — هۆکاری ڕاستەقینە ئاشکرا ناکات
+const PA_NEUTRAL_BLOCK_MSG = 'هەڵەیەک ڕووی دا، دووبارە هەوڵ بدەرەوە';
+
 function paLockErrMsg(m){
   if(!m) return null;
-  if(String(m).includes('balance_locked')) return 'باڵانسەکەت لەلایەن بەڕێوەبەرەوە قفڵکراوە — ناتوانیت بەکاری بهێنیت';
-  if(String(m).includes('ip_banned'))      return 'ئەم ئایپی ئینتەرنێتە بلۆککراوە';
+  if(String(m).includes('balance_locked')) return PA_NEUTRAL_BLOCK_MSG;
+  if(String(m).includes('ip_banned'))      return PA_NEUTRAL_BLOCK_MSG;
   return null;
+}
+
+
+// ══════════════════════════════════════════════════════════════
+// ══ داخستنی تەواوی پەڕەکە کاتێک IP بلۆککراوە ══
+// هیچ ئاگاداری/ئیمەیل/نۆتیفیکەیشنێک نانێردرێت — تەنها پەڕەکە دادەخرێت.
+// ══════════════════════════════════════════════════════════════
+function proxoIpLockdown(){
+  if(window.__proxoIpLocked) return;
+  window.__proxoIpLocked = true;
+  _paKicked = true;
+
+  // ١. وەستاندنی هەموو تایمەر و ژمێرەرەکان
+  try{
+    const _maxId = setTimeout(()=>{}, 0);
+    for(let i=0; i<=_maxId; i++){ clearTimeout(i); clearInterval(i); }
+  }catch(_){}
+
+  // ٢. داخستنی هەموو پەیوەندییەکانی realtime
+  try{ sb.removeAllChannels(); }catch(_){}
+  try{ if(_paGuardChannel) sb.removeChannel(_paGuardChannel); }catch(_){}
+
+  // ٣. دەرچوون لە هەژمار و سڕینەوەی سێشنی لۆکەل
+  try{ sb.auth.signOut(); }catch(_){}
+  cu = null;
+  try{
+    Object.keys(localStorage).forEach(k=>{ if(/^sb-|supabase/i.test(k)) localStorage.removeItem(k); });
+    sessionStorage.clear();
+  }catch(_){}
+
+  // ٤. شاردنەوەی تەواوی ناوەڕۆکی پەڕەکە
+  try{
+    Array.from(document.body.children).forEach(el=>{
+      if(el.id !== 'proxoIpLock'){ el.style.display='none'; el.setAttribute('aria-hidden','true'); }
+    });
+  }catch(_){}
+
+  // ٥. شاشەی داخراو
+  const ov=document.createElement('div');
+  ov.id='proxoIpLock';
+  ov.setAttribute('style',[
+    'position:fixed','inset:0','width:100vw','height:100vh',
+    'background:#0b1020','z-index:2147483647',
+    'display:flex','flex-direction:column','align-items:center','justify-content:center',
+    'text-align:center','padding:32px 26px','box-sizing:border-box',
+    'font-family:R,system-ui,sans-serif','color:#fff','direction:rtl',
+    'user-select:none','-webkit-user-select:none','touch-action:none'
+  ].join(';'));
+  ov.innerHTML=
+    '<div style="width:84px;height:84px;border-radius:50%;background:rgba(239,68,68,.14);'+
+    'border:2px solid rgba(239,68,68,.35);display:flex;align-items:center;justify-content:center;margin-bottom:22px">'+
+    '<svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" '+
+    'stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>'+
+    '<line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg></div>'+
+    '<div style="font-size:17px;font-weight:800;line-height:2.1;max-width:360px">'+
+    'ناونیشانی ئامێرەکەت بلۆککراوە لەسەر ئەم ماڵپەڕە تکایە دواتر هەوڵبدەرەوە!</div>'+
+    '<div style="margin-top:26px;font-size:12px;color:#475569">Proxo</div>';
+  document.body.appendChild(ov);
+  document.body.style.cssText='margin:0;padding:0;overflow:hidden;background:#0b1020';
+  try{ document.documentElement.style.overflow='hidden'; }catch(_){}
+
+  // ٦. ڕێگری لە گەڕانەوە بۆ پەڕەکە (دواوە/پێشەوە)
+  try{
+    history.pushState(null,'',location.href);
+    window.addEventListener('popstate',()=>history.pushState(null,'',location.href));
+  }catch(_){}
+}
+
+// پشکنینی زوو — پێش هەر شتێک. ئەگەر بلۆککرابوو، پەڕەکە یەکسەر دادەخرێت.
+async function proxoEarlyIpGuard(){
+  try{
+    const res = await paCheckIpBanned();
+    if(res && res.banned) proxoIpLockdown();
+  }catch(_){}
 }
 
 // ══ SESSION TRACKING ══
@@ -10603,9 +10663,6 @@ function pickCard(el,id){
   const finalTotal = _promoValidated ? _promoValidated.finalBudget : rawTotal;
   const _totalUSD  = dailyUSD * days;
 
-  // ── پشکنینی قفڵی باڵانس (داتابەیسیش خۆی ڕایدەگرێت) ──
-  if(!await paAssertCanSpend())return;
-
   // Client-side early check (UX only — DB enforces the real constraint)
   const{data:walletData}=await sb.from('pa_wallets').select('balance').eq('user_id',cu.id).single();
   const bal=Math.floor(parseFloat(walletData?.balance||0)*1800);
@@ -10636,6 +10693,15 @@ function pickCard(el,id){
         if(!cardChk){cardId=null;document.querySelectorAll('.card-pick').forEach(x=>x.classList.remove('sel'));}
       }
       const ageGroups=getAgeGroups();
+
+      // ── پشکنینی بێدەنگی قفڵی باڵانس ──
+      // دووگمەکە وەک ئاسایی کاردەکات و سپینەر دەسووڕێتەوە، پاشان تەنها
+      // هەڵەیەکی گشتی دەردەکەوێت. هیچ ئاماژەیەک بە قفڵکردن ناکرێت.
+      if(!await paAssertCanSpend()){
+        await new Promise(r=>setTimeout(r, 700+Math.floor(Math.random()*500)));
+        throw new Error(PA_NEUTRAL_BLOCK_MSG);
+      }
+
       let _fallbackAdNum=null; // بۆ پاراستنی ژمارەی ڕیکلام کاتێک fallback جووڵاوە
       const{data,error}=await sb.rpc('create_ad_and_deduct',{
         p_user_id    : cu.id,
@@ -10705,7 +10771,7 @@ function pickCard(el,id){
           // بەردەوام بە — مامەڵەکە سەرکەوتوو بوو
         }else{
           const msgs={
-            'balance_locked':'باڵانسەکەت لەلایەن بەڕێوەبەرەوە قفڵکراوە — ناتوانیت بەکاری بهێنیت',
+            'balance_locked':PA_NEUTRAL_BLOCK_MSG,
             'insufficient_balance':'موازەنەت بەسنییە، تکایە باڵانس زیاد بکە',
             'wallet_not_found':'جزدانت نەدۆزرایەوە، تکایە دووبارە بچۆ ژوورەوە',
             'invalid_budget':'بودجەی نادروست',
