@@ -4636,6 +4636,14 @@ window.PROXO_SPLASH_MIN_MS = 2600;
           <span id="bdTotal" style="font-size:15px;font-weight:900;color:var(--dark);font-family:'Inter',sans-serif">18,500 IQD</span>
         </div>
       </div>
+      <!-- ══ ئاگاداری قفڵی باڵانس ══ -->
+      <div id="paBalLockBar" style="display:none;align-items:flex-start;gap:10px;background:rgba(217,119,6,.08);border:1.5px solid rgba(217,119,6,.28);border-radius:14px;padding:12px 14px;margin-top:16px">
+        <i class="fas fa-lock" style="color:#d97706;font-size:15px;margin-top:2px;flex-shrink:0"></i>
+        <div style="min-width:0">
+          <div style="font-size:13px;font-weight:800;color:#b45309;margin-bottom:3px">باڵانسەکەت قفڵکراوە</div>
+          <div style="font-size:11.5px;color:#92400e;line-height:1.7" id="paBalLockReason">بۆ زانیاری زیاتر پەیوەندی بە پشتگیری بکە</div>
+        </div>
+      </div>
       <button class="create-submit" id="submitBtn" onclick="submitAd()" style="margin-top:16px">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9"/></svg>
         ناردنی داواکاری
@@ -8148,7 +8156,7 @@ async function boot(){
   // ══ چێکی بانکردن — پێش هەموو شتێک ══
   try {
     const { data: _bp } = await sb.from('profiles')
-      .select('is_banned,ban_reason')
+      .select('is_banned,ban_reason,balance_locked,balance_lock_reason')
       .eq('id', cu.id)
       .single();
     if (_bp?.is_banned) {
@@ -8156,9 +8164,11 @@ async function boot(){
       cu = null;
       proxoHideSplash();
       showAuth();
-      showAmsg('ئەکاونتەکەت هاوگرتراوە' + (_bp.ban_reason ? ' — ' + _bp.ban_reason : ''), 'err');
+      showAmsg('ئەکاونتەکەت بانکراوە' + (_bp.ban_reason ? ' — ' + _bp.ban_reason : ''), 'err');
       return;
     }
+    _paBalanceLocked = !!_bp?.balance_locked;
+    _paBalanceLockReason = _bp?.balance_lock_reason || '';
   } catch(_e) {}
   proxoHideSplash();
   document.getElementById('authWrap').style.display='none';
@@ -8179,6 +8189,7 @@ async function boot(){
   startWalletListener(); // ── Firebase balance realtime ──
   startReqListener();    // ── Firebase wallet requests realtime ──
   _trackSession(); // ── session tracking on every login ──
+  paInitialGuard(); // ── پاسەوانی بان / دەرکردن / بلۆکی IP / قفڵی باڵانس ──
   // ═══ MAINTENANCE MODE CHECK ═══
   checkMaintenanceMode();
   // Real-time maintenance listener
@@ -8224,18 +8235,37 @@ async function boot(){
     if(!document.hidden) checkNotifBell();
   });
 
-  // ══ چێکی بانکردنی خۆکار — هەر ٣ خولەک جارێک ══
+  // ══ پاڵپشتی: چێکی خۆکار هەر ٦٠ چرکە جارێک ══
+  // (realtime سەرەکییە — ئەمە تەنها بۆ کاتێکە کە websocket پچڕاوە)
   setInterval(async()=>{
-    if(!cu)return;
+    if(!cu||_paKicked)return;
     try{
-      const{data:_pb}=await sb.from('profiles').select('is_banned,ban_reason').eq('id',cu.id).single();
-      if(_pb?.is_banned){
-        await sb.auth.signOut();cu=null;
-        showAuth();
-        showAmsg('ئەکاونتەکەت هاوگرتراوە'+(_pb.ban_reason?' — '+_pb.ban_reason:''),'err');
+      const{data:_pb}=await sb.from('profiles')
+        .select('is_banned,ban_reason,force_logout_at,balance_locked,balance_lock_reason')
+        .eq('id',cu.id).single();
+      if(!_pb)return;
+      if(_pb.is_banned){
+        await paKickOut('ئەکاونتەکەت بانکرا'+(_pb.ban_reason?' — '+_pb.ban_reason:''));
+        return;
       }
+      if(_pb.force_logout_at){
+        const t=new Date(_pb.force_logout_at).getTime();
+        if(!isNaN(t)&&Date.now()-t<180000){
+          await paKickOut('سێشنەکەت لەلایەن بەڕێوەبەرەوە کۆتایی هێنرا — تکایە دووبارە بچۆ ژوورەوە');
+          return;
+        }
+      }
+      paApplyBalanceLock(!!_pb.balance_locked,_pb.balance_lock_reason||'');
     }catch(_){}
-  }, 3*60*1000);
+  }, 60*1000);
+
+  // ══ دووبارە پشکنینی IP کاتێک بەکارهێنەر دەگەڕێتەوە بۆ ئاپ ══
+  document.addEventListener('visibilitychange', async function(){
+    if(document.hidden||!cu||_paKicked)return;
+    _paPublicIp=null; // ئایپی نوێ (گۆڕینی وایفای/داتا)
+    const res=await paCheckIpBanned();
+    if(res?.banned) await paKickOut('ئەم ئایپی ئینتەرنێتە بلۆککراوە'+(res.reason?' — '+res.reason:''));
+  });
 
   // Realtime: Section lock changes → refresh locks cache
   sb.channel('section_locks_rt')
@@ -9126,6 +9156,153 @@ const _PAGE_LOCK_MAP={
   'tutorials' :'tutorials',
   'profile'   :'profile',
 };
+
+
+// ══════════════════════════════════════════════════════════════
+// ══ پاراستنی هەژمار — بان، دەرکردنی خێرا، بلۆکی IP، قفڵی باڵانس ══
+// ══════════════════════════════════════════════════════════════
+let _paBalanceLocked = false;
+let _paBalanceLockReason = '';
+let _paPublicIp = null;
+let _paGuardChannel = null;
+let _paKicked = false;
+
+// IPـی گشتی ئامێر (هەمان سەرچاوەی session tracking) — یەکجار وەردەگیرێت و کاش دەکرێت
+async function paGetPublicIp(){
+  if(_paPublicIp) return _paPublicIp;
+  if(_sessInfo && _sessInfo.ip){ _paPublicIp=_sessInfo.ip; return _paPublicIp; }
+  const sources=[
+    ()=>fetch('https://ipapi.co/json/').then(r=>r.json()).then(j=>j.ip),
+    ()=>fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(j=>j.ip),
+    ()=>fetch('https://ipwho.is/').then(r=>r.json()).then(j=>j.ip)
+  ];
+  for(const fn of sources){
+    try{
+      const ip=await fn();
+      if(ip){ _paPublicIp=String(ip).trim(); return _paPublicIp; }
+    }catch(_){}
+  }
+  return null;
+}
+
+// پشکنینی ئایا ئەم IPـە بلۆککراوە — پێش/دوای چوونەژوورەوە
+async function paCheckIpBanned(ip){
+  try{
+    const theIp = ip || await paGetPublicIp();
+    if(!theIp) return {banned:false};
+    const{data,error}=await sb.rpc('pa_ip_check',{p_ip:theIp});
+    if(error) return {banned:false};
+    return data||{banned:false};
+  }catch(_){ return {banned:false}; }
+}
+
+// دەرکردنی خێرا لە هەژمار بە پەیامێکی ڕوون
+async function paKickOut(msg){
+  if(_paKicked) return;
+  _paKicked = true;
+  try{ if(_sessHeartbeat) clearInterval(_sessHeartbeat); }catch(_){}
+  try{ if(_paGuardChannel) sb.removeChannel(_paGuardChannel); }catch(_){}
+  try{ await sb.auth.signOut(); }catch(_){}
+  cu = null;
+  try{ sessionStorage.setItem('proxo_kick_msg', msg||'سێشنەکەت کۆتایی هات'); }catch(_){}
+  try{ localStorage.removeItem('proxo_seen_version'); }catch(_){}
+  alert(msg||'سێشنەکەت کۆتایی هات — تکایە دووبارە بچۆ ژوورەوە');
+  window.location.href = '/login';
+}
+
+// گوێگری ڕاستەوخۆ لەسەر ڕیزی پرۆفایلی خودی بەکارهێنەر
+function paStartGuard(){
+  if(!cu?.id) return;
+  if(_paGuardChannel){ try{ sb.removeChannel(_paGuardChannel); }catch(_){} }
+  _paGuardChannel = sb.channel('pa_guard_'+cu.id)
+    .on('postgres_changes',{
+      event:'UPDATE', schema:'public', table:'profiles', filter:'id=eq.'+cu.id
+    }, ({new:row})=>{
+      if(!row) return;
+      // ١. بانکردن → یەکسەر دەرچوون
+      if(row.is_banned){
+        paKickOut('ئەکاونتەکەت بانکرا' + (row.ban_reason ? ' — ' + row.ban_reason : ''));
+        return;
+      }
+      // ٢. دەرکردنی ئادمین (گۆڕینی وشەی نهێنی / بلۆکی IP / دەرکردنی دەستی)
+      if(row.force_logout_at){
+        const t=new Date(row.force_logout_at).getTime();
+        if(!isNaN(t) && Date.now()-t < 120000){
+          paKickOut('سێشنەکەت لەلایەن بەڕێوەبەرەوە کۆتایی هێنرا — تکایە دووبارە بچۆ ژوورەوە');
+          return;
+        }
+      }
+      // ٣. قفڵی باڵانس
+      paApplyBalanceLock(!!row.balance_locked, row.balance_lock_reason||'');
+    })
+    .subscribe();
+}
+
+// پیشاندانی باری قفڵی باڵانس لە هەموو شوێنێکی UI
+function paApplyBalanceLock(locked, reason){
+  const changed = (_paBalanceLocked !== locked);
+  _paBalanceLocked = locked;
+  _paBalanceLockReason = reason||'';
+  const bar=document.getElementById('paBalLockBar');
+  if(bar){
+    bar.style.display = locked ? 'flex' : 'none';
+    const r=document.getElementById('paBalLockReason');
+    if(r) r.textContent = _paBalanceLockReason ? ('هۆکار: '+_paBalanceLockReason) : 'بۆ زانیاری زیاتر پەیوەندی بە پشتگیری بکە';
+  }
+  const btn=document.getElementById('submitBtn');
+  if(btn){
+    btn.style.opacity = locked ? '.55' : '';
+    btn.title = locked ? 'باڵانسەکەت قفڵکراوە' : '';
+  }
+  if(changed && locked) showToast('باڵانسەکەت لەلایەن بەڕێوەبەرەوە قفڵکرا','err');
+  if(changed && !locked) showToast('باڵانسەکەت کرایەوە ✅','ok');
+}
+
+// پشکنینی سەرەتایی — بان + قفڵی باڵانس + بلۆکی IP
+async function paInitialGuard(){
+  if(!cu?.id) return false;
+  try{
+    const{data:p}=await sb.from('profiles')
+      .select('is_banned,ban_reason,balance_locked,balance_lock_reason,force_logout_at')
+      .eq('id',cu.id).single();
+    if(p?.is_banned){
+      await paKickOut('ئەکاونتەکەت بانکراوە'+(p.ban_reason?' — '+p.ban_reason:''));
+      return true;
+    }
+    paApplyBalanceLock(!!p?.balance_locked, p?.balance_lock_reason||'');
+  }catch(_){}
+  // ── پشکنینی IP (لە پاشەوە — UI ڕانەدەگرێت) ──
+  paCheckIpBanned().then(async res=>{
+    if(res?.banned){
+      await paKickOut('ئەم ئایپی ئینتەرنێتە بلۆککراوە'+(res.reason?' — '+res.reason:''));
+    }
+  }).catch(()=>{});
+  paStartGuard();
+  return false;
+}
+
+// پشکنینی قفڵ پێش هەر خەرجکردنێک (داتابەیسیش دووبارە دەیپشکنێت)
+async function paAssertCanSpend(){
+  if(!cu?.id) return false;
+  try{
+    const{data:p}=await sb.from('profiles').select('balance_locked,balance_lock_reason').eq('id',cu.id).single();
+    if(p?.balance_locked){
+      paApplyBalanceLock(true, p.balance_lock_reason||'');
+      showToast('باڵانسەکەت قفڵکراوە — ناتوانیت بەکاری بهێنیت'+(p.balance_lock_reason?(' ('+p.balance_lock_reason+')'):''),'err');
+      return false;
+    }
+    paApplyBalanceLock(false,'');
+    return true;
+  }catch(_){ return true; }
+}
+
+// ناساندنی هەڵەی داتابەیس بۆ پەیامێکی کوردی
+function paLockErrMsg(m){
+  if(!m) return null;
+  if(String(m).includes('balance_locked')) return 'باڵانسەکەت لەلایەن بەڕێوەبەرەوە قفڵکراوە — ناتوانیت بەکاری بهێنیت';
+  if(String(m).includes('ip_banned'))      return 'ئەم ئایپی ئینتەرنێتە بلۆککراوە';
+  return null;
+}
 
 // ══ SESSION TRACKING ══
 let _sessionId = null;
@@ -10426,6 +10603,9 @@ function pickCard(el,id){
   const finalTotal = _promoValidated ? _promoValidated.finalBudget : rawTotal;
   const _totalUSD  = dailyUSD * days;
 
+  // ── پشکنینی قفڵی باڵانس (داتابەیسیش خۆی ڕایدەگرێت) ──
+  if(!await paAssertCanSpend())return;
+
   // Client-side early check (UX only — DB enforces the real constraint)
   const{data:walletData}=await sb.from('pa_wallets').select('balance').eq('user_id',cu.id).single();
   const bal=Math.floor(parseFloat(walletData?.balance||0)*1800);
@@ -10503,7 +10683,12 @@ function pickCard(el,id){
           // 3. کەمکردنی باڵانس
           const{data:_wb}=await sb.from('pa_wallets').select('balance').eq('user_id',cu.id).single();
           const _newWalBal=Math.max(0,parseFloat(_wb?.balance||0)-finalTotal/1800);
-          await sb.from('pa_wallets').update({balance:_newWalBal}).eq('user_id',cu.id);
+          const{error:_walErr}=await sb.from('pa_wallets').update({balance:_newWalBal}).eq('user_id',cu.id);
+          if(_walErr){
+            // ڕیکلامەکە هەڵبوەشێنەرەوە ئەگەر نەتوانرا باڵانس کەم بکرێتەوە (بۆ نموونە: قفڵی باڵانس)
+            try{ await sb.from('pa_ads').delete().eq('id',_newAd.id); }catch(_){}
+            throw new Error(paLockErrMsg(_walErr.message)||_walErr.message);
+          }
           // 4. تۆمارکردنی مامەڵە (لەگەڵ باڵانسی ڕاستەقینەی دوای مامەڵەکە)
           await sb.from('pa_transactions').insert({
             user_id:cu.id,
@@ -10520,6 +10705,7 @@ function pickCard(el,id){
           // بەردەوام بە — مامەڵەکە سەرکەوتوو بوو
         }else{
           const msgs={
+            'balance_locked':'باڵانسەکەت لەلایەن بەڕێوەبەرەوە قفڵکراوە — ناتوانیت بەکاری بهێنیت',
             'insufficient_balance':'موازەنەت بەسنییە، تکایە باڵانس زیاد بکە',
             'wallet_not_found':'جزدانت نەدۆزرایەوە، تکایە دووبارە بچۆ ژوورەوە',
             'invalid_budget':'بودجەی نادروست',
