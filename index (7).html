@@ -9715,7 +9715,7 @@ async function saveName(){
   const testMode = qp.get('fastpayTest') === '1' || localStorage.getItem('proxo_fastpay_test') === '1';
   const config = window.PROXO_FASTPAY_CONFIG || {};
   window.PROXO_FASTPAY_CONFIG = {
-    webhookBase: String(config.webhookBase || window.PROXO_FASTPAY_WEBHOOK_BASE || 'https://email.proxopages.com/webhook/order-create').replace(/\/$/, ''),
+    webhookBase: String(config.webhookBase || window.PROXO_FASTPAY_WEBHOOK_BASE || 'https://email.proxopages.com/webhook/fastpay/order-create').replace(/\/$/, ''),
     testMode: testMode
   };
   let fpTimer = null;
